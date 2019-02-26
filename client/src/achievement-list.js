@@ -2,19 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Achievement from './achievement.js';
 
-
 class Achievements extends React.Component {
 	
 	static propTypes = {
+		//cookies: instanceOf(Cookies).isRequired,
 		user: PropTypes.string
 	};
 
 	constructor(props) {
-		super();
-		
+		super(props);
+
+		let name = this.props.name || '';
+
 		this.state = {
 			user: {
-				name: '',
+				name: name,
 				achievements: []
 			}
 		};
@@ -23,7 +25,9 @@ class Achievements extends React.Component {
 	componentDidMount() {
 		//Fetch achievements
 
-		fetch('/api/authenticate', {
+
+		if(this.state.user.name === '') {
+			fetch('/api/authenticate', {
 				crossDomain: true,
 				method: 'GET'
 			}).then((res) => {
@@ -33,11 +37,13 @@ class Achievements extends React.Component {
 			}).catch((err) => {
 				console.log("Error when calling '/api/authenticate'");
 				console.log(err);
-			});
+			});	
+		}
+
+		
 
 		this.setState({
 			user: {
-				name: 'phirehero',
 				achievements: [
 					{
 						"title": "To Arms!",

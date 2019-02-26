@@ -18,14 +18,15 @@ class Achievement extends React.Component {
 		return (
 			<li className="achievement">
 				<div className="achievement-icon">
-        			<img src={require('./img/' + icon)} />
+        			<img alt="" src={require('./img/' + icon)} />
         		</div>
         		<div className="achievement-info">
         			<span className="achievement-title">{title}</span>
         			<span className="achievement-description">{description}</span>
         		</div>
+    			<div>{percentage}</div>
         		<div className="achievement-cap">
-        			<img src={require('./img/achievement-cap.png')} />
+        			<img alt="" src={require('./img/achievement-cap.png')} />
         		</div>
         	</li>
 		);

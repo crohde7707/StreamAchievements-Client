@@ -1,11 +1,13 @@
 const express = require('express');
 const path = require('path');
 const port = process.env.PORT || 5000;
+let MongoClient = require('mongodb').MongoClient;
 
 const TWITCH_CLIENT_ID = 'zx83pxp0b4mkeu931upd21a6f9clv4';
 const TWITCH_SECRET = 'qgv9qxs71zt3c1g4q1y571bl3ox0s8';
 const SESSION_SECRET = process.env.SESSION_SECRET;
 const CALLBACK_URL = 'http://localhost:3000/auth/twitch/callback';
+const MONGODB_URL = `mongodb+srv://phirehero:${process.env.DB}@twitchachievements-nufmb.mongodb.net/test?retryWrites=true`;
 
 let session = require('express-session');
 let passport = require('passport');
@@ -18,6 +20,13 @@ app.use(session({secret: SESSION_SECRET, resave: false, saveUninitialized: false
 app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(passport.session());
+
+let db;
+
+MongoClient.connect(MONGODB_URL, (err, client) => {
+	if (err) return console.log(err);
+	db = client.db('achievements');
+});
 
 OAuth2Strategy.prototype.userProfile = function(accessToken, done) {
 	let options = {
@@ -40,6 +49,7 @@ OAuth2Strategy.prototype.userProfile = function(accessToken, done) {
 }
 
 passport.serializeUser((user, done) => {
+	console.log(user);
 	done(null, user);
 });
 
@@ -60,11 +70,24 @@ passport.use('twitch', new OAuth2Strategy(oauthOptions, (accessToken, refreshTok
 	profile.accessToken = accessToken;
 	profile.refreshToken = refreshToken;
 
+	db.collections('achievements').save(profile);
+
+	console.log(profile);
+
 	done(null, profile);
 }));
 
 app.get('/auth/twitch', passport.authenticate('twitch', { scope: 'user:read:email'}));
-app.get('/auth/twitch/callback', passport.authenticate('twitch', { successRedirect: '/', failureRedirect: '/'}));
+
+app.get('/auth/twitch/callback', passport.authenticate('twitch', { successRedirect: '/handle', failureRedirect: '/handle'}));
+
+app.post('/handle', function(req, res) {
+	console.log('hi');
+});
+
+app.get('/handle', function(req, res) {
+	console.log('hi get');
+});
 
 app.get('/api/authenticate', function(req, res, next) {
   
@@ -73,7 +96,6 @@ app.get('/api/authenticate', function(req, res, next) {
     if (err) { 
     	return next(err);
     }
-
     if (!user) { 
     	return res.redirect('/auth/twitch')
     }
@@ -98,11 +120,15 @@ app.get('/', (req, res) => {
 	}
 });
 
-app.get('/api/passwords', (req, res) => {
-	res.json({"foo": "bar"});
+app.get('/api/v1/auth', (req, res) => {
+	//Call out to Twitch authentication api
+	//respond back to the client with the valid
 
-	console.log("Sent a message");
-});
+	res.send({
+		name: '',
+
+	})
+})
 
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname + '/client/build/index.html'));
