@@ -36,6 +36,10 @@ app.use(cookieSession({
 	keys: keys.session.cookieKey
 }));
 
+app.get("/api/token", passport.authenticate('twitch'), (req, res) => {
+    return res.json({ success: true, data: req.user.id });
+  });
+
 //initialize passport
 app.use(passport.initialize());
 app.use(passport.session());

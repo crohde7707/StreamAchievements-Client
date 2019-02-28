@@ -13,7 +13,7 @@ const cookieSetter = (req, res, next) => {
     // no: set a new cookie
     console.log('about to make cookie');
     console.log('user: ' + req.user);
-    res.cookie('id_token', req.user.id, { maxAge: 24 * 60 * 60 * 60, httpOnly: true });
+    res.cookie('id_token', req.user.id, { maxAge: 24 * 60 * 60 * 60, httpOnly: false });
     console.log('cookie created successfully');
   } 
   else
@@ -21,7 +21,7 @@ const cookieSetter = (req, res, next) => {
     // yes, cookie was already present 
     console.log('cookie exists', cookie);
   } 
-  next(); // <-- important!
+  next();
 };
 
 //callback for twitch to redirect to
@@ -38,14 +38,14 @@ router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 		// no: set a new cookie
 		console.log('about to make cookie');
 		console.log('user: ' + req.user);
-		res.cookie('id_token', req.user.id, { maxAge: 24 * 60 * 60 * 60, httpOnly: true });
+		res.cookie('id_token', req.user.id, { maxAge: 24 * 60 * 60 * 60, httpOnly: false });
 		console.log('cookie created successfully');
 	} else {
 		// yes, cookie was already present 
 		console.log('cookie exists', cookie);
 	} 
 
-	res.send('you reached the callback URI');
+	res.redirect('http://localhost:3000/home');
 
 
 	//res.redirect('/home');
