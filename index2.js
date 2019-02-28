@@ -5,7 +5,9 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./configs/keys');
 const passportSetup = require('./configs/passport-setup');
+const cookieParser = require('cookie-parser');
 let authRoutes = require('./routes/auth-routes');
+let channelRoutes = require('./routes/channel-routes');
 let request = require('request');
 
 const port = process.env.PORT || 5000;
@@ -19,6 +21,10 @@ const authCheck = (req, res, next) => {
 }
 
 let app = express();
+
+// set up view engine
+app.set('view engine', 'ejs');
+app.use(cookieParser());
 
 // connect to mongodb
 mongoose.connect(keys.mongodb.dbURI, () => {
@@ -37,13 +43,13 @@ app.use(passport.session());
 app.use(express.static('public'));
 
 app.use('/auth', authRoutes);
+app.use('/channel', channelRoutes);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('*', authCheck, (req, res) => {
-	console.log('hello');
-	res.sendFile(path.join(__dirname + '/client/build/index.html'));
-});
+// app.get('/', authCheck, (req, res) => {
+// 	res.render('home');
+// });
 
 app.listen(port);
 

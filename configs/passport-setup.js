@@ -7,10 +7,12 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 const CALLBACK_URL = 'http://localhost:5000/auth/twitch/redirect';
 
 passport.serializeUser((user, done) => {
+	console.log("serializeUser");
 	done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
+	console.log("deserializeUser");
 	User.findById(id).then((foundUser) => {
 		done(null, user);
 	});

@@ -26,19 +26,19 @@ class Achievements extends React.Component {
 		//Fetch achievements
 
 
-		if(this.state.user.name === '') {
-			fetch('/api/authenticate', {
-				crossDomain: true,
-				method: 'GET'
-			}).then((res) => {
-				res.json();
-			}).then((info) => {
-				console.log(info);
-			}).catch((err) => {
-				console.log("Error when calling '/api/authenticate'");
-				console.log(err);
-			});	
-		}
+		// if(this.state.user.name === '') {
+		// 	fetch('/api/authenticate', {
+		// 		crossDomain: true,
+		// 		method: 'GET'
+		// 	}).then((res) => {
+		// 		res.json();
+		// 	}).then((info) => {
+		// 		console.log(info);
+		// 	}).catch((err) => {
+		// 		console.log("Error when calling '/api/authenticate'");
+		// 		console.log(err);
+		// 	});	
+		// }
 
 		
 
