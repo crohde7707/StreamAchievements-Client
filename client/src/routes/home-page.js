@@ -1,18 +1,21 @@
 import React from 'react';
 import axios from 'axios';
 
-import Header from '../components/header';
+import './home-page.css';
+
+import Template from '../components/template';
+import ChannelList from '../components/channel-list';
 
 export default class HomePage extends React.Component {
 
 	render() {
+
 		return (
-			<div>
-				<Header title="Landing Page" />
-				<div>
-					This is my content
+			<Template>
+				<div className="main-content">
+					<ChannelList />
 				</div>
-			</div>
+			</Template>
 		);
 	}
 }

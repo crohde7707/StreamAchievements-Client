@@ -1,0 +1,13 @@
+.footer {
+    height: 100px;
+    background: #6441a4;
+    box-shadow: 0px -1px 2px #111;
+    color: wheat;
+    font-size: 16px;
+}
+
+.footer-content {
+	max-width: 800px;
+    margin: 25px auto 0;
+    text-align: center;
+}

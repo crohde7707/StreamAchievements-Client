@@ -11,8 +11,6 @@ const cookieSetter = (req, res, next) => {
   if (cookie === undefined && req.user)
   {
     // no: set a new cookie
-    console.log('about to make cookie');
-    console.log('user: ' + req.user);
     res.cookie('id_token', req.user.id, { maxAge: 24 * 60 * 60 * 60, httpOnly: false });
     console.log('cookie created successfully');
   } 
@@ -26,10 +24,6 @@ const cookieSetter = (req, res, next) => {
 
 //callback for twitch to redirect to
 router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
-	console.log(req.user);
-	//res.send("you reached the callback URI");
-	//create this page
-	//console.log(req);
 
 	//Set Cookie
 	var cookie = req.cookies['id_token'];
@@ -47,8 +41,10 @@ router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 
 	res.redirect('http://localhost:3000/home');
 
+});
 
-	//res.redirect('/home');
+router.get('/logout', (req, res) => {
+	req.logout();
 });
 
 module.exports = router;

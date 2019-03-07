@@ -1,0 +1,57 @@
+.main-content {
+	max-width: 800px;
+	margin: 20px auto 0;
+	padding-bottom: 20px;
+}
+
+.channel-header {
+	display: flex;
+}
+
+.main-content h3 {
+	font-size: 24px;
+	color: white;
+	flex: 1;
+}
+
+.add-channel {
+	max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    border: 2px dashed #AAA;
+    padding: 10px 20px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.add-channel img {
+	width:32px;
+	height:32px;
+	margin-top:5px;
+}
+
+.join-channel-button {
+    text-align: right;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.join-channel-button img {
+	width: 24px;
+    margin-right: 5px;
+}
+
+@media only screen and (max-width: 480px) {
+	.main-content {
+		margin: 20px;
+	}
+
+	.add-channel {
+		margin: 0 10px;
+		padding: 5px 10px;
+	}
+}
