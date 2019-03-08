@@ -1,4 +1,79 @@
-.channel-info {
-	min-height: 150px;
+#channel-header {
+	min-height: 115px;
     background: #DDD;
+    display: flex;
+    align-items: center;
+	transition: all 0.2s ease;
+}
+
+#channel-header.condensed {
+	position: fixed;
+    z-index: 100;
+    width: 100%;
+    top: 0;
+    min-height: 70px;
+    height: 70px;
+    box-shadow: 0px 2px;
+    transition: all 0.2s ease;
+}
+
+.channel-fav {
+	padding: 0 10px;
+	min-height: 115px;
+	display: flex;
+	align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.condensed .channel-fav {
+	min-height: 70px;
+	transition: all 0.2s ease;
+}
+
+.channel-fav img {
+	width: 45px;
+	transition: all 0.2s ease;
+}
+
+.condensed .channel-fav img {
+	width: 38px;
+	transition: all 0.2s ease;
+}
+
+.channel-logo img {
+	width: 100px;
+	transition: all 0.2s ease;
+}
+
+.channel-logo {
+	display: flex;
+	align-items: center;
+	transition: all 0.5s ease;
+}
+
+.condensed .channel-logo img {
+	width: 70px;
+	height: 70px;
+	transition: all 0.2s ease;
+}
+
+.channel-info {
+	flex: 1;
+}
+
+.achievements-container {
+	max-width: 800px;
+	margin: 15px auto 0;
+}
+
+.achievement {
+	background: #DDD;
+    box-shadow: 0px 2px;
+    padding: 19px 10px;
+    width: 100%;
+    position: relative;
+    height: 2em;
+    margin-bottom: 19px;
+    display: block;
 }

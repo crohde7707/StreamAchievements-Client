@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
+const Achievement = require('../models/achievement-model');
 
 router.get("/token", passport.authenticate('twitch'), (req, res) => {
     return res.json({ success: true, data: req.user.id });
@@ -46,6 +47,27 @@ router.get("/channel/create", (req, res) => {
 	});
 });
 
+router.get("/achievement/create", (req, res) => {
+	new Achievement({
+		title: "Taco Hoarder",
+		description: "Gained a total of 500,000 tacos",
+		icon: "foobar",
+		percent: "0%"
+	}).save().then((newAchievement) => {
+		res.json({
+			achievement: newAchievement
+		});
+	});
+});
+
+router.get("/achievements/retrieve", (req, res) => {
+	let channel = req.query.id;
+
+	Achievement.find({channel: channel}).then((achievements) => { 
+		res.json(achievements);
+	});
+});
+
 router.get('/channels/get', (req, res) => {
 	Channel.find({}, (err, channels) => {
 		// let channelMap = {};
@@ -68,5 +90,26 @@ router.get("/channels/user", (req, res) => {
 
 	res.json(testData);
 });
+
+router.get('/channel/retrieve', (req, res) => {
+	let channel = req.query.id;
+
+	Channel.findOne({name: channel}).then((foundChannel) => {
+		if(foundChannel) {
+			
+			Achievement.find({channel: channel}).then((foundAchievements) => { 
+				res.json({
+					channel: foundChannel,
+					achievements: foundAchievements
+				});
+			});
+			
+		} else {
+			res.json({
+				error: "No channel found for the name: " + channel
+			});
+		}
+	})
+})
 
 module.exports = router;
