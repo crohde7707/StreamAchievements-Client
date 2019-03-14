@@ -5,6 +5,7 @@ import HomePage from './routes/home-page';
 import LandingPage from './routes/landing-page';
 import ChannelPage from './routes/channel-page';
 import TestPage from './routes/test-page';
+import ManageChannelPage from './routes/manage-channel';
 import ChannelDirectoryPage from './routes/channel-directory-page';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
@@ -23,6 +24,7 @@ ReactDOM.render((
 	        		<Route path='/' exact component={LandingPage} />
 	        		<Route path='/home' component={HomePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
+	        		<Route path='/channel/:channelid/manage' component={ManageChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/test" component={TestPage} />
 	    		</Switch>

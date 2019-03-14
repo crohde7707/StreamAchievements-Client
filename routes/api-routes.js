@@ -126,22 +126,37 @@ router.get("/channels/user", (req, res) => {
 router.get('/channel/retrieve', (req, res) => {
 	let channel = req.query.id;
 
-	Channel.findOne({owner: channel}).then((foundChannel) => {
-		if(foundChannel) {
-			
-			Achievement.find({channel: channel}).then((foundAchievements) => { 
+	if(channel) {
+		Channel.findOne({owner: channel}).then((foundChannel) => {
+			if(foundChannel) {
+				
+				Achievement.find({channel: channel}).then((foundAchievements) => { 
+					res.json({
+						channel: foundChannel,
+						achievements: foundAchievements
+					});
+				});
+				
+			} else {
 				res.json({
-					channel: foundChannel,
-					achievements: foundAchievements
+					error: "No channel found for the name: " + channel
+				});
+			}
+		});
+	} else {
+		//use current logged in person's channel
+		User.findById(req.cookies.id_token).then((foundUser) => {
+			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+				Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
+					res.json({
+						channel: existingChannel,
+						achievements: achievements
+					});
 				});
 			});
-			
-		} else {
-			res.json({
-				error: "No channel found for the name: " + channel
-			});
-		}
-	})
+		});
+	}
+	
 });
 
 // TEST ROUTES

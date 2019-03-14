@@ -22,10 +22,10 @@ class ChannelPage extends React.Component {
 			this.setState({
 				channel: res.data.channel,
 				achievements: res.data.achievements
+			}, () => {
+				window.addEventListener('scroll', this.updateChannelHeader);		
 			});
-		});
-
-		window.addEventListener('scroll', this.updateChannelHeader);
+		});		
 	}
 
 	componentWillUnmount() {

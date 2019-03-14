@@ -1,0 +1,63 @@
+.manage-container {
+	max-width: 800px;
+	margin: 0 auto;
+	color: white;
+}
+
+.manage-container h2 {
+	border-bottom: 1px solid #DDD;
+}
+
+.twitch-integration {
+	background: #333;
+	border-radius: 6px;
+}
+
+.twitch-integration--header,
+.twitch-integration--content {
+	padding: 20px;
+}
+
+.twitch-integration--header {
+	background: #6441a4;
+	border-radius: 6px 6px 0px 0px;
+	display: flex;
+}
+
+.twitch-integration--header img {
+	width: 26px;
+	height: 28px;
+}
+
+.twitch-integration--sync {
+	text-align: right;
+	width: 30px;
+	flex: 1;
+}
+
+.twitch-integration--sync a {
+	cursor: pointer;
+}
+
+.twitch-integration--content {
+	display:flex;
+}
+
+.channelInfo--logo img{
+	width: 100px;
+	height: 100px;
+}
+
+.channelInfo--data {
+	margin-left: 30px;
+	align-self: center;
+}
+
+.channelInfo--name {
+	font-size: 28px;
+}
+
+.channelInfo--link {
+	font-size: 18px;
+	font-style: italic;
+}
