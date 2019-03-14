@@ -36,7 +36,7 @@ passport.use(
 					twitchID: profile.id,
 					logo: profile['_json'].logo,
 					email: profile.email,
-					channelID: ''
+					channels: []
 				}).save().then((newUser) => {
 					
 					done(null, newUser);

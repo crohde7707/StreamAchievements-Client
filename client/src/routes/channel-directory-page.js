@@ -38,7 +38,7 @@ class ChannelDirectoryPage extends React.Component {
 	    	this.setState({filteredChannels: false});
 	    } else {
 	    	updatedList = updatedList.filter(function(channel){
-		      return (channel.name).toLowerCase().search(
+		      return (channel.owner).toLowerCase().search(
 		        event.target.value.toLowerCase()) !== -1;
 		    });
 		    console.log(updatedList);
@@ -47,8 +47,8 @@ class ChannelDirectoryPage extends React.Component {
   	}
 
   	loadChannel = (channel) => {
-  		console.log(channel.name);
-  		this.props.history.push('/channel/' + channel.name);
+  		console.log(channel.owner);
+  		this.props.history.push('/channel/' + channel.owner);
   	}
 
 	render() {
@@ -73,7 +73,7 @@ class ChannelDirectoryPage extends React.Component {
 			content = channels.map((channel, index) => (
 				<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
 					<div className="channel-item--logo"><img src={channel.logo} /></div>
-					<div className="channel-item--name">{channel.name}</div>
+					<div className="channel-item--name">{channel.owner}</div>
 				</div>
 			));
 		}

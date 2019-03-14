@@ -40,6 +40,14 @@ class ChannelPage extends React.Component {
 	  }
 	}
 
+	// function move() {
+	// 	let {achievements, earned} = this.state.achievements;
+
+	//     var elem = document.getElementById("progress-bar"); 
+	    
+	//     elem.style.width = earned.length / achievements.length;
+	// }
+
 	render() {
 
 		let content;
@@ -60,7 +68,11 @@ class ChannelPage extends React.Component {
 							<div className="channel-name">{name}</div>
 							<div className="channel-description"></div>
 						</div>
-						<div className="channel-achievement-progress">0 / {achievements.length}</div>
+						<div className="channel-achievement-progress">
+							<div id="progress-bar-wrapper">
+  								<div id="progress-bar"></div>
+							</div>
+						</div>
 						<div className="channel-buttons">
 							<button className="join">Join Channel</button>
 						</div>

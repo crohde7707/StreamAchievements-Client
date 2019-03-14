@@ -9,7 +9,6 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
   });
 
 router.get("/user", (req, res) => {
-	console.log(req.cookies);
 	User.findById(req.cookies.id_token).then((foundUser) => {
 		res.json({
 			username: foundUser.name,
@@ -28,16 +27,18 @@ router.get("/channel/create", (req, res) => {
 				});
 			} else {
 				new Channel({
-					name: foundUser.name,
+					owner: foundUser.name,
 					twitchID: foundUser.twitchID,
+					theme: '',
 					logo: foundUser.logo,
 					achievements: [],
-					theme: ''
+					members: []
 				}).save().then((newChannel) => {
 					foundUser.channelID = newChannel.id;
 					foundUser.save().then((savedUser) => {
 						res.json({
-							channel: newChannel
+							channel: newChannel,
+							user: foundUser
 						});
 					});
 					
@@ -47,12 +48,43 @@ router.get("/channel/create", (req, res) => {
 	});
 });
 
-router.get("/achievement/create", (req, res) => {
+router.post("/achievement/create", (req, res) => {
+	User.findById(req.cookies.id_token).then((foundUser) => {
+		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+			//Check if achievement of same name exists
+			let achievementTitle = req.data.title;
+			if(existingChannel.achievements[achievementTitle]) {
+				req.json({
+					error: "An achievement with this name already exists!",
+					channel: existingChannel,
+					achievement: existingChannel.achievements[achievementTitle]
+				});
+			} else {
+				let achData = {
+					channel: existingChannel.owner,
+					title: req.data.title,
+					description: req.data.description,
+					icon: req.data.icon,
+					earnable: req.data.earnable,
+					limited: req.data.limited,
+					secret: false
+				};
+				new Achievement(achData).save().then((newAchievement) => {
+					existingChannel.achievements[newAchievement.title] = newAchievement;
+					existingChannel.save().then((existingChannel) => {
+						req.json({
+							channel: existingChannel,
+							achievement: newAchievement
+						});
+					});
+				});
+			}
+		});
+	})
 	new Achievement({
 		title: "Taco Hoarder",
 		description: "Gained a total of 500,000 tacos",
-		icon: "foobar",
-		percent: "0%"
+		icon: "https://static-cdn.jtvnw.net/jtv_user_pictures/694825d9-0ab8-460f-ab9c-8886e26b6563-profile_image-300x300.png",
 	}).save().then((newAchievement) => {
 		res.json({
 			achievement: newAchievement
@@ -94,7 +126,7 @@ router.get("/channels/user", (req, res) => {
 router.get('/channel/retrieve', (req, res) => {
 	let channel = req.query.id;
 
-	Channel.findOne({name: channel}).then((foundChannel) => {
+	Channel.findOne({owner: channel}).then((foundChannel) => {
 		if(foundChannel) {
 			
 			Achievement.find({channel: channel}).then((foundAchievements) => { 
@@ -110,6 +142,18 @@ router.get('/channel/retrieve', (req, res) => {
 			});
 		}
 	})
-})
+});
+
+// TEST ROUTES
+
+router.get('/channel/test', (req, res) => {
+	let channel = req.query.id;
+
+	Channel.findOne({'owner.name': channel}).then((foundChannel) => {
+		res.json({
+			channel: foundChannel
+		});
+	});
+});
 
 module.exports = router;

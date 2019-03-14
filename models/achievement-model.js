@@ -6,7 +6,9 @@ const achievementSchema = new Schema({
 	title: String,
 	description: String,
 	icon: String,
-	percent: String
+	earnable: Boolean,
+	limited: Boolean,
+	secret: Boolean
 });
 
 const Achievement = mongoose.model("achievement", achievementSchema);

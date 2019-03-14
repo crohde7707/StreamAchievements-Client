@@ -77,3 +77,14 @@
     margin-bottom: 19px;
     display: block;
 }
+
+#progress-bar-wrapper {
+  width: 100%;
+  background-color: grey;
+}
+
+#progress-bar {
+  width: 1%;
+  height: 30px;
+  background-color: green;
+}
