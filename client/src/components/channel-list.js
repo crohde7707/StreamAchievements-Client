@@ -44,6 +44,10 @@ class ChannelList extends React.Component {
 		});
 	}
 
+	goToChannel = (channel) => {
+		this.props.history.push('/channel/' + channel);
+	}
+
 	render() {
 
 		let content, headerJoinButton, joinFirstChannel;
@@ -59,7 +63,7 @@ class ChannelList extends React.Component {
 				if(channels.length > 0) {
 					//we have some channels!
 					content = channels.map((channel, index) => (
-						<div key={"channel." + index} className="channel-item">
+						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.name)}}>
 							<div className="channel-item--logo"><img src={channel.logo} /></div>
 							<div className="channel-item--name">{channel.name}</div>
 							<div className="channel-item--percentage">{channel.percentage}</div>

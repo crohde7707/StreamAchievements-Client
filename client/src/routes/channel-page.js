@@ -25,7 +25,8 @@ class ChannelPage extends React.Component {
 			}, () => {
 				window.addEventListener('scroll', this.updateChannelHeader);		
 			});
-		});		
+		});	
+		console.log('channel-page');
 	}
 
 	componentWillUnmount() {

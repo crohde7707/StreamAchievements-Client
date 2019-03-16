@@ -37,7 +37,6 @@ class Header extends React.Component {
 				</div>
 				<div className="header-nav">
 					<a href="/home">Home</a>
-					<a href="/profile">Profile</a>
 					{manageLink}
 				</div>
 				<div className="menu">
