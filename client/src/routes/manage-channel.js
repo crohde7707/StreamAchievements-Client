@@ -54,6 +54,7 @@ class ManageChannel extends React.Component {
   	}
 
   	showEditAchievementModal = (achievement) => {
+  		console.log(achievement);
 		this.setState({
 			isEditAchievementActive: true,
 			editing: achievement
@@ -127,7 +128,7 @@ class ManageChannel extends React.Component {
 							</div>
 						</div>
 					))}
-					<AchievementEditModal active={this.state.isEditAchievementActive} onClose={this.hideEditAchievementModal} achievement={this.state.editing} />
+					<AchievementEditModal active={this.state.isEditAchievementActive} onClose={this.hideEditAchievementModal} achievement={this.state.editing} title="Edit Achievement"/>
 				</div>
 			);
 
