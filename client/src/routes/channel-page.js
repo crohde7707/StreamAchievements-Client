@@ -1,7 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import connector from '../redux/connector';
+import {setProfile} from '../redux/profile-reducer';
 
 import Template from '../components/template';
+import Achievement from '../components/achievement';
 
 import './channel-page.css';
 
@@ -19,14 +22,18 @@ class ChannelPage extends React.Component {
 
 		axios.get('/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
 			console.log(res.data);
+			
+			let joined = (Array.isArray(res.data.achievements.earned));
+
+
 			this.setState({
 				channel: res.data.channel,
-				achievements: res.data.achievements
+				achievements: res.data.achievements,
+				joined: joined
 			}, () => {
 				window.addEventListener('scroll', this.updateChannelHeader);		
 			});
 		});	
-		console.log('channel-page');
 	}
 
 	componentWillUnmount() {
@@ -55,7 +62,16 @@ class ChannelPage extends React.Component {
 		})
 		.then((res) => {
 			console.log(res.data);
+		});
+	}
+
+	leaveChannel = () => {
+		axios.post('/channel/leave', {
+			channel: this.state.channel.owner
 		})
+		.then((res) => {
+			console.log(res.data);
+		});
 	}
 
 	render() {
@@ -65,7 +81,41 @@ class ChannelPage extends React.Component {
 		if(this.state.channel) {
 
 			let {owner, logo} = this.state.channel;
-			let achievements = this.state.achievements;
+			let achievements = this.state.achievements.all;
+
+			let membershipContent, achievementsContent;
+
+			if(this.state.joined) {
+				membershipContent = <a href="javascript:;" onClick={this.leaveChannel} className="leave">Leave Channel</a>
+			} else {
+				membershipContent = <a href="javascript:;" onClick={this.joinChannel} className="join">Join Channel</a>
+			}
+
+			if(achievements.length > 0) {
+				achievementsContent = (
+					<div className="achievements-container">
+						{achievements.map((achievement, index) => {
+
+							let earned = false;
+							let userAchievements = this.state.achievements.earned;
+
+							if(Array.isArray(userAchievements) && userAchievements.includes(achievement.id)) {
+								earned = true;
+							}
+
+							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} />)
+						})}
+						
+					</div>
+				);
+			} else {
+				achievementsContent = (
+					<div className="no-achievements">
+						<p>{owner} has yet to make any achievements available!</p>
+						<p>Check back soon!</p>
+					</div>
+				)
+			}
 
 			content = (
 				<Template>
@@ -84,21 +134,10 @@ class ChannelPage extends React.Component {
 							</div>
 						</div>
 						<div className="channel-buttons">
-							<a href="javascript:;" onClick={this.joinChannel} className="join">Join Channel</a>
+							{membershipContent}
 						</div>
 					</div>
-					<div className="achievements-container">
-						{achievements.map((achievement, index) => (
-							<div key={'achievement-' + index} className="achievement">
-								<div className="achievement-logo"><img src={achievement.icon} /></div>
-								<div className="achievement-info">
-									<div className="achievement-title">{achievement.title}</div>
-									<div className="achievement-description">{achievement.description}</div>
-								</div>
-							</div>
-						))}
-						
-					</div>
+					{achievementsContent}
 				</Template>
 			);
 		} else {
@@ -109,4 +148,10 @@ class ChannelPage extends React.Component {
 	}
 }
 
-export default ChannelPage;
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default connector(headerMapStateToProps)(ChannelPage);

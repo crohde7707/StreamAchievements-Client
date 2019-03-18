@@ -3,6 +3,7 @@ const passport = require('passport');
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
+const mongoose = require('mongoose');
 
 router.get("/token", passport.authenticate('twitch'), (req, res) => {
     return res.json({ success: true, data: req.user.id });
@@ -10,16 +11,27 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
 
 router.get("/user", (req, res) => {
 	User.findById(req.cookies.id_token).then((foundUser) => {
-		res.json({
-			username: foundUser.name,
-			logo: foundUser.logo
+		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+			if(existingChannel) {
+				res.json({
+					username: foundUser.name,
+					logo: foundUser.logo,
+					owner: true
+				});
+			} else {
+				res.json({
+					username: foundUser.name,
+					logo: foundUser.logo,
+					owner: false
+				});
+			}
 		});
 	});
 });
 
 router.get("/channel/create", (req, res) => {
 	User.findById(req.cookies.id_token).then((foundUser) => {
-		Channel.findOne({twitchID: foundUser.id}).then((existingChannel) => {
+		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
 			if(existingChannel) {
 				res.json({
 					error: 'Channel already exists!',
@@ -114,13 +126,36 @@ router.get('/channels/get', (req, res) => {
 
 router.get("/channels/user", (req, res) => {
 
-	let testData = [
-		{logo: "https://static-cdn.jtvnw.net/jtv_user_pictures/694825d9-0ab8-460f-ab9c-8886e26b6563-profile_image-300x300.png", name: "phirehero", percentage: "100%"},
-		{logo: "https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg", name: "Thorlar", percentage: "57%"},
-		{logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKSkCz4staWr-jVGJL7YYcQueuaI_p3biFBEnlqc_S-aOaXCxEIQ", name: "hollieBB", percentage: "0%"}
-	];
+	User.findById(req.cookies.id_token).then((foundUser) => {
 
-	res.json(testData);
+		//format channel ids
+		let channelArray = foundUser.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
+
+		Channel.find({'_id': { $in: channelArray}}).then((channels) => {
+
+		     responseData = channels.map((channel) => {
+
+		     	let percentage = 0;
+
+		     	//get percentage of achievements
+		     	let earnedAchievements = foundUser.channels.filter((userChannel) => (userChannel.channelID === channel.id));
+
+		     	if(channel.achievements.length !== 0) {
+		     		percentage = Math.round((earnedAchievements[0].achievements.length / channel.achievements.length) * 100);
+		     	}
+
+		     	return {
+		     		logo: channel.logo,
+		     		owner: channel.owner,
+		     		percentage: percentage
+		     	};
+		     });
+
+		     res.json(responseData);
+		});
+
+	});
+
 });
 
 router.get('/channel/retrieve', (req, res) => {
@@ -130,10 +165,26 @@ router.get('/channel/retrieve', (req, res) => {
 		Channel.findOne({owner: channel}).then((foundChannel) => {
 			if(foundChannel) {
 				
-				Achievement.find({channel: channel}).then((foundAchievements) => { 
-					res.json({
-						channel: foundChannel,
-						achievements: foundAchievements
+				Achievement.find({channel: channel}).then((foundAchievements) => {
+
+					//grab achievements earned from user
+					User.findById(req.cookies.id_token).then((foundUser) => {
+
+						let earned = foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id));
+
+						if(earned.length > 0) {
+							earned = earned[0].achievements
+						} else {
+							earned = false;
+						}
+
+						res.json({
+							channel: foundChannel,
+							achievements: {
+								all: foundAchievements,
+								earned: earned
+							}
+						});
 					});
 				});
 				
@@ -147,12 +198,19 @@ router.get('/channel/retrieve', (req, res) => {
 		//use current logged in person's channel
 		User.findById(req.cookies.id_token).then((foundUser) => {
 			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
-				Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
+				if(existingChannel) {
+					Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
+						res.json({
+							channel: existingChannel,
+							achievements: achievements
+						});
+					});	
+				} else {
 					res.json({
-						channel: existingChannel,
-						achievements: achievements
+						error: 'User doesn\'t manage a channel'
 					});
-				});
+				}
+				
 			});
 		});
 	}

@@ -53,19 +53,19 @@ class ChannelDirectoryPage extends React.Component {
 
 	render() {
 
-		let redirect, resultsTip, content;
+		let content;
 		let channels = this.state.channels;
 
 
 		if(!isAuthenticated()) {
 			let Redirect = require('react-router-dom').Redirect;
 
-			redirect = <Redirect to='/' />;
+			return (<Redirect to='/' />);
 		}
 
 		if(Array.isArray(this.state.filteredChannels)) {
 
-			resultsTip = this.state.filteredChannels.length;
+			//resultsTip = this.state.filteredChannels.length;
 			channels = this.state.filteredChannels;
 		}
 

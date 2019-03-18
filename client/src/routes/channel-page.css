@@ -32,12 +32,12 @@
 }
 
 .channel-fav img {
-	width: 45px;
+	width: 35px;
 	transition: all 0.2s ease;
 }
 
 .condensed .channel-fav img {
-	width: 38px;
+	width: 30px;
 	transition: all 0.2s ease;
 }
 
@@ -67,17 +67,6 @@
 	margin: 15px auto 0;
 }
 
-.achievement {
-	background: #DDD;
-    box-shadow: 0px 2px;
-    padding: 19px 10px;
-    width: 100%;
-    position: relative;
-    height: 2em;
-    margin-bottom: 19px;
-    display: block;
-}
-
 #progress-bar-wrapper {
   width: 100%;
   background-color: grey;
@@ -87,4 +76,12 @@
   width: 1%;
   height: 30px;
   background-color: green;
+}
+
+.no-achievements {
+	font-size: 24px;
+    color: white;
+    text-align: center;
+    text-shadow: 1px 1px black;
+    margin-top: 40px;
 }

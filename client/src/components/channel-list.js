@@ -63,16 +63,16 @@ class ChannelList extends React.Component {
 				if(channels.length > 0) {
 					//we have some channels!
 					content = channels.map((channel, index) => (
-						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.name)}}>
-							<div className="channel-item--logo"><img src={channel.logo} /></div>
-							<div className="channel-item--name">{channel.name}</div>
-							<div className="channel-item--percentage">{channel.percentage}</div>
+						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
+							<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+							<div className="channel-item--name">{channel.owner}</div>
+							<div className="channel-item--percentage">{channel.percentage + '%'}</div>
 						</div>
 					));
 
 					headerJoinButton = (
 						<div onClick={this.showAddChannelModal} className="join-channel-button">
-							<img src={require('../img/plus.png')} />
+							<img alt="plus icon" src={require('../img/plus.png')} />
 							<span>Join a channel</span>
 						</div>
 					);
@@ -80,7 +80,7 @@ class ChannelList extends React.Component {
 					joinFirstChannel = (
 						<div onClick={this.showAddChannelModal} className="add-channel">
 							<div>Join your first channel!</div>
-							<div><img src={require('../img/plus.png')} /></div>
+							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
 						</div>
 					);
 				}

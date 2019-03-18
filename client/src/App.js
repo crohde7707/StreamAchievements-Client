@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import cookie from 'cookie';
-import { Route, Switch, Redirect } from 'react-router-dom';
 
 import './app.css';
 

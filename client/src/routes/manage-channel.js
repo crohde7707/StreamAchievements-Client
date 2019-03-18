@@ -1,8 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import {Redirect} from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import connector from '../redux/connector';
 
 import Template from '../components/template';
+import Achievement from '../components/achievement';
 import AchievementEditModal from '../components/achievement-edit-modal';
 
 import './manage-channel.css';
@@ -19,6 +22,7 @@ class ManageChannel extends React.Component {
 	}
 
 	componentDidMount() {
+
 		axios.get('/api/channel/retrieve').then((res) => {
 			console.log(res.data);
 
@@ -69,6 +73,10 @@ class ManageChannel extends React.Component {
 
 	render() {
 
+		if(this.props.profile && !this.props.profile.owner) {
+			return (<Redirect to='/home' />);
+		}
+
 		let integrationContent, achievementContent, memberContent;
 
 		if(this.state.channel) {
@@ -117,16 +125,7 @@ class ManageChannel extends React.Component {
 						</div>
 					</div>
 					{achievements.map((achievement, index) => (
-						<div key={'achievement-' + index} className="achievement">
-							<div className="achievement-logo"><img src={achievement.icon} /></div>
-							<div className="achievement-info">
-								<div className="achievement-title">{achievement.title}</div>
-								<div className="achievement-description">{achievement.description}</div>
-							</div>
-							<div className="achievement--edit" onClick={() => {this.showEditAchievementModal(achievement)}}>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
-							</div>
-						</div>
+						<Achievement key={'achievement-' + index} editable={true} achievement={achievement} onClick={this.showEditAchievementModal} />
 					))}
 					<AchievementEditModal active={this.state.isEditAchievementActive} onClose={this.hideEditAchievementModal} achievement={this.state.editing} title="Edit Achievement"/>
 				</div>
@@ -177,4 +176,12 @@ class ManageChannel extends React.Component {
 	}
 }
 
-export default ManageChannel;
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default connector(headerMapStateToProps)(ManageChannel);
+
+//export default ManageChannel;
