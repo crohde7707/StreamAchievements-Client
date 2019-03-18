@@ -9,6 +9,12 @@
     cursor: pointer;
     height: 100px;
     padding-right:20px;
+    transition: all 0.2s ease;
+}
+
+.channel-item:hover {
+    background: #CCC;
+    transition: all 0.2s ease;
 }
 
 .channel-item--logo {

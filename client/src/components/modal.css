@@ -29,6 +29,13 @@
     min-width: 450px;
 }
 
+.modal a {
+    position: absolute;
+    right: 0;
+    height: 40px;
+    width: 40px;
+}
+
 .modal h3 {
     color: black;
     text-align: center;

@@ -49,13 +49,22 @@ class ChannelPage extends React.Component {
 	//     elem.style.width = earned.length / achievements.length;
 	// }
 
+	joinChannel = () => {
+		axios.post('/channel/join', {
+			channel: this.state.channel.owner
+		})
+		.then((res) => {
+			console.log(res.data);
+		})
+	}
+
 	render() {
 
 		let content;
 
 		if(this.state.channel) {
 
-			let {name, logo} = this.state.channel;
+			let {owner, logo} = this.state.channel;
 			let achievements = this.state.achievements;
 
 			content = (
@@ -66,7 +75,7 @@ class ChannelPage extends React.Component {
 							<img src={logo} />
 						</div>
 						<div className="channel-info">
-							<div className="channel-name">{name}</div>
+							<div className="channel-name">{owner}</div>
 							<div className="channel-description"></div>
 						</div>
 						<div className="channel-achievement-progress">
@@ -75,13 +84,13 @@ class ChannelPage extends React.Component {
 							</div>
 						</div>
 						<div className="channel-buttons">
-							<button className="join">Join Channel</button>
+							<a href="javascript:;" onClick={this.joinChannel} className="join">Join Channel</a>
 						</div>
 					</div>
 					<div className="achievements-container">
 						{achievements.map((achievement, index) => (
 							<div key={'achievement-' + index} className="achievement">
-								<div className="achievement-logo"></div>
+								<div className="achievement-logo"><img src={achievement.icon} /></div>
 								<div className="achievement-info">
 									<div className="achievement-title">{achievement.title}</div>
 									<div className="achievement-description">{achievement.description}</div>

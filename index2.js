@@ -6,6 +6,7 @@ const passport = require('passport');
 const keys = require('./configs/keys');
 const passportSetup = require('./configs/passport-setup');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 let request = require('request');
 
 let authRoutes = require('./routes/auth-routes');
@@ -19,6 +20,7 @@ let app = express();
 // set up view engine
 app.set('view engine', 'ejs');
 app.use(cookieParser());
+app.use(bodyParser());
 
 // connect to mongodb
 mongoose.connect(keys.mongodb.dbURI, () => {

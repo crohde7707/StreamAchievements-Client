@@ -83,10 +83,9 @@ class ChannelDirectoryPage extends React.Component {
 				<Template>
 					<div className="main-content">
 						<div className="directory-search">
-							<input type="text" onChange={this.filterList} />
+							<input type="text" onChange={this.filterList} placeholder="Search channels..." />
 						</div>
 						<div className="directory-results">
-							<div className="results-tip">Found {resultsTip} channels</div>
 							<div className="channels">
 								{content}
 							</div>
