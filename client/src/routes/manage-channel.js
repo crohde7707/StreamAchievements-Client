@@ -53,22 +53,51 @@ class ManageChannel extends React.Component {
 	    }	    
   	}
 
-  	showAchievementEdit = (achievement) => {
-  		console.log(achievement.title);
-  	}
+  	showAchievementModal = (achievement) => {
+  		
+  		if(achievement) {
+  			this.setState({
+  				isModalActive: true,
+				editing: achievement,
+				modalTitle: "Edit Achievement"
+  			});
+  		} else {
+  			this.setState({
+				isModalActive: true,
+				editing: null,
+				modalTitle: "Add New Achievement"
+			});	
+  		}
+		
+	}
 
-  	showEditAchievementModal = (achievement) => {
-  		console.log(achievement);
+	hideAchievementModal = () => {
 		this.setState({
-			isEditAchievementActive: true,
-			editing: achievement
+			isModalActive: false,
+			edition: null
 		});
 	}
 
-	hideEditAchievementModal = () => {
-		this.setState({
-			isEditAchievementActive: false
+	updateAchievements = (achievement) => {
+		let currentAchievements = this.state.achievements;
+		let found = false;
+
+		currentAchievements.forEach((currentAchievement) => {
+			if(currentAchievement._id === achievement._id) {
+				found = true;
+				console.log('achievement found');
+				currentAchievement = achievement;
+			}
 		});
+
+		if(!found) {
+			currentAchievements.push(achievement);	
+		}
+		
+		this.setState({
+			achievements: currentAchievements
+		});
+
 	}
 
 	render() {
@@ -118,16 +147,27 @@ class ManageChannel extends React.Component {
 							<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 						</div>
 						<div className="achievementsHeader--add">
+							<a onClick={() => (this.showAchievementModal())} href="javascript:;">Add New...</a>
 							<div className="achievementHeader--plus">
 								<img src={require('../img/plus.png')} />
 							</div>
-							<a href="javascript:;">Add New...</a>
 						</div>
 					</div>
 					{achievements.map((achievement, index) => (
-						<Achievement key={'achievement-' + index} editable={true} achievement={achievement} onClick={this.showEditAchievementModal} />
+						<Achievement 
+							key={'achievement-' + index}
+							editable={true}
+							achievement={achievement}
+							onClick={this.showAchievementModal}
+						/>
 					))}
-					<AchievementEditModal active={this.state.isEditAchievementActive} onClose={this.hideEditAchievementModal} achievement={this.state.editing} title="Edit Achievement"/>
+					<AchievementEditModal 
+						active={this.state.isModalActive}
+						onClose={this.hideAchievementModal}
+						onSubmit={this.updateAchievements}
+						achievement={this.state.editing}
+						title={this.state.modalTitle}
+					/>
 				</div>
 			);
 

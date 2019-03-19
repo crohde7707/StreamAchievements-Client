@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import './modal.css';
 
@@ -11,26 +12,30 @@ class AchievementEditModal extends React.Component {
 			title: ((props.achievement) ? props.achievement.title : ""),
 			description: ((props.achievement) ? props.achievement.description : ""),
 			earnable: ((props.achievement)) ? props.achievement.earnable : false,
-			limited: ((props.achievement)) ? props.achievement.limited : false
+			limited: ((props.achievement)) ? props.achievement.limited : false,
+			secret: ((props.achievement)) ? props.achievement.secret : false,
+			edit: false
 		};
 
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 
-		if ((!this.props.achievement && nextProps.achievement) || (this.props.achievement._id !== nextProps.achievement._id)) {
-			console.log(nextProps.achievement);
-			this.setState({
-				title: nextProps.achievement.title,
-				description:nextProps.achievement.description,
-				file: nextProps.achievement.icon,
-				earnable: nextProps.achievement.earnable,
-				limited: nextProps.achievement.limited
-			});
-		}
+		if(nextProps.achievement) {
 
-		if(!this.props.active && nextProps.active) {
-			//this.positionModal();
+			if ((!this.props.achievement && nextProps.achievement) || (this.props.achievement._id !== nextProps.achievement._id)) {
+				
+				this.setState({
+					title: nextProps.achievement.title,
+					description:nextProps.achievement.description,
+					icon: nextProps.achievement.icon,
+					earnable: nextProps.achievement.earnable,
+					limited: nextProps.achievement.limited,
+					secret: nextProps.achievement.secret,
+					edit: true,
+					id: nextProps.achievement._id
+				});
+			}
 		}
 
 		return true;
@@ -46,53 +51,87 @@ class AchievementEditModal extends React.Component {
 
 		let scrollTop = document.documentElement.scrollTop;
 
-		console.log(this.modal);
-
-		console.log(this.modal.offsetHeight);
-		console.log(this.modal.offsetWidth);
-
 		this.modal.style.top = (winHeight/2) - (this.modal.offsetHeight / 2) + scrollTop + 'px';
 		this.modal.style.left = (winWidth / 2) - (this.modal.offsetWidth / 2) + 'px';
 
 	}
 
 	onMaskClick = () => {
+		this.setState({
+			title: '',
+			description: '',
+			earnable: false,
+			limited: false,
+			secret: false,
+			icon: '',
+			edit: false
+		})
 		this.props.onClose();
 	}
 
-	handleChange = (event) => {
-		this.setState({
-			file: URL.createObjectURL(event.target.files[0])
-		});
+	handleIconChange = (event) => {
+		let touched = this.state.touched || {};
+		touched['icon'] = true;
+
+		if(event.target.files[0]) {
+			this.setState({
+				icon: URL.createObjectURL(event.target.files[0]),
+				touched: touched
+			});	
+		} else {
+			this.setState({
+				icon: '',
+				touched: touched
+			});
+		}
+		
 	}
 
-	handleTitleChange = (event) => {
-		this.setState({
-			title: event.target.value
-		});
-	}
+	handleDataChange = (event) => {
+		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
 
-	handleDescriptionChange = (event) => {
-		this.setState({
-			description: event.target.value
-		});
-	}
+		let touched = this.state.touched || {};
+		touched[name] = true;
 
-	handleEarnableChange = (event) => {
 		this.setState({
-			earnable: event.target.value
-		});
-	}
-
-	handleLimitedChange = (event) => {
-		this.setState({
-			earnable: event.target.value
+			[name]: value,
+			touched: touched
 		});
 	}
 
 	handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(this.state);
+
+		let achievement = {};
+
+		if(this.state.edit) {
+			Object.keys(this.state.touched).forEach((key) => {
+				if(this.state.touched[key]) {
+				    achievement[key] = this.state[key];
+				}
+			});
+		} else {
+
+			let achievement = {
+				title: this.state.title,
+				description: this.state.description,
+				earnable: this.state.earnable,
+				limited: this.state.limited,
+				secret: this.state.secret,
+				icon: this.state.icon
+			}
+		}
+
+		achievement.edit = this.state.edit;
+		achievement.id = this.state.id;
+
+		axios.post('/api/achievement/create', achievement).then((res) => {
+			console.log(res.data);
+			this.props.onSubmit(res.data.achievement);
+		});
 	}
 
 	render() {
@@ -101,7 +140,7 @@ class AchievementEditModal extends React.Component {
 
 		if (this.props.active) {
 			console.log(this.state);
-			let {title, description, earnable, limited} = this.state;
+			let {title, description, earnable, limited, secret} = this.state;
 
 			content = (
 				<div>
@@ -112,33 +151,56 @@ class AchievementEditModal extends React.Component {
 						<form onSubmit={this.handleSubmit}>
 							<div className="formGroup">
 								<label htmlFor="achievement-title">Title</label>
-								<input className="textInput" type="text" id="achievement-title" value={title} onChange={this.handleTitleChange}/>
+								<input
+									id="achievement-title"
+									name="title"
+									className="textInput"
+									type="text"
+									value={this.state.title}
+									onChange={this.handleDataChange}
+								/>
 							</div>
 							<div className="formGroup">
 								<label htmlFor="achievement-description">Description</label>
-								<input className="textInput" type="text" id="achievement-description" value={description} onChange={this.handleDescriptionChange} />
+								<input
+									id="achievement-description"
+									name="description"
+									className="textInput"
+									type="text"
+									value={this.state.description}
+									onChange={this.handleDataChange}
+								/>
 							</div>
 							<div className="formGroup checkboxGroup">
 								<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
 								<input 
 									id="achievement-earnable"
+									name="earnable"
 									type="checkbox"
 									title="This achievement can currently be earned"
-									checked={earnable}
-									onChange={this.handleEarnableChange}
+									checked={this.state.earnable}
+									onChange={this.handleDataChange}
 								/>
 								<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
 								<input
 									id="achievement-limited"
+									name="limited"
 									type="checkbox"
 									title="This achievement can only be earned for a limited time"
-									checked={limited}
-									onChange={this.handleLimitedChange}
+									checked={this.state.limited}
+									onChange={this.handleDataChange}
 								/>
 							</div>
 							<div className="formGroup checkboxGroup">
 								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-								<input id="achievement-secret" type="checkbox" title="This achievement will be a secret in your list until someone earns it!" />
+								<input
+									id="achievement-secret"
+									name="secret"
+									type="checkbox"
+									title="This achievement will be a secret in your list until someone earns it!"
+									checked={this.state.secret}
+									onChange={this.handleDataChange}
+								/>
 							</div>
 							<div className="formGroup">
 								<label htmlFor="achievement-icon">Icon</label>
@@ -149,9 +211,9 @@ class AchievementEditModal extends React.Component {
 			                        ref={fileInputEl =>
 			                            (this.fileInputEl = fileInputEl)
 			                        }
-			                        onChange={this.handleChange}
+			                        onChange={this.handleIconChange}
 			                    />
-			                    <img src={this.state.file} />
+			                    <img src={this.state.icon} />
 		                    </div>
 		                    <input type="submit" value="Submit" />
 						</form>

@@ -62,45 +62,59 @@ router.get("/channel/create", (req, res) => {
 
 router.post("/achievement/create", (req, res) => {
 	User.findById(req.cookies.id_token).then((foundUser) => {
-		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
-			//Check if achievement of same name exists
-			let achievementTitle = req.data.title;
-			if(existingChannel.achievements[achievementTitle]) {
-				req.json({
-					error: "An achievement with this name already exists!",
-					channel: existingChannel,
-					achievement: existingChannel.achievements[achievementTitle]
-				});
-			} else {
-				let achData = {
-					channel: existingChannel.owner,
-					title: req.data.title,
-					description: req.data.description,
-					icon: req.data.icon,
-					earnable: req.data.earnable,
-					limited: req.data.limited,
-					secret: false
-				};
-				new Achievement(achData).save().then((newAchievement) => {
-					existingChannel.achievements[newAchievement.title] = newAchievement;
-					existingChannel.save().then((existingChannel) => {
-						req.json({
+		if(foundUser) {
+			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+				//Check if achievement of same name exists
+
+				let query = {};
+
+				if(req.body.id) {
+					query['_id'] = req.body.id
+				} else {
+					query.title = req.body.title
+				}
+
+				Achievement.findOne(query).then((existingAchievement) => {
+					if(existingAchievement && !req.body.edit) {
+						res.json({
+							error: "An achievement with this name already exists!",
 							channel: existingChannel,
-							achievement: newAchievement
+							achievement: existingAchievement
 						});
-					});
-				});
-			}
-		});
-	})
-	new Achievement({
-		title: "Taco Hoarder",
-		description: "Gained a total of 500,000 tacos",
-		icon: "https://static-cdn.jtvnw.net/jtv_user_pictures/694825d9-0ab8-460f-ab9c-8886e26b6563-profile_image-300x300.png",
-	}).save().then((newAchievement) => {
-		res.json({
-			achievement: newAchievement
-		});
+					} else {
+						let achData = {
+							channel: existingChannel.owner,
+							title: req.body.title,
+							description: req.body.description,
+							icon: req.body.icon,
+							earnable: req.body.earnable,
+							limited: req.body.limited,
+							secret: req.body.secret
+						};
+
+						if(req.body.edit) {
+							let updates = req.body;
+							delete updates.edit;
+
+							Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
+								res.json({
+									achievement: updatedAchievement
+								});
+							});
+						} else {
+							new Achievement(achData).save().then((newAchievement) => {
+								res.json({
+									channel: existingChannel,
+									achievement: newAchievement
+								});
+							});	
+						}
+					}
+				});		
+			});	
+		} else {
+			//respond back with error
+		}
 	});
 });
 

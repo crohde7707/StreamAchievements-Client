@@ -27,9 +27,19 @@ class Header extends React.Component {
 	}
 
 	toggleMenu = () => {
+		this.positionModal();
 		this.setState({
 			menuActive: !this.state.menuActive
 		});
+	}
+
+	positionModal = () => {
+		let maskHeight = window.innerHeight - 130;
+
+		document.documentElement.scrollTop = 0
+		this._mask.style.top = '130px';
+		this._mask.style.height = maskHeight + 'px';
+
 	}
 
 	render() {
@@ -40,17 +50,22 @@ class Header extends React.Component {
 			logo = <img alt="User Profile Icon" src={this.props.profile.logo} />;
 		}
 
-		let manageLink = (this.props.owner) ? <a href={"/channel/" + this.props.user.name + "/manage"}>Manage Channel</a> : null;
+		let manageLink = null;
+
+		if(this.props.profile && this.props.profile.owner) {
+			manageLink = (<li><Link to={"/channel/" + this.props.profile.username + "/manage"}>Manage Channel</Link></li>);
+		}
 
 		let menu = (
 			<div className={"menu-dropdown--wrapper" + ((this.state.menuActive) ? " menu-dropdown--active" : "")}>
 				<div className="menu-dropdown">
 					<ul>
-						<li>Link 1</li>
-						<li>Link 2</li>
+						<li><Link to='/profile'>Profile</Link></li>
+						{manageLink}
+						<li className="logout"><Link to='/logout'>Log Out</Link></li>
 					</ul>
 				</div>
-				<div className="menu-mask"></div>
+				<div className="menu-mask" ref={mask => (this._mask = mask)}></div>
 			</div>
 		)
 
@@ -61,7 +76,6 @@ class Header extends React.Component {
 				</div>
 				<div className="header-nav">
 					<Link to="/home">Home</Link>
-					{manageLink}
 				</div>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>

@@ -13,7 +13,8 @@ export default function ProfileReducer(state = initialState, action) {
 				...state,
 				profile: {
 					username: action.data.username,
-					logo: action.data.logo
+					logo: action.data.logo,
+					owner: action.data.owner
 				}
 			}
 		}
