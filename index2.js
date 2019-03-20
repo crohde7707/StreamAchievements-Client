@@ -20,7 +20,7 @@ let app = express();
 // set up view engine
 app.set('view engine', 'ejs');
 app.use(cookieParser());
-app.use(bodyParser());
+app.use(bodyParser({limit: '50mb', extended: true}));
 
 // connect to mongodb
 mongoose.connect(keys.mongodb.dbURI, () => {

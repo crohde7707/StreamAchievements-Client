@@ -33,6 +33,7 @@ class AchievementEditModal extends React.Component {
 					limited: nextProps.achievement.limited,
 					secret: nextProps.achievement.secret,
 					edit: true,
+					iconPreview: nextProps.achievement.icon,
 					id: nextProps.achievement._id
 				});
 			}
@@ -63,7 +64,8 @@ class AchievementEditModal extends React.Component {
 			earnable: false,
 			limited: false,
 			secret: false,
-			icon: '',
+			iconPreview: '',
+			file: '',
 			edit: false
 		})
 		this.props.onClose();
@@ -74,13 +76,16 @@ class AchievementEditModal extends React.Component {
 		touched['icon'] = true;
 
 		if(event.target.files[0]) {
+			
 			this.setState({
-				icon: URL.createObjectURL(event.target.files[0]),
+				iconPreview: URL.createObjectURL(event.target.files[0]),
+				file: event.target.files[0],
 				touched: touched
 			});	
 		} else {
 			this.setState({
-				icon: '',
+				iconPreview: '',
+				file: '',
 				touched: touched
 			});
 		}
@@ -115,19 +120,36 @@ class AchievementEditModal extends React.Component {
 			});
 		} else {
 
-			let achievement = {
+			achievement = {
 				title: this.state.title,
 				description: this.state.description,
 				earnable: this.state.earnable,
 				limited: this.state.limited,
 				secret: this.state.secret,
-				icon: this.state.icon
+				iconName: this.state.file.name
 			}
 		}
 
 		achievement.edit = this.state.edit;
 		achievement.id = this.state.id;
 
+		if(this.state.file) {
+			var reader  = new FileReader();
+			console.log(this.state.file);
+			reader.addEventListener("load", () => {
+				
+		    	achievement.icon = reader.result;
+		    	this.sendData(achievement);
+		  	}, false);
+
+		  	reader.readAsDataURL(this.state.file);
+		} else {
+			this.sendData(achievement);
+		}
+	}
+
+	sendData = (achievement) => {
+		console.log(achievement);
 		axios.post('/api/achievement/create', achievement).then((res) => {
 			console.log(res.data);
 			this.props.onSubmit(res.data.achievement);
@@ -137,10 +159,14 @@ class AchievementEditModal extends React.Component {
 	render() {
 
 		let content = null;
+		let deleteButton = null;
 
 		if (this.props.active) {
-			console.log(this.state);
 			let {title, description, earnable, limited, secret} = this.state;
+
+			if(this.state.edit) {
+				deleteButton = (<button type="button" className="delete-achievement-button">Delete</button>);
+			}
 
 			content = (
 				<div>
@@ -190,8 +216,6 @@ class AchievementEditModal extends React.Component {
 									checked={this.state.limited}
 									onChange={this.handleDataChange}
 								/>
-							</div>
-							<div className="formGroup checkboxGroup">
 								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
 								<input
 									id="achievement-secret"
@@ -213,9 +237,12 @@ class AchievementEditModal extends React.Component {
 			                        }
 			                        onChange={this.handleIconChange}
 			                    />
-			                    <img src={this.state.icon} />
+		                    </div>
+		                    <div className="formGroup">
+			                    <img src={this.state.iconPreview} />
 		                    </div>
 		                    <input type="submit" value="Submit" />
+		                    {deleteButton}
 						</form>
 					</div>
 				</div>		

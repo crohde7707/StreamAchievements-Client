@@ -3,7 +3,9 @@ const passport = require('passport');
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
+const uploadImage = require('../utils/image-utils').uploadImage;
 const mongoose = require('mongoose');
+
 
 router.get("/token", passport.authenticate('twitch'), (req, res) => {
     return res.json({ success: true, data: req.user.id });
@@ -61,56 +63,78 @@ router.get("/channel/create", (req, res) => {
 });
 
 router.post("/achievement/create", (req, res) => {
+	console.log(req.body);
 	User.findById(req.cookies.id_token).then((foundUser) => {
 		if(foundUser) {
+			console.log('user found: ' + foundUser.name);
 			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
-				//Check if achievement of same name exists
+				if(existingChannel) {
+					console.log('channel found: ' + existingChannel.owner);
+					//Check if achievement of same name exists
 
-				let query = {};
+					let query = {};
 
-				if(req.body.id) {
-					query['_id'] = req.body.id
-				} else {
-					query.title = req.body.title
-				}
-
-				Achievement.findOne(query).then((existingAchievement) => {
-					if(existingAchievement && !req.body.edit) {
-						res.json({
-							error: "An achievement with this name already exists!",
-							channel: existingChannel,
-							achievement: existingAchievement
-						});
+					if(req.body.id) {
+						query['_id'] = req.body.id
 					} else {
-						let achData = {
-							channel: existingChannel.owner,
-							title: req.body.title,
-							description: req.body.description,
-							icon: req.body.icon,
-							earnable: req.body.earnable,
-							limited: req.body.limited,
-							secret: req.body.secret
-						};
+						query.title = req.body.title
+					}
 
-						if(req.body.edit) {
-							let updates = req.body;
-							delete updates.edit;
-
-							Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
-								res.json({
-									achievement: updatedAchievement
-								});
+					Achievement.findOne(query).then((existingAchievement) => {
+						if(existingAchievement && !req.body.edit) {
+							console.log('achievement exists');
+							res.json({
+								error: "An achievement with this name already exists!",
+								channel: existingChannel,
+								achievement: existingAchievement
 							});
 						} else {
-							new Achievement(achData).save().then((newAchievement) => {
-								res.json({
-									channel: existingChannel,
-									achievement: newAchievement
+							let achData = {
+								channel: existingChannel.owner,
+								title: req.body.title,
+								description: req.body.description,
+								icon: req.body.icon,
+								earnable: req.body.earnable,
+								limited: req.body.limited,
+								secret: req.body.secret
+							};
+
+							if(req.body.edit) {
+								console.log('editing existing achievement');
+								let updates = req.body;
+								delete updates.edit;
+
+								Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
+									res.json({
+										achievement: updatedAchievement
+									});
 								});
-							});	
+							} else {
+								console.log('creating new achievement');
+								//Upload Image to Cloud
+								console.log(req.body);
+								uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
+									achData.icon = result.image.url;
+
+									new Achievement(achData).save().then((newAchievement) => {
+										console.log('new achievement in DB')
+										res.json({
+											achievement: newAchievement
+										});
+									});
+
+								}).catch((error) => {
+									res.json({
+										error: error
+									});
+								});
+
+								
+							}
 						}
-					}
-				});		
+					});	
+				}
+					
 			});	
 		} else {
 			//respond back with error

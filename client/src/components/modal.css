@@ -43,7 +43,7 @@
 
 .modal input {
 	width: 100%;
-    height: 35px;
+    height: 30px;
 }
 
 .channel-search {
@@ -60,24 +60,27 @@
 
 .formGroup {
     display: flex;
-    flex-direction: column;
     margin-bottom: 20px;
 }
 
 .formGroup img {
     align-self: center;
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 175px;
+    max-height: 175px;
 }
 
 .formGroup label {
     font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 5px;
+    font-size: 16px;
+    align-items: center;
+    align-self: center;
+    text-align: right;
+    width: 30%;
+    margin-right: 10px;
 }
 
 .formGroup .textInput {
-    font-size: 18px;
+    font-size: 16px;
     width: 98%;
     padding-left: 2%;
 }
