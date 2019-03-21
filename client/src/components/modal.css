@@ -97,3 +97,37 @@
     height: 20px;
     align-self: flex-start;
 }
+
+.currentIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.availableIcons {
+    /*overflow-y: scroll;*/
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    flex-wrap: wrap;
+    padding-left: 15px;
+    justify-content: center;
+}
+
+.gallery-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    padding: 0;
+}
+
+.gallery-wrapper img {
+    width: 70px;
+    height: 70px;
+}
+
+.gallery-wrapper div {
+    flex: 1;
+}

@@ -226,6 +226,7 @@ class AchievementEditModal extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
+							<h4>Icon</h4>
 							<div className="formGroup">
 								<label htmlFor="achievement-icon">Icon</label>
 								<input
@@ -238,8 +239,33 @@ class AchievementEditModal extends React.Component {
 			                        onChange={this.handleIconChange}
 			                    />
 		                    </div>
-		                    <div className="formGroup">
-			                    <img src={this.state.iconPreview} />
+		                    <div className="formGroup iconPreview-group">
+		                    	<div className="currentIcon">
+			                    	<img src={this.state.iconPreview} />
+		                    	</div>
+		                    	<div className="availableIcons">
+		                    		<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+									<button type="button" class="gallery-wrapper">
+								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+									</button>
+		                    	</div>
 		                    </div>
 		                    <input type="submit" value="Submit" />
 		                    {deleteButton}
