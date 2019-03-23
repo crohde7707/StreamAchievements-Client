@@ -4,10 +4,12 @@
 	display: flex;
 	box-shadow: 0px 1px 2px #111;
 	z-index: 100;
+	transition: all 0.2s ease;
 }
 
 #page-header .logo img {
 	width: 130px;
+	transition: all 0.2s ease;
 }
 
 .header-nav {
@@ -18,13 +20,14 @@
 
 .menu {
 	width: 220px;
-	padding: 80px 40px 21px;
+	margin-left: auto;
+	padding: 80px 40px 35px;
 	cursor: pointer;
 	color: white;
 	display: flex;
 	align-items: center;
 	border-left: 2px solid #794fc6;
-	transition: background-color 0.5s ease;
+	transition: all 0.2s background-color 0.5s ease;
 }
 
 .menu--active,
@@ -128,4 +131,44 @@
 	color: white;
 	background-color: red;
 	transition: all 0.2s ease;
+}
+
+
+@media only screen and (max-width: 480px) {
+	#page-header {
+		height: 80px;
+		transition: all 0.2s ease;
+	}
+
+	#page-header .logo img {
+		width: 80px;
+		transition: all 0.2s ease;
+	}
+
+	.header-nav {
+		display: none;
+	}
+
+	.menu {
+		width: auto;
+		padding: 20px 15px;
+		margin-left: auto;
+		transition: all 0.2s ease;
+	}
+
+	.menu--label {
+		display: none;
+	}
+
+	.menu img {
+		width: 55px;
+		height: 55px;
+		margin: 0;
+	}
+
+	.menu-dropdown {
+		border: 0;
+		width: 100%;
+		top: 80px;
+	}
 }

@@ -46,16 +46,28 @@ export default class LandingPage extends React.Component {
 					</a>
 					
 				</div>
-				<div className="section-wrapper">
+				<div className="section-wrapper main">
 					<div className="section-content">
-						<h1>Welcome to Stream Achievements</h1>
-						<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community!</p>
+						<div>
+							<h1>Welcome to Stream Achievements</h1>
+							<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community!</p>
+						</div>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--alt">
 					<div className="section-content">
 						<p>Add your own personal flair to your channel, providing customized icons for each achievement, and even costomize the theme of your channel page!</p>
 						<h2>Channel Personalization</h2>
+					</div>
+				</div>
+				<div className="section-wrapper">
+					<div className="section-content">
+						<h2>Custom Achievements</h2>
+						<div>
+							<p>The sky is the limits!</p>
+							<p>Award achievements for numerous activities, such as following, subbing, hosting, raiding, etc.!</p>
+							<p>Create custom achievements for those quirks that make your stream awesome!</p>
+						</div>
 					</div>
 				</div>
 			</div>

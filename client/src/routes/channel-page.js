@@ -20,7 +20,11 @@ class ChannelPage extends React.Component {
 	componentDidMount() {
 		//Fetch channel data 
 
-		axios.get('/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
+		let authAxios = axios.create({
+			withCredentials: true
+		});
+
+		authAxios.get('/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
 			console.log(res.data);
 			
 			let joined = (Array.isArray(res.data.achievements.earned));
@@ -71,6 +75,9 @@ class ChannelPage extends React.Component {
 		})
 		.then((res) => {
 			console.log(res.data);
+			if(res.data.leave) {
+				this.props.history.push('/home');
+			}
 		});
 	}
 
@@ -83,23 +90,30 @@ class ChannelPage extends React.Component {
 			let {owner, logo} = this.state.channel;
 			let achievements = this.state.achievements.all;
 
-			let membershipContent, achievementsContent;
+			let membershipContent, achievementProgress, achievementsContent, favorite;
 
 			if(this.state.joined) {
-				membershipContent = <a href="javascript:;" onClick={this.leaveChannel} className="leave">Leave Channel</a>
+				// membershipContent = <a href="javascript:;" onClick={this.leaveChannel} className="leave">Leave Channel</a>
+				membershipContent = null;
+				document.body.classList.remove('no-scroll');
 			} else {
 				membershipContent = <a href="javascript:;" onClick={this.joinChannel} className="join">Join Channel</a>
+
+				document.body.classList.add('no-scroll');
 			}
 
+
 			if(achievements.length > 0) {
+				let userAchievements = this.state.achievements.earned;
+
 				achievementsContent = (
 					<div className="achievements-container">
 						{achievements.map((achievement, index) => {
 
 							let earned = false;
-							let userAchievements = this.state.achievements.earned;
-
-							if(Array.isArray(userAchievements) && userAchievements.includes(achievement.id)) {
+							
+							if(Array.isArray(userAchievements) && userAchievements.includes(achievement._id)) {
+								console.log(achievement.title);
 								earned = true;
 							}
 
@@ -108,6 +122,25 @@ class ChannelPage extends React.Component {
 						
 					</div>
 				);
+
+				if(this.state.joined) {
+					let {achievements} = this.state;
+
+					let percentage = Math.floor((achievements.earned.length / achievements.all.length) * 100);
+
+					achievementProgress = (
+						<div className="channel-achievement-progress">
+							<div className="progress-bar-wrapper">
+  								<div className="progress-bar" style={{width: percentage + "%"}}></div>
+							</div>
+							<div className="progress-percentage">{percentage}%</div>
+						</div>
+					)
+
+					//TODO: Future Perk
+					//favorite = (<div className="channel-fav"><img src={require('../img/star-not-favorited.png')} /></div>);
+					favorite = (<div className="channel-fav"></div>);
+				}
 			} else {
 				achievementsContent = (
 					<div className="no-achievements">
@@ -118,21 +151,22 @@ class ChannelPage extends React.Component {
 			}
 
 			content = (
-				<Template>
+				<Template className="no-scroll">
 					<div id="channel-header">
-						<div className="channel-fav"><img src={require('../img/star-not-favorited.png')} /></div>
+						{favorite}
 						<div className="channel-logo">
 							<img src={logo} />
 						</div>
 						<div className="channel-info">
-							<div className="channel-name">{owner}</div>
+							<div className="channel-name">
+								<span>{owner}</span>
+								<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
+									<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
+								</a>
+							</div>
 							<div className="channel-description"></div>
 						</div>
-						<div className="channel-achievement-progress">
-							<div id="progress-bar-wrapper">
-  								<div id="progress-bar"></div>
-							</div>
-						</div>
+						{achievementProgress}
 						<div className="channel-buttons">
 							{membershipContent}
 						</div>

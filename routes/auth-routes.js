@@ -24,11 +24,13 @@ const cookieSetter = (req, res, next) => {
 
 //callback for twitch to redirect to
 router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
-
+	
+	req.session.user = req.user;
 	//Set Cookie
 	var cookie = req.cookies['id_token'];
 	if (cookie === undefined && req.user)
 	{
+		console.log(cookie);
 		// no: set a new cookie
 		console.log('about to make cookie');
 		console.log('user: ' + req.user);
@@ -45,6 +47,7 @@ router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 
 router.get('/logout', (req, res) => {
 	req.logout();
+	res.redirect('http://localhost:3000/');
 });
 
 module.exports = router;

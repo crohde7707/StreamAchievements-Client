@@ -197,39 +197,42 @@ router.get("/channels/user", (req, res) => {
 });
 
 router.get('/channel/retrieve', (req, res) => {
+	console.log(req.user);
 	let channel = req.query.id;
 
 	if(channel) {
-		Channel.findOne({owner: channel}).then((foundChannel) => {
-			if(foundChannel) {
-				
-				Achievement.find({channel: channel}).then((foundAchievements) => {
+		User.findById(req.cookies.id_token).then((foundUser) => {
+			if(foundUser) {
+				Channel.findOne({owner: channel}).then((foundChannel) => {
+					if(foundChannel) {
+						
+						Achievement.find({channel: channel}).then((foundAchievements) => {
 
-					//grab achievements earned from user
-					User.findById(req.cookies.id_token).then((foundUser) => {
+							let earned = foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id));
 
-						let earned = foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id));
-
-						if(earned.length > 0) {
-							earned = earned[0].achievements
-						} else {
-							earned = false;
-						}
-
-						res.json({
-							channel: foundChannel,
-							achievements: {
-								all: foundAchievements,
-								earned: earned
+							if(earned.length > 0) {
+								earned = earned[0].achievements
+							} else {
+								earned = false;
 							}
+
+							res.json({
+								channel: foundChannel,
+								achievements: {
+									all: foundAchievements,
+									earned: earned
+								}
+							});
+						});	
+						
+					} else {
+						res.json({
+							error: "No channel found for the name: " + channel
 						});
-					});
+					}
 				});
-				
 			} else {
-				res.json({
-					error: "No channel found for the name: " + channel
-				});
+				//Not a valid user
 			}
 		});
 	} else {

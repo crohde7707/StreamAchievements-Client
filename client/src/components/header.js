@@ -60,9 +60,10 @@ class Header extends React.Component {
 			<div className={"menu-dropdown--wrapper" + ((this.state.menuActive) ? " menu-dropdown--active" : "")}>
 				<div className="menu-dropdown">
 					<ul>
+						<li><Link to='/home'>Home</Link></li>
 						<li><Link to='/profile'>Profile</Link></li>
 						{manageLink}
-						<li className="logout"><Link to='/logout'>Log Out</Link></li>
+						<li className="logout"><a href="http://localhost:5000/auth/logout">Log Out</a></li>
 					</ul>
 				</div>
 				<div className="menu-mask" ref={mask => (this._mask = mask)}></div>
@@ -72,10 +73,7 @@ class Header extends React.Component {
 		return (
 			<div id="page-header">
 				<div className="logo">
-					<img src={require('../img/raid.png')} alt="" />
-				</div>
-				<div className="header-nav">
-					<Link to="/home">Home</Link>
+					<Link to="/home"><img src={require('../img/raid.png')} alt="" /></Link>
 				</div>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>
