@@ -110,6 +110,7 @@ class ChannelPage extends React.Component {
 					<div className="achievements-container">
 						{achievements.map((achievement, index) => {
 
+							let classes;
 							let earned = false;
 							
 							if(Array.isArray(userAchievements) && userAchievements.includes(achievement._id)) {
@@ -117,7 +118,11 @@ class ChannelPage extends React.Component {
 								earned = true;
 							}
 
-							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} />)
+							if(index >= 3 && !this.state.joined) {
+								classes = "achievement-blurred";
+							}
+
+							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} className={classes} />)
 						})}
 						
 					</div>

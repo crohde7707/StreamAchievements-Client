@@ -131,3 +131,8 @@
 .gallery-wrapper div {
     flex: 1;
 }
+
+.iconPreview-group {
+    /*Remove when image gallery available*/
+    justify-content: center;
+}

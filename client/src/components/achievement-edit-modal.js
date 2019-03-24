@@ -11,7 +11,7 @@ class AchievementEditModal extends React.Component {
 		this.state = {
 			title: ((props.achievement) ? props.achievement.title : ""),
 			description: ((props.achievement) ? props.achievement.description : ""),
-			earnable: ((props.achievement)) ? props.achievement.earnable : false,
+			earnable: ((props.achievement)) ? props.achievement.earnable : true,
 			limited: ((props.achievement)) ? props.achievement.limited : false,
 			secret: ((props.achievement)) ? props.achievement.secret : false,
 			edit: false
@@ -61,7 +61,7 @@ class AchievementEditModal extends React.Component {
 		this.setState({
 			title: '',
 			description: '',
-			earnable: false,
+			earnable: true,
 			limited: false,
 			secret: false,
 			iconPreview: '',
@@ -158,7 +158,7 @@ class AchievementEditModal extends React.Component {
 
 	render() {
 
-		let content = null;
+		let content, iconGallery;
 		let deleteButton = null;
 
 		if (this.props.active) {
@@ -167,6 +167,32 @@ class AchievementEditModal extends React.Component {
 			if(this.state.edit) {
 				deleteButton = (<button type="button" className="delete-achievement-button">Delete</button>);
 			}
+
+			iconGallery = (
+            	<div className="availableIcons">
+            		<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+					<button type="button" class="gallery-wrapper">
+				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+					</button>
+            	</div>
+			)
 
 			content = (
 				<div>
@@ -242,29 +268,6 @@ class AchievementEditModal extends React.Component {
 		                    <div className="formGroup iconPreview-group">
 		                    	<div className="currentIcon">
 			                    	<img src={this.state.iconPreview} />
-		                    	</div>
-		                    	<div className="availableIcons">
-		                    		<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
-									<button type="button" class="gallery-wrapper">
-								        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-									</button>
 		                    	</div>
 		                    </div>
 		                    <input type="submit" value="Submit" />

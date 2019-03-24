@@ -48,3 +48,7 @@
 .achievement-cap img {
 	width: 55px;
 }
+
+.achievement-blurred {
+    filter: blur(7px);
+}

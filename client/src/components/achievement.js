@@ -6,7 +6,7 @@ class Achievement extends React.Component {
 
 	render() {
 		let keyProp, editIcon;
-		let earned = this.props.earned;
+		let {earned, className} = this.props;
 		let {title, description} = this.props.achievement;
 
 		let achievementClass = "achievement";
@@ -24,6 +24,10 @@ class Achievement extends React.Component {
 					<img src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
 				</div>
 			)
+		}
+
+		if(className) {
+			achievementClass += " " + className;
 		}
 
 		return (

@@ -26,6 +26,10 @@
     width: 35px;
 }
 
+.channel-buttons {
+	margin-left: auto;
+}
+
 .condensed .channel-fav {
 	min-height: 70px;
 	transition: all 0.2s ease;
