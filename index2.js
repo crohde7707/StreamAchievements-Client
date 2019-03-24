@@ -7,7 +7,6 @@ const keys = require('./configs/keys');
 const passportSetup = require('./configs/passport-setup');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-let request = require('request');
 
 let authRoutes = require('./routes/auth-routes');
 let channelRoutes = require('./routes/channel-routes');
