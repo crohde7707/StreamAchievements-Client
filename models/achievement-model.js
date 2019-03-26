@@ -14,3 +14,12 @@ const achievementSchema = new Schema({
 const Achievement = mongoose.model("achievement", achievementSchema);
 
 module.exports = Achievement;
+
+/*
+	Listener Codes:
+	---------------
+	1 - Sub
+	2 - Resub
+	3 - Gift Sub
+	4 - Raid
+*/

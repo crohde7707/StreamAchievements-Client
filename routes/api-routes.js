@@ -3,6 +3,7 @@ const passport = require('passport');
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
+const Listener = require('../models/listener-model');
 const uploadImage = require('../utils/image-utils').uploadImage;
 const mongoose = require('mongoose');
 
@@ -96,7 +97,8 @@ router.post("/achievement/create", (req, res) => {
 								icon: req.body.icon,
 								earnable: req.body.earnable,
 								limited: req.body.limited,
-								secret: req.body.secret
+								secret: req.body.secret,
+								listener: req.body.listener
 							};
 
 							if(req.body.edit) {
@@ -196,9 +198,65 @@ router.get("/channels/user", (req, res) => {
 
 });
 
+router.get('/channel/listeners/create', (req, res) => {
+	Listener({
+		channel: 'phirehero',
+		code: 5,
+		query: '',
+		achievement: '5c92a656f0472c1fa846187e'
+	}).save().then(savedListener => {
+		console.log(savedListener);
+
+		res.json(savedListener);
+	});
+});
+
+
+router.get('/channel/listeners', (req, res) => {
+	console.log('/api/channel/listeners');
+	let channelArray = req.query.channel;
+
+	if(!Array.isArray(channelArray)) {
+		channelArray = channelArray.split(',');
+	}
+
+	console.log(channelArray);
+
+	Listener.find({'channel': { $in: channelArray}})
+		.then((listeners) => {
+			if(listeners.length > 0) {
+				res.json(listeners);
+			} else {
+				res.json([]);
+			}
+		});
+});
+
+router.put('/channel/listeners', (req, res) => {
+	//Process achievements
+
+	//Spawn child process to do it?
+});
+
+
 router.get('/channel/retrieve', (req, res) => {
 	console.log(req.user);
 	let channel = req.query.id;
+	let bb = req.query.bb;
+
+	if(bb) {
+		//gather channels to be watched
+		Channel.find({watcher: true}).then(foundChannels => {
+			let channelObj = {};
+
+			foundChannels.map((channel) => {
+				return {
+					name: channel.owner,
+					listeners: channel.listeners
+				}
+			});
+		})
+	}
 
 	if(channel) {
 		User.findById(req.cookies.id_token).then((foundUser) => {
