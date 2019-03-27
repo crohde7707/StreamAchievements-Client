@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero','Sakume','flip_switch','thorlar'];
+const channels = ['phirehero','dethridge','flip_switch','thorlar','drgluon'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -132,7 +132,7 @@ chat.on('USERNOTICE/SUBSCRIPTION_GIFT', (msg) => {
 	let channel = msg.channel.substr(1);
 	totalGifts = msg.parameters.senderCount;
 
-	if(giftSubListeners[channel][totalGifts]) {
+	if(giftSubListeners[channel] && giftSubListeners[channel][totalGifts]) {
 		giftSubHandler(channel, msg, totalGifts);
 	}
 
@@ -162,12 +162,15 @@ chat.on('USERNOTICE/RAID', (msg) => {
 let retrieveChannelListeners = () => {
 	let channelsAdded = {};
 
-	if(joinedChannels.length > 0) {
+	let channels = channelsToRetrieve.slice(0); //Make copy to only process up to this point
+	channelsToRetrieve.splice(0,channelsToRetrieve.length); //clear out queue
+
+	if(channels.length > 0) {
 		axios({
 			method: 'get',
 			url: 'http://localhost:5000/api/channel/listeners',
 			params: {
-				channel: joinedChannels
+				channel: channels
 			}
 		}).then(response => {
 			//decompose listeners
@@ -245,7 +248,7 @@ let channelLiveWatcher = () => {
 							chat.join(channelName).then(state => {
 								console.log('>>> joined ' + channelName);
 								joinedChannels.push(channelName.toLowerCase());
-
+								channelsToRetrieve.push(channelName.toLowerCase());
 								if((idx + 1) === arr.length) {
 									resolve();
 								}
@@ -283,12 +286,29 @@ let sendAchievements = () => {
 	}
 }
 
+let pubsub = () => {
+	axios({
+		method: 'post',
+		url: 'https://api.twitch.tv/helix/webhooks/hub',
+		headers: {'client-ID': client_id},
+		data: {
+			'hub.callback': 'http://localhost:5000/api/channel/listeners',
+			'hub.mode': 'subscribe',
+			'hub.topic': 'https://api.twitch.tv/helix/users/follows?first=1&to_id=37530941',
+			'hub.lease_seconds': 600
+		}
+	}).catch(error => {
+		console.log(error);
+	});
+}
+
 
 channelLiveWatcher().then(() => {
 	console.log(joinedChannels);
 	retrieveChannelListeners();	
 });
 
+pubsub();
 
 setInterval(channelLiveWatcher, 120000); // Update list of live channels every 2 minutes
 setInterval(retrieveChannelListeners, 900000) // Gather all channel listeners every 15 minutes
