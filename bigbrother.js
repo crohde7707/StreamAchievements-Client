@@ -8,16 +8,91 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero','Sakume','flip_switch'];
+const channels = ['phirehero','Sakume','flip_switch','thorlar'];
 
 let joinedChannels = [];
+let channelsToRetrieve = [];
 
 let subListeners = {};
 let resubListeners = {};
 let giftSubListeners = {};
 let raidListeners = {};
-
 let requestQueue = [];
+
+// Achievement Handlers
+let newSubHandler = (channel, msg) => {
+	let achievementRequest = {
+		'channel': channel,
+		'achievement': subListeners[channel],
+		'tier': msg.parameters.subPlan,
+		'userID': msg.tags.userId
+	};
+
+	requestQueue.push(achievementRequest);
+};
+
+let resubHandler = (channel, msg) => {
+	let {cumulativeMonths, streakMonths, subPlan} = msg.parameters;
+
+	let achievementRequest = {
+		'channel': channel,
+		'type': msg.tags.msgId,
+		'tier': subPlan,
+		'userID': msg.tags.userId
+	};
+	
+	// we dont know which achievement to award, if its total based, or streak based, so check whats available
+	let achievements = resubListeners[channel].forEach((achievement) => {
+		if(achievement.code === 0 && achievement.query === streakMonths.toString()) {
+			//code matched streak && query for achievement matched streak
+			achievementRequest.achievement = achievement;
+			achievementRequest.streak = streakMonths;
+			requestQueue.push(achievementRequest);
+
+		} else if(achievement.code === 1 && achievement.query === cumulativeMonths.toString()) {
+			//code matched total && query for achievement matched cumulative
+			achievementRequest.achievement = achievement;
+			achievementRequest.cumulative = cumulativeMonths;
+			requestQueue.push(achievementRequest);
+		}
+	});
+	
+};
+
+let giftSubHandler = (channel, msg, totalGifts) => {
+	
+	let achievementListener = giftSubListeners[channel][totalGifts];
+	let {months, recepientID, subPlan} = msg.parameters;
+
+	let achievementRequest = {
+		'channel': channel,
+		'achievement': achievementListener, //Stream Acheivements achievement
+		'type': msg.tags.msgId, //type of event (sub, resub, subgift, resub)
+		'gifterID': msg.tags.userId, //Person giving the sub
+		'recepientID': recipientId, // Person receiving the sub
+		'recepientTotalMonths': months, // Total number of months receiving user has subbed (NOT STREAK);
+		'tier': subPlan, // (PRIME, 1000, 2000, 3000)
+	}
+
+	requestQueue.push(achievementRequest);
+};
+
+let raidHandler = (msg) => {
+	let achievementListener = raidListeners[channel];
+
+	let achievementRequest = {
+		'channel': channel,
+		'achievement': achievementListener,
+		'type': msg.tags.msgId,
+		'userID': msg.tags.userId
+	}
+
+	requestQueue.push(achievementRequest);
+};
+
+let customHandler = (msg) => {
+
+};
 
 chat.connect().then(clientState => {
 	//console.log(clientState);
@@ -28,6 +103,11 @@ chat.on('*', (msg) => {
 });
 
 chat.on('USERNOTICE/SUBSCRIPTION', (msg) => {
+	let channel = msg.channel.substr(1);
+
+	if(subListeners[channel]) {
+		newSubHandler(channel, msg);
+	}
 	console.log('------- SUB -------');
 	console.log(msg);
 	console.log('-------------------');
@@ -37,25 +117,43 @@ chat.on('USERNOTICE/RESUBSCRIPTION', (msg) => {
 
 	let channel = msg.channel.substr(1);
 
+	if(resubListeners[channel]) {
+		resubHandler(channel, msg);
+	}
+
 	console.log(resubListeners[channel]);
 	console.log('------- SUB -------');
 	console.log(msg);
 	console.log('-------------------');
+	
 });
 
 chat.on('USERNOTICE/SUBSCRIPTION_GIFT', (msg) => {
+	let channel = msg.channel.substr(1);
+	totalGifts = msg.parameters.senderCount;
+
+	if(giftSubListeners[channel][totalGifts]) {
+		giftSubHandler(channel, msg, totalGifts);
+	}
+
 	console.log('------- SUB GIFT -------');
 	console.log(msg);
 	console.log('-------------------');
 });
 
 chat.on('USERNOTICE/SUBSCRIPTION_GIFT_COMMUNITY', (msg) => {
+	let channel = msg.channel.substr(1);
 	console.log('------- SUB GIFT COMMUNITY -------');
 	console.log(msg);
 	console.log('-------------------');
 });
 
 chat.on('USERNOTICE/RAID', (msg) => {
+	let channel = msg.channel.substr(1);
+
+	if(raidListeners[channel]) {
+		raidHandler(channel, msg);
+	}
 	console.log('------- RAID -------');
 	console.log(msg);
 	console.log('-------------------');
@@ -101,7 +199,8 @@ let retrieveChannelListeners = () => {
 						//Gifted Sub
 						query = listener.query;
 						giftSubListeners[channel] = giftSubListeners[channel] || {};
-						giftSubListeners[channel] = listener;
+						giftSubListeners[channel][query] = listener;
+						console.log('gift sub listener addef for ' + channel);
 						break;
 
 					case 3:
@@ -169,6 +268,8 @@ let sendAchievements = () => {
 		let achievements = requestQueue.slice(0); //Make copy to only process up to this point
 		requestQueue.splice(0,requestQueue.length); //clear out queue
 
+		console.log('Sending ' + achievements.length + ' achievements...');
+
 		axios({
 			method: 'post',
 			url: 'http://localhost:5000/api/channel/listeners',
@@ -184,14 +285,13 @@ let sendAchievements = () => {
 
 
 channelLiveWatcher().then(() => {
-	console.log('retrieve...');
 	console.log(joinedChannels);
 	retrieveChannelListeners();	
 });
 
 
-//setInterval(channelLiveWatcher, 120000); // Update list of live channels every 2 minutes
-//setInterval(retrieveChannelListeners, 900000) // Gather all channel listeners every 15 minutes
+setInterval(channelLiveWatcher, 120000); // Update list of live channels every 2 minutes
+setInterval(retrieveChannelListeners, 900000) // Gather all channel listeners every 15 minutes
 setInterval(sendAchievements, 10000); // Send collected achievements every 10 seconds
 
 /*

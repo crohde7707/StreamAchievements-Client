@@ -232,8 +232,10 @@ router.get('/channel/listeners', (req, res) => {
 		});
 });
 
-router.put('/channel/listeners', (req, res) => {
+router.post('/channel/listeners', (req, res) => {
 	//Process achievements
+	console.log('achievements to process...');
+	console.log(req.body);
 
 	//Spawn child process to do it?
 });
