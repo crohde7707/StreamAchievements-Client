@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero','dethridge','flip_switch','thorlar','drgluon'];
+const channels = ['phirehero','dethridge','flip_switch','thorlar','simarchy','vinc3ntvega'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -33,26 +33,38 @@ let newSubHandler = (channel, msg) => {
 
 let resubHandler = (channel, msg) => {
 	let {cumulativeMonths, streakMonths, subPlan} = msg.parameters;
-
-	let achievementRequest = {
-		'channel': channel,
-		'type': msg.tags.msgId,
-		'tier': subPlan,
-		'userID': msg.tags.userId
-	};
 	
 	// we dont know which achievement to award, if its total based, or streak based, so check whats available
 	let achievements = resubListeners[channel].forEach((achievement) => {
-		if(achievement.code === 0 && achievement.query === streakMonths.toString()) {
+		console.log(achievement);
+		console.log('streakMonths: ' + streakMonths);
+		console.log('cumulativeMonths: ' + cumulativeMonths);
+		if(achievement.type === 0 && Number.parseInt(achievement.query) <= streakMonths) {
+			console.log('  >>> Achievmenet earned: streak')
 			//code matched streak && query for achievement matched streak
-			achievementRequest.achievement = achievement;
-			achievementRequest.streak = streakMonths;
+			let achievementRequest = {
+				'channel': channel,
+				'type': msg.tags.msgId,
+				'tier': subPlan,
+				'userID': msg.tags.userId,
+				'achievement': achievement,
+				'streak': streakMonths
+			};
+
 			requestQueue.push(achievementRequest);
 
-		} else if(achievement.code === 1 && achievement.query === cumulativeMonths.toString()) {
+		} else if(achievement.type === 1 && Number.parseInt(achievement.query) <= cumulativeMonths) {
 			//code matched total && query for achievement matched cumulative
-			achievementRequest.achievement = achievement;
-			achievementRequest.cumulative = cumulativeMonths;
+			console.log('  >>> Achievmenet earned: cumulativeMonths')
+			let achievementRequest = {
+				'channel': channel,
+				'type': msg.tags.msgId,
+				'tier': subPlan,
+				'userID': msg.tags.userId,
+				'achievement': achievement,
+				'cumulative': cumulativeMonths
+			};
+
 			requestQueue.push(achievementRequest);
 		}
 	});
@@ -176,7 +188,7 @@ let retrieveChannelListeners = () => {
 			//decompose listeners
 			let listeners = response.data;
 			listeners.forEach(listener => {
-				let query;
+				let query, key;
 				let channel = listener.channel;
 
 				if(channels.includes(channel) && !channelsAdded[channel]) {
@@ -188,21 +200,23 @@ let retrieveChannelListeners = () => {
 					case 0:
 						//Sub
 						subListeners[channel] = listener;
+						console.log('new sub listener added for ' + channel);
 						break;
 
 					case 1:
 						//Resub
+						type = listener.type;
 						query = listener.query;
-						resubListeners[channel] = resubListeners[channel] || {};
-						resubListeners[channel][query] = listener;
+						resubListeners[channel] = resubListeners[channel] || [];
+						resubListeners[channel].push(listener);
 						console.log('resub listener added for ' + channel);
 						break;
 
 					case 2:
 						//Gifted Sub
 						query = listener.query;
-						giftSubListeners[channel] = giftSubListeners[channel] || {};
-						giftSubListeners[channel][query] = listener;
+						giftSubListeners[channel] = giftSubListeners[channel] || [];
+						giftSubListeners[channel].push(listener);
 						console.log('gift sub listener addef for ' + channel);
 						break;
 
@@ -242,13 +256,16 @@ let channelLiveWatcher = () => {
 
 			if(streams.length > 0) {
 				streams.forEach((channel, idx, arr) => {
-					let channelName = channel.channel.display_name;
+					let channelName = channel.channel.display_name.toLowerCase();
+					console.log("channel to add: " + channelName);
 					if(!joinedChannels.includes(channelName)) {
 						chat.connect().then(clientState => {
 							chat.join(channelName).then(state => {
-								console.log('>>> joined ' + channelName);
-								joinedChannels.push(channelName.toLowerCase());
-								channelsToRetrieve.push(channelName.toLowerCase());
+								console.log('*************************');
+								console.log('>>> BIG BROTHER IS WATCHING ' + channelName);
+								console.log('*************************');
+								joinedChannels.push(channelName);
+								channelsToRetrieve.push(channelName);
 								if((idx + 1) === arr.length) {
 									resolve();
 								}
@@ -267,16 +284,17 @@ let channelLiveWatcher = () => {
 let sendAchievements = () => {
 
 	if(requestQueue.length > 0) {
+		console.log(requestQueue);
 		//We have achievements to send
 		let achievements = requestQueue.slice(0); //Make copy to only process up to this point
 		requestQueue.splice(0,requestQueue.length); //clear out queue
-
+		
 		console.log('Sending ' + achievements.length + ' achievements...');
 
 		axios({
 			method: 'post',
 			url: 'http://localhost:5000/api/channel/listeners',
-			data: requestQueue
+			data: achievements
 		})
 		.then(response => {
 			console.log('achievements processed');
@@ -294,9 +312,11 @@ let pubsub = () => {
 		data: {
 			'hub.callback': 'http://localhost:5000/api/channel/listeners',
 			'hub.mode': 'subscribe',
-			'hub.topic': 'https://api.twitch.tv/helix/users/follows?first=1&to_id=37530941',
-			'hub.lease_seconds': 600
+			'hub.topic': 'https://api.twitch.tv/helix/users/follows?first=1&to_id=56453119',
+			'hub.lease_seconds': 6000
 		}
+	}).then(response => {
+		console.log(response);
 	}).catch(error => {
 		console.log(error);
 	});
