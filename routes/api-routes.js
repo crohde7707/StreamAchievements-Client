@@ -81,25 +81,17 @@ router.post("/achievement/create", (req, res) => {
 						query.title = req.body.title
 					}
 
+					query.channel = existingChannel.owner
+
 					Achievement.findOne(query).then((existingAchievement) => {
 						if(existingAchievement && !req.body.edit) {
 							console.log('achievement exists');
 							res.json({
-								error: "An achievement with this name already exists!",
-								channel: existingChannel,
+								created: false,
+								message: "An achievement with this name already exists!",
 								achievement: existingAchievement
 							});
 						} else {
-							let achData = {
-								channel: existingChannel.owner,
-								title: req.body.title,
-								description: req.body.description,
-								icon: req.body.icon,
-								earnable: req.body.earnable,
-								limited: req.body.limited,
-								secret: req.body.secret,
-								listener: req.body.listener
-							};
 
 							if(req.body.edit) {
 								console.log('editing existing achievement');
@@ -108,38 +100,86 @@ router.post("/achievement/create", (req, res) => {
 
 								Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
 									res.json({
+										update: true,
 										achievement: updatedAchievement
 									});
 								});
 							} else {
+								let achData = {
+									channel: existingChannel.owner,
+									title: req.body.title,
+									description: req.body.description,
+									icon: req.body.icon,
+									earnable: req.body.earnable,
+									limited: req.body.limited,
+									secret: req.body.secret,
+									listener: req.body.listener
+								};
+
+								let listenerData = {
+									channel: existingChannel.owner,
+									code: parseInt(req.body.code)
+								};
+
+								if(listenerData.code > 0) {
+									listenerData.query = req.body.query;
+
+									if(listenerData.code === 1) {
+										listenerData.resubType = parseInt(req.body.resubType);
+									}
+								}
+
 								console.log('creating new achievement');
 								//Upload Image to Cloud
 								console.log(req.body);
-								uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
-									achData.icon = result.image.url;
+								
 
-									new Achievement(achData).save().then((newAchievement) => {
-										console.log('new achievement in DB')
-										res.json({
-											achievement: newAchievement
+								Listener.findOne(listenerData).then(foundListener => {
+									if(foundListener) {
+										Achievement.findOne({listener: foundListener._id}).then(foundAchievement => {
+											res.json({
+												created: false,
+												message: "The conditions you selected are already taken by the \"" + foundAchievement.title + "\" achievement!"
+											});
 										});
-									});
+									} else {
+										uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
+											achData.icon = result.image.url;
+											new Achievement(achData).save().then((newAchievement) => {
+												console.log('new achievement in DB');
+												listenerData.achievement = newAchievement.id;
+												//create listener for achievement
+												new Listener(listenerData).save().then(newListener => {
+													console.log("new listener in DB");
 
-								}).catch((error) => {
-									res.json({
-										error: error
-									});
+													newAchievement.listener = newListener.id;
+													newAchievement.save().then(updatedAchievement => {
+														res.json({
+															created: true,
+															achievement: newAchievement
+														});	
+													});
+												});
+											});
+										});
+									}
 								});
-
 								
 							}
 						}
 					});	
-				}
-					
+				} else {
+					res.json({
+						created: false,
+						message: "This channel you care creating for doesn't exist!"
+					})
+				}	
 			});	
 		} else {
-			//respond back with error
+			res.json({
+				created: false,
+				message: "You are not authorized to create achievements!"
+			});
 		}
 	});
 });
@@ -148,7 +188,25 @@ router.get("/achievements/retrieve", (req, res) => {
 	let channel = req.query.id;
 
 	Achievement.find({channel: channel}).then((achievements) => { 
-		res.json(achievements);
+		if(achievements) {
+			let listenerIds = achievements.map(achievement => {
+				return achievement.listener
+			});
+
+			Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+				achievements.forEach(achievement => {
+					let listenerData = listeners.find(listener => listener._id = achievement.listener);
+
+					delete listenerData._id;
+
+					return Object.assign(achievement, listenerData);
+				});
+
+				res.json(achievements);
+			});
+		} else {
+			res.json(achievements);	
+		}
 	});
 });
 
@@ -301,10 +359,59 @@ router.get('/channel/retrieve', (req, res) => {
 			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
 				if(existingChannel) {
 					Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
-						res.json({
-							channel: existingChannel,
-							achievements: achievements
-						});
+
+						if(achievements) {
+							let listenerIds = achievements.map(achievement => {
+								return achievement.listener
+							});
+
+							Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+								let mergedAchievements = achievements.map(achievement => {
+									let listenerData = listeners.find(listener => listener._id = achievement.listener);
+
+									
+									if(listenerData) {
+									
+										let merge = {
+											"_id": achievement['_id'],
+											channel: achievement.owner,
+											title: achievement.title,
+											description: achievement.description,
+											icon: achievement.icon,
+											earnable: achievement.earnable,
+											limited: achievement.limited,
+											secret: achievement.secret,
+											listener: achievement.listener,
+											code: listenerData.code
+										}
+										
+										if(listenerData.resubType) {
+											achievement.resubType = listenerData.resubType;
+										}
+										if(listenerData.query) {
+											achievement.query.listenerData.query;
+										}
+										
+										return merge;
+									} else {
+										return achievement;
+									}
+									
+								});
+
+								res.json({
+									channel: existingChannel,
+									achievements: mergedAchievements
+								});
+							});
+						} else {
+							res.json({
+								channel: existingChannel,
+								achievements: achievements
+							});
+						}
+
+						
 					});	
 				} else {
 					res.json({

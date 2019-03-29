@@ -4,6 +4,7 @@ import {Redirect} from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import connector from '../redux/connector';
 
+import Notice from '../components/notice';
 import Template from '../components/template';
 import Achievement from '../components/achievement';
 import AchievementEditModal from '../components/achievement-edit-modal';
@@ -17,7 +18,8 @@ class ManageChannel extends React.Component {
 
 		this.state = {
 			channel: '',
-			achievements: ''
+			achievements: '',
+			notice: ''
 		};
 	}
 
@@ -34,6 +36,12 @@ class ManageChannel extends React.Component {
 					achievements: res.data.achievements
 				});	
 			}
+		});
+	}
+
+	clearNotice = () => {
+		this.setState({
+			notice: ''
 		});
 	}
 
@@ -79,24 +87,33 @@ class ManageChannel extends React.Component {
 	}
 
 	updateAchievements = (achievement) => {
-		let currentAchievements = this.state.achievements;
-		let found = false;
-
-		currentAchievements.forEach((currentAchievement) => {
-			if(currentAchievement._id === achievement._id) {
-				found = true;
-				console.log('achievement found');
-				currentAchievement = achievement;
-			}
-		});
-
-		if(!found) {
-			currentAchievements.push(achievement);	
+		if(achievement.notice) {
+			this.setState({
+				notice: achievement.notice
+			});
 		}
-		
-		this.setState({
-			achievements: currentAchievements
-		});
+		if(achievement.achievement) {
+
+			let newAchievement = achievement.achievement;
+			let currentAchievements = this.state.achievements;
+			let found = false;
+
+			currentAchievements.forEach((currentAchievement) => {
+				if(currentAchievement._id === newAchievement._id) {
+					found = true;
+					console.log('achievement found');
+					currentAchievement = newAchievement;
+				}
+			});
+
+			if(!found) {
+				currentAchievements.push(newAchievement);	
+			}
+			
+			this.setState({
+				achievements: currentAchievements
+			});
+		}
 
 	}
 
@@ -193,6 +210,7 @@ class ManageChannel extends React.Component {
 			<Template>
 				<div className="manage-container">
 					<h2>Manage Channel</h2>
+					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<Tabs>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">Integration</Tab>

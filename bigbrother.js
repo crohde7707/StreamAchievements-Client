@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero','dethridge','flip_switch','thorlar','simarchy','vinc3ntvega'];
+const channels = ['phirehero','dethridge','flip_switch','thorlar','simarchy','drgluon'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -197,13 +197,13 @@ let retrieveChannelListeners = () => {
 				}
 
 				switch(listener.code) {
-					case 0:
+					case "0":
 						//Sub
 						subListeners[channel] = listener;
 						console.log('new sub listener added for ' + channel);
 						break;
 
-					case 1:
+					case "1":
 						//Resub
 						type = listener.type;
 						query = listener.query;
@@ -212,7 +212,7 @@ let retrieveChannelListeners = () => {
 						console.log('resub listener added for ' + channel);
 						break;
 
-					case 2:
+					case "2":
 						//Gifted Sub
 						query = listener.query;
 						giftSubListeners[channel] = giftSubListeners[channel] || [];
@@ -220,12 +220,12 @@ let retrieveChannelListeners = () => {
 						console.log('gift sub listener addef for ' + channel);
 						break;
 
-					case 3:
+					case "3":
 						//Raid
 						raidListeners[channel] = listener;
 						break;
 
-					case 4:
+					case "4":
 						//Custom
 						chatListeners[channel] = chatListeners[channel] || {};
 						chatListeners[channel][query] = listener;

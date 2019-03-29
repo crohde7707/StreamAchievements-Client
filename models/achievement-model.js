@@ -8,7 +8,8 @@ const achievementSchema = new Schema({
 	icon: String,
 	earnable: Boolean,
 	limited: Boolean,
-	secret: Boolean
+	secret: Boolean,
+	listener: String
 });
 
 const Achievement = mongoose.model("achievement", achievementSchema);

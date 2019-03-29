@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const listenerSchema = new Schema({
 	channel: String,
-	code: Number,
+	code: String,
+	type: String,
 	query: String,
 	achievement: String
 });

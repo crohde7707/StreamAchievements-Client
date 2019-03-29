@@ -11,7 +11,8 @@ class AchievementEditModal extends React.Component {
 		this.state = {
 			title: ((props.achievement) ? props.achievement.title : ""),
 			description: ((props.achievement) ? props.achievement.description : ""),
-			type: ((props.achievement) ? props.achievement.type : ""),
+			code: ((props.achievement) ? props.achievement.code : ""),
+			resubType: ((props.achievement) ? props.achievement.resubType : "0"),
 			query: ((props.achievement) ? props.achievement.query : ""),
 			earnable: ((props.achievement)) ? props.achievement.earnable : true,
 			limited: ((props.achievement)) ? props.achievement.limited : false,
@@ -22,18 +23,32 @@ class AchievementEditModal extends React.Component {
 
 	}
 
+	componentDidMount() {
+		this.resizeListener = window.addEventListener('resize', (event) => {
+			if(this.resizeID !== null) {
+				clearTimeout(this.resizeID);
+			}
+
+			this.resizeID = setTimeout(() => {
+				this.resizeID = null
+				this.positionModal();
+			}, 100);
+		});
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if(nextProps.achievement) {
 
 			if ((!this.props.achievement && nextProps.achievement) || (this.props.achievement._id !== nextProps.achievement._id)) {
-				
+
 				this.setState({
 					title: nextProps.achievement.title,
 					description:nextProps.achievement.description,
 					icon: nextProps.achievement.icon,
-					type: nextProps.achievement.title,
-					query: nextProps.achievement.query,
+					code: nextProps.achievement.code,
+					resubType: nextProps.achievement.resubType || "0",
+					query: nextProps.achievement.query || "",
 					earnable: nextProps.achievement.earnable,
 					limited: nextProps.achievement.limited,
 					secret: nextProps.achievement.secret,
@@ -51,6 +66,10 @@ class AchievementEditModal extends React.Component {
 		if(!this.state.modalPositioned) {
 			this.positionModal();	
 		}
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.resizeListener);
 	}
 
 	positionModal = () => {
@@ -79,7 +98,11 @@ class AchievementEditModal extends React.Component {
 			secret: false,
 			iconPreview: '',
 			file: '',
-			edit: false
+			edit: false,
+			code: "",
+			resubType: "0",
+			query: "",
+			id: ''
 		})
 		this.props.onClose();
 	}
@@ -120,12 +143,12 @@ class AchievementEditModal extends React.Component {
 	}
 
 	getConditionContent = () => {
-		if(this.state.type !== "" && this.state.type !== "0") {
+		if(this.state.code !== "" && this.state.code !== "0") {
 
 			let conditionContent;
 			let helpText;
 
-			switch(this.state.type) {
+			switch(this.state.code) {
 				case "1":
 					if(this.state.resubType) {
 						if(this.state.resubType === "0") {
@@ -243,11 +266,18 @@ class AchievementEditModal extends React.Component {
 		let achievement = {};
 
 		if(this.state.edit) {
-			Object.keys(this.state.touched).forEach((key) => {
-				if(this.state.touched[key]) {
-				    achievement[key] = this.state[key];
-				}
-			});
+			if(this.state.touched) {
+				Object.keys(this.state.touched).forEach((key) => {
+					if(this.state.touched[key]) {
+					    achievement[key] = this.state[key];
+					}
+				});	
+			} else {
+				this.props.onSubmit({
+					notice: "No changes made to the \"" + this.state.title + "\" achievement."
+				});
+			}
+			
 		} else {
 
 			achievement = {
@@ -256,7 +286,16 @@ class AchievementEditModal extends React.Component {
 				earnable: this.state.earnable,
 				limited: this.state.limited,
 				secret: this.state.secret,
-				iconName: this.state.file.name
+				iconName: this.state.file.name,
+				code: this.state.code
+			};
+
+			if(Number.parseInt(this.state.code) > 0) {
+				achievement.query = this.state.query;
+
+				if(this.state.code === 1) {
+					achievement.resubType = this.state.resubType;
+				}
 			}
 		}
 
@@ -282,7 +321,24 @@ class AchievementEditModal extends React.Component {
 		console.log(achievement);
 		axios.post('/api/achievement/create', achievement).then((res) => {
 			console.log(res.data);
-			this.props.onSubmit(res.data.achievement);
+			if(res.data.created) {
+				this.onMaskClick();
+				this.props.onSubmit({
+					notice: "\"" + res.data.achievement.title + "\" achievement was created successfully!",
+					achievement: res.data.achievement
+				});
+			} else if(res.data.updated) {
+				this.onMaskClick();
+				this.props.onSubmit({
+					notice: "\"" + res.data.achievement.title + "\" was updated successfully!",
+					achievement: res.data.achievement
+				});
+			} else {
+				this.setState({
+					error: res.data.message
+				});
+			}
+			
 		});
 	}
 
@@ -330,6 +386,9 @@ class AchievementEditModal extends React.Component {
 				<div>
 					<div className="modal-header">
 						<h3>{this.props.title}</h3>
+					</div>
+					<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
+						{this.state.error}
 					</div>
 					<div className="modal-content">
 						<form onSubmit={this.handleSubmit}>
@@ -396,13 +455,14 @@ class AchievementEditModal extends React.Component {
 							</div>
 							<h4>Condition</h4>
 							<div className="formGroup">
-								<label htmlFor="achievement-type">Type</label>
+								<label htmlFor="achievement-code">Type</label>
 								<select 
-									id="achievement-type"
-									name="type"
+									id="achievement-code"
+									name="code"
 									className="selectInput"
-									title="The type of event that this achievement will be awarded for!"
+									title="The code of event that this achievement will be awarded for!"
 									onChange={this.handleDataChange}
+									value={this.state.code}
 								>
 									<option value=""></option>
 									<option value="0">New Sub</option>

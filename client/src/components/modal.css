@@ -69,6 +69,20 @@
     display: none;
 }
 
+.modal-error {
+    text-align: center;
+    color: red;
+    margin-bottom: 20px;
+    border-top: 1px solid;
+    border-bottom: 1px solid red;
+    padding: 5px 0px;
+    display: none;
+}
+
+.modal-error.modal-error--active {
+    display: block;
+}
+
 .formGroup {
     display: flex;
     margin-bottom: 20px;

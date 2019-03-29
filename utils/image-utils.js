@@ -55,8 +55,11 @@ let uploadImage = (blob, fileName, channelName) => {
 
 	});
 
-	return imagePromise;
-	
+	return imagePromise;	
+}
+
+let destroyImage = (name) => {
+	cloudinary.uploader.destroy(name, function(result) { console.log(result) });
 }
 
 module.exports = {
