@@ -11,10 +11,13 @@ class AchievementEditModal extends React.Component {
 		this.state = {
 			title: ((props.achievement) ? props.achievement.title : ""),
 			description: ((props.achievement) ? props.achievement.description : ""),
+			type: ((props.achievement) ? props.achievement.type : ""),
+			query: ((props.achievement) ? props.achievement.query : ""),
 			earnable: ((props.achievement)) ? props.achievement.earnable : true,
 			limited: ((props.achievement)) ? props.achievement.limited : false,
 			secret: ((props.achievement)) ? props.achievement.secret : false,
-			edit: false
+			edit: false,
+			modalPositioned: false
 		};
 
 	}
@@ -29,6 +32,8 @@ class AchievementEditModal extends React.Component {
 					title: nextProps.achievement.title,
 					description:nextProps.achievement.description,
 					icon: nextProps.achievement.icon,
+					type: nextProps.achievement.title,
+					query: nextProps.achievement.query,
 					earnable: nextProps.achievement.earnable,
 					limited: nextProps.achievement.limited,
 					secret: nextProps.achievement.secret,
@@ -43,7 +48,9 @@ class AchievementEditModal extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.positionModal();
+		if(!this.state.modalPositioned) {
+			this.positionModal();	
+		}
 	}
 
 	positionModal = () => {
@@ -55,12 +62,18 @@ class AchievementEditModal extends React.Component {
 		this.modal.style.top = (winHeight/2) - (this.modal.offsetHeight / 2) + scrollTop + 'px';
 		this.modal.style.left = (winWidth / 2) - (this.modal.offsetWidth / 2) + 'px';
 
+		this.setState({
+			modalPositioned: true
+		});
+
 	}
 
 	onMaskClick = () => {
 		this.setState({
 			title: '',
 			description: '',
+			type: '',
+			query: '',
 			earnable: true,
 			limited: false,
 			secret: false,
@@ -104,6 +117,123 @@ class AchievementEditModal extends React.Component {
 			[name]: value,
 			touched: touched
 		});
+	}
+
+	getConditionContent = () => {
+		if(this.state.type !== "" && this.state.type !== "0") {
+
+			let conditionContent;
+			let helpText;
+
+			switch(this.state.type) {
+				case "1":
+					if(this.state.resubType) {
+						if(this.state.resubType === "0") {
+							helpText = "Number of months viewer has kept a streak";
+						} else {
+							helpText = "Number of months a viewer has subbed altogether";
+						}
+					} else {
+						helpText = "Number of months viewer has kept a streak";
+					}
+
+					conditionContent = (
+						<div>
+							<div className="formGroup">
+								<label htmlFor="resubType">Resub Type</label>
+								<select 
+									id="resubType"
+									name="resubType"
+									className="selectInput"
+									onChange={this.handleDataChange}
+								>
+									<option value="0">Streak</option>
+									<option value="1">Total</option>
+								</select>
+							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">Condition</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className="textInput"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="helpText">
+								{helpText}
+							</div>
+						</div>
+					);
+					break;
+				case "2":
+					//Gifted Sub
+					helpText = "Total number of gifted subs (defaults to 1)";
+					conditionContent = (
+						<div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">Condition</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className="textInput"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="helpText">
+								{helpText}
+							</div>
+						</div>
+					);
+					break;
+				case "3":
+					//Raid
+					helpText = "Total raids from the viewer (defaults to 1)";
+					conditionContent = (
+						<div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">Condition</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className="textInput"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="helpText">
+								{helpText}
+							</div>
+						</div>
+					);
+					break;
+				case "4":
+					//Custom
+					conditionContent = (
+						<div className="formGroup">
+							<label htmlFor="achievement-query">Condition</label>
+							<input
+								id="achievement-query"
+								name="query"
+								className="textInput"
+								type="text"
+								value={this.state.query}
+								onChange={this.handleDataChange}
+							/>
+						</div>
+					);
+					break;
+			}
+
+			return conditionContent;
+		}
+
+		return null;
 	}
 
 	handleSubmit = (event) => {
@@ -194,6 +324,8 @@ class AchievementEditModal extends React.Component {
             	</div>
 			)
 
+			let customType = (<option disabled title="Unlocked wtih paid tier!" value="4">Custom</option>);
+
 			content = (
 				<div>
 					<div className="modal-header">
@@ -225,33 +357,62 @@ class AchievementEditModal extends React.Component {
 							</div>
 							<div className="formGroup checkboxGroup">
 								<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
-								<input 
-									id="achievement-earnable"
-									name="earnable"
-									type="checkbox"
-									title="This achievement can currently be earned"
-									checked={this.state.earnable}
-									onChange={this.handleDataChange}
-								/>
-								<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
-								<input
-									id="achievement-limited"
-									name="limited"
-									type="checkbox"
-									title="This achievement can only be earned for a limited time"
-									checked={this.state.limited}
-									onChange={this.handleDataChange}
-								/>
-								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-								<input
-									id="achievement-secret"
-									name="secret"
-									type="checkbox"
-									title="This achievement will be a secret in your list until someone earns it!"
-									checked={this.state.secret}
-									onChange={this.handleDataChange}
-								/>
+								<div>
+									<input 
+										id="achievement-earnable"
+										name="earnable"
+										type="checkbox"
+										title="This achievement can currently be earned"
+										checked={this.state.earnable}
+										onChange={this.handleDataChange}
+									/>
+								</div>
 							</div>
+							<div className="formGroup checkboxGroup">
+								<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
+								<div>
+									<input
+										id="achievement-limited"
+										name="limited"
+										type="checkbox"
+										title="This achievement can only be earned for a limited time"
+										checked={this.state.limited}
+										onChange={this.handleDataChange}
+									/>
+								</div>
+							</div>
+							<div className="formGroup checkboxGroup">
+								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
+								<div>
+									<input
+										id="achievement-secret"
+										name="secret"
+										type="checkbox"
+										title="This achievement will be a secret in your list until someone earns it!"
+										checked={this.state.secret}
+										onChange={this.handleDataChange}
+									/>
+								</div>
+							</div>
+							<h4>Condition</h4>
+							<div className="formGroup">
+								<label htmlFor="achievement-type">Type</label>
+								<select 
+									id="achievement-type"
+									name="type"
+									className="selectInput"
+									title="The type of event that this achievement will be awarded for!"
+									onChange={this.handleDataChange}
+								>
+									<option value=""></option>
+									<option value="0">New Sub</option>
+									<option value="1">Resub</option>
+									<option value="2">Gifted Sub</option>
+									<option value="3">Raid</option>
+									{customType}
+								</select>
+							</div>
+							{this.getConditionContent()}
 							<h4>Icon</h4>
 							<div className="formGroup">
 								<label htmlFor="achievement-icon">Icon</label>
