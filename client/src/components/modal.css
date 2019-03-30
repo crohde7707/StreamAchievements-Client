@@ -164,6 +164,10 @@
     flex: 1;
 }
 
+.icon-upload {
+    margin-bottom: 0;
+}
+
 .iconPreview-group {
     /*Remove when image gallery available*/
     justify-content: center;

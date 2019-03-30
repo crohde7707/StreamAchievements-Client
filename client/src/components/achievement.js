@@ -13,7 +13,6 @@ class Achievement extends React.Component {
 		let icon = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png';
 
 		if(earned || this.props.editable) {
-			console.log(earned);
 			achievementClass += " achievement--earned";
 			icon = this.props.achievement.icon;
 		}

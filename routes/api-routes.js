@@ -63,6 +63,30 @@ router.get("/channel/create", (req, res) => {
 	});
 });
 
+let combineAchievementAndListeners = (achievement, listener) => {
+	let merge = {
+		"_id": achievement['_id'],
+		channel: achievement.owner,
+		title: achievement.title,
+		description: achievement.description,
+		icon: achievement.icon,
+		earnable: achievement.earnable,
+		limited: achievement.limited,
+		secret: achievement.secret,
+		listener: achievement.listener,
+		code: listener.code
+	}
+	
+	if(listener.resubType) {
+		merge.resubType = listener.resubType;
+	}
+	if(listener.query) {
+		merge.query = listener.query;
+	}
+
+	return merge;
+}
+
 router.post("/achievement/create", (req, res) => {
 	console.log(req.body);
 	User.findById(req.cookies.id_token).then((foundUser) => {
@@ -98,11 +122,45 @@ router.post("/achievement/create", (req, res) => {
 								let updates = req.body;
 								delete updates.edit;
 
+								let {code, resubType, query} = updates;
+
+								let listenerUpdates = {};
+
+								if(updates.code) {
+									listenerUpdates.code = updates.code;
+									delete updates.code;
+								}
+								if(updates.resubType) {
+									listenerUpdates.resubType = updates.resubType;
+									delete updates.resubType;
+								}
+								if(updates.query) {
+									listenerUpdates.query = updates.query;
+									delete updates.query;
+								}
+
 								Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
-									res.json({
-										update: true,
-										achievement: updatedAchievement
-									});
+
+									if(Object.keys(listenerUpdates).length > 0) {
+										Listener.findOneAndUpdate({ _id: updatedAchievement.listener }, { $set: listenerUpdates }, { new: true }).then((updatedListener) => {
+
+											let merge = combineAchievementAndListeners(updatedAchievement, updatedListener);
+
+											res.json({
+												update: true,
+												achievement: merge
+											});
+										});
+									} else {
+										Listener.findOne({ _id: updatedAchievement.listener }).then(foundListener => {
+											let merge = combineAchievementAndListeners(updatedAchievement, foundListener);
+
+											res.json({
+												update: true,
+												achievement: merge
+											});
+										});
+									}
 								});
 							} else {
 								let achData = {
@@ -366,12 +424,16 @@ router.get('/channel/retrieve', (req, res) => {
 							});
 
 							Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+
 								let mergedAchievements = achievements.map(achievement => {
-									let listenerData = listeners.find(listener => listener._id = achievement.listener);
+									
+									let listenerData = listeners.find(listener => {
+										return listener.id === achievement.listener;
+									});
 
 									
 									if(listenerData) {
-									
+										console.log(listenerData);
 										let merge = {
 											"_id": achievement['_id'],
 											channel: achievement.owner,
@@ -386,10 +448,10 @@ router.get('/channel/retrieve', (req, res) => {
 										}
 										
 										if(listenerData.resubType) {
-											achievement.resubType = listenerData.resubType;
+											merge.resubType = listenerData.resubType;
 										}
 										if(listenerData.query) {
-											achievement.query.listenerData.query;
+											merge.query = listenerData.query;
 										}
 										
 										return merge;

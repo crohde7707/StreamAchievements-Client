@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 
+import ConfirmPanel from './confirm-panel';
+
 import './modal.css';
 
 class AchievementEditModal extends React.Component {
@@ -11,14 +13,17 @@ class AchievementEditModal extends React.Component {
 		this.state = {
 			title: ((props.achievement) ? props.achievement.title : ""),
 			description: ((props.achievement) ? props.achievement.description : ""),
+			icon: ((props.achievement) ? props.achievement.icon : ""),
 			code: ((props.achievement) ? props.achievement.code : ""),
 			resubType: ((props.achievement) ? props.achievement.resubType : "0"),
 			query: ((props.achievement) ? props.achievement.query : ""),
 			earnable: ((props.achievement)) ? props.achievement.earnable : true,
 			limited: ((props.achievement)) ? props.achievement.limited : false,
 			secret: ((props.achievement)) ? props.achievement.secret : false,
-			edit: false,
-			modalPositioned: false
+			iconPreview: ((props.achievement)) ? props.achievement.icon : '',
+			id: ((props.achievement)) ? props.achievement._id : '',
+			edit: ((props.achievement)) ? true : false,
+			showConfirm: false
 		};
 
 	}
@@ -34,6 +39,8 @@ class AchievementEditModal extends React.Component {
 				this.positionModal();
 			}, 100);
 		});
+
+		this.positionModal();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -63,9 +70,9 @@ class AchievementEditModal extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(!this.state.modalPositioned) {
-			this.positionModal();	
-		}
+		
+		this.positionModal();	
+		
 	}
 
 	componentWillUnmount() {
@@ -80,11 +87,6 @@ class AchievementEditModal extends React.Component {
 
 		this.modal.style.top = (winHeight/2) - (this.modal.offsetHeight / 2) + scrollTop + 'px';
 		this.modal.style.left = (winWidth / 2) - (this.modal.offsetWidth / 2) + 'px';
-
-		this.setState({
-			modalPositioned: true
-		});
-
 	}
 
 	onMaskClick = () => {
@@ -317,6 +319,13 @@ class AchievementEditModal extends React.Component {
 		}
 	}
 
+	handleDelete = (event) => {
+		this.setState({
+			showConfirm:false
+		});
+		console.log('Deleting Achievement');
+	}
+
 	sendData = (achievement) => {
 		console.log(achievement);
 		axios.post('/api/achievement/create', achievement).then((res) => {
@@ -327,7 +336,7 @@ class AchievementEditModal extends React.Component {
 					notice: "\"" + res.data.achievement.title + "\" achievement was created successfully!",
 					achievement: res.data.achievement
 				});
-			} else if(res.data.updated) {
+			} else if(res.data.update) {
 				this.onMaskClick();
 				this.props.onSubmit({
 					notice: "\"" + res.data.achievement.title + "\" was updated successfully!",
@@ -344,14 +353,18 @@ class AchievementEditModal extends React.Component {
 
 	render() {
 
-		let content, iconGallery;
+		let content, iconGallery, confirmPanel;
 		let deleteButton = null;
 
 		if (this.props.active) {
 			let {title, description, earnable, limited, secret} = this.state;
 
+			if(this.state.showConfirm) {
+				confirmPanel = (<ConfirmPanel onConfirm={this.handleDelete} onCancel={() => {this.setState({showConfirm: false})}} />)
+			}
+
 			if(this.state.edit) {
-				deleteButton = (<button type="button" className="delete-achievement-button">Delete</button>);
+				deleteButton = (<button type="button" className="delete-achievement-button" onClick={() => {this.setState({showConfirm: true})}}>Delete</button>);
 			}
 
 			iconGallery = (
@@ -474,7 +487,7 @@ class AchievementEditModal extends React.Component {
 							</div>
 							{this.getConditionContent()}
 							<h4>Icon</h4>
-							<div className="formGroup">
+							<div className="formGroup icon-upload">
 								<label htmlFor="achievement-icon">Icon</label>
 								<input
 			                        type="file"
@@ -493,6 +506,7 @@ class AchievementEditModal extends React.Component {
 		                    </div>
 		                    <input type="submit" value="Submit" />
 		                    {deleteButton}
+		                    {confirmPanel}
 						</form>
 					</div>
 				</div>		

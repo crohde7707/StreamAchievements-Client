@@ -64,6 +64,7 @@ class ManageChannel extends React.Component {
   	showAchievementModal = (achievement) => {
   		
   		if(achievement) {
+  			console.log(achievement);
   			this.setState({
   				isModalActive: true,
 				editing: achievement,
@@ -98,11 +99,10 @@ class ManageChannel extends React.Component {
 			let currentAchievements = this.state.achievements;
 			let found = false;
 
-			currentAchievements.forEach((currentAchievement) => {
+			currentAchievements.forEach((currentAchievement, index, arr) => {
 				if(currentAchievement._id === newAchievement._id) {
 					found = true;
-					console.log('achievement found');
-					currentAchievement = newAchievement;
+					arr[index] = newAchievement;
 				}
 			});
 
@@ -156,6 +156,22 @@ class ManageChannel extends React.Component {
 					</div>
 			);
 
+			let modal;
+
+			if(this.state.isModalActive) {
+				modal = (
+					<AchievementEditModal 
+						active={this.state.isModalActive}
+						onClose={this.hideAchievementModal}
+						onSubmit={this.updateAchievements}
+						achievement={this.state.editing}
+						title={this.state.modalTitle}
+					/>
+				);
+			} else {
+				modal = undefined;
+			}
+
 			achievementContent = (
 				<div>
 					<div className="achievementsHeader">
@@ -178,13 +194,7 @@ class ManageChannel extends React.Component {
 							onClick={this.showAchievementModal}
 						/>
 					))}
-					<AchievementEditModal 
-						active={this.state.isModalActive}
-						onClose={this.hideAchievementModal}
-						onSubmit={this.updateAchievements}
-						achievement={this.state.editing}
-						title={this.state.modalTitle}
-					/>
+					{modal}
 				</div>
 			);
 
