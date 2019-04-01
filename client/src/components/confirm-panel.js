@@ -15,8 +15,10 @@ export default class ConfirmPanel extends React.Component {
 		let winHeight = window.innerHeight;
 
 		let scrollTop = document.documentElement.scrollTop;
+		let achievementModal = document.getElementById('achievementModal');
 
-		this.confirmModal.style.top = (winHeight/4) + scrollTop + 'px';
+		this.confirmModal.style.top = (achievementModal.offsetHeight / 2) - (this.confirmModal.offsetHeight / 2) + 'px';
+		//this.confirmModal.style.top = (winHeight/4) + scrollTop + 'px';
 		//this.confirmModal.style.left = (winWidth / 2) - (this.confirmModal.offsetWidth / 2) + 'px';
 	}
 

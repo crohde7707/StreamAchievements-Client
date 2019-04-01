@@ -80,13 +80,15 @@ class AchievementEditModal extends React.Component {
 	}
 
 	positionModal = () => {
-		let winWidth = window.innerWidth;
-		let winHeight = window.innerHeight;
+		if(this.modal) {
+			let winWidth = window.innerWidth;
+			let winHeight = window.innerHeight;
 
-		let scrollTop = document.documentElement.scrollTop;
+			let scrollTop = document.documentElement.scrollTop;
 
-		this.modal.style.top = (winHeight/2) - (this.modal.offsetHeight / 2) + scrollTop + 'px';
-		this.modal.style.left = (winWidth / 2) - (this.modal.offsetWidth / 2) + 'px';
+			this.modal.style.top = (winHeight/2) - (this.modal.offsetHeight / 2) + scrollTop + 'px';
+			this.modal.style.left = (winWidth / 2) - (this.modal.offsetWidth / 2) + 'px';	
+		}
 	}
 
 	onMaskClick = () => {
@@ -517,7 +519,7 @@ class AchievementEditModal extends React.Component {
 			<div className={((!this.props.active) ? "modal--hidden" : "")}>
 				<div onClick={this.onMaskClick} className="modal-mask"></div>
 				<div className="modal-container">
-					<div className="modal" ref={modal => (this.modal = modal)}>
+					<div id="achievementModal" className="modal" ref={modal => (this.modal = modal)}>
 						<a href="javascript:;" onClick={this.onMaskClick}>X</a>
 						{content}
 					</div>
