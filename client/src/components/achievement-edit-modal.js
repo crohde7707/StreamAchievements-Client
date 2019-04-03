@@ -325,7 +325,18 @@ class AchievementEditModal extends React.Component {
 		this.setState({
 			showConfirm:false
 		});
-		console.log('Deleting Achievement');
+		
+		axios.post('/api/achievement/delete', {
+			achievementID: this.state.id
+		}).then(response => {
+			let data = {
+				notice: "\"" + this.state.title + "\" achievement was deleted successfully!",
+				delete: this.state.id
+			};
+
+			this.onMaskClick();
+			this.props.onSubmit(data);
+		});
 	}
 
 	sendData = (achievement) => {

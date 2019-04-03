@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 let authRoutes = require('./routes/auth-routes');
-let channelRoutes = require('./routes/channel-routes');
 let apiRoutes = require('./routes/api-routes');
 
 const port = process.env.PORT || 5000;
@@ -39,7 +38,6 @@ app.use(passport.session());
 app.use(express.static('public'));
 
 app.use('/auth', authRoutes);
-app.use('/channel', channelRoutes);
 app.use('/api', apiRoutes);
 
 app.use(express.static(path.join(__dirname, 'client/build')));

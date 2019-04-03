@@ -1,5 +1,11 @@
 const router = require('express').Router();
 const passport = require('passport');
+const keys = require('../configs/keys');
+const Crypto = require('cryptr');
+const axios = require('axios');
+const cryptr = new Cryptr(keys.session.cookieKey);
+
+const CALLBACK_URL = 'http://localhost:5000/auth/patreon/redirect';
 
 router.get('/twitch', passport.authenticate('twitch', {
 	scope: ["user_read"]
@@ -44,6 +50,41 @@ router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 	res.redirect('http://localhost:3000/home');
 
 });
+
+router.get('/patreon', (req, res) => {
+
+	let patreonURL = 'https://www.patreon.com/oauth2/authorize?';
+	patreonURL += 'response_type=code&';
+	patreonURL += 'client_id=' + keys.patreon.clientID + '&';
+	patreonURL += 'redirect_uri=' + CALLBACK_URL;
+
+	res.redirect(patreonURL);
+});
+
+router.get('/patreon/redirect', (req, res) => {
+	let otc = req.query.code;
+
+	axios.post('https://www.patreon.com/oauth2/token', {
+		code: otc,
+		grant_type: [authorization_code],
+		client_id: keys.patreon.clientID,
+		client_secret: keys.patreon.clientSecret,
+		redirect_uri: CALLBACK_URL
+	}).then(response => {
+		let token = response.access_token;
+		//Get User Data
+		axios.get('https://patreon.com/api/oauth2/api/current_user', { 
+			headers: {"Authorization" : `Bearer ${token}`}
+		}).then(response => {
+			//vanity, thumb_url
+			let {thumb_url, vanity} = response.data.attributes;
+			//Loop and get Stream Achievements pledge
+		});
+		//Encrypt access token
+
+		//store token in User table
+	});
+})
 
 router.get('/logout', (req, res) => {
 	req.logout();

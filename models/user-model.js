@@ -6,7 +6,8 @@ const userSchema = new Schema({
 	twitchID: String,
 	logo: String,
 	email: String,
-	channels: Array
+	channels: Array,
+	integration: Object
 });
 
 const User = mongoose.model("user", userSchema);

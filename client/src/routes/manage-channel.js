@@ -87,15 +87,26 @@ class ManageChannel extends React.Component {
 		});
 	}
 
-	updateAchievements = (achievement) => {
-		if(achievement.notice) {
+	updateAchievements = (data) => {
+		if(data.notice) {
 			this.setState({
-				notice: achievement.notice
+				notice: data.notice
 			});
 		}
-		if(achievement.achievement) {
+		if(data.delete) {
+			//Achievement deleted, remove from list
+			let currentAchievements = this.state.achievements;
 
-			let newAchievement = achievement.achievement;
+			let updatedAchievements = currentAchievements.filter(achievement => {
+				return achievement._id !== data.delete
+			});
+
+			this.setState({
+				achievements: updatedAchievements
+			});
+		} else if(data.achievement) {
+
+			let newAchievement = data.achievement;
 			let currentAchievements = this.state.achievements;
 			let found = false;
 
@@ -123,7 +134,7 @@ class ManageChannel extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let integrationContent, achievementContent, memberContent;
+		let generalContent, achievementContent, memberContent;
 
 		if(this.state.channel) {
 
@@ -135,25 +146,53 @@ class ManageChannel extends React.Component {
 				achievements = this.state.filteredAchievements;
 			}
 
-			integrationContent = (
-					<div className="twitch-integration">
-						<div className="twitch-integration--header">
-							<img src={require('../img/twitch-glitch.png')} />
-							<h3>Twitch Integration</h3>
-							<div className="twitch-integration--sync">
-								<a href="javascript:;"><img src={require('../img/sync-white.png')} /></a>
-							</div>
-						</div>
-						<div className="twitch-integration--content">
-							<div className="channelInfo--logo">
-								<img src={logo} />
-							</div>
-							<div className="channelInfo--data">
-								<div className="channelInfo--name">{owner}</div>
-								<div className="channelInfo--link">{'twitch.tv/' + owner}</div>
-							</div>
-						</div>
+			generalContent = (
+				<div className="general-configuration">
+					<h4>Basic Info</h4>
+					<div class="section-wrapper">
+						<div class="section-label">
+					        <label for="name">Twitch Name</label>
+					    </div>
+					    <div class="section-value">
+					        <span name="name">phirehero</span>
+					    </div>
 					</div>
+					<div class="section-wrapper">
+						<div class="section-label">
+					        <label for="logo">Channel Logo</label>
+					    </div>
+					    <div class="section-value">
+					        <span name="logo"><img src={logo} /></span>
+					    </div>
+					</div>
+					<h4>Channel Customization</h4>
+					<div class="section-wrapper">
+						<div class="section-label">
+					        <label for="theme">Default Achievement Icon</label>
+					    </div>
+					    <div class="section-value default-icons">
+					        <button type="button" class="gallery-wrapper">
+						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+							</button>
+							<button type="button" class="gallery-wrapper">
+						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+							</button>
+							<button type="button" class="gallery-wrapper">
+						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+							</button>
+					    </div>
+					</div>
+					<div class="section-wrapper">
+						<div class="section-label">
+					        <label for="theme">Theme</label>
+					    </div>
+					    <div class="section-value">
+					        <select name="name">
+					        	<option disabled selected>default (coming soon!!!)</option>
+					        </select>
+					    </div>
+					</div>
+				</div>
 			);
 
 			let modal;
@@ -211,7 +250,7 @@ class ManageChannel extends React.Component {
 				))
 			);
 		} else {
-			integrationContent = (<div>Fetching Channel Info</div>);
+			generalContent = (<div>Fetching General Information...</div>);
 			achievementContent = (<div>Fetching Achievements</div>);
 			memberContent = (<div> Fetching Members...</div>);
 		}
@@ -223,15 +262,19 @@ class ManageChannel extends React.Component {
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<Tabs>
 						<TabList className="manage-tabs">
-							<Tab className="manage-tab">Integration</Tab>
+							<Tab className="manage-tab">General</Tab>
 							<Tab className="manage-tab">Achievements</Tab>
+							<Tab title="Coming Soon!" className="manage-tab" disabled={true}>Images</Tab>
 							<Tab className="manage-tab">Members</Tab>
 						</TabList>
 						<TabPanel>
-							{integrationContent}
+							{generalContent}
 						</TabPanel>
 						<TabPanel>
 							{achievementContent}
+						</TabPanel>
+						<TabPanel>
+							{generalContent}
 						</TabPanel>
 						<TabPanel>
 							<h3>Members</h3>

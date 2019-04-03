@@ -1,0 +1,177 @@
+.manage-container {
+	max-width: 800px;
+	margin: 0 auto;
+	color: white;
+}
+
+.integration {
+	border-radius: 6px;
+    box-shadow: 1px 1px 2px black;
+    margin-bottom: 20px;
+}
+
+.integration.not-linked {
+	box-shadow: none;
+	border: 3px dashed white;
+	background: none;
+	padding: 30px;
+}
+
+.integration--twitch {
+	background: #333;
+}
+
+.integration--patreon {
+	background: #DDD;
+}
+
+.integration-header,
+.integration-content {
+	padding: 20px;
+}
+
+.integration-header {
+	border-radius: 6px 6px 0px 0px;
+	display: flex;
+}
+
+.integration--twitch .integration-header {
+	background: #6441a4;
+}
+
+.integration--patreon .integration-header {
+	background: rgb(232, 91, 70);
+}
+
+.integration-header h3 {
+	margin: 0 0 0 20px;
+	align-self: center;
+}
+
+.integration-header img {
+	width: 26px;
+	height: 28px;
+}
+
+.integration-sync {
+	text-align: right;
+	width: 30px;
+	flex: 1;
+}
+
+.integration-sync a {
+	cursor: pointer;
+}
+
+.integration-content {
+	display:flex;
+}
+
+.integration--patreon .integration-content {
+	color: black;
+}
+
+.patreonLink {
+	display: flex;
+	text-decoration: none;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.patreonLink span {
+	background: rgb(249, 104, 84);
+    padding: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.channelInfo--logo img{
+	width: 100px;
+	height: 100px;
+}
+
+.channelInfo--data {
+	margin-left: 30px;
+	align-self: center;
+}
+
+.channelInfo--name {
+	font-size: 28px;
+}
+
+.channelInfo--link {
+	font-size: 18px;
+	font-style: italic;
+}
+
+/* Tab Styles */
+.manage-tabs {
+	list-style: none;
+	display: flex;
+}
+
+.manage-tab {
+	padding: 10px 20px;
+	cursor: pointer;
+	border-radius: 5px;
+	background: rgba(121, 79, 198, 0);
+	transition: all 0.2s ease;
+}
+
+.manage-tab.react-tabs__tab--selected {
+	background: rgba(121, 79, 198, 1);
+	transition: all 0.2s ease;
+}
+
+.channelHeader {
+	display: flex;
+}
+
+.channelHeader img {
+	width: 20px;
+}
+
+.achievement-search {
+	flex: 1;
+	align-self: center;
+	margin-left: 20px;
+}
+
+.achievement-search input {
+	width: 98%;
+}
+
+@media only screen and (max-width: 480px) {
+	h2 {
+		margin-left: 15px;
+	}
+
+	.manage-tabs {
+		justify-content: space-around;
+	}
+
+	.react-tabs ul {
+		padding: 0;
+	}
+
+	.manage-tab {
+		padding: 10px 15px;
+	}
+
+	.integration {
+		margin: 0 8px;
+	}
+
+	.integration-header {
+		padding: 15px;
+	}
+
+	.integration h3 {
+		font-size: 1.1em;
+	}
+}

@@ -61,7 +61,7 @@ class ChannelPage extends React.Component {
 	// }
 
 	joinChannel = () => {
-		axios.post('/channel/join', {
+		axios.post('/api/channel/join', {
 			channel: this.state.channel.owner
 		})
 		.then((res) => {
@@ -70,7 +70,7 @@ class ChannelPage extends React.Component {
 	}
 
 	leaveChannel = () => {
-		axios.post('/channel/leave', {
+		axios.post('/api/channel/leave', {
 			channel: this.state.channel.owner
 		})
 		.then((res) => {

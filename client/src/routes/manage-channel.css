@@ -4,44 +4,100 @@
 	color: white;
 }
 
-.twitch-integration {
-	background: #333;
-	border-radius: 6px;
+.general-configuration img {
+	width: 100px;
+	height: 100px;
 }
 
-.twitch-integration--header,
-.twitch-integration--content {
+.section-wrapper {
+    justify-content: flex-start;
+}
+
+.section-label {
+    padding: 5px 10px;
+    text-align: right;
+    width: 180px;
+}
+
+.section-value {
+    flex: 1;
+    padding: 5px 10px;
+    margin-left: 20px;
+}
+
+.default-icons {
+	display: flex;
+}
+
+.default-icons button {
+	height: 100px;
+	background: none;
+	border: none;
+}
+
+.default-icons button.selected {
+	border: 2px solid aliceblue;
+	background: rgba(200,200,200,0.5);
+}
+
+.integration {
+	border-radius: 6px;
+    box-shadow: 1px 1px 2px black;
+    margin-bottom: 20px;
+}
+
+.integration--twitch {
+	background: #333;
+}
+
+.integration--patreon {
+	background: #DDD;
+}
+
+.integration-header,
+.integration-content {
 	padding: 20px;
 }
 
-.twitch-integration--header {
-	background: #6441a4;
+.integration-header {
 	border-radius: 6px 6px 0px 0px;
 	display: flex;
 }
 
-.twitch-integration--header h3 {
+.integration--twitch .integration-header {
+	background: #6441a4;
+}
+
+.integration--patreon .integration-header {
+	background: rgb(232, 91, 70);
+}
+
+.integration-header h3 {
 	margin: 0 0 0 20px;
 	align-self: center;
 }
 
-.twitch-integration--header img {
+.integration-header img {
 	width: 26px;
 	height: 28px;
 }
 
-.twitch-integration--sync {
+.integration-sync {
 	text-align: right;
 	width: 30px;
 	flex: 1;
 }
 
-.twitch-integration--sync a {
+.integration-sync a {
 	cursor: pointer;
 }
 
-.twitch-integration--content {
+.integration-content {
 	display:flex;
+}
+
+.integration--patreon .integration-content {
+	color: black;
 }
 
 .channelInfo--logo img{
