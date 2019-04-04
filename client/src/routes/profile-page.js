@@ -127,7 +127,7 @@ class ManageChannel extends React.Component {
 			);
 
 			channelContent = (
-				<div>
+				<div className="profile--channels">
 					<div className="achievementsHeader">
 						<h3>Showing {channels.length} Channels</h3>
 						<div className="achievement-search">

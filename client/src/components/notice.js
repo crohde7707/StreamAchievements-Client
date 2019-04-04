@@ -30,7 +30,7 @@ export default class Notice extends React.Component {
 					});
 					this.props.onClear();
 				}, 2000);
-			}, 4000);
+			}, 3000);
 		}
 	}
 

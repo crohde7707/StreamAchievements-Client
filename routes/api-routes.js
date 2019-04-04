@@ -15,27 +15,36 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
   });
 
 router.get("/user", (req, res) => {
-	User.findById(req.cookies.id_token).then((foundUser) => {
-		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
-			if(existingChannel) {
-				res.json({
-					username: foundUser.name,
-					logo: foundUser.logo,
-					owner: true
-				});
-			} else {
-				res.json({
-					username: foundUser.name,
-					logo: foundUser.logo,
-					owner: false
-				});
-			}
-		});
+	console.log(req.cookies.etid);
+
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
+		if(foundUser) {
+			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
+				if(existingChannel) {
+					res.json({
+						username: foundUser.name,
+						logo: foundUser.logo,
+						owner: true
+					});
+				} else {
+					res.json({
+						username: foundUser.name,
+						logo: foundUser.logo,
+						owner: false
+					});
+				}
+			});
+		} else {
+			res.json({
+				message: 'User was not found!'
+			});
+		}
+		
 	});
 });
 
 router.get("/profile", (req, res) => {
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			let channelArray = foundUser.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
 

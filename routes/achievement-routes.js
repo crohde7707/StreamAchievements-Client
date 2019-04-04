@@ -33,10 +33,10 @@ let combineAchievementAndListeners = (achievement, listener) => {
 
 router.post("/create", (req, res) => {
 	console.log(req.body);
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			console.log('user found: ' + foundUser.name);
-			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+			Channel.findOne({twitchID: foundUserintegration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
 					console.log('channel found: ' + existingChannel.owner);
 					//Check if achievement of same name exists
@@ -188,10 +188,10 @@ router.post("/create", (req, res) => {
 router.post("/delete", (req, res) => {
 	console.log(req.body);
 
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			console.log('user found: ' + foundUser.name);
-			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+			Channel.findOne({twitchID: foundUserintegration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
 					console.log('channel found: ' + existingChannel.owner);
 					//Check if achievement of same name exists

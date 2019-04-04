@@ -15,7 +15,7 @@ export default class Template extends React.Component {
 		if(!isAuthenticated()) {
 			let Redirect = require('react-router-dom').Redirect;
 
-			redirect = <Redirect to='/' />;
+			return(<Redirect to='/' />);
 		}
 
 		return (

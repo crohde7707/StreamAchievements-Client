@@ -55,6 +55,8 @@
 	display: flex;
 	align-items: center;
 	transition: all 0.5s ease;
+	margin: 0px 20px;
+    border: 1px solid #333;
 }
 
 .condensed .channel-logo img {

@@ -5,6 +5,7 @@ import {setProfile} from '../redux/profile-reducer';
 
 import Template from '../components/template';
 import Achievement from '../components/achievement';
+import Notice from '../components/notice';
 
 import './channel-page.css';
 
@@ -13,7 +14,8 @@ class ChannelPage extends React.Component {
 		super(props);
 		
 		this.state = {
-			channel: ''
+			channel: '',
+			notice: ''
 		}
 	}
 
@@ -25,15 +27,11 @@ class ChannelPage extends React.Component {
 		});
 
 		authAxios.get('/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
-			console.log(res.data);
-			
-			let joined = (Array.isArray(res.data.achievements.earned));
-
-
+						
 			this.setState({
 				channel: res.data.channel,
 				achievements: res.data.achievements,
-				joined: joined
+				joined: res.data.joined
 			}, () => {
 				window.addEventListener('scroll', this.updateChannelHeader);		
 			});
@@ -42,6 +40,12 @@ class ChannelPage extends React.Component {
 
 	componentWillUnmount() {
 		window.removeEventListener('scroll', this.updateChannelHeader);
+	}
+
+	clearNotice = () => {
+		this.setState({
+			notice: ''
+		});
 	}
 
 	updateChannelHeader = () => {
@@ -65,7 +69,10 @@ class ChannelPage extends React.Component {
 			channel: this.state.channel.owner
 		})
 		.then((res) => {
-			console.log(res.data);
+			this.setState({
+				joined: true,
+				notice: "Joined channel successfully!"
+			});
 		});
 	}
 
@@ -144,7 +151,7 @@ class ChannelPage extends React.Component {
 
 					//TODO: Future Perk
 					//favorite = (<div className="channel-fav"><img src={require('../img/star-not-favorited.png')} /></div>);
-					favorite = (<div className="channel-fav"></div>);
+					//favorite = (<div className="channel-fav"></div>);
 				}
 			} else {
 				achievementsContent = (
@@ -157,6 +164,7 @@ class ChannelPage extends React.Component {
 
 			content = (
 				<Template className="no-scroll">
+					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<div id="channel-header">
 						{favorite}
 						<div className="channel-logo">

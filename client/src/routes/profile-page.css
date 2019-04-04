@@ -90,6 +90,15 @@
     justify-content: center;
 }
 
+.profile--channels .channel-item {
+	color: black;
+	cursor: auto;
+}
+
+.profile--channels .channel-item:hover {
+	background-color: #DDD;
+}
+
 .channelInfo--logo img{
 	width: 100px;
 	height: 100px;

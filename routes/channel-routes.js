@@ -9,7 +9,7 @@ const Achievement = require('../models/achievement-model');
 const Listener = require('../models/listener-model');
 
 router.get("/create", (req, res) => {
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
 			if(existingChannel) {
 				res.json({
@@ -40,7 +40,7 @@ router.get("/create", (req, res) => {
 });
 
 router.post('/leave', (req, res) => {
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			Channel.findOne({owner: req.body.channel}).then((existingChannel) => {
 				if(existingChannel) {
@@ -90,7 +90,7 @@ router.post('/join', (req, res) => {
 
 	Channel.findOne({owner: req.body.channel}).then((existingChannel) => {
 		if(existingChannel) {
-			User.findById(req.cookies.id_token).then((foundUser) => {
+			User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 				if(foundUser) {
 					let joinedChannels = foundUser.channels;
 
@@ -184,19 +184,20 @@ router.get('/retrieve', (req, res) => {
 	}
 
 	if(channel) {
-		User.findById(req.cookies.id_token).then((foundUser) => {
+		User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 			if(foundUser) {
 				Channel.findOne({owner: channel}).then((foundChannel) => {
 					if(foundChannel) {
 						
 						Achievement.find({channel: channel}).then((foundAchievements) => {
 
-							let earned = foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id));
+							let joined = foundChannel.members.includes(foundUser.id);
+							let earned;
 
-							if(earned.length > 0) {
-								earned = earned[0].achievements
+							if(joined) {
+								earned = foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id))[0].achievements;	
 							} else {
-								earned = false;
+								earned = [];
 							}
 
 							res.json({
@@ -204,7 +205,8 @@ router.get('/retrieve', (req, res) => {
 								achievements: {
 									all: foundAchievements,
 									earned: earned
-								}
+								},
+								joined: joined
 							});
 						});	
 						
@@ -220,8 +222,8 @@ router.get('/retrieve', (req, res) => {
 		});
 	} else {
 		//use current logged in person's channel
-		User.findById(req.cookies.id_token).then((foundUser) => {
-			Channel.findOne({twitchID: foundUser.twitchID}).then((existingChannel) => {
+		User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
+			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
 					Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
 
@@ -291,7 +293,7 @@ router.get('/retrieve', (req, res) => {
 
 router.get("/user", (req, res) => {
 
-	User.findById(req.cookies.id_token).then((foundUser) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 
 		//format channel ids
 		let channelArray = foundUser.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));

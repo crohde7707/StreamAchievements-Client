@@ -17,7 +17,6 @@ class Header extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.profile);
 		if(!this.props.profile) {
 			axios.get('/api/user').then((res) => {
 				console.log(res.data);

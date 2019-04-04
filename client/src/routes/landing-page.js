@@ -14,7 +14,7 @@ export default class LandingPage extends React.Component {
 
 		let cookies = cookie.parse(document.cookie);
 
-		if(cookies.id_token) {
+		if(cookies.etid) {
 			this.state.redirect = true;
 		}
 	}
