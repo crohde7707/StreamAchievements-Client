@@ -31,17 +31,8 @@ class ChannelList extends React.Component {
 		});
 	}
 
-	showAddChannelModal = () => {
+	showDirectory = () => {
 		this.props.history.push('/directory');
-		// axios.get('/api/channel/create').then((res) => {
-		// 	console.log(res.data);
-		// });
-	}
-
-	hideAddChannelModal = () => {
-		this.setState({
-			isAddChannelActive: false
-		});
 	}
 
 	goToChannel = (channel) => {
@@ -71,14 +62,14 @@ class ChannelList extends React.Component {
 					));
 
 					headerJoinButton = (
-						<div onClick={this.showAddChannelModal} className="join-channel-button">
+						<div onClick={this.showDirectory} className="join-channel-button">
 							<img alt="plus icon" src={require('../img/plus.png')} />
 							<span>Join a channel</span>
 						</div>
 					);
 				} else {
 					joinFirstChannel = (
-						<div onClick={this.showAddChannelModal} className="add-channel">
+						<div onClick={this.showDirectory} className="add-channel">
 							<div>Join your first channel!</div>
 							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
 						</div>
@@ -96,7 +87,6 @@ class ChannelList extends React.Component {
 				<div className="channel-list">
 					{content}
 					{joinFirstChannel}
-					<Modal active={this.state.isAddChannelActive} onClose={this.hideAddChannelModal} />
 				</div>
 			</div>
 		)

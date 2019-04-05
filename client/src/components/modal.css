@@ -44,7 +44,7 @@
 .modal h4 {
     font-size: 18px;
     border-bottom: 1px solid #666;
-    margin-top: 30px;
+    margin-top: 0px;
     padding-top: 10px;
 }
 
@@ -85,13 +85,13 @@
 
 .formGroup {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .formGroup img {
     align-self: center;
-    max-width: 175px;
-    max-height: 175px;
+    max-width: 150px;
+    max-height: 150px;
 }
 
 .formGroup label {
@@ -120,6 +120,19 @@
     width: 100%;
 }
 
+.checkbox {
+    flex: 1;
+    text-align: center;
+}
+
+.checkbox label {
+    margin-right: 0;
+}
+
+.checkbox input {
+    margin-top: 5px;
+}
+
 .formGroup.checkboxGroup label {
     white-space: nowrap
 }
@@ -130,11 +143,20 @@
     align-self: flex-start;
 }
 
+.noMargin {
+    margin: 0;
+}
+
 .currentIcon {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex: 1;
+    margin: 3%;
+    width: 90%;
+    border: 2px inset #AAA;
+    background-color: #BBB;
 }
 
 .availableIcons {
@@ -177,5 +199,31 @@
     font-size: 14px;
     text-align: right;
     color: #000;
-    margin-top: -14px;
+    margin-top: -5px;
+}
+
+.chooseImage--wrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.chooseImage--wrapper .currentImage {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.currentImage h4 {
+    margin-bottom: 5px;
+}
+
+.currentImage img {
+    width: 150px;
+    height: 150px;
+}
+
+.chooseImage--wrapper .chooseImage {
+    flex: 1;
+    align-items: center;
+    text-align: center;
 }

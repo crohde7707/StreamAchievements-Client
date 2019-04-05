@@ -93,6 +93,7 @@
 .profile--channels .channel-item {
 	color: black;
 	cursor: auto;
+	padding-right: 0;
 }
 
 .profile--channels .channel-item:hover {
@@ -116,6 +117,26 @@
 .channelInfo--link {
 	font-size: 18px;
 	font-style: italic;
+}
+
+.channel-item--leave {
+	height: 100%;
+    width: 50px;
+    display: flex;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.channel-item--leave:hover {
+	background-color: #BBB;
+	transition: all 0.2s ease;
+}
+
+.channel-item--leave img {
+	width: 32px;
+	margin: 0 auto;
 }
 
 /* Tab Styles */

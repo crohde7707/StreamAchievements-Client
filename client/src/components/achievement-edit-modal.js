@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 import ConfirmPanel from './confirm-panel';
+import ImagePanel from './image-panel';
 
 import './modal.css';
 
@@ -23,7 +24,8 @@ class AchievementEditModal extends React.Component {
 			iconPreview: ((props.achievement)) ? props.achievement.icon : '',
 			id: ((props.achievement)) ? props.achievement._id : '',
 			edit: ((props.achievement)) ? true : false,
-			showConfirm: false
+			showConfirm: false,
+			showImagePanel: false
 		};
 
 	}
@@ -364,16 +366,42 @@ class AchievementEditModal extends React.Component {
 		});
 	}
 
+	showImagePanel = (event) => {
+		this.setState({
+			showImagePanel: true
+		});
+	}
+
+	updateState = (state) => {
+
+	}
+
 	render() {
 
-		let content, iconGallery, confirmPanel;
+		let content, iconGallery, confirmPanel, imagePanel, imgPreviewContent;
 		let deleteButton = null;
 
 		if (this.props.active) {
 			let {title, description, earnable, limited, secret} = this.state;
 
 			if(this.state.showConfirm) {
-				confirmPanel = (<ConfirmPanel onConfirm={this.handleDelete} onCancel={() => {this.setState({showConfirm: false})}} />)
+				confirmPanel = (
+					<ConfirmPanel
+						onConfirm={this.handleDelete}
+						onCancel={() => {this.setState({showConfirm: false})}}
+					/>
+				);
+			}
+
+			if(this.state.showImagePanel) {
+				imagePanel = (
+					<ImagePanel 
+						currentImage={this.state.iconPreview}
+						onChange={this.handleIconChange}
+						onConfirm={() => {this.setState({showImagePanel: false})}}
+						onCancel={() => {this.setState({showImagePanel: false})}}
+					/>
+				);
 			}
 
 			if(this.state.edit) {
@@ -408,6 +436,12 @@ class AchievementEditModal extends React.Component {
 
 			let customType = (<option disabled title="Unlocked wtih paid tier!" value="4">Custom</option>);
 
+			if(this.state.iconPreview) {
+				imgPreviewContent = (<img src={this.state.iconPreview} />);
+			} else {
+				imgPreviewContent = (<div className="currentIcon--placeholder"></div>);
+			}
+
 			content = (
 				<div>
 					<div className="modal-header">
@@ -440,43 +474,45 @@ class AchievementEditModal extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
-							<div className="formGroup checkboxGroup">
-								<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
-								<div>
-									<input 
-										id="achievement-earnable"
-										name="earnable"
-										type="checkbox"
-										title="This achievement can currently be earned"
-										checked={this.state.earnable}
-										onChange={this.handleDataChange}
-									/>
+							<div className="formGroup checkboxes">
+								<div className="checkbox">
+									<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
+									<div>
+										<input 
+											id="achievement-earnable"
+											name="earnable"
+											type="checkbox"
+											title="This achievement can currently be earned"
+											checked={this.state.earnable}
+											onChange={this.handleDataChange}
+										/>
+									</div>
 								</div>
-							</div>
-							<div className="formGroup checkboxGroup">
-								<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
-								<div>
-									<input
-										id="achievement-limited"
-										name="limited"
-										type="checkbox"
-										title="This achievement can only be earned for a limited time"
-										checked={this.state.limited}
-										onChange={this.handleDataChange}
-									/>
+								<div className="checkbox">
+									<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
+									<div>
+										<input
+											id="achievement-limited"
+											name="limited"
+											type="checkbox"
+											title="This achievement can only be earned for a limited time"
+											checked={this.state.limited}
+											onChange={this.handleDataChange}
+										/>
+									</div>
 								</div>
-							</div>
-							<div className="formGroup checkboxGroup">
-								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-								<div>
-									<input
-										id="achievement-secret"
-										name="secret"
-										type="checkbox"
-										title="This achievement will be a secret in your list until someone earns it!"
-										checked={this.state.secret}
-										onChange={this.handleDataChange}
-									/>
+								<div className="checkbox">
+									<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
+									<div>
+										<input
+											id="achievement-secret"
+											name="secret"
+											type="checkbox"
+											title="This achievement will be a secret in your list until someone earns it!"
+											checked={this.state.secret}
+											onChange={this.handleDataChange}
+										/>
+									</div>
 								</div>
 							</div>
 							<h4>Condition</h4>
@@ -499,32 +535,34 @@ class AchievementEditModal extends React.Component {
 								</select>
 							</div>
 							{this.getConditionContent()}
-							<h4>Icon</h4>
+							<h4 class="noMargin">Icon</h4>
 							<div className="formGroup icon-upload">
 								<label htmlFor="achievement-icon">Icon</label>
-								<input
-			                        type="file"
-			                        id="achievement-icon"
-			                        accept="image/*"
-			                        ref={fileInputEl =>
-			                            (this.fileInputEl = fileInputEl)
-			                        }
-			                        onChange={this.handleIconChange}
-			                    />
-		                    </div>
-		                    <div className="formGroup iconPreview-group">
-		                    	<div className="currentIcon">
-			                    	<img src={this.state.iconPreview} />
+								<div className="currentIcon" onClick={this.showImagePanel}>
+			                    	{imgPreviewContent}
 		                    	</div>
 		                    </div>
 		                    <input type="submit" value="Submit" />
 		                    {deleteButton}
 		                    {confirmPanel}
+		                    {imagePanel}
 						</form>
 					</div>
 				</div>		
 			);
 		}
+
+		let upload = (
+			<input
+                type="file"
+                id="achievement-icon"
+                accept="image/*"
+                ref={fileInputEl =>
+                    (this.fileInputEl = fileInputEl)
+                }
+                onChange={this.handleIconChange}
+            />
+		);
 
 		return (
 			<div className={((!this.props.active) ? "modal--hidden" : "")}>

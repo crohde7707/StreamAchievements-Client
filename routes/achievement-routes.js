@@ -36,7 +36,7 @@ router.post("/create", (req, res) => {
 	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			console.log('user found: ' + foundUser.name);
-			Channel.findOne({twitchID: foundUserintegration.twitch.etid}).then((existingChannel) => {
+			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
 					console.log('channel found: ' + existingChannel.owner);
 					//Check if achievement of same name exists
@@ -191,7 +191,7 @@ router.post("/delete", (req, res) => {
 	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
 			console.log('user found: ' + foundUser.name);
-			Channel.findOne({twitchID: foundUserintegration.twitch.etid}).then((existingChannel) => {
+			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
 					console.log('channel found: ' + existingChannel.owner);
 					//Check if achievement of same name exists

@@ -138,6 +138,7 @@ class ManageChannel extends React.Component {
 						<div key={"channel." + index} className="channel-item">
 							<div className="channel-item--logo"><img src={channel.logo} /></div>
 							<div className="channel-item--name">{channel.owner}</div>
+							
 						</div>
 					))}
 				</div>

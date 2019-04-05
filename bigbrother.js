@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero','dethridge','flip_switch','thorlar','simarchy','drgluon'];
+const channels = ['phirehero'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -180,7 +180,7 @@ let retrieveChannelListeners = () => {
 	if(channels.length > 0) {
 		axios({
 			method: 'get',
-			url: 'http://localhost:5000/achievement/listeners',
+			url: 'http://localhost:5000/api/achievement/listeners',
 			params: {
 				channel: channels
 			}
@@ -293,7 +293,7 @@ let sendAchievements = () => {
 
 		axios({
 			method: 'post',
-			url: 'http://localhost:5000/achievement/listeners',
+			url: 'http://localhost:5000/api/achievement/listeners',
 			data: achievements
 		})
 		.then(response => {
@@ -310,7 +310,7 @@ let pubsub = () => {
 		url: 'https://api.twitch.tv/helix/webhooks/hub',
 		headers: {'client-ID': client_id},
 		data: {
-			'hub.callback': 'http://localhost:5000/achievement/listeners',
+			'hub.callback': 'http://localhost:5000/api/achievement/listeners',
 			'hub.mode': 'subscribe',
 			'hub.topic': 'https://api.twitch.tv/helix/users/follows?first=1&to_id=56453119',
 			'hub.lease_seconds': 6000
