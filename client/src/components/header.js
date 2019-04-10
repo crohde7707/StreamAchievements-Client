@@ -28,7 +28,16 @@ class Header extends React.Component {
 	toggleMenu = () => {
 		this.positionModal();
 		this.setState({
-			menuActive: !this.state.menuActive
+			menuActive: !this.state.menuActive,
+			notificationActive: false
+		});
+	}
+
+	toggleNotifications = () => {
+		this.positionNotifications();
+		this.setState({
+			notificationActive: !this.state.notificationActive,
+			menuActive: false
 		});
 	}
 
@@ -55,6 +64,10 @@ class Header extends React.Component {
 			manageLink = (<li><Link to={"/channel/" + this.props.profile.username + "/manage"}>Manage Channel</Link></li>);
 		}
 
+		if(this.props.profile && this.props.profile.notifications) {
+			let notifications = this.props.profile.notifications;
+		}
+
 		let menu = (
 			<div className={"menu-dropdown--wrapper" + ((this.state.menuActive) ? " menu-dropdown--active" : "")}>
 				<div className="menu-dropdown">
@@ -72,7 +85,11 @@ class Header extends React.Component {
 		return (
 			<div id="page-header">
 				<div className="logo">
-					<Link to="/home"><img src={require('../img/raid.png')} alt="" /></Link>
+					<Link to="/home"><img src="https://cdn.discordapp.com/attachments/441653223955103764/565227698947883010/SPOILER_unknown.png" alt="" /></Link>
+				</div>
+				<div className={"notification" + ((this.state.notificationActive) ? " notification--active" : "")} onClick={this.toggleNotifications}>
+					<img src={require('../img/notification.png')} />
+					<div className="notification-badge"></div>
 				</div>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>

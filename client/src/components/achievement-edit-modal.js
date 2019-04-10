@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import ConfirmPanel from './confirm-panel';
 import ImagePanel from './image-panel';
+import { build } from '../utils/regex-builder';
 
 import './modal.css';
 
@@ -244,16 +245,29 @@ class AchievementEditModal extends React.Component {
 				case "4":
 					//Custom
 					conditionContent = (
-						<div className="formGroup">
-							<label htmlFor="achievement-query">Condition</label>
-							<input
-								id="achievement-query"
-								name="query"
-								className="textInput"
-								type="text"
-								value={this.state.query}
-								onChange={this.handleDataChange}
-							/>
+						<div>
+							<div className="formGroup">
+								<label htmlFor="achievement-bot">Bot Name</label>
+								<input
+									id="achievement-bot"
+									name="user"
+									className="textInput"
+									type="text"
+									value={this.state.bot}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">Message</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className="textInput"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+								/>
+							</div>
 						</div>
 					);
 					break;
@@ -347,6 +361,7 @@ class AchievementEditModal extends React.Component {
 			console.log(res.data);
 			if(res.data.created) {
 				this.onMaskClick();
+				console.log(res.data.achievement);
 				this.props.onSubmit({
 					notice: "\"" + res.data.achievement.title + "\" achievement was created successfully!",
 					achievement: res.data.achievement
@@ -374,6 +389,14 @@ class AchievementEditModal extends React.Component {
 
 	updateState = (state) => {
 
+	}
+
+	toggleHover = (showHover) => {
+		if(showHover) {
+			this.hover.classList.add('hoverText--active');
+		} else {
+			this.hover.classList.remove('hoverText--active');
+		}
 	}
 
 	render() {
@@ -408,33 +431,7 @@ class AchievementEditModal extends React.Component {
 				deleteButton = (<button type="button" className="delete-achievement-button" onClick={() => {this.setState({showConfirm: true})}}>Delete</button>);
 			}
 
-			iconGallery = (
-            	<div className="availableIcons">
-            		<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-            	</div>
-			)
-
-			let customType = (<option disabled title="Unlocked wtih paid tier!" value="4">Custom</option>);
+			let customType = (<option title="Unlocked wtih paid tier!" value="4">Custom</option>);
 
 			if(this.state.iconPreview) {
 				imgPreviewContent = (<img src={this.state.iconPreview} />);
@@ -538,8 +535,14 @@ class AchievementEditModal extends React.Component {
 							<h4 class="noMargin">Icon</h4>
 							<div className="formGroup icon-upload">
 								<label htmlFor="achievement-icon">Icon</label>
-								<div className="currentIcon" onClick={this.showImagePanel}>
+								<div
+									className="currentIcon"
+									onClick={this.showImagePanel}
+									onMouseEnter={() => {this.toggleHover(true)}}
+									onMouseLeave={() => {this.toggleHover(false)}}
+								>
 			                    	{imgPreviewContent}
+			                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
 		                    	</div>
 		                    </div>
 		                    <input type="submit" value="Submit" />

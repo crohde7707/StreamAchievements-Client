@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero'];
+const channels = ['phirehero', 'jazzyrosee'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -19,11 +19,21 @@ let giftSubListeners = {};
 let raidListeners = {};
 let requestQueue = [];
 
+//regex matchers
+let twitchUsernameRegex = /([a-zA-Z0-9_]+)/;
+let numberRegex = /([0-9]+)/;
+let space = /\s/;
+
+/*
+	new RegExp(twitchUsernameRegex.source + space.source + )
+*/
+
+
 // Achievement Handlers
 let newSubHandler = (channel, msg) => {
 	let achievementRequest = {
 		'channel': channel,
-		'achievement': subListeners[channel],
+		'achievementID': subListeners[channel],
 		'tier': msg.parameters.subPlan,
 		'userID': msg.tags.userId
 	};
@@ -47,7 +57,7 @@ let resubHandler = (channel, msg) => {
 				'type': msg.tags.msgId,
 				'tier': subPlan,
 				'userID': msg.tags.userId,
-				'achievement': achievement,
+				'achievementID': achievement,
 				'streak': streakMonths
 			};
 
@@ -61,7 +71,7 @@ let resubHandler = (channel, msg) => {
 				'type': msg.tags.msgId,
 				'tier': subPlan,
 				'userID': msg.tags.userId,
-				'achievement': achievement,
+				'achievementID': achievement,
 				'cumulative': cumulativeMonths
 			};
 
@@ -78,7 +88,7 @@ let giftSubHandler = (channel, msg, totalGifts) => {
 
 	let achievementRequest = {
 		'channel': channel,
-		'achievement': achievementListener, //Stream Acheivements achievement
+		'achievementID': achievementListener, //Stream Acheivements achievement
 		'type': msg.tags.msgId, //type of event (sub, resub, subgift, resub)
 		'gifterID': msg.tags.userId, //Person giving the sub
 		'recepientID': recipientId, // Person receiving the sub
@@ -94,7 +104,7 @@ let raidHandler = (msg) => {
 
 	let achievementRequest = {
 		'channel': channel,
-		'achievement': achievementListener,
+		'achievementID': achievementListener,
 		'type': msg.tags.msgId,
 		'userID': msg.tags.userId
 	}
@@ -102,8 +112,31 @@ let raidHandler = (msg) => {
 	requestQueue.push(achievementRequest);
 };
 
-let customHandler = (msg) => {
+let chatHandler = (channel, msg, username) => {
+	let listeners = chatListeners[channel][username];
+	
+	if(listeners) {
+		//Found listeners from this user
 
+
+		/*
+			Command: !tacos
+			Msg: oxfordsplice [Nacho] - 20584 Tacos [49.60 hours in the stream]
+			Query: {viewer}
+
+			Command: !steal @phirehero
+			Query: hideoustuber just stole 14 tacos from phirehero
+
+			Command: !gdice
+			Query: brother_lucifer is gambling! Coin flip lands on.... Heads! 52 tacos have been added into your bag! phirehHype
+
+			Command: !gflip
+			Query: simskrazzyk is gambling! Coin flip lands on.... it's side, and rolls away.....damnit
+
+			Command: !happy/!sad/!enraged/!frustrated/!focused/!constipated/!inspired/
+			Query: ?response from bot or use userid
+		*/
+	}
 };
 
 chat.connect().then(clientState => {
@@ -111,8 +144,14 @@ chat.connect().then(clientState => {
 });
 
 chat.on('*', (msg) => {
+	//console.log(msg);
+	//chatHandler(msg.channel.substr(1), msg.message);
 	//console.log("(" + msg.channel + ")" + msg.username + ": " + msg.message);
 });
+
+chat.on('PRIVMSG', (msg) => {
+	chatHandler(msg.channel.substr(1), msg.message, msg.username);
+})
 
 chat.on('USERNOTICE/SUBSCRIPTION', (msg) => {
 	let channel = msg.channel.substr(1);
@@ -228,7 +267,8 @@ let retrieveChannelListeners = () => {
 					case "4":
 						//Custom
 						chatListeners[channel] = chatListeners[channel] || {};
-						chatListeners[channel][query] = listener;
+						chatListeners[channel][bot] = chatListeners[channel][bot] || {};
+						chatListeners[channel][bot][query] = listener;
 						break;
 
 					default:

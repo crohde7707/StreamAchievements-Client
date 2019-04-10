@@ -27,6 +27,8 @@
     border-radius: 2px;
     color: black;
     min-width: 450px;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal a {
@@ -157,6 +159,8 @@
     width: 90%;
     border: 2px inset #AAA;
     background-color: #BBB;
+    cursor: pointer;
+    min-height: 150px;
 }
 
 .availableIcons {
@@ -165,7 +169,6 @@
     flex-direction: row;
     flex: 1;
     flex-wrap: wrap;
-    padding-left: 15px;
     justify-content: center;
 }
 
@@ -226,4 +229,35 @@
     flex: 1;
     align-items: center;
     text-align: center;
+}
+
+.chooseImage > button {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.chooseImage #achievement-icon {
+    display: none;
+}
+
+.chooseImage--confirm {
+    margin-top: 30px;
+    padding: 10px;
+    box-shadow: 1px 1px 1px #333;
+}
+
+.hoverText {
+    position: absolute;
+    padding: 10px 20px;
+    background-color: rgba(33,33,33,0.8);
+    border-radius: 15px;
+    color: white;
+    text-shadow: 1px 1px black;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.hoverText.hoverText--active {
+    opacity: 1;
+    transition: all 0.2s ease;
 }

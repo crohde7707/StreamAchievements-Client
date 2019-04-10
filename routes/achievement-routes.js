@@ -1,9 +1,13 @@
 const router = require('express').Router();
 const passport = require('passport');
+
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
 const Listener = require('../models/listener-model');
+const Queue = require('../models/queue-model');
+const Notice = require('../models/notice-model');
+
 const uploadImage = require('../utils/image-utils').uploadImage;
 const mongoose = require('mongoose');
 
@@ -299,6 +303,69 @@ router.post('/listeners', (req, res) => {
 	//Process achievements
 	console.log('achievements to process...');
 	console.log(req.body);
+	let achievements = req.body;
+	let currentDate = new Date();
+
+	achievements.forEach(achievementListener => {
+		let {channel, achievement, tier, userID} = achievementListener;
+
+		User.findOne({'integration.twitch.etid': userID}).then((foundUser) => {
+			if(foundUser) {
+				Channel.find({owner: channel}).then(foundChannel => {
+					let entryIdx = foundUser.channels.findIndex(savedChannel => {
+						return savedChannel.channelID === foundChannel._id;
+					});
+
+					if(entryIdx >= 0) {
+						if(!foundUser.channels[entryIdx].achievements.includes(achievement.achievementID)) {
+							foundUser.channels[entryIdx].achievements.push({
+								id: achievement.achievementID,
+								earned: currentDate
+							});
+						} else {
+							res.json({
+								message: "This user already earned this achievement!"
+							});
+						}
+					} else {
+						foundUser.channels.push({
+							channelID: foundChannel._id,
+							achievements: [{
+								id: achievement.achievementID,
+								earned: currentDate
+							}]
+						});
+						foundUser.save().then(savedUser => {
+
+							//Create a notification for the user
+							new Notice({
+								twitchID: userID,
+								channelID: foundChannel._id,
+								achievementID: achievement.achievementID
+							}).save().then(savedNotice => {
+								res.json({
+									message: "Achievement has been awarded!"
+								});
+							});
+						});
+					}
+				});
+			} else {
+				// User doesn't exist yet, so store the event off to award when signed up!
+				Channel.find({owner: channel}).then(foundChannel => {	
+					new Queue({
+						twitchID: userID,
+						channelID: foundChannel._id,
+						achievementID: achievement.achievementID
+					}).save().then(savedQueue => {
+						res.json({
+							message: "User hasn't signed up yet, but their achievement earning is stored!"
+						});
+					});
+				})
+			}
+		});
+	});
 
 	//Spawn child process to do it?
 });
