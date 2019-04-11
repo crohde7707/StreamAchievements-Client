@@ -4,6 +4,8 @@ import {setProfile} from '../redux/profile-reducer';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
+import Notifications from './notification-panel';
+
 import './header.css';
 
 class Header extends React.Component {
@@ -34,7 +36,7 @@ class Header extends React.Component {
 	}
 
 	toggleNotifications = () => {
-		this.positionNotifications();
+		this.positionNotificationPanel();
 		this.setState({
 			notificationActive: !this.state.notificationActive,
 			menuActive: false
@@ -47,7 +49,10 @@ class Header extends React.Component {
 		document.documentElement.scrollTop = 0
 		this._mask.style.top = '130px';
 		this._mask.style.height = maskHeight + 'px';
+	}
 
+	positionNotificationPanel = () => {
+		
 	}
 
 	render() {
@@ -87,10 +92,7 @@ class Header extends React.Component {
 				<div className="logo">
 					<Link to="/home"><img src="https://cdn.discordapp.com/attachments/441653223955103764/565227698947883010/SPOILER_unknown.png" alt="" /></Link>
 				</div>
-				<div className={"notification" + ((this.state.notificationActive) ? " notification--active" : "")} onClick={this.toggleNotifications}>
-					<img src={require('../img/notification.png')} />
-					<div className="notification-badge"></div>
-				</div>
+				<Notifications onClick={this.toggleNotifications} profile={this.props.profile} active={this.state.notificationActive} />
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>
 					<div className="menu--label">{username}</div>
