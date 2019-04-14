@@ -11,6 +11,9 @@ const Notice = require('../models/notice-model');
 const uploadImage = require('../utils/image-utils').uploadImage;
 const mongoose = require('mongoose');
 
+//let io = require('../index2').WebSockets;
+//let getSocketForUser = require('../SocketManager').getSocketForUser;
+
 let combineAchievementAndListeners = (achievement, listener) => {
 	let merge = {
 		"_id": achievement['_id'],
@@ -343,6 +346,10 @@ router.post('/listeners', (req, res) => {
 								channelID: foundChannel._id,
 								achievementID: achievement.achievementID
 							}).save().then(savedNotice => {
+
+								// let socket = getSocketForUser(savedUser.name);
+								// socket.emit('NEW_NOTIFICATION', savedNotice);
+
 								res.json({
 									message: "Achievement has been awarded!"
 								});

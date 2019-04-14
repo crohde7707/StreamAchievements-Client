@@ -1,9 +1,6 @@
 import React from 'react';
-import io from 'socket.io-client';
 
 import './notification-panel.css';
-
-const socketURL = 'http://localhost:5000';
 
 export default class NotificationPanel extends React.Component {
 
@@ -11,71 +8,53 @@ export default class NotificationPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			socket: null,
 			username: null
 		};
 	}
 
 	componentDidMount() {
-		this.initSocket();
+
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		
-		if(nextProps.profile) {
-			console.log(nextProps.profile.username);
-			if(!this.state.username || this.props.profile.username !== nextProps.profile.username) {
-				//Emit to the server that this socket username has updated
-				let { socket } = this.state;
-				console.log('emitting USERNAME_UPDATED');
-				socket.emit('USERNAME_UPDATED', nextProps.profile.username);
-				this.setState({
-					username: nextProps.profile.username
-				});
-			}	
-		}
-		
+				
 		return true;
 	}
 
-	componentWillUnmount() {
-		this.state.socket.disconnect();
-	}
-
-	initSocket = () => {
-		if(!this.state.socket) {
-			const socket = io(socketURL);
-
-			socket.on('connect', () => {
-				console.log("connected to server via websockets");
-			});
-
-			socket.on('NOTIFICATION_RECEIVED', (notification) => {
-				console.log(notification);
-			});
-
-			this.setState({socket});
-		}
+	goToChannel = (channel) => {
+		this.props.history.push('/channel/' + channel);
 	}
 
 	render() {
 
-		let count;
+		let count = 3;
 
 		let notificationContent = (
 			<div className='notificationContent'>
+				<div className="notification notification--unread">
+					<div className="notification--icon"><img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" /></div>
+					<div className="notification--info">You earned the 'Fresh and Crispy' Achievement!</div>
+					<div className="notification--delete">X</div>
+				</div>
 				<div className="notification">
-					<div className="notification--icon"></div>
-					<div className="notification--info"></div>
+					<div className="notification--icon"><img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" /></div>
+					<div className="notification--info">You earned the 'Fresh and Crispy' Achievement!</div>
+					<div className="notification--delete">X</div>
+				</div>
+				<div className="notification">
+					<div className="notification--icon"><img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" /></div>
+					<div className="notification--info">You earned the 'Fresh and Crispy' Achievement!</div>
 					<div className="notification--delete">X</div>
 				</div>
 			</div>
 		);
 
 		return (
-			<div className={"notificationPanel" + ((this.props.active) ? " notificationPanel--active" : "")} onClick={this.props.onClick}>
-				<img src={require('../img/notification.png')} />
-				<div className="notificationPanel-badge">{count}</div>
+			<div className={"notificationPanel-wrapper" + ((this.props.active) ? " notificationPanel--active" : "")}>
+				<div className="notificationPanel" onClick={this.props.onClick}>
+					<img src={require('../img/notification.png')} />
+					<div className="notificationPanel-badge">{count}</div>
+				</div>
 				{notificationContent}
 			</div>
 		)

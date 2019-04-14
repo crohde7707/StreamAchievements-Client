@@ -1,0 +1,76 @@
+.notificationPanel-wrapper {
+	margin-left: auto;
+	position: relative;
+	user-select: none;
+}
+
+.notificationPanel {
+	position: relative;
+	padding: 60px 20px 35px;
+	cursor: pointer;
+}
+
+.notificationPanel--active .notificationPanel {
+	background-color: #794fc6;
+}
+
+.notificationPanel > img {
+	width: 30px;
+	margin: 0 auto;
+}
+
+.notificationPanel-badge {
+	background-color: red;
+	color: white;
+	border-radius: 15px;
+	position: absolute;
+	padding: 3px 8px;
+	font-size: 16px;
+	right: 15px;
+	top: 50px;
+	font-weight: 800;
+}
+
+.notificationContent {
+	display: none;
+	position: absolute;
+	left: 0px;
+	top: 131px;
+	border: 1px solid #333;
+	box-shadow: 0px 1px 2px black;
+}
+
+.notificationPanel--active .notificationContent {
+	display: block;
+}
+
+.notification {
+	display: flex;
+	align-items: center;
+	min-width: 350px;
+	border-bottom: 1px solid #666;
+	background: #DDD;;
+}
+
+.notification--icon {
+	align-items: center;
+	cursor: pointer;
+}
+
+.notification--delete {
+	align-self: baseline;
+	padding: 8px;
+	margin-top: 5px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+.notification--delete:hover {
+	background: #EEE;
+}
+
+.notification--icon img {
+	width: 50px;
+	height: 50px;
+	padding: 5px;
+}
