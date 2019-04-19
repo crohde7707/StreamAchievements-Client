@@ -270,6 +270,17 @@ class AchievementEditModal extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">Condition</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className="textInput"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+								/>
+							</div>
 						</div>
 					);
 					break;

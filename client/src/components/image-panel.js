@@ -11,16 +11,13 @@ export default class ImagePanel extends React.Component {
 	}
 
 	positionModal = () => {
-		let winWidth = window.innerWidth;
-		let winHeight = window.innerHeight;
+			let winWidth = window.innerWidth;
+			let winHeight = window.innerHeight;
 
-		let scrollTop = document.documentElement.scrollTop;
-		let achievementModal = document.getElementById('achievementModal');
+			let scrollTop = document.documentElement.scrollTop;
 
-		this.imageModal.style.top = (achievementModal.offsetHeight / 2) - (this.imageModal.offsetHeight / 2) + 'px';
-		console.log(this.imageModal.offsetWidth);
-		console.log(this.imageModal.width);
-		this.imageModal.style.left = (achievementModal.offsetWidth) - (this.imageModal.offsetWidth) + 'px';	
+			this.imageModal.style.top = (winHeight/2) - (this.imageModal.offsetHeight / 2) + scrollTop + 'px';
+			this.imageModal.style.left = (winWidth / 2) - (this.imageModal.offsetWidth / 2) + 'px';	
 	}
 
 	render() {

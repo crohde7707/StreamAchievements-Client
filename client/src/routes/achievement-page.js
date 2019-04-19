@@ -9,7 +9,7 @@ import ImagePanel from '../components/image-panel';
 import connector from '../redux/connector';
 import { build } from '../utils/regex-builder';
 
-import './channel-page.css';
+import './achievement-page.css';
 
 class AchievementPage extends React.Component {
 
@@ -59,14 +59,16 @@ class AchievementPage extends React.Component {
 		touched['icon'] = true;
 
 		if(event.target.files[0]) {
-			
+			let preview = URL.createObjectURL(event.target.files[0]);
 			this.setState({
-				iconPreview: URL.createObjectURL(event.target.files[0]),
+				icon: preview,
+				iconPreview: preview,
 				file: event.target.files[0],
 				touched: touched
 			});	
 		} else {
 			this.setState({
+				icon: '',
 				iconPreview: '',
 				file: '',
 				touched: touched
@@ -379,111 +381,116 @@ class AchievementPage extends React.Component {
 
 			content = (
 				<Template>
-					<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
-						{this.state.error}
+					<div className="achievement-wrapper">
+						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
+							{this.state.error}
+						</div>
+						<div className="achievement-preview">
+							<Achievement earned={true} achievement={this.state} />
+						</div>
+						<form onSubmit={this.handleSubmit}>
+							<div className="formGroup">
+								<label htmlFor="achievement-title">Title</label>
+								<input
+									id="achievement-title"
+									name="title"
+									className="textInput"
+									type="text"
+									value={this.state.title}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-description">Description</label>
+								<input
+									id="achievement-description"
+									name="description"
+									className="textInput"
+									type="text"
+									value={this.state.description}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="formGroup checkboxes">
+								<div className="checkbox">
+									<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
+									<div>
+										<input 
+											id="achievement-earnable"
+											name="earnable"
+											type="checkbox"
+											title="This achievement can currently be earned"
+											checked={this.state.earnable}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+								<div className="checkbox">
+									<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
+									<div>
+										<input
+											id="achievement-limited"
+											name="limited"
+											type="checkbox"
+											title="This achievement can only be earned for a limited time"
+											checked={this.state.limited}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+								<div className="checkbox">
+									<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
+									<div>
+										<input
+											id="achievement-secret"
+											name="secret"
+											type="checkbox"
+											title="This achievement will be a secret in your list until someone earns it!"
+											checked={this.state.secret}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+							</div>
+							<h4>Condition</h4>
+							<div className="formGroup">
+								<label htmlFor="achievement-code">Type</label>
+								<select 
+									id="achievement-code"
+									name="code"
+									className="selectInput"
+									title="The code of event that this achievement will be awarded for!"
+									onChange={this.handleDataChange}
+									value={this.state.code}
+								>
+									<option value=""></option>
+									<option value="0">New Sub</option>
+									<option value="1">Resub</option>
+									<option value="2">Gifted Sub</option>
+									<option value="3">Raid</option>
+									{customType}
+								</select>
+							</div>
+							{this.getConditionContent()}
+							<h4 class="noMargin">Icon</h4>
+							<div className="formGroup icon-upload">
+								<label htmlFor="achievement-icon">Icon</label>
+								<div
+									className="currentIcon"
+									onClick={this.showImagePanel}
+									onMouseEnter={() => {this.toggleHover(true)}}
+									onMouseLeave={() => {this.toggleHover(false)}}
+								>
+			                    	{imgPreviewContent}
+			                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
+		                    	</div>
+		                    </div>
+		                    <input type="submit" value="Submit" />
+		                    {deleteButton}
+		                    {confirmPanel}
+		                    {imagePanel}
+						</form>
 					</div>
-					<form onSubmit={this.handleSubmit}>
-						<div className="formGroup">
-							<label htmlFor="achievement-title">Title</label>
-							<input
-								id="achievement-title"
-								name="title"
-								className="textInput"
-								type="text"
-								value={this.state.title}
-								onChange={this.handleDataChange}
-							/>
-						</div>
-						<div className="formGroup">
-							<label htmlFor="achievement-description">Description</label>
-							<input
-								id="achievement-description"
-								name="description"
-								className="textInput"
-								type="text"
-								value={this.state.description}
-								onChange={this.handleDataChange}
-							/>
-						</div>
-						<div className="formGroup checkboxes">
-							<div className="checkbox">
-								<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
-								<div>
-									<input 
-										id="achievement-earnable"
-										name="earnable"
-										type="checkbox"
-										title="This achievement can currently be earned"
-										checked={this.state.earnable}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
-							<div className="checkbox">
-								<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
-								<div>
-									<input
-										id="achievement-limited"
-										name="limited"
-										type="checkbox"
-										title="This achievement can only be earned for a limited time"
-										checked={this.state.limited}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
-							<div className="checkbox">
-								<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-								<div>
-									<input
-										id="achievement-secret"
-										name="secret"
-										type="checkbox"
-										title="This achievement will be a secret in your list until someone earns it!"
-										checked={this.state.secret}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
-						</div>
-						<h4>Condition</h4>
-						<div className="formGroup">
-							<label htmlFor="achievement-code">Type</label>
-							<select 
-								id="achievement-code"
-								name="code"
-								className="selectInput"
-								title="The code of event that this achievement will be awarded for!"
-								onChange={this.handleDataChange}
-								value={this.state.code}
-							>
-								<option value=""></option>
-								<option value="0">New Sub</option>
-								<option value="1">Resub</option>
-								<option value="2">Gifted Sub</option>
-								<option value="3">Raid</option>
-								{customType}
-							</select>
-						</div>
-						{this.getConditionContent()}
-						<h4 class="noMargin">Icon</h4>
-						<div className="formGroup icon-upload">
-							<label htmlFor="achievement-icon">Icon</label>
-							<div
-								className="currentIcon"
-								onClick={this.showImagePanel}
-								onMouseEnter={() => {this.toggleHover(true)}}
-								onMouseLeave={() => {this.toggleHover(false)}}
-							>
-		                    	{imgPreviewContent}
-		                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
-	                    	</div>
-	                    </div>
-	                    <input type="submit" value="Submit" />
-	                    {deleteButton}
-	                    {confirmPanel}
-	                    {imagePanel}
-					</form>
 				</Template>		
 			);
 

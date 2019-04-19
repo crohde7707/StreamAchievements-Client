@@ -1,0 +1,33 @@
+.achievement-wrapper {
+	margin: 15px 10px;
+	color: white;
+}
+
+.achievement-wrapper h4 {
+	font-size: 18px;
+    border-bottom: 1px solid #666;
+    margin-top: 0px;
+    padding-top: 10px;
+}
+
+.achievement-preview {
+	
+}
+
+.achievement-wrapper form {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.achievement-wrapper input {
+	width: 100%;
+    height: 24px;
+}
+
+.achievement-wrapper select {
+    height: 30px;
+}
+
+.achievement-wrapper select {
+	padding: 3px 0px;
+}
