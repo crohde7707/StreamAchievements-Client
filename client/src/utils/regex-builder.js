@@ -8,22 +8,13 @@ let legend = {
 };
 
 let build = (data) => {
-	let regex = [];
+	let replacements = Object.keys(legend);
+    let query = data;
+    replacements.forEach(key => {
+        query = query.replace(new RegExp(key, 'gi'), legend[key].source);
+    });
 
-	let split = data.split(' ');
-
-	split.forEach((piece, idx) => {
-	    if(idx > 0) {
-	       regex.push(legend.space.source);
-	    }
-	    if(legend[piece]) {
-	       regex.push(legend[piece].source);
-	    } else {
-	       regex.push(escape(piece));
-	    }
-	});
-
-	return new RegExp(regex.join(''))
+    return query;
 };
 
 let escape = (s) => {

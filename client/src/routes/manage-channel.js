@@ -31,10 +31,18 @@ class ManageChannel extends React.Component {
 			if(res.data.error) {
 				//redirect to home
 			} else {
-				this.setState({
+
+				let stateUpdate = {
 					channel: res.data.channel,
-					achievements: res.data.achievements
-				});	
+					achievements: res.data.achievements,
+					images: res.data.images
+				};
+
+				if(res.data.images.defaultIcon) {
+					stateUpdate.iconPreview = res.data.images.defaultIcon;
+				}
+
+				this.setState(stateUpdate);
 			}
 		});
 	}
@@ -125,6 +133,30 @@ class ManageChannel extends React.Component {
 				achievements: currentAchievements
 			});
 		}
+	}
+
+	handleIconChange = (event) => {
+		let touched = this.state.touched || {};
+		touched['icon'] = true;
+
+		if(event.target.files[0]) {
+			
+			this.setState({
+				iconPreview: URL.createObjectURL(event.target.files[0]),
+				file: event.target.files[0],
+				touched: touched
+			});	
+		} else {
+			this.setState({
+				iconPreview: '',
+				file: '',
+				touched: touched
+			});
+		}
+		
+	}
+
+	handleSubmit = () => {
 
 	}
 
@@ -134,16 +166,44 @@ class ManageChannel extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, achievementContent, memberContent;
+		let generalContent, achievementContent, imageContent, memberContent;
 
 		if(this.state.channel) {
 
 			let {logo, owner} = this.state.channel;
 			let achievements = this.state.achievements;
+			let {defaultImage, achievementImages} = this.state.images;
 
 			if(Array.isArray(this.state.filteredAchievements)) {
 
 				achievements = this.state.filteredAchievements;
+			}
+
+			let customDefaultIcon;
+
+			if(this.state.iconPreview) {
+				customDefaultIcon = (
+					<div className="customDefaultImg">
+						<img src={this.state.iconPreview} />
+					</div>
+				);
+			} else {
+				customDefaultIcon = (
+					<div className="customDefaultImg no-default" onClick={() => { this.defaultIconInput.click() }}>
+						<span>Click to Upload</span>
+						<input
+			                type="file"
+			                name="defaultIcon"
+			                id="default-icon"
+			                accept="image/*"
+			                className="default-icon--input"
+			                ref={defaultIconInput =>
+			                    (this.defaultIconInput = defaultIconInput)
+			                }
+			                onChange={this.handleIconChange}
+			            />
+					</div>
+				);
 			}
 
 			generalContent = (
@@ -166,32 +226,25 @@ class ManageChannel extends React.Component {
 					    </div>
 					</div>
 					<h4>Channel Customization</h4>
-					<div class="section-wrapper">
-						<div class="section-label">
-					        <label for="theme">Default Achievement Icon</label>
-					    </div>
-					    <div class="section-value default-icons">
-					        <button type="button" class="gallery-wrapper">
-						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-							</button>
-							<button type="button" class="gallery-wrapper">
-						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-							</button>
-							<button type="button" class="gallery-wrapper">
-						        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-							</button>
-					    </div>
-					</div>
-					<div class="section-wrapper">
-						<div class="section-label">
-					        <label for="theme">Theme</label>
-					    </div>
-					    <div class="section-value">
-					        <select name="name">
-					        	<option disabled selected>default (coming soon!!!)</option>
-					        </select>
-					    </div>
-					</div>
+					<form onSubmit={this.handleSubmit}>
+						<div class="section-wrapper">
+							<div class="section-label">
+						        <label for="defaultIcon">Default Achievement Icon</label>
+						    </div>
+						    <div class="section-value default-icons">
+						    	{customDefaultIcon}
+						        <button type="button" class="default-icon--wrapper">
+							        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								</button>
+								<button type="button" class="default-icon--wrapper">
+							        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								</button>
+						    </div>
+						</div>
+						<div class="section-wrapper--end">
+							 <input type="submit" value="Save" />
+						</div>
+					</form>
 				</div>
 			);
 
@@ -237,6 +290,19 @@ class ManageChannel extends React.Component {
 				</div>
 			);
 
+			imageContent = (
+				<div>
+					<div className="imageGallery">
+						{this.state.images.gallery.map((image, index) => (
+							<div key={'image-' + index} className="image--wrapper">
+								<img src={image.url} />
+								<div className="image--delete"></div>
+							</div>
+						))}
+					</div>
+				</div>
+			);
+
 			memberContent = (
 				this.state.channel.members.map((member, index) => (
 					<div key={'member-' + index} className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}>
@@ -251,8 +317,9 @@ class ManageChannel extends React.Component {
 			);
 		} else {
 			generalContent = (<div>Fetching General Information...</div>);
-			achievementContent = (<div>Fetching Achievements</div>);
-			memberContent = (<div> Fetching Members...</div>);
+			achievementContent = (<div>Fetching Achievements...</div>);
+			imageContent = (<div>Fetching Images...</div>);
+			memberContent = (<div>Fetching Members...</div>);
 		}
 
 		return (
@@ -264,7 +331,7 @@ class ManageChannel extends React.Component {
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">General</Tab>
 							<Tab className="manage-tab">Achievements</Tab>
-							<Tab title="Coming Soon!" className="manage-tab" disabled={true}>Images</Tab>
+							<Tab className="manage-tab">Images</Tab>
 							<Tab className="manage-tab">Members</Tab>
 						</TabList>
 						<TabPanel>
@@ -274,7 +341,7 @@ class ManageChannel extends React.Component {
 							{achievementContent}
 						</TabPanel>
 						<TabPanel>
-							{generalContent}
+							{imageContent}
 						</TabPanel>
 						<TabPanel>
 							<h3>Members</h3>

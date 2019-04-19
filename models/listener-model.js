@@ -5,7 +5,8 @@ const listenerSchema = new Schema({
 	channel: String,
 	code: String,
 	type: String,
-	query: String,
+	bot: String,
+	query: Schema.Types.Mixed,
 	achievement: String
 });
 

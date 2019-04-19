@@ -14,12 +14,28 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
     return res.json({ success: true, data: req.user.id });
   });
 
+let timeout = false
+
 router.get("/user", (req, res) => {
 	console.log(req.cookies.etid);
 
+
+	setTimeout(() => {
+		if(timeout) {
+			console.log('timeout');
+			res.status(500);
+			res.json({
+				message: 'Internal Server Issue'
+			})
+		}
+	}, 10000)
+
+	let timout = true;
 	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
+			console.log('user found!');
 			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
+				timeout = false;
 				if(existingChannel) {
 					res.json({
 						username: foundUser.name,
@@ -35,6 +51,7 @@ router.get("/user", (req, res) => {
 				}
 			});
 		} else {
+			timeout = false;
 			res.json({
 				message: 'User was not found!'
 			});

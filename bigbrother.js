@@ -8,7 +8,7 @@ const client_id = keys.twitch.clientID;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero', 'jazzyrosee'];
+const channels = ['phirehero', 'jazzyrosee', 'cherrryben'];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -17,6 +17,7 @@ let subListeners = {};
 let resubListeners = {};
 let giftSubListeners = {};
 let raidListeners = {};
+let chatListeners = {};
 let requestQueue = [];
 
 //regex matchers
@@ -113,30 +114,47 @@ let raidHandler = (msg) => {
 };
 
 let chatHandler = (channel, msg, username) => {
-	let listeners = chatListeners[channel][username];
+	if(chatListeners[channel]) {
+		let listeners = chatListeners[channel][username];
 	
-	if(listeners) {
-		//Found listeners from this user
+		if(listeners) {
+			console.log('we have listeners...');
+			//Found listeners from this user
+			listeners.forEach(listener => {
+				console.log(listener.query);
+				let regex = new RegExp(listener.query);
+
+				console.log(msg);
+
+				let matches = msg.match(regex);
+
+				if(matches) {
+					console.log(matches);
+				}
+			});
 
 
-		/*
-			Command: !tacos
-			Msg: oxfordsplice [Nacho] - 20584 Tacos [49.60 hours in the stream]
-			Query: {viewer}
+			/*
+				Command: !tacos
+				Msg: oxfordsplice [Nacho] - 20584 Tacos [49.60 hours in the stream]
+				Query: {viewer}
 
-			Command: !steal @phirehero
-			Query: hideoustuber just stole 14 tacos from phirehero
+				Command: !steal @phirehero
+				Query: hideoustuber just stole 14 tacos from phirehero
 
-			Command: !gdice
-			Query: brother_lucifer is gambling! Coin flip lands on.... Heads! 52 tacos have been added into your bag! phirehHype
+				Command: !gdice
+				Query: phirehero is gambling! Dice Roll results: (2,6) Even! 16 tacos have been added into your bag! phirehHype
+				Query: phirehero is gambling! Dice Roll results: *dice roll into a storm drain*......damnit
 
-			Command: !gflip
-			Query: simskrazzyk is gambling! Coin flip lands on.... it's side, and rolls away.....damnit
+				Command: !gflip
+				Query: simskrazzyk is gambling! Coin flip lands on.... it's side, and rolls away.....damnit
 
-			Command: !happy/!sad/!enraged/!frustrated/!focused/!constipated/!inspired/
-			Query: ?response from bot or use userid
-		*/
+				Command: !happy/!sad/!enraged/!frustrated/!focused/!constipated/!inspired/
+				Query: ?response from bot or use userid
+			*/
+		}
 	}
+	
 };
 
 chat.connect().then(clientState => {
@@ -227,7 +245,7 @@ let retrieveChannelListeners = () => {
 			//decompose listeners
 			let listeners = response.data;
 			listeners.forEach(listener => {
-				let query, key;
+				let query, key, bot;
 				let channel = listener.channel;
 
 				if(channels.includes(channel) && !channelsAdded[channel]) {
@@ -266,9 +284,10 @@ let retrieveChannelListeners = () => {
 
 					case "4":
 						//Custom
+						bot = listener.bot;
 						chatListeners[channel] = chatListeners[channel] || {};
-						chatListeners[channel][bot] = chatListeners[channel][bot] || {};
-						chatListeners[channel][bot][query] = listener;
+						chatListeners[channel][bot] = chatListeners[channel][bot] || [];
+						chatListeners[channel][bot].push(listener);
 						break;
 
 					default:

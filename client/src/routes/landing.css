@@ -40,6 +40,10 @@
     height: 100px;
 }
 
+.logo {
+    width: 98%;
+}
+
 .landing-header {
     display: flex;
     justify-content: space-between;

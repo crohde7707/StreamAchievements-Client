@@ -73,21 +73,25 @@ router.post("/create", (req, res) => {
 								let updates = req.body;
 								delete updates.edit;
 
-								let {code, resubType, query} = updates;
+								let {code, resubType, query, bot} = updates;
 
 								let listenerUpdates = {};
 
-								if(updates.code) {
-									listenerUpdates.code = updates.code;
+								if(code) {
+									listenerUpdates.code = code;
 									delete updates.code;
 								}
-								if(updates.resubType) {
-									listenerUpdates.resubType = updates.resubType;
+								if(resubType) {
+									listenerUpdates.resubType = resubType;
 									delete updates.resubType;
 								}
-								if(updates.query) {
-									listenerUpdates.query = updates.query;
+								if(query) {
+									listenerUpdates.query = query;
 									delete updates.query;
+								}
+								if(bot) {
+									listenerUpdates.bot = bot;
+									delete updates.bot;
 								}
 
 								Achievement.findOneAndUpdate({ _id: existingAchievement._id }, { $set: updates }, {new:true}).then((updatedAchievement) => {
@@ -114,65 +118,72 @@ router.post("/create", (req, res) => {
 									}
 								});
 							} else {
-								let achData = {
-									channel: existingChannel.owner,
-									title: req.body.title,
-									description: req.body.description,
-									icon: req.body.icon,
-									earnable: req.body.earnable,
-									limited: req.body.limited,
-									secret: req.body.secret,
-									listener: req.body.listener
-								};
 
-								let listenerData = {
-									channel: existingChannel.owner,
-									code: parseInt(req.body.code)
-								};
+								Achievement.count().then(count => {
+									let achData = {
+										uid: count + 1,
+										channel: existingChannel.owner,
+										title: req.body.title,
+										description: req.body.description,
+										icon: req.body.icon,
+										earnable: req.body.earnable,
+										limited: req.body.limited,
+										secret: req.body.secret,
+										listener: req.body.listener
+									};
 
-								if(listenerData.code > 0) {
-									listenerData.query = req.body.query;
+									let listenerData = {
+										channel: existingChannel.owner,
+										code: req.body.code
+									};
 
-									if(listenerData.code === 1) {
-										listenerData.resubType = parseInt(req.body.resubType);
+									if(listenerData.code !== '0') {
+										listenerData.query = req.body.query;
+
+										if(listenerData.code === "1") {
+											listenerData.resubType = parseInt(req.body.resubType);
+										}
+										if(listenerData.code === "4") {
+											listenerData.bot = req.body.bot;
+										}
 									}
-								}
 
-								console.log('creating new achievement');
-								//Upload Image to Cloud
-								console.log(req.body);
-								
+									console.log('creating new achievement');
+									//Upload Image to Cloud
+									console.log(req.body);
+									
 
-								Listener.findOne(listenerData).then(foundListener => {
-									if(foundListener) {
-										Achievement.findOne({listener: foundListener._id}).then(foundAchievement => {
-											res.json({
-												created: false,
-												message: "The conditions you selected are already taken by the \"" + foundAchievement.title + "\" achievement!"
+									Listener.findOne(listenerData).then(foundListener => {
+										if(foundListener) {
+											Achievement.findOne({listener: foundListener._id}).then(foundAchievement => {
+												res.json({
+													created: false,
+													message: "The conditions you selected are already taken by the \"" + foundAchievement.title + "\" achievement!"
+												});
 											});
-										});
-									} else {
-										uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
-											achData.icon = result.image.url;
-											new Achievement(achData).save().then((newAchievement) => {
-												console.log('new achievement in DB');
-												listenerData.achievement = newAchievement.id;
-												//create listener for achievement
-												new Listener(listenerData).save().then(newListener => {
-													console.log("new listener in DB");
+										} else {
+											uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
+												achData.icon = result.image.url;
+												new Achievement(achData).save().then((newAchievement) => {
+													console.log('new achievement in DB');
+													listenerData.achievement = newAchievement.id;
+													//create listener for achievement
+													new Listener(listenerData).save().then(newListener => {
+														console.log("new listener in DB");
 
-													newAchievement.listener = newListener.id;
-													newAchievement.save().then(updatedAchievement => {
-														res.json({
-															created: true,
-															achievement: newAchievement
-														});	
+														newAchievement.listener = newListener.id;
+														newAchievement.save().then(updatedAchievement => {
+															res.json({
+																created: true,
+																achievement: newAchievement
+															});	
+														});
 													});
 												});
 											});
-										});
-									}
-								});		
+										}
+									});	
+								});
 							}
 						}
 					});	
@@ -258,28 +269,71 @@ router.post("/delete", (req, res) => {
 
 router.get("/retrieve", (req, res) => {
 	let channel = req.query.id;
+	let achievement = req.query.aid;
+	console.log(channel);
+	console.log(achievement);
+	if(achievement) {
+		Achievement.findOne({
+			uid: achievement,
+			channel: channel
+		}).then(existingAchievement => {
+			if(existingAchievement) {
+				let listenerID = existingAchievement.listener;
+				Listener.findOne({
+					"_id": existingAchievement.listener,
+					channel: existingAchievement.channel
+				}).then(existingListener => {
+					if(existingListener) {
+						let listenerData = Object.assign({}, existingListener['_doc']);
+						let achievementData = Object.assign({}, existingAchievement['_doc']);
 
-	Achievement.find({channel: channel}).then((achievements) => { 
-		if(achievements) {
-			let listenerIds = achievements.map(achievement => {
-				return achievement.listener
-			});
+						delete listenerData._id;
 
-			Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
-				achievements.forEach(achievement => {
-					let listenerData = listeners.find(listener => listener._id = achievement.listener);
+						let mergedAchievement = Object.assign(achievementData, listenerData);
 
-					delete listenerData._id;
+						res.json({
+							achievement: mergedAchievement
+						});
+					} else {
+						res.json({
+							achievement: existingAchievement
+						})
+					}
+				});
+			} else {
+				res.json({
+					achievement: null
+				});
+			}
+		});
 
-					return Object.assign(achievement, listenerData);
+	} else if(channel) {
+		Achievement.find({channel: channel}).then((achievements) => { 
+			if(achievements) {
+				let listenerIds = achievements.map(achievement => {
+					return achievement.listener
 				});
 
-				res.json(achievements);
-			});
-		} else {
-			res.json(achievements);	
-		}
-	});
+				Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+					achievements.forEach(achievement => {
+						let listenerData = listeners.find(listener => listener._id = achievement.listener);
+
+						delete listenerData._id;
+
+						return Object.assign(achievement, listenerData);
+					});
+
+					res.json(achievements);
+				});
+			} else {
+				res.json(achievements);	
+			}
+		});
+	} else {
+
+	}
+
+	
 });
 
 router.get('/listeners', (req, res) => {
@@ -300,6 +354,10 @@ router.get('/listeners', (req, res) => {
 				res.json([]);
 			}
 		});
+});
+
+router.get('/foo', (req, res) => {
+	res.send('foo');
 });
 
 router.post('/listeners', (req, res) => {

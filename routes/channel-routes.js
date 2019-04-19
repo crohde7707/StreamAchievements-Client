@@ -7,6 +7,7 @@ const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
 const Listener = require('../models/listener-model');
+const Image = require('../models/image-model');
 
 router.get("/create", (req, res) => {
 	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
@@ -269,9 +270,27 @@ router.get('/retrieve', (req, res) => {
 									
 								});
 
-								res.json({
-									channel: existingChannel,
-									achievements: mergedAchievements
+								//Get Images
+								Image.find({channel: existingChannel.owner}).then(foundImages => {
+									if(foundImages) {
+										res.json({
+											channel: existingChannel,
+											achievements: mergedAchievements,
+											images: {
+												gallery: foundImages,
+												default: ""
+											}
+										});
+									} else {
+										res.json({
+											channel: existingChannel,
+											achievements: mergedAchievements,
+											images: {
+												gallery: [],
+												default: ""
+											}
+										});
+									}
 								});
 							});
 						} else {

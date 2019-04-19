@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const achievementSchema = new Schema({
+	uid: Number,
 	channel: String,
 	title: String,
 	description: String,

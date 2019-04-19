@@ -49,7 +49,7 @@ export default class LandingPage extends React.Component {
 				<div className="section-wrapper main">
 					<div className="section-content">
 						<div>
-							<h1>Welcome to Stream Achievements</h1>
+							<img className="logo" src={require('../img/logo.png')} />
 							<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community!</p>
 						</div>
 					</div>
