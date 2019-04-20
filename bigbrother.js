@@ -6,6 +6,8 @@ const token = keys.phirebot.token;
 const username = keys.phirebot.username;
 const client_id = keys.twitch.clientID;
 
+const build = require('./utils/regex-builder').build;
+
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
 const channels = ['phirehero', 'jazzyrosee', 'cherrryben'];
@@ -121,7 +123,7 @@ let chatHandler = (channel, msg, username) => {
 			console.log('we have listeners...');
 			//Found listeners from this user
 			listeners.forEach(listener => {
-				console.log(listener.query);
+				
 				let regex = new RegExp(listener.query);
 
 				console.log(msg);
@@ -287,6 +289,11 @@ let retrieveChannelListeners = () => {
 						bot = listener.bot;
 						chatListeners[channel] = chatListeners[channel] || {};
 						chatListeners[channel][bot] = chatListeners[channel][bot] || [];
+
+						let builtQuery = build(listener.query);
+						console.log(builtQuery);
+						listener.query = builtQuery;
+
 						chatListeners[channel][bot].push(listener);
 						break;
 

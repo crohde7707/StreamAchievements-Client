@@ -1,6 +1,8 @@
 .achievement-wrapper {
-	margin: 15px 10px;
+	margin: 15px auto;
 	color: white;
+	max-width: 800px;
+	position: relative;
 }
 
 .achievement-wrapper h4 {
@@ -30,4 +32,24 @@
 
 .achievement-wrapper select {
 	padding: 3px 0px;
+}
+
+.helpText {
+	text-align: right;
+}
+
+.checkboxes {
+	display: flex;
+	width: 103%;
+}
+
+.button-bank {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 10px;
+}
+
+.button-bank button {
+	padding: 10px 15px;
+	width: 48%;
 }

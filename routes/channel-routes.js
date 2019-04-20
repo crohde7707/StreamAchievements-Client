@@ -245,6 +245,7 @@ router.get('/retrieve', (req, res) => {
 										console.log(listenerData);
 										let merge = {
 											"_id": achievement['_id'],
+											uid: achievement.uid,
 											channel: achievement.owner,
 											title: achievement.title,
 											description: achievement.description,

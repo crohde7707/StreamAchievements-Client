@@ -66,7 +66,7 @@ class Header extends React.Component {
 		let manageLink = null;
 
 		if(this.props.profile && this.props.profile.owner) {
-			manageLink = (<li><Link to={"/channel/" + this.props.profile.username + "/manage"}>Manage Channel</Link></li>);
+			manageLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);
 		}
 
 		if(this.props.profile && this.props.profile.notifications) {

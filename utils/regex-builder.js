@@ -1,5 +1,3 @@
-
-
 let legend = {
 	'{user}': /([a-zA-Z0-9_]+)/,
 	'{target}': /([a-zA-Z0-9_]+)/,
@@ -23,10 +21,3 @@ let escape = (s) => {
 export {
 	build
 }
-
-/*
-	- Username of achievement earner
-	- Username of target
-	- Value
-	- Count
-*/

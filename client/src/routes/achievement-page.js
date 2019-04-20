@@ -7,7 +7,6 @@ import Notice from '../components/notice';
 import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
 import connector from '../redux/connector';
-import { build } from '../utils/regex-builder';
 
 import './achievement-page.css';
 
@@ -46,12 +45,45 @@ class AchievementPage extends React.Component {
 				} else {
 
 					this.setState({
+						originalAchievement: res.data.achievement,
 						...res.data.achievement,
-						iconPreview: res.data.achievement.icon
+						iconPreview: res.data.achievement.icon,
+						edit: true
 					});
 				}
 			});
 		}
+	}
+
+	revert = () => {
+		let originalAchievement = this.state.originalAchievement;
+
+		if(originalAchievement) {
+			this.setState({
+				...originalAchievement,
+				iconPreview: originalAchievement.icon,
+				touched: {}
+			});	
+		} else {
+			this.setState({
+				title: "",
+				description: "",
+				icon: "",
+				code: "",
+				resubType: "0",
+				query: "",
+				bot: "",
+				earnable: true,
+				limited: false,
+				secret: false,
+				iconPreview: '',
+				id: '',
+				edit: false,
+				showConfirm: false,
+				showImagePanel: false
+			});
+		}
+		
 	}
 
 	handleIconChange = (event) => {
@@ -85,10 +117,19 @@ class AchievementPage extends React.Component {
 		let touched = this.state.touched || {};
 		touched[name] = true;
 
-		this.setState({
+		let stateUpdate = {
 			[name]: value,
-			touched: touched
-		});
+			touched
+		};
+
+		if(name === "code") {
+			stateUpdate.touched['query'] = true;
+			stateUpdate.query = '';
+		}
+
+
+
+		this.setState(stateUpdate);
 	}
 
 	getConditionContent = () => {
@@ -267,7 +308,6 @@ class AchievementPage extends React.Component {
 
 				if(this.state.code === "4") {
 					achievement.bot = this.state.bot
-					achievement.query = build(achievement.query);
 				}
 			}
 		}
@@ -312,6 +352,7 @@ class AchievementPage extends React.Component {
 			console.log(res.data);
 			if(res.data.created) {
 				//redirect to manage-channel#achievements
+
 			} else if(res.data.update) {
 				//redirect to manage-channel#achievements
 			} else {
@@ -379,18 +420,27 @@ class AchievementPage extends React.Component {
 				imgPreviewContent = (<div className="currentIcon--placeholder"></div>);
 			}
 
+			let pageHeader = "Create Achievement";
+
+			if(this.props.match.params.achievementid) {
+				pageHeader = "Edit Achievement";
+			}
+
 			content = (
 				<Template>
 					<div className="achievement-wrapper">
+						<h2>{pageHeader}<span>{deleteButton}</span></h2>
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}
 						</div>
+						<h4>Achievement Preview</h4>
 						<div className="achievement-preview">
 							<Achievement earned={true} achievement={this.state} />
 						</div>
+						<h4>Achievement Info</h4>
 						<form onSubmit={this.handleSubmit}>
 							<div className="formGroup">
-								<label htmlFor="achievement-title">Title</label>
+								<label htmlFor="achievement-title">Name</label>
 								<input
 									id="achievement-title"
 									name="title"
@@ -412,49 +462,52 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="formGroup checkboxes">
-								<div className="checkbox">
-									<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
-									<div>
-										<input 
-											id="achievement-earnable"
-											name="earnable"
-											type="checkbox"
-											title="This achievement can currently be earned"
-											checked={this.state.earnable}
-											onChange={this.handleDataChange}
-										/>
+								<label>Configuration</label>
+								<div className="checkboxes">
+									<div className="checkbox">
+										<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
+										<div>
+											<input 
+												id="achievement-earnable"
+												name="earnable"
+												type="checkbox"
+												title="This achievement can currently be earned"
+												checked={this.state.earnable}
+												onChange={this.handleDataChange}
+											/>
+										</div>
 									</div>
-								</div>
-								<div className="checkbox">
-									<label htmlFor="achievement-earnable" title="This achievement can only be earned for a limited time" >Limited Time</label>
-									<div>
-										<input
-											id="achievement-limited"
-											name="limited"
-											type="checkbox"
-											title="This achievement can only be earned for a limited time"
-											checked={this.state.limited}
-											onChange={this.handleDataChange}
-										/>
+									<div className="checkbox">
+										<label htmlFor="achievement-limited" title="This achievement can only be earned for a limited time" >Limited Time</label>
+										<div>
+											<input
+												id="achievement-limited"
+												name="limited"
+												type="checkbox"
+												title="This achievement can only be earned for a limited time"
+												checked={this.state.limited}
+												onChange={this.handleDataChange}
+											/>
+										</div>
 									</div>
-								</div>
-								<div className="checkbox">
-									<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-									<div>
-										<input
-											id="achievement-secret"
-											name="secret"
-											type="checkbox"
-											title="This achievement will be a secret in your list until someone earns it!"
-											checked={this.state.secret}
-											onChange={this.handleDataChange}
-										/>
+									<div className="checkbox">
+										<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
+										<div>
+											<input
+												id="achievement-secret"
+												name="secret"
+												type="checkbox"
+												title="This achievement will be a secret in your list until someone earns it!"
+												checked={this.state.secret}
+												onChange={this.handleDataChange}
+											/>
+										</div>
 									</div>
 								</div>
 							</div>
 							<h4>Condition</h4>
 							<div className="formGroup">
-								<label htmlFor="achievement-code">Type</label>
+								<label htmlFor="achievement-code">Type of Achievement</label>
 								<select 
 									id="achievement-code"
 									name="code"
@@ -485,8 +538,11 @@ class AchievementPage extends React.Component {
 			                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
 		                    	</div>
 		                    </div>
-		                    <input type="submit" value="Submit" />
-		                    {deleteButton}
+		                    <input type="submit" value="Save" />
+		                    <div className="button-bank">
+			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>
+			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/manage/' + this.props.profile.username);}}>Cancel</button>
+		                    </div>
 		                    {confirmPanel}
 		                    {imagePanel}
 						</form>

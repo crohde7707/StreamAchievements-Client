@@ -109,8 +109,9 @@
 .formGroup .textInput,
 .formGroup .selectInput {
     font-size: 14px;
-    width: 98%;
+    width: 96%;
     padding-left: 2%;
+    margin-left: 2%;
 }
 
 .formGroup.checkboxGroup {

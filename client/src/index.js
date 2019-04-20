@@ -26,8 +26,9 @@ ReactDOM.render((
 	        		<Route path='/home' component={HomePage} />
 					<Route path='/profile' component={ProfilePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
-	        		<Route path='/channel/:channelid/manage' component={ManageChannelPage} />
-	        		<Route path='/channel/:channelid/achievement/:achievementid' component={AchievementPage} />
+	        		<Route path='/manage/:channelid/achievement/:achievementid' component={AchievementPage} />
+	        		<Route path='/manage/:channelid/achievement' component={AchievementPage} />
+	        		<Route path='/manage/:channelid/' component={ManageChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/test" component={TestPage} />
 	    		</Switch>

@@ -3,11 +3,13 @@ import axios from 'axios';
 import {Redirect} from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import connector from '../redux/connector';
+import {Link} from 'react-router-dom';
 
 import Notice from '../components/notice';
 import Template from '../components/template';
 import Achievement from '../components/achievement';
 import AchievementEditModal from '../components/achievement-edit-modal';
+
 
 import './manage-channel.css';
 
@@ -272,7 +274,7 @@ class ManageChannel extends React.Component {
 							<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 						</div>
 						<div className="achievementsHeader--add">
-							<a onClick={() => (this.showAchievementModal())} href="javascript:;">Add New...</a>
+							<Link to={"/manage/" + this.props.profile.username + "/achievement"}>Add New...</Link>
 							<div className="achievementHeader--plus">
 								<img src={require('../img/plus.png')} />
 							</div>
@@ -283,7 +285,7 @@ class ManageChannel extends React.Component {
 							key={'achievement-' + index}
 							editable={true}
 							achievement={achievement}
-							onClick={this.showAchievementModal}
+							onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '/achievement/' + achievement.uid)}}
 						/>
 					))}
 					{modal}
