@@ -313,7 +313,7 @@ class AchievementPage extends React.Component {
 		}
 
 		achievement.edit = this.state.edit;
-		achievement.id = this.state.id;
+		achievement.id = this.state._id;
 
 		if(this.state.file) {
 			var reader  = new FileReader();
@@ -335,13 +335,14 @@ class AchievementPage extends React.Component {
 		});
 		
 		axios.post('/api/achievement/delete', {
-			achievementID: this.state.id
+			achievementID: this.state._id
 		}).then(response => {
 			let data = {
 				notice: "\"" + this.state.title + "\" achievement was deleted successfully!",
-				delete: this.state.id
+				delete: this.state._id
 			};
 
+			this.props.history.push('/manage/' + this.props.profile.username);
 			//redirect to manage-channel#achievements
 		});
 	}
@@ -409,7 +410,14 @@ class AchievementPage extends React.Component {
 			}
 
 			if(this.state.edit) {
-				deleteButton = (<button type="button" className="delete-achievement-button" onClick={() => {this.setState({showConfirm: true})}}>Delete</button>);
+				deleteButton = (
+					<img
+						className="delete-achievement-button"
+						onClick={() => {this.setState({showConfirm: true})}}
+						src={require('../img/trash-white.png')}
+					/>
+				);
+				//deleteButton = (<button type="button" className="delete-achievement-button" onClick={() => {this.setState({showConfirm: true})}}>Delete</button>);
 			}
 
 			let customType = (<option title="Unlocked wtih paid tier!" value="4">Custom</option>);
@@ -429,7 +437,10 @@ class AchievementPage extends React.Component {
 			content = (
 				<Template>
 					<div className="achievement-wrapper">
-						<h2>{pageHeader}<span>{deleteButton}</span></h2>
+						<div className="achievementPage-header">
+							<h2>{pageHeader}</h2>
+							<span>{deleteButton}</span>
+						</div>
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}
 						</div>

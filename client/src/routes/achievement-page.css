@@ -12,6 +12,27 @@
     padding-top: 10px;
 }
 
+.achievementPage-header {
+	display: flex;
+	align-items: center;
+}
+
+.achievementPage-header h2 {
+	flex: 1;
+}
+
+.delete-achievement-button {
+    height:25px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-achievement-button:hover {
+	background:rgb(63, 56, 82);
+    transition: all 0.2s ease;
+}
+
 .achievement-preview {
 	
 }

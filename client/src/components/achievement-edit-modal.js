@@ -8,7 +8,6 @@ import { build } from '../utils/regex-builder';
 import './modal.css';
 
 class AchievementEditModal extends React.Component {
-
 	constructor(props) {
 		super(props);
 
@@ -340,7 +339,7 @@ class AchievementEditModal extends React.Component {
 		}
 
 		achievement.edit = this.state.edit;
-		achievement.id = this.state.id;
+		achievement.id = this.state._id;
 
 		if(this.state.file) {
 			var reader  = new FileReader();
@@ -363,11 +362,11 @@ class AchievementEditModal extends React.Component {
 		});
 		
 		axios.post('/api/achievement/delete', {
-			achievementID: this.state.id
+			achievementID: this.state._id
 		}).then(response => {
 			let data = {
 				notice: "\"" + this.state.title + "\" achievement was deleted successfully!",
-				delete: this.state.id
+				delete: this.state._id
 			};
 
 			this.onMaskClick();
