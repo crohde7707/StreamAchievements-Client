@@ -4,6 +4,15 @@ const keys = require('../configs/keys');
 const Cryptr = require('cryptr');
 const axios = require('axios');
 const cryptr = new Cryptr(keys.session.cookieKey);
+const User = require('../models/user-model');
+
+//patreon
+let url = require('url');
+let patreon = require('patreon');
+let patreonAPI = patreon.patreon;
+let patreonOAuth = patreon.oauth;
+
+let patreonOauthClient = patreonOAuth(keys.patreon2.clientID, keys.patreon2.clientSecret);
 
 const CALLBACK_URL = 'http://localhost:5000/auth/patreon/redirect';
 
@@ -35,34 +44,71 @@ router.get('/patreon', (req, res) => {
 
 	let patreonURL = 'https://www.patreon.com/oauth2/authorize?';
 	patreonURL += 'response_type=code&';
-	patreonURL += 'client_id=' + keys.patreon.clientID + '&';
+	patreonURL += 'client_id=' + keys.patreon2.clientID + '&';
 	patreonURL += 'redirect_uri=' + CALLBACK_URL;
+	patreonURL += '&scope=campaigns%20identity%20identity%5Bemail%5D%20identity.memberships%20campaigns.members'
 
 	res.redirect(patreonURL);
 });
 
 router.get('/patreon/redirect', (req, res) => {
-	let otc = req.query.code;
+	let oauthGrantCode = req.query.code;
 
-	axios.post('https://www.patreon.com/oauth2/token', {
-		code: otc,
-		grant_type: [authorization_code],
-		client_id: keys.patreon.clientID,
-		client_secret: keys.patreon.clientSecret,
-		redirect_uri: CALLBACK_URL
-	}).then(response => {
-		let token = response.access_token;
-		//Get User Data
-		axios.get('https://patreon.com/api/oauth2/api/current_user', { 
-			headers: {"Authorization" : `Bearer ${token}`}
-		}).then(response => {
-			//vanity, thumb_url
-			let {thumb_url, vanity} = response.data.attributes;
-			//Loop and get Stream Achievements pledge
+	return patreonOauthClient.getTokens(oauthGrantCode, CALLBACK_URL).then(tokenResponse => {
+		let patreonAPIClient = patreonAPI(tokenResponse.access_token)
+		let etid = (req.cookies.etid);
+
+		return new Promise((resolve, reject) => {
+							
+			let at = cryptr.encrypt(tokenResponse.access_token);
+			let rt = cryptr.encrypt(tokenResponse.refresh_token);
+
+			//axios.get('https://www.patreon.com/api/oauth2/v2/identity?include=memberships', {
+			axios.get('https://www.patreon.com/api/oauth2/v2/identity?include=memberships&fields%5Buser%5D=thumb_url,vanity&fields%5Bmember%5D=patron_status', {
+				headers: {
+					Authorization: `Bearer ${tokenResponse.access_token}`
+				}
+			}).then(res => {
+				console.log(res.data.data);
+				console.log(res.data.included);
+				// resolve({
+				// 	thumb_url: res.data.data.attributes.thumb_url,
+				// 	vanity: res.data.data.attributes.vanity,
+				// 	patreonID: res.data.data.id,
+				// 	at,
+				// 	rt,
+				// 	etid
+				// });
+
+				// axios.get('https://www.patreon.com/api/oauth2/v2/campaigns/2604384/members#include=currently_entitled_tiers', {
+				// 	headers: {
+				// 		Authorization: `Bearer ${tokenResponse.access_token}`
+				// 	}	
+				// }).then(res => {
+				// 	console.log(res.data);
+				// });
+			});
 		});
-		//Encrypt access token
+	}).then(({thumb_url, vanity, patreonID, at, rt, etid}) => {
+		console.log(thumb_url);
+		console.log(vanity);
 
-		//store token in User table
+		User.findOne({'integration.twitch.etid': etid}).then(foundUser => {
+			if(foundUser) {
+
+				let integration = Object.assign({}, foundUser.integration);
+
+				integration.patreon = {thumb_url, vanity, id: patreonID, at, rt};
+
+				foundUser.integration = integration;
+
+				foundUser.save().then(savedUser => {
+					//2604384
+					res.redirect('http://localhost:3000/profile');
+				});
+			}
+		});
+
 	});
 })
 
@@ -72,5 +118,3 @@ router.get('/logout', (req, res) => {
 });
 
 module.exports = router;
-
-//TODO: move react code to be on server side instead of client, simple express served application using EJS for templates

@@ -94,7 +94,7 @@ class ManageChannel extends React.Component {
 			} else {
 				patreonContent = (
 					<div className="integration integration--patreon not-linked">
-						<a className="patreonLink" href="javascript:;">
+						<a className="patreonLink" href="http://localhost:5000/auth/patreon">
 							<img src={require('../img/patreon-badge.png')} />
 						    <span>Link Your Patreon</span>
 					    </a>
