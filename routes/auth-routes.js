@@ -15,6 +15,9 @@ let patreonOAuth = patreon.oauth;
 let patreonOauthClient = patreonOAuth(keys.patreon2.clientID, keys.patreon2.clientSecret);
 
 const CALLBACK_URL = 'http://localhost:5000/auth/patreon/redirect';
+const PATREON_IDENTITY_API = 'https://www.patreon.com/api/oauth2/v2/identity?include=memberships&fields%5Buser%5D=thumb_url,vanity';
+const SILVER_TIER_ID = '3497636';
+const GOLD_TIER_ID = '3497710';
 
 router.get('/twitch', passport.authenticate('twitch', {
 	scope: ["user_read"]
@@ -46,7 +49,7 @@ router.get('/patreon', (req, res) => {
 	patreonURL += 'response_type=code&';
 	patreonURL += 'client_id=' + keys.patreon2.clientID + '&';
 	patreonURL += 'redirect_uri=' + CALLBACK_URL;
-	patreonURL += '&scope=campaigns%20identity%20identity%5Bemail%5D%20identity.memberships%20campaigns.members'
+	patreonURL += '&scope=campaigns%20identity%20identity%5Bemail%5D%20campaigns.members'
 
 	res.redirect(patreonURL);
 });
@@ -62,43 +65,70 @@ router.get('/patreon/redirect', (req, res) => {
 							
 			let at = cryptr.encrypt(tokenResponse.access_token);
 			let rt = cryptr.encrypt(tokenResponse.refresh_token);
+			console.log(tokenResponse.expires_in);
+			let vanity;
+			let thumb_url;
 
-			//axios.get('https://www.patreon.com/api/oauth2/v2/identity?include=memberships', {
-			axios.get('https://www.patreon.com/api/oauth2/v2/identity?include=memberships&fields%5Buser%5D=thumb_url,vanity&fields%5Bmember%5D=patron_status', {
+			axios.get(PATREON_IDENTITY_API, {
 				headers: {
 					Authorization: `Bearer ${tokenResponse.access_token}`
 				}
 			}).then(res => {
-				console.log(res.data.data);
-				console.log(res.data.included);
-				// resolve({
-				// 	thumb_url: res.data.data.attributes.thumb_url,
-				// 	vanity: res.data.data.attributes.vanity,
-				// 	patreonID: res.data.data.id,
-				// 	at,
-				// 	rt,
-				// 	etid
-				// });
+				console.log(res.data);
+				vanity = res.data.data.attributes.vanity,
+				thumb_url = res.data.data.attributes.thumb_url
 
-				// axios.get('https://www.patreon.com/api/oauth2/v2/campaigns/2604384/members#include=currently_entitled_tiers', {
-				// 	headers: {
-				// 		Authorization: `Bearer ${tokenResponse.access_token}`
-				// 	}	
-				// }).then(res => {
-				// 	console.log(res.data);
-				// });
+				if(!res.data.included) {
+					//patron is not a member of the patreon
+					//set at, rt, and thumb_url in DB, display panel to follow
+					resolve({
+						thumb_url,
+						vanity,
+						at,
+						rt,
+						etid
+					});
+				} else {
+					//patron is a member via follow, active_patron, declined_patron, or former_patron
+					let longID = (res.data.included[0].id);	
+
+					axios.get(`https://www.patreon.com/api/oauth2/v2/members/${longID}?include=currently_entitled_tiers&fields%5Bmember%5D=patron_status,full_name,is_follower,last_charge_date&fields%5Btier%5D=amount_cents,description,discord_role_ids,patron_count,published,published_at,created_at,edited_at,title,unpublished_at`, {
+						headers: {
+							Authorization: `Bearer ${tokenResponse.access_token}`
+						}
+					}).then(res => {
+						console.log(res.data);
+						//active_patron, declined_patron, former_patron, null
+						let patron_status = res.data.data.attributes.patron_status;
+						let is_follower = res.data.data.attributes.is_follower;
+						let tiers = res.data.data.relationships.currently_entitled_tiers;
+						let isGold = tiers.data.map(tier => tier.id).indexOf(GOLD_TIER_ID) >= 0;
+
+						resolve({
+							id: longID,
+							thumb_url,
+							vanity,
+							at,
+							rt,
+							etid,
+							is_follower,
+							status: patron_status,
+							is_gold: isGold
+						});
+					});
+				}
 			});
 		});
-	}).then(({thumb_url, vanity, patreonID, at, rt, etid}) => {
-		console.log(thumb_url);
-		console.log(vanity);
+	}).then(patreonData => {
+		
+		let {id, thumb_url, vanity, at, rt, etid, is_follower, status, is_gold} = patreonData;
 
 		User.findOne({'integration.twitch.etid': etid}).then(foundUser => {
 			if(foundUser) {
 
 				let integration = Object.assign({}, foundUser.integration);
 
-				integration.patreon = {thumb_url, vanity, id: patreonID, at, rt};
+				integration.patreon = {id, thumb_url, vanity, at, rt, is_follower, status, is_gold};
 
 				foundUser.integration = integration;
 
@@ -110,7 +140,40 @@ router.get('/patreon/redirect', (req, res) => {
 		});
 
 	});
-})
+});
+
+router.post('/patreon/sync', (req, res) => {
+	User.findOne({'integration.twitch.etid': req.cookies.etid}).then(foundUser => {
+		if(foundUser) {
+			let {at, rt, id} = foundUser.integration.patreon;
+
+			axios.get(PATREON_IDENTITY_API, {
+				headers: {
+					Authorization: `Bearer ${tokenResponse.access_token}`
+				}
+			}).then(res => {
+				vanity = res.data.data.attributes.vanity,
+				thumb_url = res.data.data.attributes.thumb_url
+
+				if(!res.data.included) {
+					//patron is not a member of the patreon
+					//set at, rt, and thumb_url in DB, display panel to follow
+					resolve({
+						thumb_url,
+						vanity,
+						at,
+						rt,
+						etid
+					});
+				} else {
+
+				}
+			});
+		} else {
+			res.redirect('http://localhost:3000/');
+		}
+	});
+});
 
 router.get('/logout', (req, res) => {
 	req.logout();

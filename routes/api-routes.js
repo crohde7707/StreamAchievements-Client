@@ -17,9 +17,6 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
 let timeout = false
 
 router.get("/user", (req, res) => {
-	console.log(req.cookies.etid);
-
-
 	setTimeout(() => {
 		if(timeout) {
 			console.log('timeout');
@@ -30,22 +27,42 @@ router.get("/user", (req, res) => {
 		}
 	}, 10000)
 
-	let timout = true;
+	let timeout = true;
+	let patreonInfo;
 	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 		if(foundUser) {
-			console.log('user found!');
+			
+
+			if(foundUser.integration.patreon) {
+
+				let patron = foundUser.integration.patreon;
+
+				patreonInfo = {
+					vanity: patron.vanity,
+					thumb_url: patron.thumb_url,
+					follower: patron.is_follower,
+					status: patron.status,
+					gold: patron.is_gold
+				}
+			} else {
+				patreonInfo = false;
+			}
+
 			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
 				timeout = false;
 				if(existingChannel) {
+					console.log(patreonInfo);
 					res.json({
 						username: foundUser.name,
 						logo: foundUser.logo,
+						patreon: patreonInfo,
 						owner: true
 					});
 				} else {
 					res.json({
 						username: foundUser.name,
 						logo: foundUser.logo,
+						patreon: patreonInfo,
 						owner: false
 					});
 				}

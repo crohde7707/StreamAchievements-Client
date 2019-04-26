@@ -20,6 +20,14 @@ export default class ImagePanel extends React.Component {
 			this.imageModal.style.left = (winWidth / 2) - (this.imageModal.offsetWidth / 2) + 'px';	
 	}
 
+	onChange = (event) => {
+		this.props.onChange(event).then(res => {
+			if(res.error) {
+				console.log(res.error);
+			}
+		});
+	}
+
 	render() {
 
 		let iconGallery = (
@@ -48,6 +56,14 @@ export default class ImagePanel extends React.Component {
             	</div>
 			)
 
+		let previewImage;
+
+		if(this.props.currentImage) {
+			previewImage = this.props.currentImage
+		} else {
+			previewImage = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png' //update with empty image
+		}
+
 		return (
 			<div className="image-panel">
 				<div className="modal-mask" onClick={() => {this.props.onCancel()}}></div>
@@ -59,23 +75,23 @@ export default class ImagePanel extends React.Component {
 						<div className="modal-content chooseImage--wrapper">
 							<div className="currentImage">
 								<h4>Current Image</h4>
-								<img src={this.props.currentImage} />
+								<img src={previewImage} />
 							</div>
 							<div className="chooseImage">
-								<button type="button" onClick={() => {this.fileInputEl.click()}} className="uploadImageButton">Upload an Image</button>
+								<button type="button" onClick={() => {this.fileInputEl.click()}} className="uploadImageButton">Choose an Image</button>
 								<input
 							        type="file"
 							        id="achievement-icon"
-							        accept="image/*"
+							        accept="image/jpeg, image/png"
 							        ref={fileInputEl =>
 							            (this.fileInputEl = fileInputEl)
 							        }
-							        onChange={this.props.onChange}
+							        onChange={this.onChange}
 							    />
-								{iconGallery}
 							</div>
 						</div>
 						<button className="chooseImage--confirm" type="button" onClick={this.props.onConfirm}>Save</button>
+						<button type="button" className="chooseImage--cancel" onClick={this.props.onCancel}>Cancel</button>
 					</div>
 				</div>
 			</div>

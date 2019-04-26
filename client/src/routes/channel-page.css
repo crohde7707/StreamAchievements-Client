@@ -56,7 +56,6 @@
 	align-items: center;
 	transition: all 0.5s ease;
 	margin: 0px 20px;
-    border: 1px solid #333;
 }
 
 .condensed .channel-logo img {
@@ -81,7 +80,8 @@
 
 .channel-achievement-progress {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-end;
+	margin-right: 10px;
 	flex: 1;
 	height: 30px;
 	align-items: center;
@@ -93,7 +93,7 @@
 }
 
 .progress-bar-wrapper {
-  width: 80%;
+  width: 75%;
   background-color: #FFF;
   height: 30px;
   border-radius: 9px;

@@ -1,0 +1,95 @@
+.integration--patreon .integration-content {
+	display: flex;
+	padding: 0;
+}
+
+.patreon--left {
+	padding: 20px;
+    background: #BBB;
+    box-shadow: 0px 1px 2px #333;
+    z-index: 10;
+}
+
+.patreon--thumb img {
+	width: 100px;
+	height: 100px;
+}
+
+.patreon--right {
+	flex: 1;
+}
+
+.patreon--banner {
+	background: #e88446;
+    padding-left: 10px;
+    display: flex;
+    padding: 10px;
+    color: #222;
+    font-weight: 700;
+    font-size: 17px;
+    align-items: center;
+}
+
+.patreon--banner div {
+	flex: 1;
+}
+
+.patreon--banner .follow-button {
+	align-self: flex-end;
+	justify-content: flex-end;
+	background: white;
+    border: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+}
+
+.patreon--content {
+	padding: 10px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.patreon--content > div {
+	text-align: center;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px #333;
+    margin: 0 10px;
+}
+
+.patreon--content button {
+	background: rgb(232, 91, 70);
+    border: none;
+    padding: 10px 15px;
+    margin-top: 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.patreon--content h3 {
+	text-align: center;
+}
+
+.patreon--features {
+	display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.patreon--features div {
+	width: 48%;
+    margin-top: 1px;
+    background: white;
+    padding: 5px;
+    box-shadow: 1px 1px 3px;
+    text-align: center;
+}

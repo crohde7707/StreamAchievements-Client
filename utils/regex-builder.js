@@ -18,6 +18,6 @@ let escape = (s) => {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
-export {
+module.exports = {
 	build
 }

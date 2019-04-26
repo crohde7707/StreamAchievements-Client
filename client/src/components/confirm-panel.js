@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './confirm-panel.css';
+
 export default class ConfirmPanel extends React.Component {
 
 	constructor() {
@@ -32,8 +34,8 @@ export default class ConfirmPanel extends React.Component {
 						</div>
 						<div className="modal-content">
 							<p>Are you sure you want to delete?</p>
-							<button className="delete-achievement-button" onClick={this.props.onConfirm}>Yes</button>
-							<button onClick={this.props.onCancel}>No</button>
+							<button className="confirm-delete-button" onClick={this.props.onConfirm}>Yes</button>
+							<button className="cancel-delete-button" onClick={this.props.onCancel}>No</button>
 						</div>
 					</div>
 				</div>

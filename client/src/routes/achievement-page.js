@@ -87,25 +87,55 @@ class AchievementPage extends React.Component {
 	}
 
 	handleIconChange = (event) => {
-		let touched = this.state.touched || {};
-		touched['icon'] = true;
 
-		if(event.target.files[0]) {
-			let preview = URL.createObjectURL(event.target.files[0]);
-			this.setState({
-				icon: preview,
-				iconPreview: preview,
-				file: event.target.files[0],
-				touched: touched
-			});	
-		} else {
-			this.setState({
-				icon: '',
-				iconPreview: '',
-				file: '',
-				touched: touched
-			});
-		}
+		return new Promise((resolve, reject) => {
+			if(event.target.files[0]) {
+				let file = event.target.files[0];
+				let preview = URL.createObjectURL(file);
+				console.log(event.target);
+				var img = new Image();
+	       		img.src = preview;
+
+		        img.onload = () => {
+		            var width = img.naturalWidth, height = img.naturalHeight;
+		            window.URL.revokeObjectURL( img.src );
+		            console.log(file);
+		            if( width <= 300 && height <= 300 ) {
+		            	let touched = this.state.touched || {};
+						touched['icon'] = true;
+						let newPreview = URL.createObjectURL(file);
+		                
+		                this.setState({
+		                	icon: newPreview,
+		                	iconPreview: newPreview,
+		                	file: file,
+		                	touched: touched
+		                });
+
+						resolve({error: null});
+
+		            } else { 
+		                resolve({
+		                	error: 'Icon needs to be less than 300x300'
+		                });
+		            } 
+		        };
+
+
+			} else {
+				let touched = this.state.touched || {};
+				touched['icon'] = true;
+				
+				this.setState({
+					icon: '',
+					iconPreview: '',
+					file: '',
+					touched: touched
+				});
+
+				resolve({error: null});
+			}
+		});
 		
 	}
 
@@ -342,7 +372,7 @@ class AchievementPage extends React.Component {
 				delete: this.state._id
 			};
 
-			this.props.history.push('/manage/' + this.props.profile.username);
+			this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
 			//redirect to manage-channel#achievements
 		});
 	}
@@ -353,9 +383,10 @@ class AchievementPage extends React.Component {
 			console.log(res.data);
 			if(res.data.created) {
 				//redirect to manage-channel#achievements
-
+				this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
 			} else if(res.data.update) {
 				//redirect to manage-channel#achievements
+				this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
 			} else {
 				this.setState({
 					error: res.data.message
@@ -417,7 +448,6 @@ class AchievementPage extends React.Component {
 						src={require('../img/trash-white.png')}
 					/>
 				);
-				//deleteButton = (<button type="button" className="delete-achievement-button" onClick={() => {this.setState({showConfirm: true})}}>Delete</button>);
 			}
 
 			let customType = (<option title="Unlocked wtih paid tier!" value="4">Custom</option>);
@@ -549,10 +579,10 @@ class AchievementPage extends React.Component {
 			                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
 		                    	</div>
 		                    </div>
-		                    <input type="submit" value="Save" />
+		                    <input type="submit" className="achievement-button submit-achievement" value="Save" />
 		                    <div className="button-bank">
 			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>
-			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/manage/' + this.props.profile.username);}}>Cancel</button>
+			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');}}>Cancel</button>
 		                    </div>
 		                    {confirmPanel}
 		                    {imagePanel}
@@ -560,18 +590,6 @@ class AchievementPage extends React.Component {
 					</div>
 				</Template>		
 			);
-
-		let upload = (
-			<input
-                type="file"
-                id="achievement-icon"
-                accept="image/*"
-                ref={fileInputEl =>
-                    (this.fileInputEl = fileInputEl)
-                }
-                onChange={this.handleIconChange}
-            />
-		);
 
 		return (content);
 	}

@@ -226,81 +226,93 @@ router.get('/retrieve', (req, res) => {
 		User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
 			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
 				if(existingChannel) {
-					Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
 
-						if(achievements) {
-							let listenerIds = achievements.map(achievement => {
-								return achievement.listener
-							});
+					let achievementsPromise = new Promise((resolve, reject) => {
+						Achievement.find({channel: existingChannel.owner}).then((achievements) => { 
 
-							Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+							if(achievements) {
+								let listenerIds = achievements.map(achievement => {
+									return achievement.listener
+								});
 
-								let mergedAchievements = achievements.map(achievement => {
-									
-									let listenerData = listeners.find(listener => {
-										return listener.id === achievement.listener;
+								Listener.find({'_id': { $in: listenerIds}}).then((listeners) => {
+
+									let mergedAchievements = achievements.map(achievement => {
+										
+										let listenerData = listeners.find(listener => {
+											return listener.id === achievement.listener;
+										});
+										
+										if(listenerData) {
+
+											let merge = {
+												"_id": achievement['_id'],
+												uid: achievement.uid,
+												channel: achievement.owner,
+												title: achievement.title,
+												description: achievement.description,
+												icon: achievement.icon,
+												earnable: achievement.earnable,
+												limited: achievement.limited,
+												secret: achievement.secret,
+												listener: achievement.listener,
+												code: listenerData.code
+											}
+											
+											if(listenerData.resubType) {
+												merge.resubType = listenerData.resubType;
+											}
+											if(listenerData.query) {
+												merge.query = listenerData.query;
+											}
+											
+											return merge;
+										} else {
+											return achievement;
+										}
 									});
-									
-									if(listenerData) {
-										console.log(listenerData);
-										let merge = {
-											"_id": achievement['_id'],
-											uid: achievement.uid,
-											channel: achievement.owner,
-											title: achievement.title,
-											description: achievement.description,
-											icon: achievement.icon,
-											earnable: achievement.earnable,
-											limited: achievement.limited,
-											secret: achievement.secret,
-											listener: achievement.listener,
-											code: listenerData.code
-										}
-										
-										if(listenerData.resubType) {
-											merge.resubType = listenerData.resubType;
-										}
-										if(listenerData.query) {
-											merge.query = listenerData.query;
-										}
-										
-										return merge;
-									} else {
-										return achievement;
-									}
-									
-								});
 
-								//Get Images
-								Image.find({channel: existingChannel.owner}).then(foundImages => {
-									if(foundImages) {
-										res.json({
-											channel: existingChannel,
-											achievements: mergedAchievements,
-											images: {
-												gallery: foundImages,
-												default: ""
-											}
-										});
-									} else {
-										res.json({
-											channel: existingChannel,
-											achievements: mergedAchievements,
-											images: {
-												gallery: [],
-												default: ""
-											}
-										});
-									}
+									resolve(mergedAchievements);
 								});
-							});
-						} else {
-							res.json({
-								channel: existingChannel,
-								achievements: achievements
-							});
-						}
-					});	
+							} else {
+								resolve(achievements);
+							}
+						});	
+					});
+
+					let imagesPromise = new Promise((resolve, reject) => {
+						//Get Images
+						Image.find({channel: existingChannel.owner}).then(foundImages => {
+							if(foundImages) {
+								resolve({
+									gallery: foundImages,
+									default: ""
+								});
+							} else {
+								resolve({
+									gallery: [],
+									default: ""
+								});
+							}
+						});
+					});
+
+					let membersPromise = new Promise((resolve, reject) => {
+						User.find({'_id': { $in: existingChannel.members}}).then((members) => {
+							console.log(members)
+							resolve(members);
+						});
+					});
+
+					Promise.all([achievementsPromise, imagesPromise, membersPromise]).then(values => {
+						res.json({
+							channel: existingChannel,
+							achievements: values[0],
+							images: values[1],
+							members: values[2]
+						})
+					});
+					
 				} else {
 					res.json({
 						error: 'User doesn\'t manage a channel'

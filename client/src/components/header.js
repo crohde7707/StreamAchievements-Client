@@ -83,14 +83,14 @@ class Header extends React.Component {
 						<li className="logout"><a href="http://localhost:5000/auth/logout">Log Out</a></li>
 					</ul>
 				</div>
-				<div className="menu-mask" ref={mask => (this._mask = mask)}></div>
+				<div className="menu-mask" ref={mask => (this._mask = mask)} onClick={this.toggleMenu}></div>
 			</div>
 		)
 
 		return (
 			<div id="page-header">
 				<div className="logo">
-					<Link to="/home"><img src="https://cdn.discordapp.com/attachments/441653223955103764/565227698947883010/SPOILER_unknown.png" alt="" /></Link>
+					<Link to="/home"><img src={require('../img/logo.png')} alt="" /></Link>
 				</div>
 				<Notifications onClick={this.toggleNotifications} profile={this.props.profile} active={this.state.notificationActive} />
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>

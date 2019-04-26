@@ -138,6 +138,7 @@ class ChannelPage extends React.Component {
 				if(this.state.joined) {
 					let {achievements} = this.state;
 
+
 					let percentage = Math.floor((achievements.earned.length / achievements.all.length) * 100);
 
 					achievementProgress = (

@@ -2,6 +2,7 @@
 	max-width: 800px;
 	margin: 0 auto;
 	color: white;
+	padding: 0 15px;
 }
 
 .general-configuration img {
@@ -189,7 +190,11 @@
 }
 
 .achievementsHeader--plus {
-	flex: 1;
+	flex: 1;  
+	margin-right: 5px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 .achievementsHeader--add img {
@@ -200,6 +205,9 @@
 	text-decoration: none;
 	color: white;
 	align-self: center;
+	display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
 }
 
 .achievement-search {
@@ -232,9 +240,23 @@
 	top: -1em;
 }
 
-.achievement-logo img {
-	width: 100px;
+.add-achievement {
+	max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    border: 2px dashed #AAA;
+    padding: 10px 20px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
 }
+
+.add-achievement img {
+	width:32px;
+	height:32px;
+	margin-top:5px;
+}
+
 
 .customDefaultImg {
 	display: -webkit-flex;

@@ -72,7 +72,10 @@ passport.use(
 					email: profile.email,
 					channels: [],
 					integration: {
-						twitch: twitchIntegration
+						twitch: twitchIntegration,
+						patreon: {
+							connected: false
+						}
 					}
 				}).save().then((newUser) => {
 					done(null, newUser);

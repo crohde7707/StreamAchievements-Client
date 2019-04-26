@@ -2,7 +2,6 @@
 	margin: 15px auto;
 	color: white;
 	max-width: 800px;
-	position: relative;
 }
 
 .achievement-wrapper h4 {
@@ -62,6 +61,16 @@
 .checkboxes {
 	display: flex;
 	width: 103%;
+}
+
+.achievement-button.submit-achievement {
+	width: 98%;
+	padding: 10px 15px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .button-bank {

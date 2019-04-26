@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
 import Notice from '../components/notice';
 import Template from '../components/template';
 import Achievement from '../components/achievement';
-import AchievementEditModal from '../components/achievement-edit-modal';
+import GiftAchievementModal from '../components/gift-achievement';
 
 
 import './manage-channel.css';
@@ -37,7 +37,8 @@ class ManageChannel extends React.Component {
 				let stateUpdate = {
 					channel: res.data.channel,
 					achievements: res.data.achievements,
-					images: res.data.images
+					images: res.data.images,
+					members: res.data.members
 				};
 
 				if(res.data.images.defaultIcon) {
@@ -71,23 +72,18 @@ class ManageChannel extends React.Component {
 	    }	    
   	}
 
-  	showAchievementModal = (achievement) => {
+  	showGiftModal = () => {
   		
-  		if(achievement) {
-  			console.log(achievement);
-  			this.setState({
-  				isModalActive: true,
-				editing: achievement,
-				modalTitle: "Edit Achievement"
-  			});
-  		} else {
-  			this.setState({
-				isModalActive: true,
-				editing: null,
-				modalTitle: "Add New Achievement"
-			});	
-  		}
+  		this.setState({
+			isModalActive: true
+		});	
 		
+	}
+
+	hideGiftModal = () => {
+		this.setState({
+			isModalActive: false
+		});
 	}
 
 	hideAchievementModal = () => {
@@ -168,13 +164,12 @@ class ManageChannel extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, achievementContent, imageContent, memberContent;
+		let generalContent, achievementTab, imageContent, memberContent;
 
 		if(this.state.channel) {
 
 			let {logo, owner} = this.state.channel;
 			let achievements = this.state.achievements;
-			let {defaultImage, achievementImages} = this.state.images;
 
 			if(Array.isArray(this.state.filteredAchievements)) {
 
@@ -186,7 +181,7 @@ class ManageChannel extends React.Component {
 			if(this.state.iconPreview) {
 				customDefaultIcon = (
 					<div className="customDefaultImg">
-						<img src={this.state.iconPreview} />
+						<img alt="Default Icon" src={this.state.iconPreview} />
 					</div>
 				);
 			} else {
@@ -211,39 +206,39 @@ class ManageChannel extends React.Component {
 			generalContent = (
 				<div className="general-configuration">
 					<h4>Basic Info</h4>
-					<div class="section-wrapper">
-						<div class="section-label">
-					        <label for="name">Twitch Name</label>
+					<div className="section-wrapper">
+						<div className="section-label">
+					        <label htmlFor="name">Twitch Name</label>
 					    </div>
-					    <div class="section-value">
-					        <span name="name">phirehero</span>
+					    <div className="section-value">
+					        <span name="name">{owner}</span>
 					    </div>
 					</div>
-					<div class="section-wrapper">
-						<div class="section-label">
-					        <label for="logo">Channel Logo</label>
+					<div className="section-wrapper">
+						<div className="section-label">
+					        <label htmlFor="logo">Channel Logo</label>
 					    </div>
-					    <div class="section-value">
-					        <span name="logo"><img src={logo} /></span>
+					    <div className="section-value">
+					        <span name="logo"><img alt="" src={logo} /></span>
 					    </div>
 					</div>
 					<h4>Channel Customization</h4>
 					<form onSubmit={this.handleSubmit}>
-						<div class="section-wrapper">
-							<div class="section-label">
-						        <label for="defaultIcon">Default Achievement Icon</label>
+						<div className="section-wrapper">
+							<div className="section-label">
+						        <label htmlFor="defaultIcon">Default Achievement Icon</label>
 						    </div>
-						    <div class="section-value default-icons">
+						    <div className="section-value default-icons">
 						    	{customDefaultIcon}
-						        <button type="button" class="default-icon--wrapper">
-							        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+						        <button type="button" className="default-icon--wrapper">
+							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
 								</button>
-								<button type="button" class="default-icon--wrapper">
-							        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								<button type="button" className="default-icon--wrapper">
+							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
 								</button>
 						    </div>
 						</div>
-						<div class="section-wrapper--end">
+						<div className="section-wrapper--end">
 							 <input type="submit" value="Save" />
 						</div>
 					</form>
@@ -254,50 +249,63 @@ class ManageChannel extends React.Component {
 
 			if(this.state.isModalActive) {
 				modal = (
-					<AchievementEditModal 
+					<GiftAchievementModal 
 						active={this.state.isModalActive}
-						onClose={this.hideAchievementModal}
-						onSubmit={this.updateAchievements}
-						achievement={this.state.editing}
-						title={this.state.modalTitle}
+						onClose={this.hideGiftModal}
+						onSubmit={this.hideGiftModal}
+						members={this.state.members}
 					/>
 				);
 			} else {
 				modal = undefined;
 			}
 
-			achievementContent = (
-				<div>
-					<div className="achievementsHeader">
-						<h3>Showing {achievements.length} Achievements</h3>
-						<div className="achievement-search">
-							<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
-						</div>
-						<div className="achievementsHeader--add">
-							<Link to={"/manage/" + this.props.profile.username + "/achievement"}>Add New...</Link>
-							<div className="achievementHeader--plus">
-								<img src={require('../img/plus.png')} />
-							</div>
+			if(achievements.length === 0 && !this.state.filteredAchievements) {
+				achievementTab = (
+					<div>
+						<div onClick={() => {
+							this.props.history.push('/manage/' + this.props.profile.username + '/achievement');
+						}} className="add-achievement">
+							<div>Add your first achievement!</div>
+							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
 						</div>
 					</div>
-					{achievements.map((achievement, index) => (
-						<Achievement 
-							key={'achievement-' + index}
-							editable={true}
-							achievement={achievement}
-							onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '/achievement/' + achievement.uid)}}
-						/>
-					))}
-					{modal}
-				</div>
-			);
+				);
+			} else {
+				achievementTab = (
+					<div>
+						<div className="achievementsHeader">
+							<h3>Showing {achievements.length} Achievements</h3>
+							<div className="achievement-search">
+								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
+							</div>
+							<div className="achievementsHeader--add">
+								<Link to={"/manage/" + this.props.profile.username + "/achievement"}>Add New...<div className="achievementsHeader--plus">
+									<img alt="" src={require('../img/plus.png')} />
+								</div></Link>
+								
+							</div>
+						</div>
+						{achievements.map((achievement, index) => (
+							<Achievement 
+								key={'achievement-' + index}
+								editable={true}
+								achievement={achievement}
+								onGift={this.showGiftModal}
+								onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '/achievement/' + achievement.uid)}}
+							/>
+						))}
+						{modal}
+					</div>
+				);
+			}
 
 			imageContent = (
 				<div>
 					<div className="imageGallery">
 						{this.state.images.gallery.map((image, index) => (
 							<div key={'image-' + index} className="image--wrapper">
-								<img src={image.url} />
+								<img alt="" src={image.url} />
 								<div className="image--delete"></div>
 							</div>
 						))}
@@ -306,10 +314,10 @@ class ManageChannel extends React.Component {
 			);
 
 			memberContent = (
-				this.state.channel.members.map((member, index) => (
+				this.state.members.map((member, index) => (
 					<div key={'member-' + index} className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}>
 						<div className="member-logo">
-							<img src={member.logo} />
+							<img alt="" src={member.logo} />
 						</div>
 						<div className="member-info">
 							{member.name}
@@ -319,9 +327,27 @@ class ManageChannel extends React.Component {
 			);
 		} else {
 			generalContent = (<div>Fetching General Information...</div>);
-			achievementContent = (<div>Fetching Achievements...</div>);
+			achievementTab = (<div>Fetching Achievements...</div>);
 			imageContent = (<div>Fetching Images...</div>);
 			memberContent = (<div>Fetching Members...</div>);
+		}
+
+		const params = new URLSearchParams(this.props.location.search);
+		const tab = params.get('tab');
+		let tabIndex = 0;
+
+		switch(tab) {
+			case 'achievements':
+				tabIndex = 1;
+				break;
+			case 'images':
+				tabIndex = 2;
+				break;
+			case 'members':
+				tabIndex = 3;
+				break;
+			default:
+				break;
 		}
 
 		return (
@@ -329,7 +355,7 @@ class ManageChannel extends React.Component {
 				<div className="manage-container">
 					<h2>Manage Channel</h2>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
-					<Tabs>
+					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">General</Tab>
 							<Tab className="manage-tab">Achievements</Tab>
@@ -340,7 +366,7 @@ class ManageChannel extends React.Component {
 							{generalContent}
 						</TabPanel>
 						<TabPanel>
-							{achievementContent}
+							{achievementTab}
 						</TabPanel>
 						<TabPanel>
 							{imageContent}

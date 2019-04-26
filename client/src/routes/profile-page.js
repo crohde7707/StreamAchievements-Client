@@ -1,11 +1,11 @@
 import React from 'react';
 import axios from 'axios';
-import {Redirect} from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import connector from '../redux/connector';
 
 import Notice from '../components/notice';
 import Template from '../components/template';
+import PatreonPanel from '../components/patreon-panel';
 
 import './profile-page.css';
 
@@ -24,8 +24,6 @@ class ManageChannel extends React.Component {
 	componentDidMount() {
 
 		axios.get('/api/profile').then((res) => {
-			console.log(res.data);
-
 			this.setState({
 				channels: res.data
 			});	
@@ -60,7 +58,7 @@ class ManageChannel extends React.Component {
 
 		if(this.state.channels && this.props.profile) {
 
-			let {logo, username, patreon} = this.props.profile;
+			let {logo, username} = this.props.profile;
 			let channels = this.state.channels;
 
 			if(Array.isArray(this.state.filteredChannels)) {
@@ -68,53 +66,19 @@ class ManageChannel extends React.Component {
 				channels = this.state.filteredChannels;
 			}
 
-			console.log(channels);
-
-			if(patreon) {
-				patreonContent = (
-					<div className="integration integration--patreon">
-						<div className="integration-header">
-							<img src={require('../img/patreon-icon.png')} />
-							<h3>Patreon</h3>
-							<div className="integration-sync">
-								<a href="javascript:;"><img src={require('../img/sync-white.png')} /></a>
-							</div>
-						</div>
-						<div className="integration-content">
-							<div className="channelInfo--logo">
-								<img src={logo} />
-							</div>
-							<div className="channelInfo--data">
-								<div className="channelInfo--name">{username}</div>
-								<div className="channelInfo--link">{'twitch.tv/' + username}</div>
-							</div>
-						</div>
-					</div>
-				);
-			} else {
-				patreonContent = (
-					<div className="integration integration--patreon not-linked">
-						<a className="patreonLink" href="http://localhost:5000/auth/patreon">
-							<img src={require('../img/patreon-badge.png')} />
-						    <span>Link Your Patreon</span>
-					    </a>
-				    </div>
-				);
-			}
-
 			integrationContent = (
 				<div>
 					<div className="integration integration--twitch">
 						<div className="integration-header">
-							<img src={require('../img/twitch-glitch.png')} />
+							<img alt="" src={require('../img/twitch-glitch.png')} />
 							<h3>Twitch</h3>
 							<div className="integration-sync">
-								<a href="javascript:;"><img src={require('../img/sync-white.png')} /></a>
+								<a href="javascript:;"><img alt="" src={require('../img/sync-white.png')} /></a>
 							</div>
 						</div>
 						<div className="integration-content">
 							<div className="channelInfo--logo">
-								<img src={logo} />
+								<img alt="" src={logo} />
 							</div>
 							<div className="channelInfo--data">
 								<div className="channelInfo--name">{username}</div>
@@ -122,7 +86,7 @@ class ManageChannel extends React.Component {
 							</div>
 						</div>
 					</div>
-					{patreonContent}
+					<PatreonPanel />
 				</div>
 			);
 
@@ -136,9 +100,8 @@ class ManageChannel extends React.Component {
 					</div>
 					{channels.map((channel, index) => (
 						<div key={"channel." + index} className="channel-item">
-							<div className="channel-item--logo"><img src={channel.logo} /></div>
+							<div className="channel-item--logo"><img alt="" src={channel.logo} /></div>
 							<div className="channel-item--name">{channel.owner}</div>
-							
 						</div>
 					))}
 				</div>

@@ -7,7 +7,7 @@
 .notificationPanel {
 	position: relative;
 	padding: 60px 20px 35px;
-	cursor: pointer;
+	cursor: not-allowed;
 }
 
 .notificationPanel--active .notificationPanel {
@@ -73,4 +73,14 @@
 	width: 50px;
 	height: 50px;
 	padding: 5px;
+}
+
+@media only screen and (max-width: 480px) {
+	.notificationPanel {
+		padding: 32px 15px 20px;
+	}
+
+	.notificationPanel > img {
+		width: 24px;
+	}
 }

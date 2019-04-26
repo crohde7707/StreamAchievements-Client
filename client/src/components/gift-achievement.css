@@ -1,0 +1,9 @@
+.member-list {
+	max-height: 300px;
+	overflow-y: scroll;
+	margin: 15px 0;
+}
+
+.member--selected {
+	background: white;
+}

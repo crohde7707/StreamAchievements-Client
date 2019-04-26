@@ -209,6 +209,7 @@
 .chooseImage--wrapper {
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
 }
 
 .chooseImage--wrapper .currentImage {
@@ -227,7 +228,6 @@
 }
 
 .chooseImage--wrapper .chooseImage {
-    flex: 1;
     align-items: center;
     text-align: center;
 }
@@ -241,10 +241,20 @@
     display: none;
 }
 
+.chooseImage--confirm,
+.chooseImage--cancel {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 17px;
+    cursor:pointer;
+    border: 1px solid #666;
+}
+
 .chooseImage--confirm {
     margin-top: 30px;
-    padding: 10px;
-    box-shadow: 1px 1px 1px #333;
+    background-color: #007900;
+    border:none;
+    color: white;
 }
 
 .hoverText {
