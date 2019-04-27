@@ -27,7 +27,7 @@
 
 .integration-header,
 .integration-content {
-	padding: 20px;
+	padding: 10px 20px;
 }
 
 .integration-header {
@@ -54,9 +54,11 @@
 }
 
 .integration-sync {
-	text-align: right;
 	width: 30px;
 	flex: 1;
+	display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .integration-sync a {

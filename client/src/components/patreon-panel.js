@@ -82,10 +82,12 @@ class PatreonPanel extends React.Component {
 					<div className="patreon--content">
 						<div className="support">
 							<div>Love having achievements from your favorite streamers and want to help support keeping this service running? Consider becoming a Patron!</div>
+							<img src={require('../img/silver-ach.png')} />
 							<button onClick={this.becomeSilver} type="button">Become a Supporter</button>
 						</div>
 						<div className="upgrade">
 							<div>Are you enjoying offering achievements to your community, and want to extend what you can offer? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
+							<img src={require('../img/gold-ach.png')} />
 							<button onClick={this.becomeGold} type="button">Upgrade to Gold</button>
 						</div>
 					</div>
@@ -128,7 +130,7 @@ class PatreonPanel extends React.Component {
 							{vanityContent}
 						</div>
 						<div className="patreon--right">
-							{banner}
+							{/*banner*/}
 							{headerContent}
 							{bodyContent}
 						</div>

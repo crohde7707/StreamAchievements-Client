@@ -93,3 +93,27 @@
     box-shadow: 1px 1px 3px;
     text-align: center;
 }
+
+.support,
+.upgrade {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.support > img,
+.upgrade > img {
+	width: 100px;
+    flex: 1;
+    margin-top: 10px;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
