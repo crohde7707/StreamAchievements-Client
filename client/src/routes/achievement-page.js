@@ -450,7 +450,12 @@ class AchievementPage extends React.Component {
 				);
 			}
 
-			let customType = (<option title="Unlocked wtih paid tier!" value="4">Custom</option>);
+			let customType;
+			if(this.props.patreon && this.props.patreon.gold) {
+				customType = (<option value="4">Custom</option>);
+			} else {
+				customType = (<option disabled title="Unlocked wtih Gold Tier!" value="4">Custom (Unlocked with the Gold Tier!)</option>);
+			}
 
 			if(this.state.iconPreview) {
 				imgPreviewContent = (<img src={this.state.iconPreview} />);

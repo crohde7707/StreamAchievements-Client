@@ -206,6 +206,7 @@ class ManageChannel extends React.Component {
 			generalContent = (
 				<div className="general-configuration">
 					<h4>Basic Info</h4>
+					<span className="subText">This information is managed by Twitch</span>
 					<div className="section-wrapper">
 						<div className="section-label">
 					        <label htmlFor="name">Twitch Name</label>

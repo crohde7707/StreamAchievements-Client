@@ -56,14 +56,6 @@ class ChannelPage extends React.Component {
 	  }
 	}
 
-	// function move() {
-	// 	let {achievements, earned} = this.state.achievements;
-
-	//     var elem = document.getElementById("progress-bar"); 
-	    
-	//     elem.style.width = earned.length / achievements.length;
-	// }
-
 	joinChannel = () => {
 		axios.post('/api/channel/join', {
 			channel: this.state.channel.owner
@@ -143,10 +135,13 @@ class ChannelPage extends React.Component {
 
 					achievementProgress = (
 						<div className="channel-achievement-progress">
-							<div className="progress-bar-wrapper">
-  								<div className="progress-bar" style={{width: percentage + "%"}}></div>
+							<div className="progress-bar--label">Achievement Progress</div>
+							<div className="progress-bar--visual">
+								<div className="progress-bar-wrapper">
+	  								<div className="progress-bar" style={{width: percentage + "%"}}></div>
+								</div>
+								<div className="progress-percentage">{percentage}%</div>
 							</div>
-							<div className="progress-percentage">{percentage}%</div>
 						</div>
 					)
 

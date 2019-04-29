@@ -332,25 +332,31 @@ router.get("/user", (req, res) => {
 
 		Channel.find({'_id': { $in: channelArray}}).then((channels) => {
 
-		     responseData = channels.map((channel) => {
+			let channelResponse = [];
 
-		     	let percentage = 0;
+			let promises = channels.map(channel => {
+				let earnedAchievements = foundUser.channels.filter(userChannel => (userChannel.channelID === channel.id));
+				let percentage = 0;
 
-		     	//get percentage of achievements
-		     	let earnedAchievements = foundUser.channels.filter((userChannel) => (userChannel.channelID === channel.id));
+				return new Promise((resolve, reject) => {
+					Achievement.countDocuments({channel: channel.owner}).then(count => {
+						console.log(count);
+						if(count > 0) {
+							percentage = Math.round((earnedAchievements[0].achievements.length / count) * 100);
+						}
 
-		     	if(channel.achievements.length !== 0) {
-		     		percentage = Math.round((earnedAchievements[0].achievements.length / channel.achievements.length) * 100);
-		     	}
+						resolve({
+				     		logo: channel.logo,
+				     		owner: channel.owner,
+				     		percentage: percentage
+				     	});
+				    });
+				});
+			});
 
-		     	return {
-		     		logo: channel.logo,
-		     		owner: channel.owner,
-		     		percentage: percentage
-		     	};
-		     });
-
-		     res.json(responseData);
+			Promise.all(promises).then(responseData => {
+				res.json(responseData);
+			});
 		});
 	});
 });

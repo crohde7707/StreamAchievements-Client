@@ -70,7 +70,7 @@
 }
 
 .section-wrapper.section-wrapper--alt {
-    background-color: rgba(50, 50, 50, 0.5);
+    background-color: rgba(0,0,0,0.6);
 }
 
 .section-content {
@@ -89,4 +89,8 @@
 .main .section-content > h2,
 .main .section-content > div {
     max-width: 100%;
+}
+
+.section-wrapper.main {
+    padding:40px 20px;
 }

@@ -33,9 +33,9 @@ class PatreonPanel extends React.Component {
 	}
 
 	handleSync = () => {
-		axios.post('/api/patreon/sync').then(res => {
-			this.props.dispatch(syncPatreon(res.data));
-		});
+		// axios.post('/api/patreon/sync').then(res => {
+		// 	this.props.dispatch(syncPatreon(res.data));
+		// });
 	}
 
 	render() {
@@ -95,13 +95,14 @@ class PatreonPanel extends React.Component {
 			} else if (status === 'active_patron') {
 				if(gold) {
 					bodyContent = (
-						<div className="patreon--content">
+						<div className="patreon--content column-layout">
 							<h3>You are currently a <span>Gold Achievement</span>!</h3>
-							<div>With this level of support, you have enabled the full potential that Stream Achievements has to offer!</div>
+							<p>Thank you so much for support Stream Achievements! With your generous support, we are able to keep this site running, and providing you a way to truly engage your communty members!</p>
+							<p>With this level of support, you have enabled the full potential that Stream Achievements has to offer! Take a look below at the features you have, and adjust your achievements to take advantage of the full suite!</p>
 							<h4>List of Features</h4>
 							<div className="patreon--features">
-								<div>Custom Achievement Icons</div>
 								<div>Chat-Triggered Achievements</div>
+								<div>Custom Achievement Icons</div>
 								<div>Icon Gallery</div>
 								<div>Secret Achievements</div>
 								<div>Channel Themes</div>

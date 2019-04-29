@@ -80,11 +80,27 @@
 
 .channel-achievement-progress {
 	display: flex;
+	flex-direction: column;
 	justify-content: flex-end;
 	margin-right: 10px;
 	flex: 1;
 	height: 30px;
 	align-items: center;
+
+}
+
+.progress-bar--label {
+
+}
+
+.progress-bar--visual {
+	display: flex;
+	justify-content: flex-end;
+	margin-right: 10px;
+	flex: 1;
+	height: 30px;
+	align-items: center;
+	width: 100%;
 }
 
 .achievements-container {
