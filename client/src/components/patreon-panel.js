@@ -62,6 +62,18 @@ class PatreonPanel extends React.Component {
 			let {thumb_url, vanity, follower, status, gold} = this.props.patreon;
 			let vanityContent, headerContent, bodyContent, banner;
 
+			let goldFeatures = (
+				<div className="patreon--features">
+					<div>Chat-Triggered Achievements</div>
+					<div>Custom Achievement Icons</div>
+					<div>Icon Gallery</div>
+					<div>Secret Achievements</div>
+					<div>Channel Themes</div>
+					<div>Gold-Level Discord Role</div>
+					<div>Sneak Peaks</div>
+				</div>
+			);
+
 			if(vanity) {
 				vanityContent = (
 					<div className="patreon--vanity">{vanityContent}</div>
@@ -77,18 +89,32 @@ class PatreonPanel extends React.Component {
 				)
 			}
 
-			if(status === null) {
-				bodyContent = (
-					<div className="patreon--content">
-						<div className="support">
-							<div>Love having achievements from your favorite streamers and want to help support keeping this service running? Consider becoming a Patron!</div>
-							<img src={require('../img/silver-ach.png')} />
-							<button onClick={this.becomeSilver} type="button">Become a Supporter</button>
+			if(status === null || status === 'former_patron') {
+
+				let feedback;
+
+				if(status === 'former_patron') {
+					feedback = (
+						<div className="feedback">
+							Thank you so much for the support you showed in the past! If there is anything we could do to improve the system, feel free to <a href="mailto:streamachievements.official@gmail.com">let us know</a>!
 						</div>
-						<div className="upgrade">
-							<div>Are you enjoying offering achievements to your community, and want to extend what you can offer? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
-							<img src={require('../img/gold-ach.png')} />
-							<button onClick={this.becomeGold} type="button">Upgrade to Gold</button>
+					);
+				}
+
+				bodyContent = (
+					<div>
+						{feedback}
+						<div className="patreon--content">
+							<div className="support">
+								<div>Love having achievements from your favorite streamers and want to help support keeping this service running? Consider becoming a Patron!</div>
+								<img src={require('../img/silver-ach.png')} />
+								<button onClick={this.becomeSilver} type="button">Become a Supporter</button>
+							</div>
+							<div className="upgrade">
+								<div>Are you enjoying offering achievements to your community, and want to extend what you can offer? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
+								<img src={require('../img/gold-ach.png')} />
+								<button onClick={this.becomeGold} type="button">Upgrade to Gold</button>
+							</div>
 						</div>
 					</div>
 				);
@@ -100,17 +126,29 @@ class PatreonPanel extends React.Component {
 							<p>Thank you so much for support Stream Achievements! With your generous support, we are able to keep this site running, and providing you a way to truly engage your communty members!</p>
 							<p>With this level of support, you have enabled the full potential that Stream Achievements has to offer! Take a look below at the features you have, and adjust your achievements to take advantage of the full suite!</p>
 							<h4>List of Features</h4>
-							<div className="patreon--features">
-								<div>Chat-Triggered Achievements</div>
-								<div>Custom Achievement Icons</div>
-								<div>Icon Gallery</div>
-								<div>Secret Achievements</div>
-								<div>Channel Themes</div>
-								<div>Gold-Level Discord Role</div>
-								<div>Sneak Peaks</div>
-							</div>
+							{goldFeatures}
 						</div>
-					)
+					);
+				} else {
+					let owner;
+					if(this.props.profile && this.props.profile.owner) {
+						owner = (
+							<div className="upgrade">
+								<div>Are you enjoying the features you are providing, but wanting to hook up more for your community? Consider trying out the Gold Achievement tier!</div>
+								<h4>List of Gold Achievement Features</h4>
+								{goldFeatures}
+								<button onClick={this.becomeGold} type="button">Upgrade to Gold</button>
+							</div>
+						);
+					}
+
+					bodyContent = (
+						<div className="patreon--content column-layout">
+							<h3>You are currently a <span>Silver Achievement</span>!</h3>
+							<p>Thank you so much for support Stream Achievements! With your generous support, we are able to keep this site running, and providing you a way to truly engage your communty members!</p>
+							{owner}
+						</div>	
+					);
 				}
 			}
 
@@ -147,6 +185,7 @@ class PatreonPanel extends React.Component {
 function headerMapStateToProps(state) {
 	console.log(state);
 	return {
+		profile: state.profile,
 		patreon: state.patreon
 	};
 }

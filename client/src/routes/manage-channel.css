@@ -306,6 +306,11 @@
     margin: 5px;
     border: 1px solid black;
     box-shadow: 1px 1px 3px black;
+    position: relative;
+}
+
+.image--wrapper.active {
+	background: #9afafb;
 }
 
 .image--wrapper img {
@@ -320,6 +325,31 @@
 
 .manage-container .subText {
 	font-style: italic;
+}
+
+.deleteImg {
+	float: right;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    background: red;
+    padding: 4px;
+    border-radius: 10px;
+    opacity: 0;
+	transition: all 0.2s ease;
+}
+
+.image--wrapper:hover .deleteImg {
+	opacity: 1;
+	transition: all 0.2s ease;
+}
+
+.deleteImg .icon {
+	background-image: url(https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png);
+    background-size: 16px;
+    height: 16px;
 }
 
 @media only screen and (max-width: 480px) {

@@ -28,34 +28,25 @@ export default class ImagePanel extends React.Component {
 		});
 	}
 
+	chooseImage = (image) => {
+
+	}
+
 	render() {
 
-		let iconGallery = (
-            	<div className="availableIcons">
-            		<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-					<button type="button" class="gallery-wrapper">
-				        <img src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-					</button>
-            	</div>
-			)
+		let iconGallery;
+		let icons = this.props.icons;
 
+		if(icons.length > 0) {
+			iconGallery = icons.map((image, index) => (
+				<button key={"icon-" + index} type="button" className="gallery-wrapper" onClick={() => {this.chooseImage(image)}}>
+					<img alt={image.name} src={image.url} />
+				</button>
+			));
+		} else {
+			iconGallery = (<div className="noIcons">No icons have been uploaded!</div>);
+		}
+            	
 		let previewImage;
 
 		if(this.props.currentImage) {
@@ -88,6 +79,9 @@ export default class ImagePanel extends React.Component {
 							        }
 							        onChange={this.onChange}
 							    />
+							    <div className="availableIcons">
+            						{iconGallery}
+            					</div>
 							</div>
 						</div>
 						<button className="chooseImage--confirm" type="button" onClick={this.props.onConfirm}>Save</button>

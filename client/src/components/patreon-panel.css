@@ -43,6 +43,13 @@
     font-weight: 700;
 }
 
+.integration--patreon .feedback {
+    padding: 10px;
+    background: #fffc8c;
+    color: black;
+    margin-bottom: 10px;
+}
+
 .patreon--content {
 	padding: 10px;
 	display: flex;
@@ -55,7 +62,7 @@
 }
 
 .patreon--content .support,
-.patreon--content .upgrate {
+.patreon--content .upgrade {
 	text-align: center;
     background: white;
     padding: 10px;

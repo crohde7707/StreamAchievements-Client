@@ -23,6 +23,7 @@ class AchievementPage extends React.Component {
 			resubType: "0",
 			query: "",
 			bot: "",
+			condition: "",
 			earnable: true,
 			limited: false,
 			secret: false,
@@ -35,7 +36,6 @@ class AchievementPage extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.profile);
 		if(this.props.match.params.achievementid) {
 			axios.get('/api/achievement/retrieve?id=' + this.props.match.params.channelid + '&aid=' + this.props.match.params.achievementid).then((res) => {
 				console.log(res.data);
@@ -53,6 +53,14 @@ class AchievementPage extends React.Component {
 				}
 			});
 		}
+
+		//retrieve images for gallery
+		axios.get('/api/achievement/icons?id=' + this.props.match.params.channelid).then(icons => {
+			console.log(icons);
+			this.setState({
+				icons: icons.data
+			});
+		});
 	}
 
 	revert = () => {
@@ -73,6 +81,7 @@ class AchievementPage extends React.Component {
 				resubType: "0",
 				query: "",
 				bot: "",
+				condition: "",
 				earnable: true,
 				limited: false,
 				secret: false,
@@ -99,15 +108,19 @@ class AchievementPage extends React.Component {
 		        img.onload = () => {
 		            var width = img.naturalWidth, height = img.naturalHeight;
 		            window.URL.revokeObjectURL( img.src );
-		            console.log(file);
 		            if( width <= 300 && height <= 300 ) {
 		            	let touched = this.state.touched || {};
 						touched['icon'] = true;
+						touched['file'] = true;
+						touched['iconName'] = true;
+						touched['iconPreview'] = true;
+
 						let newPreview = URL.createObjectURL(file);
 		                
 		                this.setState({
 		                	icon: newPreview,
 		                	iconPreview: newPreview,
+							iconName: file.name,
 		                	file: file,
 		                	touched: touched
 		                });
@@ -282,13 +295,13 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Condition</label>
+								<label htmlFor="achievement-condition">Condition</label>
 								<input
-									id="achievement-query"
-									name="query"
+									id="achievement-condition"
+									name="condition"
 									className="textInput"
 									type="text"
-									value={this.state.query}
+									value={this.state.condition}
 									onChange={this.handleDataChange}
 								/>
 							</div>
@@ -337,12 +350,12 @@ class AchievementPage extends React.Component {
 				}
 
 				if(this.state.code === "4") {
-					achievement.bot = this.state.bot
+					achievement.bot = this.state.bot;
+					achievement.condition = this.state.condition;
 				}
 			}
 		}
 
-		achievement.edit = this.state.edit;
 		achievement.id = this.state._id;
 
 		if(this.state.file) {
@@ -379,7 +392,13 @@ class AchievementPage extends React.Component {
 
 	sendData = (achievement) => {
 		console.log(achievement);
-		axios.post('/api/achievement/create', achievement).then((res) => {
+		let api = '/api/achievement/create';
+
+		if(this.state.edit) {
+			api = '/api/achievement/update';
+		}
+
+		axios.post(api, achievement).then((res) => {
 			console.log(res.data);
 			if(res.data.created) {
 				//redirect to manage-channel#achievements
@@ -433,6 +452,7 @@ class AchievementPage extends React.Component {
 				imagePanel = (
 					<ImagePanel 
 						currentImage={this.state.iconPreview}
+						icons={this.state.icons}
 						onChange={this.handleIconChange}
 						onConfirm={() => {this.setState({showImagePanel: false})}}
 						onCancel={() => {this.setState({showImagePanel: false})}}
@@ -451,6 +471,7 @@ class AchievementPage extends React.Component {
 			}
 
 			let customType;
+			console.log(this.props.patreon);
 			if(this.props.patreon && this.props.patreon.gold) {
 				customType = (<option value="4">Custom</option>);
 			} else {
@@ -602,7 +623,8 @@ class AchievementPage extends React.Component {
 
 function headerMapStateToProps(state) {
 	return {
-		profile: state.profile
+		profile: state.profile,
+		patreon: state.patreon
 	};
 }
 

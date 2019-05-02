@@ -154,6 +154,10 @@ class ManageChannel extends React.Component {
 		
 	}
 
+	promptDelete = (image) => {
+		console.log(image);
+	}
+
 	handleSubmit = () => {
 
 	}
@@ -301,18 +305,37 @@ class ManageChannel extends React.Component {
 				);
 			}
 
-			imageContent = (
-				<div>
-					<div className="imageGallery">
-						{this.state.images.gallery.map((image, index) => (
-							<div key={'image-' + index} className="image--wrapper">
-								<img alt="" src={image.url} />
-								<div className="image--delete"></div>
-							</div>
-						))}
+			if(this.state.images.gallery.length > 0) {
+				imageContent = (
+					<div>
+						<div className="imageGallery">
+							{this.state.images.gallery.map((image, index) => {
+								let classNames = "image--wrapper";
+
+								if(image.achievementID) {
+									classNames += " active"
+								}
+								return (
+									<div key={'image-' + index} className={classNames}>
+										<div className="deleteImg" onClick={() => {this.promptDelete(image)}}><div className="icon"></div></div>
+										<img alt="" src={image.url}	/>
+									</div>
+								);
+							})}
+						</div>
 					</div>
-				</div>
-			);
+				);
+			} else {
+				imageContent = (
+					<div>
+						<div className="imageGallery">
+							<h3>You currently don't have any images!</h3>
+						</div>
+					</div>
+				);
+			}
+
+			
 
 			memberContent = (
 				this.state.members.map((member, index) => (

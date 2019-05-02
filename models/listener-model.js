@@ -7,6 +7,7 @@ const listenerSchema = new Schema({
 	type: String,
 	bot: String,
 	query: Schema.Types.Mixed,
+	condition: String,
 	achievement: String
 });
 

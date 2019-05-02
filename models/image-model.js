@@ -3,10 +3,11 @@ const Schema = mongoose.Schema;
 
 const imageSchema = new Schema({
 	name: String,
+	type: String,
 	channel: String,
 	cloudID: String,
 	url: String,
-	active: Boolean
+	achievementID: String
 });
 
 const Image = mongoose.model("image", imageSchema);
