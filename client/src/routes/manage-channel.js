@@ -9,6 +9,7 @@ import Notice from '../components/notice';
 import Template from '../components/template';
 import Achievement from '../components/achievement';
 import GiftAchievementModal from '../components/gift-achievement';
+import ConfirmPanel from '../components/confirm-panel';
 
 
 import './manage-channel.css';
@@ -21,7 +22,8 @@ class ManageChannel extends React.Component {
 		this.state = {
 			channel: '',
 			achievements: '',
-			notice: ''
+			notice: '',
+			showConfirm: false
 		};
 	}
 
@@ -155,7 +157,26 @@ class ManageChannel extends React.Component {
 	}
 
 	promptDelete = (image) => {
-		console.log(image);
+		this.setState({
+			showConfirm: true,
+			imageToDelete: image
+		});
+	}
+
+	handleImageDelete = () => {
+		let image = this.state.imageToDelete;
+		this.setState({
+			showConfirm: false,
+			imageToDelete: null
+		});
+
+		axios.post('/api/channel/image', {
+			image: image
+		}).then(res => {
+			this.setState({
+				images: res.data.images
+			});
+		});
 	}
 
 	handleSubmit = () => {
@@ -360,6 +381,22 @@ class ManageChannel extends React.Component {
 		const tab = params.get('tab');
 		let tabIndex = 0;
 
+		let confirmPanel;
+
+		if(this.state.showConfirm) {
+			confirmPanel = (
+				<ConfirmPanel
+					onConfirm={this.handleImageDelete}
+					onCancel={() => {this.setState({showConfirm: false})}}
+				>
+					<div className="delete-image--confirm">
+						<div>Are you sure you want to delete this image?</div>
+						<img alt="" src={this.state.imageToDelete.url} />
+					</div>
+				</ConfirmPanel>
+			);
+		}
+
 		switch(tab) {
 			case 'achievements':
 				tabIndex = 1;
@@ -394,6 +431,7 @@ class ManageChannel extends React.Component {
 						</TabPanel>
 						<TabPanel>
 							{imageContent}
+							{confirmPanel}
 						</TabPanel>
 						<TabPanel>
 							<h3>Members</h3>

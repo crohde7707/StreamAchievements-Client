@@ -10,8 +10,6 @@ let initialState = {
 export default function ProfileReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_PROFILE: 
-		
-		console.log(action.data);
 			return {
 				...state,
 				profile: {

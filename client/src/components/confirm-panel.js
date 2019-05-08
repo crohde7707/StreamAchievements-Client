@@ -33,7 +33,7 @@ export default class ConfirmPanel extends React.Component {
 							<h3>Confirm</h3>
 						</div>
 						<div className="modal-content">
-							<p>Are you sure you want to delete?</p>
+							{this.props.children}
 							<button className="confirm-delete-button" onClick={this.props.onConfirm}>Yes</button>
 							<button className="cancel-delete-button" onClick={this.props.onCancel}>No</button>
 						</div>

@@ -301,7 +301,7 @@
 }
 
 .image--wrapper {
-	background: #DDD;
+	background: #999;
     border-radius: 8px;
     margin: 5px;
     border: 1px solid black;
@@ -310,12 +310,17 @@
 }
 
 .image--wrapper.active {
-	background: #9afafb;
+	background: #DDD;
 }
 
 .image--wrapper img {
 	width: 125px;
 	height: 125px;
+	opacity: 0.6
+}
+
+.image--wrapper.active img {
+	opacity: 1
 }
 
 .manage-container h4 {
@@ -339,17 +344,30 @@
     border-radius: 10px;
     opacity: 0;
 	transition: all 0.2s ease;
+	cursor: pointer;
+	z-index: 100;
 }
 
 .image--wrapper:hover .deleteImg {
 	opacity: 1;
 	transition: all 0.2s ease;
+	cursor: pointer;
 }
 
 .deleteImg .icon {
 	background-image: url(https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png);
     background-size: 16px;
     height: 16px;
+}
+
+.delete-image--confirm {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.delete-image--confirm img {
+	width: 100px;
 }
 
 @media only screen and (max-width: 480px) {

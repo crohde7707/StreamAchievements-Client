@@ -444,7 +444,9 @@ class AchievementPage extends React.Component {
 					<ConfirmPanel
 						onConfirm={this.handleDelete}
 						onCancel={() => {this.setState({showConfirm: false})}}
-					/>
+					>
+						<div>Are you sure you want to delete this achievement?</div>
+					</ConfirmPanel>
 				);
 			}
 
