@@ -14,12 +14,12 @@ let uploadImage = (blob, fileName, channelName, type) => {
 
 		Image.findOne({name: fileName, channel: channelName}).then((existingImage) => {
 			if(existingImage) {
-				console.log('image already exists');
+				console.log('\nimage already exists');
 				//Image already exists in the DB
 				resolve(existingImage);
 			} else {
 				//New image
-				console.log('new image');
+				console.log('\nnew image');
 				cloudinary.uploader.upload(blob, (error, result) => {
 					if(error) {
 						console.log(error);
@@ -27,7 +27,7 @@ let uploadImage = (blob, fileName, channelName, type) => {
 							error: error
 						});
 					} else {
-						console.log('image uploaded successfully')
+						console.log('\nimage uploaded successfully')
 						new Image({
 							name: fileName,
 							channel: channelName,

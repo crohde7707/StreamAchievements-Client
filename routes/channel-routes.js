@@ -303,12 +303,12 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 router.post('/image', isAuthorized, (req, res) => {
 	console.log(req.body);
 	//delete image from Cloudinary
-	destroyImage(req.body.cloudID).then(result => {
+	destroyImage(req.body.image.cloudID).then(result => {
 		console.log(result);
 		//if image part of achievement, delete off achievement
 		let achievementPromise = new Promise((resolve, reject) => {
-			if(req.body.achievementID !== '') {
-				Achievement.findOne({['_id']: req.body.achievementID}).then(foundAchievement => {
+			if(req.body.image.achievementID !== '') {
+				Achievement.findOne({['_id']: req.body.image.achievementID}).then(foundAchievement => {
 					if(foundAchievement) {
 						foundAchievement.icon = '';
 						foundAchievement.save().then(() => {
@@ -327,12 +327,10 @@ router.post('/image', isAuthorized, (req, res) => {
 
 		//delete image from image table
 		let imagePromise = new Promise((resolve, reject) => {
-			Image.deleteOne({['_id']: req.body.id}).then(err => {
-				//Get Images
-				if(err) {
-					resolve();
-				}
+			Image.deleteOne({['_id']: req.body.image['_id']}).then(err => {
+				//Get Images				
 				Image.find({channel: req.foundUser.name}).then(foundImages => {
+					console.log("\nGetting all images after delete");
 					if(foundImages) {
 						resolve({
 							gallery: foundImages,
@@ -349,6 +347,7 @@ router.post('/image', isAuthorized, (req, res) => {
 		});
 
 		Promise.all([achievementPromise, imagePromise]).then(values => {
+			console.log(values);
 			let responseObj = {
 				images: values[1]
 			};

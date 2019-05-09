@@ -34,20 +34,29 @@ export default class ImagePanel extends React.Component {
 
 	render() {
 
-		let iconGallery;
+		let iconGallery, previewImage;
 		let icons = this.props.icons;
 
 		if(icons.length > 0) {
-			iconGallery = icons.map((image, index) => (
-				<button key={"icon-" + index} type="button" className="gallery-wrapper" onClick={() => {this.chooseImage(image)}}>
-					<img alt={image.name} src={image.url} />
-				</button>
-			));
+			iconGallery = icons.map((image, index) => {
+
+				let classes = "gallery-wrapper";
+
+				if(this.props.currentImage && this.props.currentImage === image.url) {
+					classes += " image--selected";
+				}
+
+				return (
+					<button key={"icon-" + index} type="button" className={classes} onClick={() => {this.chooseImage(image)}}>
+						<img alt={image.name} src={image.url} />
+					</button>
+				);
+			});
 		} else {
 			iconGallery = (<div className="noIcons">No icons have been uploaded!</div>);
 		}
             	
-		let previewImage;
+
 
 		if(this.props.currentImage) {
 			previewImage = this.props.currentImage
@@ -69,7 +78,8 @@ export default class ImagePanel extends React.Component {
 								<img src={previewImage} />
 							</div>
 							<div className="chooseImage">
-								<button type="button" onClick={() => {this.fileInputEl.click()}} className="uploadImageButton">Choose an Image</button>
+								<button type="button" onClick={() => {this.fileInputEl.click()}} className="uploadImageButton">Upload an Image</button>
+								<span class="upload--subtext">Image must be 300x300 or less</span>
 								<input
 							        type="file"
 							        id="achievement-icon"
@@ -79,9 +89,6 @@ export default class ImagePanel extends React.Component {
 							        }
 							        onChange={this.onChange}
 							    />
-							    <div className="availableIcons">
-            						{iconGallery}
-            					</div>
 							</div>
 						</div>
 						<button className="chooseImage--confirm" type="button" onClick={this.props.onConfirm}>Save</button>

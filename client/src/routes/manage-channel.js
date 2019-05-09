@@ -173,9 +173,11 @@ class ManageChannel extends React.Component {
 		axios.post('/api/channel/image', {
 			image: image
 		}).then(res => {
-			this.setState({
-				images: res.data.images
-			});
+			if(res.error) {
+
+			} else {
+				this.setState(res.data);				
+			}
 		});
 	}
 

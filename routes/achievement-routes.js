@@ -45,18 +45,27 @@ let updatedAchievement = (existingAchievement, updates, listenerUpdates, iconImg
 		let imgPromise;
 
 		if(iconImg) {
-
+			//New image has been uploaded
 			imgPromise = new Promise((innerResolve, innerReject) => {
 				Image.findOne({achievementID: existingAchievement._id}).then(existingImg => {
-					existingImg.achievementID = "";
-					existingImg.save();
+					if(existingImg) {
+						existingImg.achievementID = "";
+						existingImg.save().then(() => {
+							iconImg.achievementID = existingAchievement._id;
+							iconImg.save().then(savedImg => {
+								innerResolve();
+							});
+						});	
+					} else {
+						iconImg.achievementID = existingAchievement._id;
+						iconImg.save().then(savedImg => {
+							innerResolve();
+						});
+					}
+					
 				});
 
-				iconImg.achievementID = existingAchievement._id;
-				iconImg.save().then(savedImg => {
-					console.log(savedImg);
-					innerResolve();
-				});	
+				
 			});
 		} else {
 			imgPromise = Promise.resolve();
@@ -97,7 +106,6 @@ router.post('/update', (req, res) => {
 					
 					Achievement.findOne({['_id']: req.body.id, channel: existingChannel.owner}).then((existingAchievement) => {
 						if(existingAchievement) {
-							console.log('editing existing achievement');
 							let updates = req.body;
 
 							let {code, resubType, query, bot, condition} = updates;
