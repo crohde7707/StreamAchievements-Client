@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 let channelRoutes = require('./channel-routes');
 let achievementRoutes = require('./achievement-routes');
+const isAuthorized = require('../utils/auth-utils').isAuthorized;
 
 router.use('/channel', channelRoutes);
 router.use('/achievement', achievementRoutes);
@@ -16,7 +17,8 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
 
 let timeout = false
 
-router.get("/user", (req, res) => {
+router.get("/user", isAuthorized, (req, res) => {
+	
 	setTimeout(() => {
 		if(timeout) {
 			console.log('timeout');
@@ -27,89 +29,70 @@ router.get("/user", (req, res) => {
 		}
 	}, 10000)
 
-	let timeout = true;
+	//let timeout = true;
 	let patreonInfo;
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			
+	
+	if(req.user.integration.patreon) {
 
-			if(foundUser.integration.patreon) {
+		let patron = req.user.integration.patreon;
 
-				let patron = foundUser.integration.patreon;
+		patreonInfo = {
+			vanity: patron.vanity,
+			thumb_url: patron.thumb_url,
+			follower: patron.is_follower,
+			status: patron.status,
+			gold: patron.is_gold
+		}
+	} else {
+		patreonInfo = false;
+	}
 
-				patreonInfo = {
-					vanity: patron.vanity,
-					thumb_url: patron.thumb_url,
-					follower: patron.is_follower,
-					status: patron.status,
-					gold: patron.is_gold
-				}
-			} else {
-				patreonInfo = false;
-			}
-
-			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
-				timeout = false;
-				if(existingChannel) {
-					console.log(patreonInfo);
-					res.json({
-						username: foundUser.name,
-						logo: foundUser.logo,
-						patreon: patreonInfo,
-						owner: true
-					});
-				} else {
-					res.json({
-						username: foundUser.name,
-						logo: foundUser.logo,
-						patreon: patreonInfo,
-						owner: false
-					});
-				}
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		timeout = false;
+		if(existingChannel) {
+			console.log(patreonInfo);
+			res.json({
+				username: req.user.name,
+				logo: req.user.logo,
+				patreon: patreonInfo,
+				owner: true
 			});
 		} else {
-			timeout = false;
 			res.json({
-				message: 'User was not found!'
+				username: req.user.name,
+				logo: req.user.logo,
+				patreon: patreonInfo,
+				owner: false
 			});
 		}
-		
 	});
+
 });
 
-router.get("/profile", (req, res) => {
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			let channelArray = foundUser.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
+router.get("/profile", isAuthorized, (req, res) => {
+	let channelArray = req.user.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
 
-			Channel.find({'_id': { $in: channelArray}}).then((channels) => {
+	Channel.find({'_id': { $in: channelArray}}).then((channels) => {
 
-			     responseData = channels.map((channel) => {
+	     responseData = channels.map((channel) => {
 
-			     	let percentage = 0;
+	     	let percentage = 0;
 
-			     	//get percentage of achievements
-			     	let earnedAchievements = foundUser.channels.filter((userChannel) => (userChannel.channelID === channel.id));
+	     	//get percentage of achievements
+	     	let earnedAchievements = req.user.channels.filter((userChannel) => (userChannel.channelID === channel.id));
 
-			     	if(channel.achievements.length !== 0) {
-			     		percentage = Math.round((earnedAchievements[0].achievements.length / channel.achievements.length) * 100);
-			     	}
+	     	if(channel.achievements.length !== 0) {
+	     		percentage = Math.round((earnedAchievements[0].achievements.length / channel.achievements.length) * 100);
+	     	}
 
-			     	return {
-			     		logo: channel.logo,
-			     		owner: channel.owner,
-			     		percentage: percentage
-			     	};
-			     });
+	     	return {
+	     		logo: channel.logo,
+	     		owner: channel.owner,
+	     		percentage: percentage
+	     	};
+	     });
 
-			     res.json(responseData);
-			});
-		} else {
-			res.json({
-				created: false,
-				message: "You are not authorized to create achievements!"
-			});
-		}
+	     res.json(responseData);
 	});
 })
 

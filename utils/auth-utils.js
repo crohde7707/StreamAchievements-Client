@@ -1,4 +1,7 @@
 const User = require('../models/user-model');
+const keys = require('../configs/keys');
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(keys.session.cookieKey);
 
 const authCheck = (req, res, next) => {
 	if(!req.user) {
@@ -9,10 +12,12 @@ const authCheck = (req, res, next) => {
 }
 
 const isAuthorized = async (req, res, next) => {
-	let foundUser = await User.findOne({'integration.twitch.etid': req.cookies.etid})
+	let etid = cryptr.decrypt(req.cookies.etid);
+
+	let foundUser = await User.findOne({'integration.twitch.etid': etid})
 			
 	if(foundUser) {
-		req.foundUser = foundUser;
+		req.user = foundUser;
 		next();
 	} else {
 		res.status(401);

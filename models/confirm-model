@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const confirmSchema = new Schema({
+	twitchID: String,
+	confirmationCode: String
+});
+
+const Confirm = mongoose.model("confirm", confirmSchema);
+
+module.exports = Confirm;

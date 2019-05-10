@@ -11,7 +11,7 @@ const Image = require('../models/image-model');
 const destroyImage = require('../utils/image-utils').destroyImage;
 
 router.get("/create", isAuthorized, (req, res) => {
-	Channel.findOne({twitchID: req.foundUser.twitchID}).then((existingChannel) => {
+	Channel.findOne({twitchID: req.user.twitchID}).then((existingChannel) => {
 		if(existingChannel) {
 			res.json({
 				error: 'Channel already exists!',
@@ -19,18 +19,18 @@ router.get("/create", isAuthorized, (req, res) => {
 			});
 		} else {
 			new Channel({
-				owner: req.foundUser.name,
-				twitchID: req.foundUser.twitchID,
+				owner: req.user.name,
+				twitchID: req.user.twitchID,
 				theme: '',
-				logo: req.foundUser.logo,
+				logo: req.user.logo,
 				achievements: [],
 				members: []
 			}).save().then((newChannel) => {
-				req.foundUser.channelID = newChannel.id;
-				req.foundUser.save().then((savedUser) => {
+				req.user.channelID = newChannel.id;
+				req.user.save().then((savedUser) => {
 					res.json({
 						channel: newChannel,
-						user: req.foundUser
+						user: req.user
 					});
 				});
 				
@@ -46,10 +46,10 @@ router.post('/leave', isAuthorized, (req, res) => {
 			let members = existingChannel.members;
 			let i;
 
-			if(members.length > 0 && members.includes(req.foundUser.id)) {
+			if(members.length > 0 && members.includes(req.user.id)) {
 
 				i = members.findIndex((member) => {
-					member === req.foundUser.id
+					member === req.user.id
 				});
 
 				members.splice(i, 1);
@@ -58,13 +58,13 @@ router.post('/leave', isAuthorized, (req, res) => {
 					//Remove channel from user
 					i = 0;
 
-					i = req.foundUser.channels.findIndex((channel) => {
+					i = req.user.channels.findIndex((channel) => {
 						return channel.channelID === savedChannel.id
 					});
 						
-					req.foundUser.channels.splice(i, 1);
+					req.user.channels.splice(i, 1);
 
-					req.foundUser.save().then((savedUser) => {
+					req.user.save().then((savedUser) => {
 						res.json({
 							leave: true
 						});
@@ -83,34 +83,34 @@ router.post('/join', (req, res) => {
 
 	Channel.findOne({owner: req.body.channel}).then((existingChannel) => {
 		if(existingChannel) {
-			let joinedChannels = req.foundUser.channels;
+			let joinedChannels = req.user.channels;
 
 			let alreadyJoined = joinedChannels.some((channel) => (channel.channelID === existingChannel.id));
-			let memberAlready = existingChannel.members.includes(req.foundUser.id);
+			let memberAlready = existingChannel.members.includes(req.user.id);
 
 			if(alreadyJoined) {
 				//This channel already joined by user
 				if(!memberAlready) {
-					existingChannel.members.push(req.foundUser.id);
+					existingChannel.members.push(req.user.id);
 					existingChannel.save().then((savedChannel) => {
 						res.json({
-							user: req.foundUser,
+							user: req.user,
 							channel: savedChannel
 						});
 					})
 				} else {
 					res.json({
-						user: req.foundUser,
+						user: req.user,
 						channel: existingChannel
 					});
 				}
 			} else if(memberAlready) {			
 				if(!alreadyJoined) {
-					req.foundUser.channels.push({
+					req.user.channels.push({
 						channelID: existingChannel.id,
 						achievements: []
 					});
-					req.foundUser.save().then((savedUser) => {
+					req.user.save().then((savedUser) => {
 						res.json({
 							user: savedUser,
 							channel: existingChannel
@@ -118,16 +118,16 @@ router.post('/join', (req, res) => {
 					});
 				} else {
 					res.json({
-						user: req.foundUser,
+						user: req.user,
 						channel: existingChannel
 					});
 				}
 			} else {
-				req.foundUser.channels.push({
+				req.user.channels.push({
 					channelID: existingChannel.id,
 					achievements: []
 				});
-				req.foundUser.save().then((savedUser) => {
+				req.user.save().then((savedUser) => {
 
 					existingChannel.members.push(savedUser.id);
 					existingChannel.save().then((savedChannel) => {
@@ -175,11 +175,11 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 					
 					Achievement.find({channel: channel}).then((foundAchievements) => {
 
-						let joined = foundChannel.members.includes(req.foundUser.id);
+						let joined = foundChannel.members.includes(req.user.id);
 						let earned;
 
 						if(joined) {
-							earned = req.foundUser.channels.filter((channel) => (channel.channelID === foundChannel.id))[0].achievements;	
+							earned = req.user.channels.filter((channel) => (channel.channelID === foundChannel.id))[0].achievements;	
 						} else {
 							earned = [];
 						}
@@ -202,7 +202,7 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 			});
 	} else {
 		//use current logged in person's channel
-		Channel.findOne({twitchID: req.foundUser.integration.twitch.etid}).then((existingChannel) => {
+		Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
 			if(existingChannel) {
 
 				let achievementsPromise = new Promise((resolve, reject) => {
@@ -312,7 +312,7 @@ router.post('/image', isAuthorized, (req, res) => {
 					if(foundAchievement) {
 						foundAchievement.icon = '';
 						foundAchievement.save().then(() => {
-							Achievement.find({channel: req.foundUser.name}).then((achievements) => {
+							Achievement.find({channel: req.user.name}).then((achievements) => {
 								resolve(achievements);
 							}); 
 						});
@@ -329,7 +329,7 @@ router.post('/image', isAuthorized, (req, res) => {
 		let imagePromise = new Promise((resolve, reject) => {
 			Image.deleteOne({['_id']: req.body.image['_id']}).then(err => {
 				//Get Images				
-				Image.find({channel: req.foundUser.name}).then(foundImages => {
+				Image.find({channel: req.user.name}).then(foundImages => {
 					console.log("\nGetting all images after delete");
 					if(foundImages) {
 						resolve({
@@ -363,14 +363,14 @@ router.post('/image', isAuthorized, (req, res) => {
 
 router.get("/user", isAuthorized, (req, res) => {
 
-	let channelArray = req.foundUser.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
+	let channelArray = req.user.channels.map(channel => new mongoose.Types.ObjectId(channel.channelID));
 
 	Channel.find({'_id': { $in: channelArray}}).then((channels) => {
 
 		let channelResponse = [];
 
 		let promises = channels.map(channel => {
-			let earnedAchievements = req.foundUser.channels.filter(userChannel => (userChannel.channelID === channel.id));
+			let earnedAchievements = req.user.channels.filter(userChannel => (userChannel.channelID === channel.id));
 			let percentage = 0;
 
 			return new Promise((resolve, reject) => {

@@ -11,20 +11,20 @@ const CALLBACK_URL = 'http://localhost:5000/auth/twitch/redirect';
 
 passport.serializeUser((user, done) => {
 	console.log("serializeUser");
-	done(null, user.integration.twitch.etid);
+	done(null, user);
 });
 
-passport.deserializeUser((etid, done) => {
-	console.log("deserializeUser");
-	User.findOne({'integration.twitch.etid': etid}).then((foundUser) => {
-		if(foundUser) {
-			console.log(foundUser);
-			done(null, foundUser);
-		} else {
-			done(null, null);
-		}
-	});
-});
+// passport.deserializeUser((etid, done) => {
+// 	console.log("deserializeUser");
+// 	User.findOne({'integration.twitch.etid': etid}).then((foundUser) => {
+// 		if(foundUser) {
+// 			console.log(foundUser);
+// 			done(null, foundUser);
+// 		} else {
+// 			done(null, null);
+// 		}
+// 	});
+// });
 
 passport.use(
 	new TwitchStrategy({

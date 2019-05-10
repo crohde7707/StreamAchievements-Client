@@ -70,6 +70,11 @@ export default class LandingPage extends React.Component {
 						</div>
 					</div>
 				</div>
+				<div className="section-wrapper">
+					<div className="section-content">
+					
+					</div>
+				</div>
 			</div>
 		);
 	}

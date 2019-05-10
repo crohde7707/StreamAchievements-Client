@@ -4,6 +4,7 @@ const keys = require('../configs/keys');
 const Cryptr = require('cryptr');
 const axios = require('axios');
 const cryptr = new Cryptr(keys.session.cookieKey);
+const isAuthorized = require('../utils/auth-utils').isAuthorized;
 const User = require('../models/user-model');
 
 //patreon
@@ -26,14 +27,16 @@ router.get('/twitch', passport.authenticate('twitch', {
 //callback for twitch to redirect to
 router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 
+	req.session.user = req.user;
+
+	//req.session.save();
+
 	//Set Cookie
 	var cookie = req.cookies['etid'];
-	if (cookie === undefined)
-	{
+	if (cookie === undefined || cookie !== req.user.integration.twitch.etid) {
+		let etid = cryptr.encrypt(req.user.integration.twitch.etid);
 		// no: set a new cookie
-		console.log('about to make cookie');
-		res.cookie('etid', req.user.integration.twitch.etid, { maxAge: 24 * 60 * 60 * 60, httpOnly: false });
-		console.log('cookie created successfully');
+		res.cookie('etid', etid, { maxAge: 24 * 60 * 60 * 60, httpOnly: false });
 	} else {
 		// yes, cookie was already present 
 		console.log('cookie exists', cookie);
@@ -43,7 +46,7 @@ router.get('/twitch/redirect', passport.authenticate('twitch'), (req, res) => {
 
 });
 
-router.get('/patreon', (req, res) => {
+router.get('/patreon', isAuthorized, (req, res) => {
 
 	let patreonURL = 'https://www.patreon.com/oauth2/authorize?';
 	patreonURL += 'response_type=code&';

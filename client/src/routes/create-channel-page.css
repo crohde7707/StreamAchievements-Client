@@ -1,0 +1,66 @@
+.createChannel--wrapper {
+	display: flex;
+	flex-direction: column;
+	color: white;
+	font-size: 16px;
+	align-items: center;
+	text-align: center;
+}
+
+.createChannel--wrapper .confirmForm {
+	display: flex;
+	flex-direction: column;
+	width: 60%;
+}
+
+.confirmForm input {
+	margin-top: 20px;
+	padding: 10px 20px;
+	font-size: 18px;
+	text-align: center;
+}
+
+.confirmForm button:disabled {
+	background-color: #BBB;
+	color: #666;
+	cursor: default;
+    transition: all 0.2s ease;
+}
+
+.confirmForm button:disabled:hover {
+	background-color: #BBB;
+	color: #666;
+	cursor: default;
+    transition: all 0.2s ease;
+}
+
+.confirmForm button {
+	margin-top: 15px;
+	padding: 10px 20px;
+	border: 0;
+	color: white;
+    background-color: #007900;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.confirmForm button:hover {
+	background-color: #088f08;
+    transition: all 0.2s ease;
+}
+
+.createChannel--wrapper h4 {
+	font-size: 22px;
+    color: #46fb46;
+    text-shadow: -2px -2px 4px #000;
+}
+
+.createChannel--wrapper .home {
+	padding: 10px 20px;
+    border: 0;
+    color: white;
+    font-size: 16px;
+    background: #6440a4;
+    font-weight: bold;
+    text-decoration: none;
+}

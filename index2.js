@@ -7,6 +7,7 @@ const keys = require('./configs/keys');
 const passportSetup = require('./configs/passport-setup');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const refresh = require('./utils/refresh-cookie').refreshCookie;
 
 //let io = module.exports.io = require('socket.io');
 //let SocketManager = require('./SocketManager').initSocket;
@@ -29,8 +30,13 @@ mongoose.connect(keys.mongodb.dbURI, {useNewUrlParser: true}, () => {
 });
 
 app.use(cookieSession({
-	maxAge: 24 * 60 * 60 * 1000,
-	keys: keys.session.cookieKey
+	name: 'e2tid',
+	maxAge: 1000,
+	keys: keys.session.cookieKey,
+	cookie: {
+		httpOnly: true,
+		expires: new Date(Date.now() + 60 * 60 * 1000)
+	}
 }));
 
 
@@ -40,8 +46,8 @@ app.use(passport.session());
 
 app.use(express.static('public'));
 
-app.use('/auth', authRoutes);
-app.use('/api', apiRoutes);
+app.use('/auth', refresh, authRoutes);
+app.use('/api', refresh, apiRoutes);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 

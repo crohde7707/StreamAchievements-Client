@@ -63,10 +63,19 @@ class Header extends React.Component {
 			logo = <img alt="User Profile Icon" src={this.props.profile.logo} />;
 		}
 
-		let manageLink = null;
+		let channelLink = null;
 
-		if(this.props.profile && this.props.profile.owner) {
-			manageLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);
+		if(this.props.profile) {
+
+			if(this.props.profile.owner) {
+				channelLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);	
+			} else if(this.props.profile.confirmed) {
+				channelLink = (<li><Link to={"/channel/confirm"}>Confirm Channel</Link></li>);	
+			} else {
+				channelLink = (<li><Link to={"/channel/create"}>Start Channel</Link></li>);
+			}
+
+			
 		}
 
 		if(this.props.profile && this.props.profile.notifications) {
@@ -79,7 +88,7 @@ class Header extends React.Component {
 					<ul>
 						<li><Link to='/home'>Home</Link></li>
 						<li><Link to='/profile'>Profile</Link></li>
-						{manageLink}
+						{channelLink}
 						<li className="logout"><a href="http://localhost:5000/auth/logout">Log Out</a></li>
 					</ul>
 				</div>
