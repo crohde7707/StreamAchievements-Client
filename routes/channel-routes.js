@@ -2,12 +2,17 @@ const router = require('express').Router();
 const passport = require('passport');
 const isAuthorized = require('../utils/auth-utils').isAuthorized;
 const mongoose = require('mongoose');
+const keys = require('../configs/keys');
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(keys.session.cookieKey);
+const crypto = require('crypto');
 
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
 const Listener = require('../models/listener-model');
 const Image = require('../models/image-model');
+const Token = require('../models/confirm-model');
 const destroyImage = require('../utils/image-utils').destroyImage;
 
 router.get("/create", isAuthorized, (req, res) => {
@@ -301,7 +306,6 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 });
 
 router.post('/image', isAuthorized, (req, res) => {
-	console.log(req.body);
 	//delete image from Cloudinary
 	destroyImage(req.body.image.cloudID).then(result => {
 		console.log(result);
@@ -391,6 +395,39 @@ router.get("/user", isAuthorized, (req, res) => {
 
 		Promise.all(promises).then(responseData => {
 			res.json(responseData);
+		});
+	});
+});
+
+router.post("/signup", isAuthorized, (req, res) => {
+	//generate code
+	let generatedToken = crypto.randomBytes(16).toString('hex');
+
+	let token = new Token({uid: req.user._id, token: generatedToken});
+
+	token.save().then(savedToken => {
+
+	});
+});
+
+router.post('/confirm', isAuthorized, (req, res) => {
+	let uid = req.body.uid;
+
+	Token.findOne({uid}).then(foundToken => {
+		let generatedToken = crypto.randomBytes(16).toString('hex');
+		foundToken.token = generatedToken;
+		foundToken.save().then(savedToken => {
+			//email token to user
+			User.find({'_id': savedToken.uid}).then(foundUser => {
+				let email = foundUser.email;
+				var transporter = nodemailer.createTransport({
+					service: 'gmail',
+					auth: {
+					    user: keys.gmail.user,
+					    pass: keys.gmail.password
+					}
+				});
+			});
 		});
 	});
 });

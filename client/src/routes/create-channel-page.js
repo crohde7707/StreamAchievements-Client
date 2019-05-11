@@ -31,7 +31,7 @@ class CreateChannelPage extends React.Component {
 			received: true
 		});
 
-		// axios.post('/api/channel/confirm').then(res => {
+		// axios.post('/api/channel/signup').then(res => {
 		// 	this.setState({
 		// 		received: true
 		// 	});
