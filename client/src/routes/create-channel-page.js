@@ -2,6 +2,7 @@ import React from 'react';
 import connector from '../redux/connector';
 import Template from '../components/template';
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 import './create-channel-page.css';
 
@@ -27,15 +28,15 @@ class CreateChannelPage extends React.Component {
 	onSubmit = (event) => {
 		event.preventDefault();
 
-		this.setState({
-			received: true
-		});
+		axios.post('/api/channel/signup').then(res => {
+			if(res.data.error) {
 
-		// axios.post('/api/channel/signup').then(res => {
-		// 	this.setState({
-		// 		received: true
-		// 	});
-		// });
+			} else {
+				this.setState({
+					received: true
+				});	
+			}
+		});
 	}
 
 	render() {

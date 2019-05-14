@@ -28,7 +28,34 @@ const isAuthorized = async (req, res, next) => {
 	}
 }
 
+const isAdminAuthorized = async (req, res, next) => {
+	let etid = cryptr.decrypt(req.cookies.etid);
+
+	let foundUser = await User.findOne({'integration.twitch.etid': etid})
+			
+	if(foundUser) {
+		if(foundUser.type = 'admin') {
+			res.user = foundUser;
+			next();
+		} else {
+			res.status(401);
+			res.json({
+				message: "You are not authorized to make this request."
+			});
+			next();
+		}
+		
+	} else {
+		res.status(401);
+		res.json({
+			message: "You are not authorized to make this request."
+		});
+		next();
+	}
+}
+
 module.exports = {
 	authCheck: authCheck,
-	isAuthorized
+	isAuthorized,
+	isAdminAuthorized
 }

@@ -6,6 +6,7 @@ const userSchema = new Schema({
 	twitchID: String,
 	logo: String,
 	email: String,
+	type: String,
 	channels: Array,
 	integration: Object
 });

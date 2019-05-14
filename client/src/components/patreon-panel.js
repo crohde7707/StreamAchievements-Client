@@ -131,7 +131,7 @@ class PatreonPanel extends React.Component {
 					);
 				} else {
 					let owner;
-					if(this.props.profile && this.props.profile.owner) {
+					if(this.props.profile && this.props.profile.owner === 'verified') {
 						owner = (
 							<div className="upgrade">
 								<div>Are you enjoying the features you are providing, but wanting to hook up more for your community? Consider trying out the Gold Achievement tier!</div>

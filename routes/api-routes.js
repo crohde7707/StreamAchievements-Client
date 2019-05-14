@@ -2,11 +2,12 @@ const router = require('express').Router();
 const passport = require('passport');
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
+const Token = require('../models/token-model');
 const mongoose = require('mongoose');
 
 let channelRoutes = require('./channel-routes');
 let achievementRoutes = require('./achievement-routes');
-const isAuthorized = require('../utils/auth-utils').isAuthorized;
+const {isAuthorized, isAdminAuthorized} = require('../utils/auth-utils');
 
 router.use('/channel', channelRoutes);
 router.use('/achievement', achievementRoutes);
@@ -16,6 +17,24 @@ router.get("/token", passport.authenticate('twitch'), (req, res) => {
   });
 
 let timeout = false
+
+router.get('/users', isAdminAuthorized, (req, res) => {
+	Token.find({}).then(tokens => {
+		let userIDs = tokens.map(token => token.uid);
+		User.find({'_id': { $in: userIDs}}).then(users => {
+			let resUsers = users.map(user => {
+				return {
+					name: user.name,
+					logo: user.logo
+				}
+			});
+
+			res.json({
+				users: resUsers
+			});
+		});
+	});
+});
 
 router.get("/user", isAuthorized, (req, res) => {
 	
@@ -50,19 +69,35 @@ router.get("/user", isAuthorized, (req, res) => {
 	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
 		timeout = false;
 		if(existingChannel) {
-			console.log(patreonInfo);
 			res.json({
 				username: req.user.name,
 				logo: req.user.logo,
 				patreon: patreonInfo,
-				owner: true
+				status: 'verified',
+				type: req.user.type
 			});
 		} else {
-			res.json({
-				username: req.user.name,
-				logo: req.user.logo,
-				patreon: patreonInfo,
-				owner: false
+			let status = 'viewer';
+
+			console.log(req.user);
+			
+			Token.findOne({uid: req.user._id}).then(foundToken => {
+				console.log(foundToken);
+				if(foundToken) {
+					if(foundToken.token === 'not issued') {
+						status = 'review'
+					} else {
+						status = 'pending'
+					}
+				}
+
+				res.json({
+					username: req.user.name,
+					logo: req.user.logo,
+					patreon: patreonInfo,
+					status,
+					type: req.user.type
+				});
 			});
 		}
 	});

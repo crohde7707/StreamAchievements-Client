@@ -133,6 +133,13 @@
 	transition: all 0.2s ease;
 }
 
+.menu-dropdown .reviewing {
+	padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #AAA;
+    font-weight: bold;
+}
+
 
 @media only screen and (max-width: 480px) {
 	#page-header {

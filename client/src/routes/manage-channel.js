@@ -187,7 +187,7 @@ class ManageChannel extends React.Component {
 
 	render() {
 
-		if(this.props.profile && !this.props.profile.owner) {
+		if(this.props.profile && !this.props.profile.stats === 'verified') {
 			return (<Redirect to='/home' />);
 		}
 

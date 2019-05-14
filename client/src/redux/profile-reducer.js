@@ -4,7 +4,8 @@ const SYNC_PATREON = 'SYNC_PATREON';
 let initialState = {
 	username: '',
 	logo: '',
-	owner: false
+	status: '',
+	type: ''
 }
 
 export default function ProfileReducer(state = initialState, action) {
@@ -15,7 +16,8 @@ export default function ProfileReducer(state = initialState, action) {
 				profile: {
 					username: action.data.username,
 					logo: action.data.logo,
-					owner: action.data.owner
+					status: action.data.status,
+					type: action.data.type
 				},
 				patreon: action.data.patreon
 			}

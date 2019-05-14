@@ -10,6 +10,7 @@ import ManageChannelPage from './routes/manage-channel';
 import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
+import AdminPanelPage from './routes/admin-panel';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 //Redux
@@ -27,6 +28,7 @@ ReactDOM.render((
 	        		<Route path='/home' component={HomePage} />
 					<Route path='/profile' component={ProfilePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
+	        		<Route path='/admin' component={AdminPanelPage} />
 	        		<Route path='/manage/:channelid/achievement/:achievementid' component={AchievementPage} />
 	        		<Route path='/manage/:channelid/achievement' component={AchievementPage} />
 	        		<Route path='/manage/:channelid/' component={ManageChannelPage} />

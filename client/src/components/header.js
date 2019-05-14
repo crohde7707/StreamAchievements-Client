@@ -66,16 +66,33 @@ class Header extends React.Component {
 		let channelLink = null;
 
 		if(this.props.profile) {
+			let status = this.props.profile.status;
+			console.log(this.props.profile)
 
-			if(this.props.profile.owner) {
-				channelLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);	
-			} else if(this.props.profile.confirmed) {
-				channelLink = (<li><Link to={"/channel/confirm"}>Confirm Channel</Link></li>);	
-			} else {
-				channelLink = (<li><Link to={"/channel/create"}>Start Channel</Link></li>);
-			}
 
-			
+			switch(status) {
+				case 'verified':
+					channelLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);	
+					break;
+				case 'pending':
+					channelLink = (<li><Link to={"/channel/confirm"}>Confirm Channel</Link></li>);
+					break;
+				case 'review':
+					channelLink = (<li className="reviewing">We are currently reviewing your channel! We will let you know when you can start!</li>);
+					break;
+				case 'viewer':
+					channelLink = (<li><Link to={"/channel/create"}>Start Channel</Link></li>);
+					break;
+				default:
+					break;			
+			}		
+		}
+
+		let adminLink;
+
+		if(this.props.profile && this.props.profile.type === 'admin') {
+			console.log('hellu');
+			adminLink = (<li className="admin"><Link to={"/admin"}>Admin Panel</Link></li>);
 		}
 
 		if(this.props.profile && this.props.profile.notifications) {
@@ -89,6 +106,7 @@ class Header extends React.Component {
 						<li><Link to='/home'>Home</Link></li>
 						<li><Link to='/profile'>Profile</Link></li>
 						{channelLink}
+						{adminLink}
 						<li className="logout"><a href="http://localhost:5000/auth/logout">Log Out</a></li>
 					</ul>
 				</div>

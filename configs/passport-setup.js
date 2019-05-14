@@ -70,6 +70,7 @@ passport.use(
 					name: profile.username,
 					logo: profile['_json'].logo,
 					email: profile.email,
+					type: 'user',
 					channels: [],
 					integration: {
 						twitch: twitchIntegration

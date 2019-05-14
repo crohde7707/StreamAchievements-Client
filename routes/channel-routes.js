@@ -1,18 +1,19 @@
 const router = require('express').Router();
 const passport = require('passport');
-const isAuthorized = require('../utils/auth-utils').isAuthorized;
+const {isAuthorized, isAdminAuthorized} = require('../utils/auth-utils');
 const mongoose = require('mongoose');
 const keys = require('../configs/keys');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(keys.session.cookieKey);
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const User = require('../models/user-model');
 const Channel = require('../models/channel-model');
 const Achievement = require('../models/achievement-model');
 const Listener = require('../models/listener-model');
 const Image = require('../models/image-model');
-const Token = require('../models/confirm-model');
+const Token = require('../models/token-model');
 const destroyImage = require('../utils/image-utils').destroyImage;
 
 router.get("/create", isAuthorized, (req, res) => {
@@ -401,31 +402,94 @@ router.get("/user", isAuthorized, (req, res) => {
 
 router.post("/signup", isAuthorized, (req, res) => {
 	//generate code
-	let generatedToken = crypto.randomBytes(16).toString('hex');
-
-	let token = new Token({uid: req.user._id, token: generatedToken});
-
-	token.save().then(savedToken => {
-
-	});
-});
-
-router.post('/confirm', isAuthorized, (req, res) => {
 	let uid = req.body.uid;
 
 	Token.findOne({uid}).then(foundToken => {
-		let generatedToken = crypto.randomBytes(16).toString('hex');
-		foundToken.token = generatedToken;
-		foundToken.save().then(savedToken => {
-			//email token to user
-			User.find({'_id': savedToken.uid}).then(foundUser => {
-				let email = foundUser.email;
-				var transporter = nodemailer.createTransport({
-					service: 'gmail',
-					auth: {
+		if(foundToken) {
+			res.json({
+				error: "You have already signed up!"
+			});
+		} else {
+			let token = new Token({uid: req.user._id, token: 'not issued'});
+
+			token.save().then(savedToken => {
+				res.json({
+					signup: true
+				});
+			});
+		}
+	});
+});
+
+router.post('/queue', isAdminAuthorized, (req, res) => {
+	let uid = req.body.uid;
+
+	Token.deleteOne({uid}).then(err => {
+		User.find({'_id': uid}).then(foundUser => {
+			let email = foundUser.email;
+			var transporter = nodemailer.createTransport({
+				service: 'gmail',
+				auth: {
+					user: keys.gmail.user,
+					pass: keys.gmail.password
+				}
+			});
+
+			const mailOptions = {
+			    from: 'Stream Achievements <' + keys.gmail.user + '>', // sender address
+			    to: email, // list of receivers
+			    subject: 'Info on your request!', // Subject line
+			    html: '<h1>Thank you for your interest in Stream Achievements!</h1><p>We reviewed your channel and have placed you in the queue as we slowly add people to the system! We want to ensure the best experience for streamer and viewer alike, so we are taking every percaution to have a top performing app!</p><p>Keep an eye on your email / notifications, and the moment you are added, you will be send a confirmation code to enter on the site!</p><p>Thank you again for wanting to join in on the fun, can\'t wait to have you join us!</p>'// plain text body
+			};
+		});
+	});
+});
+
+router.post('/confirm', isAdminAuthorized, (req, res) => {
+	
+
+	User.findOne({name: req.body.name}).then(foundMember => {
+		let uid = foundMember['_id'];
+
+		console.log(uid);
+
+		Token.findOne({uid}).then(foundToken => {
+			let generatedToken = crypto.randomBytes(16).toString('hex');
+			foundToken.token = generatedToken;
+			foundToken.save().then(savedToken => {
+				//email token to user
+				User.find({'_id': savedToken.uid}).then(foundUser => {
+					let email = foundUser.email;
+
+
+					var auth = {
+					    type: 'oauth2',
 					    user: keys.gmail.user,
-					    pass: keys.gmail.password
-					}
+					    clientId: keys.gmail.clientID,
+					    clientSecret: keys.gmail.clientSecret,
+					    refreshToken: keys.gmail.refreshToken
+					};
+
+					var transporter = nodemailer.createTransport({
+						service: 'gmail',
+						auth: auth
+					});
+
+					const mailOptions = {
+					    from: keys.gmail.user, // sender address
+					    to: 'phireherottv@gmail.com', // list of receivers
+					    subject: 'Your Confirmation Code!', // Subject line
+					    html: '<h1 style="text-align: center;color: #6441a4;">Thank you for your interest in Stream Achievements!</h1><p style="text-align: center;">We reviewed your channel and are excited to have you join in on this exciting new feature for streamers!</p><p style="text-align: center;">To get started, you will need the following confirmation code to unlock your channel, and allow you to being creating achievements: </p><p style="text-align: center;font-weight: bold;font-size: 18px;">123456</p><p style="text-align: center;">Copy that code and make your way over to &lt;a href="https://streamachievements.com/channel/confirm"&gt;https://streamachievements.com/channel/confirm&lt;/a&gt;, and paste it in the box provided!</p><p style="text-align: center;">We are truly excited to see what you bring in terms of Achievements, and can\'t wait to see how much your community engages!</p>'// plain text body
+					};
+
+					transporter.sendMail(mailOptions, function (err, info) {
+					   if(err)
+					     console.log(err)
+					   else
+					     res.json({
+					     	message: "email sent"
+					     });
+					});
 				});
 			});
 		});
