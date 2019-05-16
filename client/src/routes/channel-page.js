@@ -15,7 +15,8 @@ class ChannelPage extends React.Component {
 		
 		this.state = {
 			channel: '',
-			notice: ''
+			notice: '',
+			loading: true
 		}
 	}
 
@@ -31,7 +32,8 @@ class ChannelPage extends React.Component {
 			this.setState({
 				channel: res.data.channel,
 				achievements: res.data.achievements,
-				joined: res.data.joined
+				joined: res.data.joined,
+				loading: false
 			}, () => {
 				window.addEventListener('scroll', this.updateChannelHeader);		
 			});
@@ -159,7 +161,7 @@ class ChannelPage extends React.Component {
 			}
 
 			content = (
-				<Template className="no-scroll">
+				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<div id="channel-header">
 						{favorite}
@@ -184,7 +186,7 @@ class ChannelPage extends React.Component {
 				</Template>
 			);
 		} else {
-			content = (<Template>Loading channel information...</Template>);
+			content = (<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>Loading channel information...</Template>);
 		}
 
 		return content;

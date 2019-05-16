@@ -446,7 +446,6 @@ router.post('/queue', isAdminAuthorized, (req, res) => {
 });
 
 router.post('/confirm', isAdminAuthorized, (req, res) => {
-	
 
 	User.findOne({name: req.body.name}).then(foundMember => {
 		let uid = foundMember['_id'];
@@ -456,6 +455,7 @@ router.post('/confirm', isAdminAuthorized, (req, res) => {
 		Token.findOne({uid}).then(foundToken => {
 			let generatedToken = crypto.randomBytes(16).toString('hex');
 			foundToken.token = generatedToken;
+			foundToken.created = Date.now();
 			foundToken.save().then(savedToken => {
 				//email token to user
 				User.find({'_id': savedToken.uid}).then(foundUser => {
@@ -479,7 +479,7 @@ router.post('/confirm', isAdminAuthorized, (req, res) => {
 					    from: keys.gmail.user, // sender address
 					    to: 'phireherottv@gmail.com', // list of receivers
 					    subject: 'Your Confirmation Code!', // Subject line
-					    html: '<h1 style="text-align: center;color: #6441a4;">Thank you for your interest in Stream Achievements!</h1><p style="text-align: center;">We reviewed your channel and are excited to have you join in on this exciting new feature for streamers!</p><p style="text-align: center;">To get started, you will need the following confirmation code to unlock your channel, and allow you to being creating achievements: </p><p style="text-align: center;font-weight: bold;font-size: 18px;">123456</p><p style="text-align: center;">Copy that code and make your way over to &lt;a href="https://streamachievements.com/channel/confirm"&gt;https://streamachievements.com/channel/confirm&lt;/a&gt;, and paste it in the box provided!</p><p style="text-align: center;">We are truly excited to see what you bring in terms of Achievements, and can\'t wait to see how much your community engages!</p>'// plain text body
+					    html: '<div style="background:rgb(40,35,53);padding-bottom:30px;"><h1 style="text-align:center;background:#6441a4;padding:15px;margin-top:0;"><img style="max-width:600px;" src="https://res.cloudinary.com/phirehero/image/upload/v1557947921/sa-logo.png" /></h1><h2 style="color:#FFFFFF; text-align: center;margin-top:30px;margin-bottom:25px;font-size:22px;">Thank you for your interest in Stream Achievements!</h2><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We reviewed your channel and are excited to have you join in on this exciting new feature for streamers!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">To get started, all you need to do is <a style="color: #ecdc19;" href="http://localhost:3000/channel/verify?id=' + generatedToken + '&utm_medium=Email">verify your account</a>, and you\'ll be all set!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We are truly excited to see what you bring in terms of Achievements, and can\'t wait to see how much your community engages!</p></div>'
 					};
 
 					transporter.sendMail(mailOptions, function (err, info) {
@@ -494,6 +494,53 @@ router.post('/confirm', isAdminAuthorized, (req, res) => {
 			});
 		});
 	});
+});
+
+router.post('/verify', isAuthorized, (req, res) => {
+	let token = req.body.id;
+	console.log(req.user._id);
+	console.log(token);
+	Token.findOne({uid: req.user._id, token}).then(foundToken => {
+		if(foundToken) {
+			console.log(foundToken);
+			if(foundToken.hasExpired()) {
+				// Token.deleteOne({uid: req.user._id, token}).then(err => {
+				// 	res.json({
+				// 		expired: true
+				// 	});	
+				// });
+				
+				res.json({
+					expired: true
+				});
+			} else {
+				// Token.deleteOne({uid: req.user._id, token}).then(err => {
+				// 	res.json({
+				// 		verified: true
+				// 	});
+				// });
+				new Channel({
+					owner: req.user.name,
+					twitchID: req.user.integration.twitch.etid,
+					theme: '',
+					logo: req.user.logo,
+					achievements: [],
+					members: []
+				}).save().then((newChannel) => {
+					req.user.channelID = newChannel.id;
+					req.user.save().then((savedUser) => {
+						res.json({
+							verified: true
+						});
+					});
+				});
+			}
+		} else {
+			res.json({
+				error: 'Unauthorized'
+			});
+		}
+	})
 });
 
 module.exports = router;

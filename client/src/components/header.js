@@ -75,7 +75,7 @@ class Header extends React.Component {
 					channelLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);	
 					break;
 				case 'pending':
-					channelLink = (<li><Link to={"/channel/confirm"}>Confirm Channel</Link></li>);
+					channelLink = (<li className="reviewing">Go check your email!!</li>);
 					break;
 				case 'review':
 					channelLink = (<li className="reviewing">We are currently reviewing your channel! We will let you know when you can start!</li>);

@@ -2,6 +2,7 @@ import React from 'react';
 import connector from '../redux/connector';
 import Template from '../components/template';
 import {Link} from 'react-router-dom';
+import {Redirect} from 'react-router';
 import axios from 'axios';
 
 import './create-channel-page.css';
@@ -44,6 +45,10 @@ class CreateChannelPage extends React.Component {
 		let content;
 
 		if(this.props.profile) {
+
+			if(this.props.profile.status === 'verified') {
+				return (<Redirect to='/manage/' />);
+			}
 
 			let user = this.props.profile.username;
 

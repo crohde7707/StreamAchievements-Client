@@ -7,15 +7,18 @@ import Notice from '../components/notice';
 import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
 import connector from '../redux/connector';
+import LoadingSpinner from '../components/loading-spinner';
 
 import './achievement-page.css';
 
 class AchievementPage extends React.Component {
 
 	constructor(props) {
+		console.log('constructor');
 		super(props);
 
 		this.state = {
+			fetch: true,
 			title: "",
 			description: "",
 			icon: "",
@@ -33,13 +36,33 @@ class AchievementPage extends React.Component {
 			showConfirm: false,
 			showImagePanel: false
 		};
+
+		if(props.profile) {
+			this.fetchData();
+		}
 	}
 
-	componentDidMount() {
-		if(this.props.match.params.achievementid) {
-			axios.get('/api/achievement/retrieve?id=' + this.props.match.params.channelid + '&aid=' + this.props.match.params.achievementid).then((res) => {
-				console.log(res.data);
+	shouldComponentUpdate(nextProps, nextState) {
+		//debugger;
+		if(this.state.fetch && !this.props.profile && nextProps.profile) {
 
+			this.fetchData();
+		}
+
+		return true;
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		console.log('componentWillUpdate');
+	}
+
+	componentWillUnmount() {
+		console.log('unmount');
+	}
+
+	fetchData = () => {
+		if(this.props.match.params.achievementid) {
+			axios.get('/api/achievement/retrieve?aid=' + this.props.match.params.achievementid).then((res) => {
 				if(res.data.error) {
 					//redirect to home
 				} else {
@@ -48,19 +71,20 @@ class AchievementPage extends React.Component {
 						originalAchievement: res.data.achievement,
 						...res.data.achievement,
 						iconPreview: res.data.achievement.icon,
+						icons: res.data.images,
+						fetch: false,
 						edit: true
 					});
 				}
 			});
-		}
-
-		//retrieve images for gallery
-		axios.get('/api/achievement/icons?id=' + this.props.match.params.channelid).then(icons => {
-			console.log(icons);
-			this.setState({
-				icons: icons.data
+		} else {
+			axios.get('/api/achievement/icons').then(res => {
+				this.setState({
+					icons: res.data.images,
+					fetch: false
+				});
 			});
-		});
+		}
 	}
 
 	revert = () => {
@@ -399,13 +423,11 @@ class AchievementPage extends React.Component {
 		}
 
 		axios.post(api, achievement).then((res) => {
-			console.log(res.data);
-			if(res.data.created) {
+			
+			if(res.data.created || res.data.update) {
 				//redirect to manage-channel#achievements
-				this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
-			} else if(res.data.update) {
-				//redirect to manage-channel#achievements
-				this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
+				this.clearState();
+				this.props.history.push('/manage/?tab=achievements');
 			} else {
 				this.setState({
 					error: res.data.message
@@ -420,16 +442,34 @@ class AchievementPage extends React.Component {
 		});
 	}
 
-	updateState = (state) => {
-
-	}
-
 	toggleHover = (showHover) => {
 		if(showHover) {
 			this.hover.classList.add('hoverText--active');
 		} else {
 			this.hover.classList.remove('hoverText--active');
 		}
+	}
+
+	clearState = () => {
+		this.setState({
+			fetched: false,
+			title: "",
+			description: "",
+			icon: "",
+			code: "",
+			resubType: "0",
+			query: "",
+			bot: "",
+			condition: "",
+			earnable: true,
+			limited: false,
+			secret: false,
+			iconPreview: '',
+			id: '',
+			edit: false,
+			showConfirm: false,
+			showImagePanel: false
+		});
 	}
 
 	render() {
@@ -473,7 +513,7 @@ class AchievementPage extends React.Component {
 			}
 
 			let customType;
-			console.log(this.props.patreon);
+			
 			if(this.props.patreon && this.props.patreon.gold) {
 				customType = (<option value="4">Custom</option>);
 			} else {
@@ -493,7 +533,7 @@ class AchievementPage extends React.Component {
 			}
 
 			content = (
-				<Template>
+				<Template spinner={{isLoading: this.state.fetch, fullscreen: true}}>
 					<div className="achievement-wrapper">
 						<div className="achievementPage-header">
 							<h2>{pageHeader}</h2>
@@ -594,7 +634,7 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							{this.getConditionContent()}
-							<h4 class="noMargin">Icon</h4>
+							<h4 className="noMargin">Icon</h4>
 							<div className="formGroup icon-upload">
 								<label htmlFor="achievement-icon">Icon</label>
 								<div

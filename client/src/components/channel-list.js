@@ -26,6 +26,10 @@ class ChannelList extends React.Component {
 			this.setState({
 				channels: res.data
 			});
+
+			if(this.props.onLoad) {
+				this.props.onLoad();
+			}
 		});
 	}
 
@@ -42,9 +46,7 @@ class ChannelList extends React.Component {
 		let content, headerJoinButton, joinFirstChannel;
 
 		if(!this.state.channels) {
-			content = (
-				<div>Fetching channels</div>
-			);
+			content = null;
 		} else {
 			let channels = this.state.channels;
 

@@ -39,7 +39,7 @@ class AdminPanel extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let newCCContent;
+		let newCCContent, pendingCCContent;
 
 		if(this.state.users) {
 			let users = this.state.users.map((member, index) => (
@@ -73,7 +73,16 @@ class AdminPanel extends React.Component {
 						{users}
 					</div>
 				</div>
-			)
+			);
+
+			pendingCCContent = (
+				<div>
+					<h3>Waiting For Verification</h3>
+					<div className="pendingMembers-wrapper">
+
+					</div>
+				</div>
+			);
 		}
 
 		let tabIndex = 0;
@@ -86,9 +95,13 @@ class AdminPanel extends React.Component {
 					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">New Content Creators</Tab>
+							<Tab className="manage-tab">Pending Creation</Tab>
 						</TabList>
 						<TabPanel>
 							{newCCContent}
+						</TabPanel>
+						<TabPanel>
+							{pendingCCContent}
 						</TabPanel>
 					</Tabs>
 				</div>

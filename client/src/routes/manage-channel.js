@@ -10,6 +10,7 @@ import Template from '../components/template';
 import Achievement from '../components/achievement';
 import GiftAchievementModal from '../components/gift-achievement';
 import ConfirmPanel from '../components/confirm-panel';
+import LoadingSpinner from '../components/loading-spinner';
 
 
 import './manage-channel.css';
@@ -23,7 +24,8 @@ class ManageChannel extends React.Component {
 			channel: '',
 			achievements: '',
 			notice: '',
-			showConfirm: false
+			showConfirm: false,
+			loading: true
 		};
 	}
 
@@ -40,7 +42,8 @@ class ManageChannel extends React.Component {
 					channel: res.data.channel,
 					achievements: res.data.achievements,
 					images: res.data.images,
-					members: res.data.members
+					members: res.data.members,
+					loading: false
 				};
 
 				if(res.data.images.defaultIcon) {
@@ -292,7 +295,7 @@ class ManageChannel extends React.Component {
 				achievementTab = (
 					<div>
 						<div onClick={() => {
-							this.props.history.push('/manage/' + this.props.profile.username + '/achievement');
+							this.props.history.push('/manage/achievement');
 						}} className="add-achievement">
 							<div>Add your first achievement!</div>
 							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
@@ -308,7 +311,7 @@ class ManageChannel extends React.Component {
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
 							<div className="achievementsHeader--add">
-								<Link to={"/manage/" + this.props.profile.username + "/achievement"}>Add New...<div className="achievementsHeader--plus">
+								<Link to={"/manage/achievement"}>Add New...<div className="achievementsHeader--plus">
 									<img alt="" src={require('../img/plus.png')} />
 								</div></Link>
 								
@@ -320,7 +323,7 @@ class ManageChannel extends React.Component {
 								editable={true}
 								achievement={achievement}
 								onGift={this.showGiftModal}
-								onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '/achievement/' + achievement.uid)}}
+								onClick={() => {this.props.history.push('/manage/achievement/' + achievement.uid)}}
 							/>
 						))}
 						{modal}
@@ -373,10 +376,10 @@ class ManageChannel extends React.Component {
 				))
 			);
 		} else {
-			generalContent = (<div>Fetching General Information...</div>);
-			achievementTab = (<div>Fetching Achievements...</div>);
-			imageContent = (<div>Fetching Images...</div>);
-			memberContent = (<div>Fetching Members...</div>);
+			generalContent = (<LoadingSpinner />);
+			achievementTab = (<LoadingSpinner />);
+			imageContent = (<LoadingSpinner />);
+			memberContent = (<LoadingSpinner />);
 		}
 
 		const params = new URLSearchParams(this.props.location.search);

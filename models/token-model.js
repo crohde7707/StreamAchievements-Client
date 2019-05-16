@@ -1,10 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const tokenSchema = new Schema({
+var tokenSchema = new Schema({
 	uid: String,
-	token: String
+	token: String,
+	created: Date
 });
+
+tokenSchema.methods.hasExpired = function() {
+    var now = Date.now();
+    return (now - Date.parse(this.created)) > 259200000;
+};
 
 const Token = mongoose.model("token", tokenSchema);
 

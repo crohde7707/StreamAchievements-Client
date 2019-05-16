@@ -8,6 +8,7 @@ const Listener = require('../models/listener-model');
 const Queue = require('../models/queue-model');
 const Notice = require('../models/notice-model');
 const Image = require('../models/image-model');
+const {isAuthorized} = require('../utils/auth-utils');
 
 const uploadImage = require('../utils/image-utils').uploadImage;
 const mongoose = require('mongoose');
@@ -98,283 +99,296 @@ let updatedAchievement = (existingAchievement, updates, listenerUpdates, iconImg
 	});
 }
 
-router.post('/update', (req, res) => {
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
-				if(existingChannel) {
-					
-					Achievement.findOne({['_id']: req.body.id, channel: existingChannel.owner}).then((existingAchievement) => {
-						if(existingAchievement) {
-							let updates = req.body;
+let retrieveImages = (owner) => {
+	return new Promise((resolve, reject) => {
+		Image.find({channel: owner, type: "achievement"}).then(foundImages => {
+			if(foundImages) {
 
-							let {code, resubType, query, bot, condition} = updates;
+				let images = {
+					active: [],
+					inactive: []
+				};
 
-							let listenerUpdates = {};
+				foundImages.map(image => {
+					if(image.achievementID && image.achievementID !== "") {
+						images.active.push(image);
+					} else {
+						images.inactive.push(image);
+					}
+				})
 
-							if(code) {
-								listenerUpdates.code = code;
-								delete updates.code;
-							}
-							if(resubType) {
-								listenerUpdates.resubType = resubType;
-								delete updates.resubType;
-							}
-							if(query) {
-								listenerUpdates.query = query;
-								delete updates.query;
-							}
-							if(bot) {
-								listenerUpdates.bot = bot;
-								delete updates.bot;
-							}
-							if(condition) {
-								listenerUpdates.condition = condition;
-								delete updates.condition;
-							}
+				resolve(images.active.concat(images.inactive));
+			} else {
+				resolve([]);
+			}
+		});
+	});
+}
 
-							//If new image, upload it
-							if(updates.icon && updates.iconName) {
-								uploadImage(updates.icon, updates.iconName, existingChannel.owner).then(iconImg => {
-									updates.icon = iconImg.url;
+router.post('/update', isAuthorized, (req, res) => {
+	
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		if(existingChannel) {
+			
+			Achievement.findOne({['_id']: req.body.id, channel: existingChannel.owner}).then((existingAchievement) => {
+				if(existingAchievement) {
+					let updates = req.body;
 
-									updatedAchievement(existingAchievement, updates, listenerUpdates, iconImg).then(response => {
-										res.json(response);
-									});
-								});
-							} else {
-								updatedAchievement(existingAchievement, updates, listenerUpdates).then(response => {
-									res.json(response);
-								});
-							}
+					let {code, resubType, query, bot, condition} = updates;
 
-						} else {
-							res.json({
-								update: false,
-								message: "The achievement you tried to update doesn't exist!"
+					let listenerUpdates = {};
+
+					if(code) {
+						listenerUpdates.code = code;
+						delete updates.code;
+					}
+					if(resubType) {
+						listenerUpdates.resubType = resubType;
+						delete updates.resubType;
+					}
+					if(query) {
+						listenerUpdates.query = query;
+						delete updates.query;
+					}
+					if(bot) {
+						listenerUpdates.bot = bot;
+						delete updates.bot;
+					}
+					if(condition) {
+						listenerUpdates.condition = condition;
+						delete updates.condition;
+					}
+
+					//If new image, upload it
+					if(updates.icon && updates.iconName) {
+						uploadImage(updates.icon, updates.iconName, existingChannel.owner).then(iconImg => {
+							updates.icon = iconImg.url;
+
+							updatedAchievement(existingAchievement, updates, listenerUpdates, iconImg).then(response => {
+								res.json(response);
 							});
-						}
-					});
+						});
+					} else {
+						updatedAchievement(existingAchievement, updates, listenerUpdates).then(response => {
+							res.json(response);
+						});
+					}
+
 				} else {
 					res.json({
 						update: false,
-						message: "The channel you tried to update the achievement for doesn't exist!"
+						message: "The achievement you tried to update doesn't exist!"
 					});
 				}
 			});
 		} else {
 			res.json({
 				update: false,
-				message: "You don't have permission to do that!"
+				message: "The channel you tried to update the achievement for doesn't exist!"
 			});
 		}
 	});
 });
 
-router.post("/create", (req, res) => {
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
-				if(existingChannel) {
-					let query = {};
+router.post("/create", isAuthorized, (req, res) => {
+	
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		if(existingChannel) {
+			let query = {};
 
-					if(req.body.id) {
-						query['_id'] = req.body.id
-					} else {
-						query.title = req.body.title
-					}
+			if(req.body.id) {
+				query['_id'] = req.body.id
+			} else {
+				query.title = req.body.title
+			}
 
-					query.channel = existingChannel.owner
+			query.channel = existingChannel.owner
 
-					Achievement.findOne(query).then((existingAchievement) => {
-						if(existingAchievement) {
-							res.json({
-								created: false,
-								message: "An achievement with this name already exists!",
-								achievement: existingAchievement
-							});
-						} else {
-							Achievement.count().then(count => {
-								let achData = {
-									uid: count + 1,
-									channel: existingChannel.owner,
-									title: req.body.title,
-									description: req.body.description,
-									icon: req.body.icon,
-									earnable: req.body.earnable,
-									limited: req.body.limited,
-									secret: req.body.secret,
-									listener: req.body.listener
-								};
+			Achievement.findOne(query).then((existingAchievement) => {
+				if(existingAchievement) {
+					res.json({
+						created: false,
+						message: "An achievement with this name already exists!",
+						achievement: existingAchievement
+					});
+				} else {
+					Achievement.count().then(count => {
+						let achData = {
+							uid: count + 1,
+							channel: existingChannel.owner,
+							title: req.body.title,
+							description: req.body.description,
+							icon: req.body.icon,
+							earnable: req.body.earnable,
+							limited: req.body.limited,
+							secret: req.body.secret,
+							listener: req.body.listener
+						};
 
-								let listenerData = {
-									channel: existingChannel.owner,
-									code: req.body.code
-								};
+						let listenerData = {
+							channel: existingChannel.owner,
+							code: req.body.code
+						};
 
-								if(listenerData.code !== '0') {
-									listenerData.query = req.body.query;
+						if(listenerData.code !== '0') {
+							listenerData.query = req.body.query;
 
-									if(listenerData.code === "1") {
-										listenerData.resubType = parseInt(req.body.resubType);
-									}
-									if(listenerData.code === "4") {
-										listenerData.bot = req.body.bot;
-										listenerData.condition = req.body.condition;
-									}
-								}				
+							if(listenerData.code === "1") {
+								listenerData.resubType = parseInt(req.body.resubType);
+							}
+							if(listenerData.code === "4") {
+								listenerData.bot = req.body.bot;
+								listenerData.condition = req.body.condition;
+							}
+						}				
 
-								Listener.findOne(listenerData).then(foundListener => {
-									if(foundListener) {
-										Achievement.findOne({listener: foundListener._id}).then(foundAchievement => {
-											res.json({
-												created: false,
-												message: "The conditions you selected are already taken by the \"" + foundAchievement.title + "\" achievement!"
-											});
-										});
-									} else {
-										uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
-											achData.icon = result.url;
-											new Achievement(achData).save().then((newAchievement) => {
-												console.log('new achievement in DB');
-												listenerData.achievement = newAchievement.id;
-												//create listener for achievement
-												new Listener(listenerData).save().then(newListener => {
-													console.log("new listener in DB");
+						Listener.findOne(listenerData).then(foundListener => {
+							if(foundListener) {
+								Achievement.findOne({listener: foundListener._id}).then(foundAchievement => {
+									res.json({
+										created: false,
+										message: "The conditions you selected are already taken by the \"" + foundAchievement.title + "\" achievement!"
+									});
+								});
+							} else {
+								uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
+									achData.icon = result.url;
+									new Achievement(achData).save().then((newAchievement) => {
+										console.log('new achievement in DB');
+										listenerData.achievement = newAchievement.id;
+										//create listener for achievement
+										new Listener(listenerData).save().then(newListener => {
+											console.log("new listener in DB");
 
-													newAchievement.listener = newListener.id;
-													newAchievement.save().then(updatedAchievement => {
-														result.achievementID = updatedAchievement.id;
-														result.save().then(updateImage => {
-															res.json({
-																created: true,
-																achievement: newAchievement
-															});		
-														});
-													});
+											newAchievement.listener = newListener.id;
+											newAchievement.save().then(updatedAchievement => {
+												result.achievementID = updatedAchievement.id;
+												result.save().then(updateImage => {
+													res.json({
+														created: true,
+														achievement: newAchievement
+													});		
 												});
 											});
 										});
-									}
-								});	
-							});
-						}
-					});	
-				} else {
-					res.json({
-						created: false,
-						message: "This channel you are creating for doesn't exist!"
+									});
+								});
+							}
+						});	
 					});
-				}	
+				}
 			});	
 		} else {
 			res.json({
 				created: false,
-				message: "You are not authorized to create achievements!"
+				message: "This channel you are creating for doesn't exist!"
 			});
-		}
+		}	
 	});
 });
 
-router.post("/delete", (req, res) => {
-	console.log(req.body);
+router.post("/delete", isAuthorized, (req, res) => {
 
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			console.log('user found: ' + foundUser.name);
-			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
-				if(existingChannel) {
-					console.log('channel found: ' + existingChannel.owner);
-					//Check if achievement of same name exists
+	Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
+		if(existingChannel) {
+			
+			//Check if achievement of same name exists
+			let query = {};
+			query['_id'] = req.body.achievementID;
+			query.channel = existingChannel.owner;
 
-					let query = {};
-					query['_id'] = req.body.achievementID;
-					query.channel = existingChannel.owner;
+			Achievement.findOne(query).then((existingAchievement) => {
+				if(existingAchievement) {
+					//time to delete
+					let listenerID = existingAchievement.listener;
 
-					Achievement.findOne(query).then((existingAchievement) => {
-						if(existingAchievement) {
-							//time to delete
-							let listenerID = existingAchievement.listener;
+					Achievement.deleteOne(query).then(err => {
+						let listenerQuery = {
+							"_id": listenerID,
+							channel: existingAchievement.channel
+						};
 
-							Achievement.deleteOne(query).then(err => {
-								let listenerQuery = {
-									"_id": listenerID,
-									channel: existingAchievement.channel
-								};
-
-								Listener.findOne(listenerQuery).then(existingListener => {
-									if(existingListener) {
-										Listener.deleteOne(listenerQuery).then(err => {
-											res.json({
-												deleted:true
-											});
-										});
-									} else {
-										res.json({
-											deleted:true
-										});
-									}
+						Listener.findOne(listenerQuery).then(existingListener => {
+							if(existingListener) {
+								Listener.deleteOne(listenerQuery).then(err => {
+									res.json({
+										deleted:true
+									});
 								});
-							});
-
-						} else {
-							res.json({
-								deleted: false,
-								message: "The achievement you requested to delete doesn't exist!"
-							})
-						}
+							} else {
+								res.json({
+									deleted:true
+								});
+							}
+						});
 					});
+
 				} else {
 					res.json({
-						delete: false,
-						message: "This channel you are deleting for doesn't exist!"
-					});
+						deleted: false,
+						message: "The achievement you requested to delete doesn't exist!"
+					})
 				}
 			});
 		} else {
 			res.json({
-				deleted: false,
-				message: "You are not authorized to deleted achievements!"
+				delete: false,
+				message: "This channel you are deleting for doesn't exist!"
 			});
 		}
 	});
 });
 
-router.get("/retrieve", (req, res) => {
-	let channel = req.query.id;
+router.get("/retrieve", isAuthorized, (req, res) => {
+	let channel = req.user.name;
 	let achievement = req.query.aid;
+
 	if(achievement) {
-		Achievement.findOne({
-			uid: achievement,
-			channel: channel
-		}).then(existingAchievement => {
-			if(existingAchievement) {
-				let listenerID = existingAchievement.listener;
-				Listener.findOne({
-					"_id": existingAchievement.listener,
-					channel: existingAchievement.channel
-				}).then(existingListener => {
-					if(existingListener) {
-						let listenerData = Object.assign({}, existingListener['_doc']);
-						let achievementData = Object.assign({}, existingAchievement['_doc']);
+		Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+			if(existingChannel) {
+				let achievementPromise = new Promise((resolve, reject) => {
+					Achievement.findOne({
+						uid: achievement,
+						channel: existingChannel.owner
+					}).then(existingAchievement => {
+						if(existingAchievement) {
+							let listenerID = existingAchievement.listener;
+							Listener.findOne({
+								"_id": existingAchievement.listener,
+								channel: existingAchievement.channel
+							}).then(existingListener => {
+								if(existingListener) {
+									let listenerData = Object.assign({}, existingListener['_doc']);
+									let achievementData = Object.assign({}, existingAchievement['_doc']);
 
-						delete listenerData._id;
+									delete listenerData._id;
 
-						let mergedAchievement = Object.assign(achievementData, listenerData);
+									let mergedAchievement = Object.assign(achievementData, listenerData);
 
-						res.json({
-							achievement: mergedAchievement
-						});
-					} else {
-						res.json({
-							achievement: existingAchievement
-						})
-					}
+									resolve(mergedAchievement);
+								} else {
+									resolve(existingAchievement);
+								}
+							});
+						} else {
+							resolve(null);
+						}
+					});
+				});
+
+				let imagePromise = retrieveImages(existingChannel.owner);
+
+				Promise.all([achievementPromise, imagePromise]).then(responses => {
+					res.json({
+						achievement: responses[0],
+						images: responses[1]
+					});
 				});
 			} else {
+				//Current user isn't verified
 				res.json({
-					achievement: null
-				});
+					error: "User isn't a verified channel owner"
+				})
 			}
 		});
 
@@ -407,39 +421,18 @@ router.get("/retrieve", (req, res) => {
 	
 });
 
-router.get('/icons', (req, res) => {
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then((foundUser) => {
-		if(foundUser) {
-			Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
-				if(existingChannel) {
-					//Get Images
-					Image.find({channel: existingChannel.owner, type: "achievement"}).then(foundImages => {
-						if(foundImages) {
+router.get('/icons', isAuthorized, (req, res) => {
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		if(existingChannel) {
+			//Get Images
 
-							let images = {
-								active: [],
-								inactive: []
-							};
-
-							foundImages.map(image => {
-								if(image.achievementID && image.achievementID !== "") {
-									images.active.push(image);
-								} else {
-									images.inactive.push(image);
-								}
-							})
-
-							res.json(images.active.concat(images.inactive));
-						} else {
-							res.json([]);
-						}
-					});
-				} else {
-
-				}
+			retrieveImages(existingChannel.owner).then(images => {
+				res.json({images: images});
 			});
 		} else {
-
+			res.json({
+				error: true
+			});
 		}
 	});
 });
@@ -462,10 +455,6 @@ router.get('/listeners', (req, res) => {
 				res.json([]);
 			}
 		});
-});
-
-router.get('/foo', (req, res) => {
-	res.send('foo');
 });
 
 router.post('/listeners', (req, res) => {
