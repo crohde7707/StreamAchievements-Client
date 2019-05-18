@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import throttle from 'lodash/throttle';
 import connector from '../redux/connector';
 import {setProfile} from '../redux/profile-reducer';
 
@@ -16,8 +17,12 @@ class ChannelPage extends React.Component {
 		this.state = {
 			channel: '',
 			notice: '',
-			loading: true
+			loading: true,
+			small: false,
+			progress: true
 		}
+
+		console.log(throttle);
 	}
 
 	componentDidMount() {
@@ -35,7 +40,10 @@ class ChannelPage extends React.Component {
 				joined: res.data.joined,
 				loading: false
 			}, () => {
-				window.addEventListener('scroll', this.updateChannelHeader);		
+				this.updateChannelHeader();
+				this.updateChannelSize();
+				window.addEventListener('scroll', throttle(this.updateChannelHeader, 200));
+				window.addEventListener('resize', throttle(this.updateChannelSize, 200));
 			});
 		});	
 	}
@@ -56,6 +64,18 @@ class ChannelPage extends React.Component {
 	  } else {
 	    document.getElementById("channel-header").classList.remove('condensed');
 	  }
+	}
+
+	updateChannelSize = () => {
+		if(window.innerWidth <= 480 && !this.state.small) {
+			this.setState({
+				small: true
+			});
+		} else if(window.innerWidth > 480 && this.state.small) {
+			this.setState({
+				small: false
+			});
+		}
 	}
 
 	joinChannel = () => {
@@ -135,14 +155,22 @@ class ChannelPage extends React.Component {
 
 					let percentage = Math.floor((achievements.earned.length / achievements.all.length) * 100);
 
+					let progressClasses = 'channel-progress';
+
+					if(this.state.progress) {
+						progressClasses += ' channel-progress--visible';
+					}
+
 					achievementProgress = (
-						<div className="channel-achievement-progress">
-							<div className="progress-bar--label">Achievement Progress</div>
-							<div className="progress-bar--visual">
-								<div className="progress-bar-wrapper">
-	  								<div className="progress-bar" style={{width: percentage + "%"}}></div>
+						<div className={progressClasses}>
+							<div className="channel-achievement-progress">
+								<div className="progress-bar--label">Achievement Progress</div>
+								<div className="progress-bar--visual">
+									<div className="progress-bar-wrapper">
+		  								<div className="progress-bar" style={{width: percentage + "%"}}></div>
+									</div>
+									<div className="progress-percentage">{percentage}%</div>
 								</div>
-								<div className="progress-percentage">{percentage}%</div>
 							</div>
 						</div>
 					)
@@ -160,29 +188,38 @@ class ChannelPage extends React.Component {
 				)
 			}
 
+			let wrapperClasses = 'channel-page';
+
+			if(this.state.small) {
+				wrapperClasses += ' channel-page--sm';
+			}
+
 			content = (
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
-					<Notice message={this.state.notice} onClear={this.clearNotice} />
-					<div id="channel-header">
-						{favorite}
-						<div className="channel-logo">
-							<img src={logo} />
-						</div>
-						<div className="channel-info">
-							<div className="channel-name">
-								<span>{owner}</span>
-								<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
-									<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
-								</a>
+					<div className={wrapperClasses}>
+						<Notice message={this.state.notice} onClear={this.clearNotice} />
+						<div id="channel-header">
+							{favorite}
+							<div className="channel-logo">
+								<img src={logo} />
 							</div>
-							<div className="channel-description"></div>
+							<div className="channel-info">
+								<div className="channel-name">
+									<span>{owner}</span>
+									<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
+										<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
+									</a>
+								</div>
+								<div className="channel-description"></div>
+							</div>
+							{((this.state.small) ? null : achievementProgress)}
+							<div className="channel-buttons">
+								{membershipContent}
+							</div>
 						</div>
-						{achievementProgress}
-						<div className="channel-buttons">
-							{membershipContent}
-						</div>
+						{((this.state.small) ? achievementProgress : null)}
+						{achievementsContent}
 					</div>
-					{achievementsContent}
 				</Template>
 			);
 		} else {

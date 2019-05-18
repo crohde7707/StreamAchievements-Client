@@ -85,7 +85,7 @@ router.post('/leave', isAuthorized, (req, res) => {
 	});
 });
 
-router.post('/join', (req, res) => {
+router.post('/join', isAuthorized, (req, res) => {
 
 	Channel.findOne({owner: req.body.channel}).then((existingChannel) => {
 		if(existingChannel) {
