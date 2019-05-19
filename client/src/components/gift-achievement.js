@@ -9,8 +9,7 @@ export default class GiftAchievementModal extends React.Component {
 		super(props);
 
 		this.state = {
-			members: props.members,
-			membersToGift: []
+			members: props.members
 		}
 	}
 
@@ -53,41 +52,31 @@ export default class GiftAchievementModal extends React.Component {
 	}
 
 	toggleMember = (member, event, fromChild) => {
-		let membersToGift = this.state.membersToGift;
+		let members = this.state.members;
 
-		let memberIdx = membersToGift.map((member) => { return member.name }).indexOf(member.name);
+		let memberIdx = members.map((member) => { return member.name }).indexOf(member.name);
 
-		if(memberIdx >= 0) {
-			membersToGift.splice(memberIdx, 1);
-			if(fromChild) {
-				event.target.parentElement.classList.remove('member--selected');
-			} else {
-				event.target.classList.remove('member--selected');
-			}
-			
+		if(members[memberIdx].selected) {
+			delete members[memberIdx].selected;
 		} else {
-			membersToGift.push(member);
-			if(fromChild) {
-				event.target.parentElement.classList.add('member--selected');
-			} else {
-				event.target.classList.add('member--selected');	
-			}
+			members[memberIdx].selected = true
 		}
 
 		this.setState({
-			membersToGift
+			members
 		});
 	}
 
 	buildMemberList = (members, className) => {
-		if(Array.isArray(members)) {
+		if(Array.isArray(members) && members.length > 0) {
+
 			return (
 				<div className={className}>
 					{members.map((member, index) => (
 						<button
 							type="button"
 							key={'member-' + index}
-							className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}
+							className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "") + ((member.selected) ? " channelMember--selected" : "")}
 							onClick={(event) => { this.toggleMember(member, event) }}
 						>
 							<div className="member-logo">
@@ -101,7 +90,7 @@ export default class GiftAchievementModal extends React.Component {
 				</div>
 			)	
 		} else {
-			return null;
+			return (<h5>Currently no members</h5>);
 		}
 		
 	}
@@ -126,12 +115,10 @@ export default class GiftAchievementModal extends React.Component {
 							<div className="member-search">
 								<input placeholder="Search for member..." type="text" onChange={this.filterList} />
 							</div>
-							<h4>Selected Members</h4>
-							{this.buildMemberList(membersToGift, 'selected-members')}
-							<h4>All Members</h4>
+							<h4>Members</h4>
 							{this.buildMemberList(members, 'member-list')}
 						</div>
-						<button className="chooseMember--confirm" type="button" onClick={this.props.onConfirm}>Award</button>
+						<button className="chooseMember--award" type="button" onClick={this.props.onConfirm}>Award</button>
 					</div>
 				</div>
 			</div>

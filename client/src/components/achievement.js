@@ -19,7 +19,7 @@ class Achievement extends React.Component {
 
 		if(this.props.editable) {
 			giftIcon = (
-				<div title="Manual Awarding coming soon!" className="achievement--gift" /*onClick={this.props.onGift}*/>
+				<div title="Manual Awarding coming soon!" className="achievement--gift" onClick={this.props.onGift}>
 					<img src={require('../img/gift.png')} />
 				</div>
 			);

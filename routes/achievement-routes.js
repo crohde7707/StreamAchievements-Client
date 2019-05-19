@@ -418,7 +418,21 @@ router.get("/retrieve", isAuthorized, (req, res) => {
 
 	}
 
-	
+});
+
+router.post('/award', isAuthorized, (req, res) => {
+	let members = req.body.members;
+	let achievementID = req.body.aid;
+
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		User.find({'name': { $in: members}}).then(foundMembers => {
+			foundMembers.forEach(member => {
+				let channelIdx = member.channels.map(channel => channel.channelID).indexOf(existingChannel._id);
+				member.channels[channelIdx].achievements.push(achievementID);
+				member.save();
+			});
+		})
+	});
 });
 
 router.get('/icons', isAuthorized, (req, res) => {
