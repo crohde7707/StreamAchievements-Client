@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import './modal.css';
 import './gift-achievement.css';
@@ -8,13 +9,25 @@ export default class GiftAchievementModal extends React.Component {
 	constructor(props) {
 		super(props);
 
+		let unearnedMembers = props.members.filter(member => {
+			let notEarned = (member.achievements.filter(achievement => achievement.aid === props.aid).length === 0);
+			return notEarned;
+		});
+
 		this.state = {
-			members: props.members
+			members: unearnedMembers,
+			aid: props.aid
 		}
 	}
 
 	componentDidMount() {
+		this.filterMembers();
 		this.positionModal();
+	}
+
+	filterMembers() {
+		console.log(this.props.members);
+
 	}
 
 	positionModal = () => {
@@ -90,9 +103,27 @@ export default class GiftAchievementModal extends React.Component {
 				</div>
 			)	
 		} else {
-			return (<h5>Currently no members</h5>);
+			if(this.props.members.length > 0) {
+				return (<h5>Your whole community currently has this achievement!</h5>);
+			} else {
+				return (<h5>Currently no members for your channel!</h5>);	
+			}
+			
 		}
 		
+	}
+
+	awardAchievement = () => {
+		let chosenMembers = this.state.members.filter(member => member.selected);
+
+		console.log(chosenMembers);
+
+		axios.post('/api/achievement/award', {
+			members: chosenMembers.map(member => member.name),
+			aid: this.state.aid
+		}).then(response => {
+			console.log(response);
+		})
 	}
 
 	render() {
@@ -118,7 +149,8 @@ export default class GiftAchievementModal extends React.Component {
 							<h4>Members</h4>
 							{this.buildMemberList(members, 'member-list')}
 						</div>
-						<button className="chooseMember--award" type="button" onClick={this.props.onConfirm}>Award</button>
+						<button className="chooseMember--award" type="button" onClick={this.awardAchievement}>Award</button>
+						<button className="chooseMember--cancel" type="button" onClick={this.props.onClose}>Cancel</button>
 					</div>
 				</div>
 			</div>

@@ -426,11 +426,47 @@ router.post('/award', isAuthorized, (req, res) => {
 
 	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
 		User.find({'name': { $in: members}}).then(foundMembers => {
-			foundMembers.forEach(member => {
-				let channelIdx = member.channels.map(channel => channel.channelID).indexOf(existingChannel._id);
-				member.channels[channelIdx].achievements.push(achievementID);
-				member.save();
+
+			let promises = foundMembers.map((member, idx) => {
+				let channels = member.channels;
+				let channelIdx = channels.findIndex(channel => channel.channelID === existingChannel.id);
+
+				channels[channelIdx].achievements.push({aid: achievementID, earned: Date.now()});
+				member.channels = channels;
+				console.log(member.channels[0].achievements);
+				return member.save().then(savedMember => {
+					console.log(savedMember.channels[0].achievements);
+				});
 			});
+
+			// let promises = [];
+
+			// for (let i = 0; i < foundMembers.length; i++) {
+			// 	let channels = foundMembers[i].channels;
+			// 	let channelIdx = channels.findIndex(channel => channel.channelID === existingChannel.id);
+
+			// 	channels[channelIdx].achievements.push(achievementID);
+			// 	foundMembers[i].channels = channels;
+			// 	promises.push(foundMembers[i].save());
+			// }
+
+			Promise.all(promises).then((responses) => {
+				User.find({'_id': { $in: existingChannel.members}}).then((members) => {
+					//Filter out member data: name, logo, achievements
+
+					let resMembers = members.map(member => {
+						return {
+							name: member.name,
+							logo: member.logo,
+							achievements: member.channels.filter((channel) => (channel.channelID === existingChannel.id))[0].achievements
+						}
+					});
+
+					res.json({
+						members: resMembers
+					});
+				});
+			})
 		})
 	});
 });

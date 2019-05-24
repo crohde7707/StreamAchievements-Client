@@ -182,20 +182,33 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 					Achievement.find({channel: channel}).then((foundAchievements) => {
 
 						let joined = foundChannel.members.includes(req.user.id);
-						let earned;
+						let earned, retAchievements;
 
 						if(joined) {
-							earned = req.user.channels.filter((channel) => (channel.channelID === foundChannel.id))[0].achievements;	
+							earnedAchievements = req.user.channels.filter((channel) => {
+								return (channel.channelID === foundChannel.id)
+							})[0];
+
+							earned = earnedAchievements.achievements.map(achievement => achievement.aid);
+
+							retAchievements = foundAchievements.map(achievement => {
+								let ach = Object.assign({}, achievement._doc);
+
+								let aIdx = earned.findIndex(aid => aid === ach.uid);
+
+								if(aIdx >= 0) {
+									ach.earned = earnedAchievements.achievements[aIdx].earned;
+								}
+
+								return ach
+							})
 						} else {
 							earned = [];
 						}
 
 						res.json({
 							channel: foundChannel,
-							achievements: {
-								all: foundAchievements,
-								earned: earned
-							},
+							achievements: retAchievements,
 							joined: joined
 						});
 					});	
@@ -283,8 +296,17 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 
 				let membersPromise = new Promise((resolve, reject) => {
 					User.find({'_id': { $in: existingChannel.members}}).then((members) => {
-						console.log(members)
-						resolve(members);
+						//Filter out member data: name, logo, achievements
+
+						let resMembers = members.map(member => {
+							return {
+								name: member.name,
+								logo: member.logo,
+								achievements: member.channels.filter((channel) => (channel.channelID === existingChannel.id))[0].achievements
+							}
+						});
+
+						resolve(resMembers);
 					});
 				});
 

@@ -5,9 +5,12 @@ import './achievement.css';
 class Achievement extends React.Component {
 
 	render() {
-		let keyProp, editIcon, giftIcon;
+		let keyProp, editIcon, giftIcon, title, description, earnDate;
 		let {earned, className} = this.props;
-		let {title, description} = this.props.achievement;
+		let {secret, limited} = this.props.achievement;
+
+		title = this.props.achievement.title;
+		description = this.props.achievement.description;
 
 		let achievementClass = "achievement";
 		let icon = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png';
@@ -15,11 +18,15 @@ class Achievement extends React.Component {
 		if(earned || this.props.editable) {
 			achievementClass += " achievement--earned";
 			icon = this.props.achievement.icon || null;
+
+		} else if(secret) {
+			title = "????";
+			description = "????????????";
 		}
 
 		if(this.props.editable) {
 			giftIcon = (
-				<div title="Manual Awarding coming soon!" className="achievement--gift" onClick={this.props.onGift}>
+				<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
 					<img src={require('../img/gift.png')} />
 				</div>
 			);
@@ -42,6 +49,10 @@ class Achievement extends React.Component {
 			);
 		}
 
+		if(earned && earned !== true) {
+			earnDate = (<div className="achievement--earnDate">{new Date(earned).toLocaleDateString()}</div>);
+		}
+
 		return (
 			<div className={achievementClass}>
 				{logo}
@@ -51,6 +62,7 @@ class Achievement extends React.Component {
 				</div>
 				{giftIcon}
 				{editIcon}
+				{earnDate}
 			</div>
 		)
 	}

@@ -7,7 +7,17 @@ const userSchema = new Schema({
 	logo: String,
 	email: String,
 	type: String,
-	channels: Array,
+	channels: [
+		{
+			channelID: String,
+			achievements: [
+				{
+					aid: Number,
+					earned: Date
+				}
+			]
+		}
+	],
 	integration: Object
 });
 

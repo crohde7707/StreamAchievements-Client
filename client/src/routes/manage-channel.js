@@ -77,10 +77,11 @@ class ManageChannel extends React.Component {
 	    }	    
   	}
 
-  	showGiftModal = () => {
-  		
+  	showGiftModal = (aid) => {
+  		console.log(aid);
   		this.setState({
-			isModalActive: true
+			isModalActive: true,
+			aid
 		});	
 		
 	}
@@ -233,6 +234,15 @@ class ManageChannel extends React.Component {
 				);
 			}
 
+			let defaultBlurb;
+
+			if(this.props.patreon && this.props.patreon.gold) {
+				defaultBlurb = (<p>Being a patreon supporter, you have the option to upload a custom icon for each achievement when creating one! Also, you can upload a custom image here to use for all achievements by default!</p>);
+			} else {
+				defaultBlurb = (<p>Wan't to provide your own custom icons for your achievements? Consider becoming a Patreon! You will be able to upload an icon to use for all achievements, or provide a custom icon for each achievement when creating them!</p>);
+			}
+
+
 			generalContent = (
 				<div className="general-configuration">
 					<h4>Basic Info</h4>
@@ -257,7 +267,23 @@ class ManageChannel extends React.Component {
 					<form onSubmit={this.handleSubmit}>
 						<div className="section-wrapper">
 							<div className="section-label">
-						        <label htmlFor="defaultIcon">Default Achievement Icon</label>
+								<label htmlFor="defaultIcon">Default Icon for Achievements</label>
+								<p>Choose an image to use for your achievements!</p>
+								{defaultBlurb}
+							</div>
+							<div className="section-value">
+								<button type="button" className="default-icon--wrapper">
+							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								</button>
+								<button type="button" className="default-icon--wrapper">
+							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								</button>
+							</div>
+						</div>
+						<div className="section-wrapper">
+							<div className="section-label">
+						        <label htmlFor="unearnedIcon">Hidden Achievement Icon</label>
+						        <p>This will be the icon used when displaying an achievement that hasn't been earned yet</p>
 						    </div>
 						    <div className="section-value default-icons">
 						    	{customDefaultIcon}
@@ -281,6 +307,8 @@ class ManageChannel extends React.Component {
 			if(this.state.isModalActive) {
 				modal = (
 					<GiftAchievementModal 
+						aid={this.state.aid}
+						channel={this.state.channel._id}
 						active={this.state.isModalActive}
 						onClose={this.hideGiftModal}
 						onSubmit={this.hideGiftModal}
@@ -451,7 +479,8 @@ class ManageChannel extends React.Component {
 
 function headerMapStateToProps(state) {
 	return {
-		profile: state.profile
+		profile: state.profile,
+		patreon: state.patreon
 	};
 }
 

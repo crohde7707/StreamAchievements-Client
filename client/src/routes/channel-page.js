@@ -21,8 +21,6 @@ class ChannelPage extends React.Component {
 			small: false,
 			progress: true
 		}
-
-		console.log(throttle);
 	}
 
 	componentDidMount() {
@@ -33,7 +31,7 @@ class ChannelPage extends React.Component {
 		});
 
 		authAxios.get('/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
-						
+			console.log(res.data.achievements);
 			this.setState({
 				channel: res.data.channel,
 				achievements: res.data.achievements,
@@ -42,14 +40,20 @@ class ChannelPage extends React.Component {
 			}, () => {
 				this.updateChannelHeader();
 				this.updateChannelSize();
-				window.addEventListener('scroll', throttle(this.updateChannelHeader, 200));
-				window.addEventListener('resize', throttle(this.updateChannelSize, 200));
+
+				this._updateChannelHeader = throttle(this.updateChannelHeader, 200);
+				this._updateChannelSize = throttle(this.updateChannelSize, 200);
+
+				window.addEventListener('scroll', this._updateChannelHeader);
+				window.addEventListener('resize', this._updateChannelSize);
 			});
 		});	
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('scroll', this.updateChannelHeader);
+		console.log('unmounting...');
+		window.removeEventListener('scroll', this._updateChannelHeader);
+		window.removeEventListener('resize', this._updateChannelSize);
 	}
 
 	clearNotice = () => {
@@ -109,7 +113,7 @@ class ChannelPage extends React.Component {
 		if(this.state.channel) {
 
 			let {owner, logo} = this.state.channel;
-			let achievements = this.state.achievements.all;
+			let achievements = this.state.achievements;
 
 			let membershipContent, achievementProgress, achievementsContent, favorite;
 
@@ -132,12 +136,7 @@ class ChannelPage extends React.Component {
 						{achievements.map((achievement, index) => {
 
 							let classes;
-							let earned = false;
-							
-							if(Array.isArray(userAchievements) && userAchievements.includes(achievement._id)) {
-								console.log(achievement.title);
-								earned = true;
-							}
+							let earned = achievement.earned;
 
 							if(index >= 3 && !this.state.joined) {
 								classes = "achievement-blurred";
@@ -152,8 +151,7 @@ class ChannelPage extends React.Component {
 				if(this.state.joined) {
 					let {achievements} = this.state;
 
-
-					let percentage = Math.floor((achievements.earned.length / achievements.all.length) * 100);
+					let percentage = Math.floor((achievements.filter(achievement => achievement.earned).length / achievements.length) * 100);
 
 					let progressClasses = 'channel-progress';
 
