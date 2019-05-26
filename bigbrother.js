@@ -10,7 +10,60 @@ const build = require('./utils/regex-builder').build;
 
 const { chat, chatConstants } = new TwitchJS({ token, username });
 
-const channels = ['phirehero', 'jazzyrosee', 'cherrryben'];
+//const channels = ['phirehero', 'jazzyrosee', 'cherrryben'];
+
+const channels = [
+	'thorlar',
+	'sir_hannah',
+	'teaconspiracy',
+	'clooo',
+	'2dkiri',
+	'ezilii',
+	'bruisedmomo',
+	'agamingmamma',
+	'chloessims',
+	'arielamazingg',
+	'mollyann',
+	'preachlfw',
+	'mitchjones',
+	'kinggothalion',
+	'dafran',
+	'tonton',
+	'musclebrahtv',
+	'retrogaijin',
+	'naurplay',
+	'zoltan',
+	'greekgodx',
+	'fps_shaka',
+	'pokelawls',
+	'nymn',
+	'holliebb',
+	'fpsThailand',
+	'pandagirl91',
+	'kyle',
+	'kiwo',
+	'whippy',
+	'quin69',
+	'jakenbakelive',
+	'professornoxlive',
+	'onkelbarlow',
+	'guzu',
+	'trillebartom',
+	'syrenia',
+	'mcilreavey',
+	'barry74',
+	'gingitv',
+	'lapi',
+	'payo',
+	'moo_uk',
+	'ssqrush',
+	'psherotv',
+	'arcadebulls',
+	'damil',
+	'rugir',
+	'zmokamok',
+	'ratfinkreagan'
+];
 
 let joinedChannels = [];
 let channelsToRetrieve = [];
@@ -314,7 +367,8 @@ let channelLiveWatcher = () => {
 			url: 'https://api.twitch.tv/kraken/streams/',
 			params: {
 				client_id: client_id,
-				channel: channels.join()
+				channel: channels.join(),
+				limit: 100
 			}
 		})
 		.then(response => {
@@ -333,9 +387,21 @@ let channelLiveWatcher = () => {
 								joinedChannels.push(channelName);
 								channelsToRetrieve.push(channelName);
 								if((idx + 1) === arr.length) {
-									resolve();
+									setTimeout(() => {
+										resolve();
+									}, 5000);
 								}
+							}).catch(err => {
+								console.log('\x1b[33m%s\x1b[0m', 'issue joining channel');
+								setTimeout(() => {
+									resolve();
+								}, 5000);
 							});
+						}).catch(err => {
+							console.log('\x1b[33m%s\x1b[0m', 'issue connecting to chat');
+							setTimeout(() => {
+								resolve();
+							}, 5000);
 						});
 					}
 				});
@@ -348,6 +414,8 @@ let channelLiveWatcher = () => {
 }
 
 let sendAchievements = () => {
+
+	console.log(joinedChannels);
 
 	if(requestQueue.length > 0) {
 		console.log(requestQueue);
@@ -391,7 +459,7 @@ let pubsub = () => {
 
 channelLiveWatcher().then(() => {
 	console.log(joinedChannels);
-	retrieveChannelListeners();	
+	retrieveChannelListeners();
 });
 
 pubsub();

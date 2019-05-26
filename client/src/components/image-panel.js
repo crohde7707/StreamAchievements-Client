@@ -16,7 +16,7 @@ export default class ImagePanel extends React.Component {
 
 			let scrollTop = document.documentElement.scrollTop;
 
-			this.imageModal.style.top = (winHeight/2) - (this.imageModal.offsetHeight / 2) + scrollTop + 'px';
+			this.imageModal.style.top = (winHeight/2) - (this.imageModal.offsetHeight) + scrollTop + 'px';
 			this.imageModal.style.left = (winWidth / 2) - (this.imageModal.offsetWidth / 2) + 'px';	
 	}
 

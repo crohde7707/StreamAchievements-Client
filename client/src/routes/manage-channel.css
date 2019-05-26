@@ -17,7 +17,11 @@
 .section-label {
     padding: 5px 10px;
     text-align: right;
-    width: 180px;
+    width: 30%;
+}
+
+.section-label label {
+    font-weight: 700;
 }
 
 .section-value {
@@ -31,15 +35,14 @@
 }
 
 .default-icons button {
-	height: 100px;
 	background: none;
 	border: none;
 }
 
-.default-icons button.selected {
+/*.default-icons button.selected {
 	border: 2px solid aliceblue;
 	background: rgba(200,200,200,0.5);
-}
+}*/
 
 .integration {
 	border-radius: 6px;
@@ -119,18 +122,6 @@
 	font-size: 18px;
 	font-style: italic;
 }
-
-/*.achievement {
-	background: #DDD;
-    box-shadow: 0px 2px;
-    padding: 2% 10px;
-    width: 96%;
-    position: relative;
-    height: 2em;
-    margin-bottom: 25px;
-    display: block;
-    color: black;
-}*/
 
 /* Tab Styles */
 .manage-tabs {
@@ -368,6 +359,46 @@
 
 .delete-image--confirm img {
 	width: 100px;
+}
+
+.defaultIcon,
+.hiddenIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin: 3%;
+    width: 90%;
+    border: 2px inset #AAA;
+    background-color: #BBB;
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+}
+
+.defaultIcon--placeholder,
+.hiddenIcon--placeholder {
+	background: url('https://res.cloudinary.com/phirehero/image/upload/v1558809631/upload.png');
+	width:50px;
+	height:50px;
+	margin: 0 auto;
+	background-size: 50px;
+}
+
+.divider {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 50px;
+	margin: 0 5%;
+}
+
+.default-icon--wrapper.selected,
+.hidden-icon--wrapper.selected {
+	background-color: #594878;
+    border: 1px solid white;
+    padding: 0px 5px;
 }
 
 @media only screen and (max-width: 480px) {

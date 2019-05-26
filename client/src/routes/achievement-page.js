@@ -362,7 +362,7 @@ class AchievementPage extends React.Component {
 				earnable: this.state.earnable,
 				limited: this.state.limited,
 				secret: this.state.secret,
-				iconName: this.state.file.name,
+				iconName: (this.state.file) ? this.state.file.name : '',
 				code: this.state.code
 			};
 
@@ -382,7 +382,7 @@ class AchievementPage extends React.Component {
 
 		achievement.id = this.state._id;
 
-		if(this.state.file) {
+		if(this.state.file && this.state.file != '') {
 			var reader  = new FileReader();
 			
 			reader.addEventListener("load", () => {
@@ -500,6 +500,8 @@ class AchievementPage extends React.Component {
 						onCancel={() => {this.setState({showImagePanel: false})}}
 					/>
 				);
+			} else {
+				imagePanel = undefined;
 			}
 
 			if(this.state.edit) {

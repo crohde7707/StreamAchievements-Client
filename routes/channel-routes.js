@@ -328,6 +328,20 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 	}
 });
 
+router.post('/update', isAuthorized, (req, res) => {
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
+		if(existingChannel) {
+			//grab updates from body
+
+			//upload image to cloudinary if upload is needed
+
+			//update 
+		} else {
+
+		}
+	})
+});
+
 router.post('/image', isAuthorized, (req, res) => {
 	//delete image from Cloudinary
 	destroyImage(req.body.image.cloudID).then(result => {

@@ -11,6 +11,7 @@ import Achievement from '../components/achievement';
 import GiftAchievementModal from '../components/gift-achievement';
 import ConfirmPanel from '../components/confirm-panel';
 import LoadingSpinner from '../components/loading-spinner';
+import ImagePanel from '../components/image-panel';
 
 
 import './manage-channel.css';
@@ -25,7 +26,18 @@ class ManageChannel extends React.Component {
 			achievements: '',
 			notice: '',
 			showConfirm: false,
-			loading: true
+			loading: true,
+			showImagePanel: false,
+			selectedDefault: '',
+			selectedHidden: ''
+		};
+
+		this.icons = {
+			default: {
+				gold: "https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png",
+				silver: "https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png"
+			},
+			hidden: "https://res.cloudinary.com/phirehero/image/upload/v1558811887/hidden-icon.png"
 		};
 	}
 
@@ -47,7 +59,11 @@ class ManageChannel extends React.Component {
 				};
 
 				if(res.data.images.defaultIcon) {
-					stateUpdate.iconPreview = res.data.images.defaultIcon;
+					stateUpdate.defaultIconPreview = res.data.images.defaultIcon;
+				}
+
+				if(res.data.images.hiddenIcon) {
+					stateUpdate.hiddenIconPreview = res.data.images.hiddenIcon;
 				}
 
 				this.setState(stateUpdate);
@@ -141,21 +157,29 @@ class ManageChannel extends React.Component {
 
 	handleIconChange = (event) => {
 		let touched = this.state.touched || {};
-		touched['icon'] = true;
+		let name = event.target.name;
+		touched[name] = true;
 
 		if(event.target.files[0]) {
-			
-			this.setState({
-				iconPreview: URL.createObjectURL(event.target.files[0]),
+
+			let stateUpdate = {
 				file: event.target.files[0],
 				touched: touched
-			});	
+			};
+
+			stateUpdate[name + 'Preview'] = URL.createObjectURL(event.target.files[0]);
+			
+			this.setState(stateUpdate);	
 		} else {
-			this.setState({
-				iconPreview: '',
+
+			let stateUpdate = {
 				file: '',
-				touched: touched
-			});
+				touched
+			};
+
+			stateUpdate[name + 'Preview'] = '';
+
+			this.setState(stateUpdate);
 		}
 		
 	}
@@ -189,13 +213,96 @@ class ManageChannel extends React.Component {
 
 	}
 
+	showImagePanel = (event, iconName) => {
+		this.setState({
+			showImagePanel: true,
+			iconName
+		});
+	}
+
+	toggleHover = (showHover, node) => {
+		if(showHover) {
+			node.classList.add('hoverText--active');
+		} else {
+			node.classList.remove('hoverText--active');
+		}
+	}
+
+	handleIconChange = (event) => {
+
+		return new Promise((resolve, reject) => {
+			if(event.target.files[0]) {
+				let file = event.target.files[0];
+				let preview = URL.createObjectURL(file);
+				console.log(event.target);
+				var img = new Image();
+	       		img.src = preview;
+
+		        img.onload = () => {
+		            var width = img.naturalWidth, height = img.naturalHeight;
+		            window.URL.revokeObjectURL( img.src );
+		            if( width <= 300 && height <= 300 ) {
+		            	let touched = this.state.touched || {};
+						touched[this.state.iconName + 'Preview'] = true;
+						touched[this.state.iconName + 'File'] = true;
+						touched[this.state.iconName + 'Name'] = true;
+						touched[this.state.iconName + 'Preview'] = true;
+
+						let newPreview = URL.createObjectURL(file);
+
+						let stateUpdate = {
+							touched
+						};
+
+						stateUpdate[this.state.iconName + 'File'] = file;
+						stateUpdate[this.state.iconName + 'Name'] = file.name;
+						stateUpdate[this.state.iconName + 'Preview'] = newPreview;
+
+						this.setState(stateUpdate);
+
+						resolve({error: null});
+
+		            } else { 
+		                resolve({
+		                	error: 'Icon needs to be less than 300x300'
+		                });
+		            } 
+		        };
+			} else {
+				let touched = this.state.touched || {};
+				touched['icon'] = true;
+				
+				let stateUpdate = {
+					touched
+				};
+
+				stateUpdate[this.state.iconName + 'File'] = '';
+				stateUpdate[this.state.iconName + 'Name'] = '';
+				stateUpdate[this.state.iconName + 'Preview'] = '';
+
+				this.setState(stateUpdate);
+
+				resolve({error: null});
+			}
+		});
+		
+	}
+
+	handleDefaultSelect = (icon) => {
+		console.log(icon);
+	}
+
+	handleHiddenSelect = () => {
+
+	}
+
 	render() {
 
 		if(this.props.profile && !this.props.profile.stats === 'verified') {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, achievementTab, imageContent, memberContent;
+		let generalContent, achievementTab, imageContent, memberContent, imagePanel;
 
 		if(this.state.channel) {
 
@@ -207,31 +314,32 @@ class ManageChannel extends React.Component {
 				achievements = this.state.filteredAchievements;
 			}
 
-			let customDefaultIcon;
+			let customDefaultIcon, customHiddenIcon;
 
-			if(this.state.iconPreview) {
-				customDefaultIcon = (
-					<div className="customDefaultImg">
-						<img alt="Default Icon" src={this.state.iconPreview} />
-					</div>
-				);
-			} else {
-				customDefaultIcon = (
-					<div className="customDefaultImg no-default" onClick={() => { this.defaultIconInput.click() }}>
-						<span>Click to Upload</span>
-						<input
-			                type="file"
-			                name="defaultIcon"
-			                id="default-icon"
-			                accept="image/*"
-			                className="default-icon--input"
-			                ref={defaultIconInput =>
-			                    (this.defaultIconInput = defaultIconInput)
-			                }
-			                onChange={this.handleIconChange}
-			            />
-					</div>
-				);
+			if(this.props.patreon && this.props.patreon.gold) {
+				if(this.state.defaultIconPreview) {
+					customDefaultIcon = (
+						<div className="customDefaultImg">
+							<img alt="Default Icon" src={this.state.defaultIconPreview} />
+						</div>
+					);
+				} else {
+					customDefaultIcon = (
+						<div className="defaultIcon--placeholder"></div>
+					);
+				}
+
+				if(this.state.hiddenIconPreview) {
+					customHiddenIcon = (
+						<div className="customHiddenImg">
+							<img alt="Hidden icon" src={this.state.hiddenIconPreview} />
+						</div>
+					);
+				} else {
+					customHiddenIcon = (
+						<div className="hiddenIcon--placeholder"></div>
+					);
+				}
 			}
 
 			let defaultBlurb;
@@ -242,6 +350,20 @@ class ManageChannel extends React.Component {
 				defaultBlurb = (<p>Wan't to provide your own custom icons for your achievements? Consider becoming a Patreon! You will be able to upload an icon to use for all achievements, or provide a custom icon for each achievement when creating them!</p>);
 			}
 
+
+			if(this.state.showImagePanel) {
+				imagePanel = (
+					<ImagePanel 
+						currentImage={this.state[this.state.iconName + 'Preview']}
+						icons={this.state.images.gallery}
+						onChange={this.handleIconChange}
+						onConfirm={() => {this.setState({showImagePanel: false})}}
+						onCancel={() => {this.setState({showImagePanel: false})}}
+					/>
+				);
+			} else {
+				imagePanel = undefined;
+			}
 
 			generalContent = (
 				<div className="general-configuration">
@@ -271,12 +393,26 @@ class ManageChannel extends React.Component {
 								<p>Choose an image to use for your achievements!</p>
 								{defaultBlurb}
 							</div>
-							<div className="section-value">
-								<button type="button" className="default-icon--wrapper">
-							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+							<div className="section-value default-icons">
+								<div className="formGroup icon-upload">
+									<div
+										className="defaultIcon"
+										onClick={(evt) => this.showImagePanel(evt, 'defaultIcon')}
+										onMouseEnter={() => {this.toggleHover(true, this.defaultHover)}}
+										onMouseLeave={() => {this.toggleHover(false, this.defaultHover)}}
+									>
+				                    	{customDefaultIcon}
+				                    	<div className="hoverText" ref={hover => (this.defaultHover = hover)}>{(this.state.defaultIconPreview) ? 'Edit' : 'Upload'}</div>
+			                    	</div>
+			                    </div>
+			                    <div className="divider">
+			                    	<span> - OR - </span>
+			                    </div>
+								<button type="button" className="default-icon--wrapper" onClick={() => {this.handleDefaultSelect(this.icons.default.gold)}}>
+							        <img alt="" src={this.icons.default.gold} />
 								</button>
-								<button type="button" className="default-icon--wrapper">
-							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+								<button type="button" className="default-icon--wrapper" onClick={() => {this.handleDefaultSelect(this.icons.default.silver)}}>
+							        <img alt="" src={this.icons.default.silver} />
 								</button>
 							</div>
 						</div>
@@ -286,18 +422,29 @@ class ManageChannel extends React.Component {
 						        <p>This will be the icon used when displaying an achievement that hasn't been earned yet</p>
 						    </div>
 						    <div className="section-value default-icons">
-						    	{customDefaultIcon}
-						        <button type="button" className="default-icon--wrapper">
-							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
-								</button>
-								<button type="button" className="default-icon--wrapper">
-							        <img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png" />
+						    	<div className="formGroup icon-upload">
+									<div
+										className="hiddenIcon"
+										onClick={(evt) => this.showImagePanel(evt, 'hiddenIcon')}
+										onMouseEnter={() => {this.toggleHover(true, this.hiddenHover)}}
+										onMouseLeave={() => {this.toggleHover(false, this.hiddenHover)}}
+									>
+				                    	{customHiddenIcon}
+				                    	<div className="hoverText" ref={hover => (this.hiddenHover = hover)}>{(this.state.hiddenIconPreview) ? 'Edit' : 'Upload'}</div>
+			                    	</div>
+			                    </div>
+			                    <div className="divider">
+			                    	<span> - OR - </span>
+			                    </div>
+						        <button type="button" className="default-icon--wrapper" onClick={() => {this.handleHiddenSelect(this.icons.hidden)}}>
+							        <img alt="" src={this.icons.hidden} />
 								</button>
 						    </div>
 						</div>
 						<div className="section-wrapper--end">
 							 <input type="submit" value="Save" />
 						</div>
+						{imagePanel}
 					</form>
 				</div>
 			);
