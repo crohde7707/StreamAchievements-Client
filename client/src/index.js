@@ -7,6 +7,7 @@ import LandingPage from './routes/landing-page';
 import ChannelPage from './routes/channel-page';
 import VerifyPage from './routes/verify-page';
 import TestPage from './routes/test-page';
+import SupportPage from './routes/support-page';
 import ManageChannelPage from './routes/manage-channel';
 import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
@@ -37,6 +38,7 @@ ReactDOM.render((
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/test" component={TestPage} />
+	        		<Route path="/support" component={SupportPage} />
 	    		</Switch>
 			</App>
 		</Provider>

@@ -41,7 +41,8 @@
 }
 
 .logo {
-    width: 98%;
+    width: 85%;
+    margin-bottom: 30px;
 }
 
 .landing-header {
@@ -69,6 +70,12 @@
     justify-content: center;
 }
 
+.section-wrapper.section-wrapper--full {
+    background: #525252;
+    text-shadow: 2px 2px 3px #000;
+    text-align: center;
+}
+
 .section-wrapper.section-wrapper--alt {
     background-color: rgba(0,0,0,0.6);
 }
@@ -81,16 +88,52 @@
     justify-content: space-between;
 }
 
+.section-wrapper--full .section-content {
+    display: block;
+}
+
+.section-wrapper--full h2 {
+    color: #ddefef;
+}
+
+.section-wrapper--full p {
+    font-size: 18px;
+    color: #ddefef;
+    text-shadow: 1px 1px #000;
+    font-weight: bold;
+}
+
 .section-content > h2,
 .section-content > div {
     max-width: 48%;
 }
 
 .main .section-content > h2,
-.main .section-content > div {
+.main .section-content > div,
+.section-wrapper--full .section-content > h2 {
     max-width: 100%;
+}
+
+.section-wrapper.section-wrapper--login {
+    padding: 40px;
+}
+
+.section-wrapper--login .section-content {
+    flex-direction: column;
+}
+
+.section-wrapper--login p {
+    font-size: 24px;
 }
 
 .section-wrapper.main {
     padding:40px 20px;
+}
+
+.main .section-content {
+    flex-direction: column;
+}
+
+.landing-page .footer {
+    margin-top: 0;
 }

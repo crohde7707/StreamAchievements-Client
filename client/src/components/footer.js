@@ -8,7 +8,7 @@ export default class Footer extends React.Component {
 		return (
 			<div className="footer">
 				<div className="footer-content">
-					Copyright ‎© 2019 Phirehero
+					‎© 2019 StreamAchievements. All Rights Reserved.
 				</div>
 			</div>
 		)
