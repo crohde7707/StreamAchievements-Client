@@ -18,15 +18,12 @@ const isAuthorized = async (req, res, next) => {
 			
 	if(foundUser) {
 		req.user = foundUser;
+		res.cookie('etid', req.cookies.etid, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
 		next();
 	} else {
 		res.clearCookie('etid'); //set path to streamachievements.com when ready
 		res.status(401);
 		res.redirect('http://localhost:3000');
-		// res.json({
-		// 	message: "You are not authorized to make this request."
-		// });
-		//next();
 	}
 }
 

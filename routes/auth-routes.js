@@ -180,6 +180,7 @@ router.post('/patreon/sync', (req, res) => {
 
 router.get('/logout', (req, res) => {
 	req.logout();
+	res.clearCookie('etid');
 	res.redirect('http://localhost:3000/');
 });
 

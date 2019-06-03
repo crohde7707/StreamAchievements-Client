@@ -55,14 +55,14 @@ export default class LandingPage extends React.Component {
 						<p>This isn't just for streamers though! For someone who just watches streams, you will be able to keep track of all the achievements you have earned from your favorite streamers!</p>
 					</div>
 				</div>
-				<div className="section-wrapper">
+				<div className="section-wrapper section-wrapper--alt">
 					<div className="section-content">
 						<h2>Easy To Use</h2>
 						<p>Getting your channel stood up is quick and easy, thanks to integration with the support streaming platform!</p>
 						<p>You'll be ready to get your fans engaged in no time!</p>
 					</div>
 				</div>
-				<div className="section-wrapper section-wrapper--alt">
+				<div className="section-wrapper">
 					<div className="section-content">
 						<div>
 							<p>Creating your first achievements is quick and painless, with helpful tips to guide you along the way!</p>

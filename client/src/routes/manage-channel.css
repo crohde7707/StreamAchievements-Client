@@ -138,8 +138,9 @@
 }
 
 .manage-tab.react-tabs__tab--selected {
-	background: rgba(121, 79, 198, 1);
+	background: #2f4882;
 	transition: all 0.2s ease;
+    box-shadow: 0px 0px 3px #000;
 }
 
 /* Member styles */
@@ -147,7 +148,7 @@
 	display: flex;
 	align-content: center;
 	padding: 5px 10px;
-	border-top: 1px solid #794fc6;
+	border-top: 1px solid #455c96;
 }
 
 .channelMember--stripe {

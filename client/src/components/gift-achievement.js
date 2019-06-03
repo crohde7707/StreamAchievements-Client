@@ -122,8 +122,8 @@ export default class GiftAchievementModal extends React.Component {
 			members: chosenMembers.map(member => member.name),
 			aid: this.state.aid
 		}).then(response => {
-			console.log(response);
-		})
+			this.props.onSubmit(response.data.members);
+		});
 	}
 
 	render() {
@@ -150,7 +150,7 @@ export default class GiftAchievementModal extends React.Component {
 							{this.buildMemberList(members, 'member-list')}
 						</div>
 						<button className="chooseMember--award" type="button" onClick={this.awardAchievement}>Award</button>
-						<button className="chooseMember--cancel" type="button" onClick={this.props.onClose}>Cancel</button>
+						<button className="chooseMember--cancel" type="button" onClick={() => this.props.onClose()}>Cancel</button>
 					</div>
 				</div>
 			</div>

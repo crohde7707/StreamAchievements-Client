@@ -102,10 +102,16 @@ class ManageChannel extends React.Component {
 		
 	}
 
-	hideGiftModal = () => {
-		this.setState({
+	hideGiftModal = (members) => {
+		
+		let stateUpdate = {
 			isModalActive: false
-		});
+		};
+
+		if(members) {
+			stateUpdate.members = members;
+		}
+		this.setState(stateUpdate);
 	}
 
 	hideAchievementModal = () => {
@@ -288,8 +294,15 @@ class ManageChannel extends React.Component {
 		
 	}
 
-	handleDefaultSelect = (icon) => {
-		console.log(icon);
+	handleDefaultSelect = (evt, icon) => {
+		debugger;
+		if(!evt.target.classList.contains('default-icon--selected')) {
+			evt.target.classList.add('default-icon--selected');
+		}
+
+		this.setState({
+			selectedDefault: icon
+		});
 	}
 
 	handleHiddenSelect = () => {
@@ -408,10 +421,10 @@ class ManageChannel extends React.Component {
 			                    <div className="divider">
 			                    	<span> - OR - </span>
 			                    </div>
-								<button type="button" className="default-icon--wrapper" onClick={() => {this.handleDefaultSelect(this.icons.default.gold)}}>
+								<button type="button" className="default-icon--wrapper" onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.gold)}}>
 							        <img alt="" src={this.icons.default.gold} />
 								</button>
-								<button type="button" className="default-icon--wrapper" onClick={() => {this.handleDefaultSelect(this.icons.default.silver)}}>
+								<button type="button" className="default-icon--wrapper" onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.silver)}}>
 							        <img alt="" src={this.icons.default.silver} />
 								</button>
 							</div>
