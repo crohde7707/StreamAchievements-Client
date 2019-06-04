@@ -240,7 +240,7 @@ class ManageChannel extends React.Component {
 			if(event.target.files[0]) {
 				let file = event.target.files[0];
 				let preview = URL.createObjectURL(file);
-				console.log(event.target);
+				
 				var img = new Image();
 	       		img.src = preview;
 
@@ -286,7 +286,9 @@ class ManageChannel extends React.Component {
 				stateUpdate[this.state.iconName + 'Name'] = '';
 				stateUpdate[this.state.iconName + 'Preview'] = '';
 
-				this.setState(stateUpdate);
+				this.setState(stateUpdate, () => {
+					console.log(this._customPreview);
+				});
 
 				resolve({error: null});
 			}
@@ -295,14 +297,33 @@ class ManageChannel extends React.Component {
 	}
 
 	handleDefaultSelect = (evt, icon) => {
-		debugger;
 		if(!evt.target.classList.contains('default-icon--selected')) {
-			evt.target.classList.add('default-icon--selected');
+			if(this._defaultSelected) {
+				this._defaultSelected.classList.remove('default-icon--selected');
+			} 
+
+			this._defaultSelected = evt.target;
+			this._defaultSelected.classList.add('default-icon--selected');
 		}
 
 		this.setState({
 			selectedDefault: icon
 		});
+	}
+
+	handleCustomDefault = (evt, iconName) => {
+		if(this._customPreview && !this._customPreview.classList.contains('default-icon--selected')) {
+			if(this._defaultSelected) {
+				this._defaultSelected.classList.remove('default-icon--selected');
+			}
+			this._customPreview.classList.add('default-icon--selected');
+			this._defaultSelected = this._customPreview;
+			// this.setState({
+			// 	selectedDefault: this.state.
+			// })
+		} else {
+			this.showImagePanel(evt, iconName);
+		}
 	}
 
 	handleHiddenSelect = () => {
@@ -333,7 +354,7 @@ class ManageChannel extends React.Component {
 				if(this.state.defaultIconPreview) {
 					customDefaultIcon = (
 						<div className="customDefaultImg">
-							<img alt="Default Icon" src={this.state.defaultIconPreview} />
+							<img alt="Default Icon" ref={(el) => (this._customPreview = el)} src={this.state.defaultIconPreview} />
 						</div>
 					);
 				} else {
@@ -410,23 +431,24 @@ class ManageChannel extends React.Component {
 								<div className="formGroup icon-upload">
 									<div
 										className="defaultIcon"
-										onClick={(evt) => this.showImagePanel(evt, 'defaultIcon')}
+										onClick={(evt) => this.handleCustomDefault(evt, 'defaultIcon')}
 										onMouseEnter={() => {this.toggleHover(true, this.defaultHover)}}
 										onMouseLeave={() => {this.toggleHover(false, this.defaultHover)}}
 									>
 				                    	{customDefaultIcon}
-				                    	<div className="hoverText" ref={hover => (this.defaultHover = hover)}>{(this.state.defaultIconPreview) ? 'Edit' : 'Upload'}</div>
+				                    	<div 
+				                    		className="hoverText" 
+				                    		ref={hover => (this.defaultHover = hover)}
+			                    		>
+			                    			{(this.state.defaultIconPreview) ? ((this._customPreview && this._customPreview.classList.contains('default-icon--selected')) ? 'Edit' : 'Select') : 'Upload'}
+		                    			</div>
 			                    	</div>
 			                    </div>
 			                    <div className="divider">
 			                    	<span> - OR - </span>
 			                    </div>
-								<button type="button" className="default-icon--wrapper" onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.gold)}}>
-							        <img alt="" src={this.icons.default.gold} />
-								</button>
-								<button type="button" className="default-icon--wrapper" onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.silver)}}>
-							        <img alt="" src={this.icons.default.silver} />
-								</button>
+			                    <img alt="" className="default-icon--stock" src={this.icons.default.gold} onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.gold)}}/>
+			                    <img alt="" className="default-icon--stock" src={this.icons.default.silver} onClick={(evt) => {this.handleDefaultSelect(evt, this.icons.default.silver)}}/>
 							</div>
 						</div>
 						<div className="section-wrapper">

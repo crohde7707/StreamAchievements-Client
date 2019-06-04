@@ -369,13 +369,12 @@
     justify-content: center;
     align-items: center;
     flex: 1;
-    margin: 3%;
-    width: 90%;
+    margin: 0 3%;
     border: 2px inset #AAA;
     background-color: #BBB;
     cursor: pointer;
-    height: 100px;
-    width: 100px;
+    height: 98px;
+    width: 98px;
 }
 
 .defaultIcon--placeholder,
@@ -392,14 +391,20 @@
 	flex-direction: column;
 	justify-content: center;
 	width: 50px;
-	margin: 0 5%;
+	margin: 1px 5%;
 }
 
-.default-icon--wrapper.selected,
-.hidden-icon--wrapper.selected {
-	background-color: #594878;
+.default-icon--stock {
+	margin: 1px;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+}
+
+.default-icon--selected {
+	background-color: #425583;
     border: 1px solid white;
-    padding: 0px 5px;
+    margin: 0;
 }
 
 @media only screen and (max-width: 480px) {
