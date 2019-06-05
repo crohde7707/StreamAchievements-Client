@@ -281,14 +281,30 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 					//Get Images
 					Image.find({channel: existingChannel.owner}).then(foundImages => {
 						if(foundImages) {
+							//filter out default img
+							//filter out hidden img
+							let defaultImg, hiddenImg;
+
+							let returnImgs = foundImages.filter((img) => {
+								if(img.type === 'default') {
+									defaultImg = img;
+									return false;
+								} else if(img.type === 'hidden') {
+									hiddenImg = img;
+									return false;
+								}
+
+								return true;
+							});
+
 							resolve({
-								gallery: foundImages,
-								default: ""
+								gallery: returnImgs,
+								default: defaultImg,
+								hidden: hiddenImg
 							});
 						} else {
 							resolve({
-								gallery: [],
-								default: ""
+								gallery: []
 							});
 						}
 					});

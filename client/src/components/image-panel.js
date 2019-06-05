@@ -2,8 +2,12 @@ import React from 'react';
 
 export default class ImagePanel extends React.Component {
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			originalImage: this.props.currentImage
+		}
 	}
 
 	componentDidMount() {
@@ -28,8 +32,20 @@ export default class ImagePanel extends React.Component {
 		});
 	}
 
-	chooseImage = (image) => {
+	handleSave = () => {
+		if(this.props.currentImage !== this.state.originalImage) {
+			this.props.onConfirm();
+		} else {
+			this.props.onCancel();
+		}
+	}
 
+	handleCancel = () => {
+		if(this.props.currentImage === this.state.originalImage) {
+			this.props.onCancel();
+		} else {
+			this.props.onCancel(this.state.originalImage);
+		}
 	}
 
 	render() {
@@ -79,7 +95,7 @@ export default class ImagePanel extends React.Component {
 							</div>
 							<div className="chooseImage">
 								<button type="button" onClick={() => {this.fileInputEl.click()}} className="uploadImageButton">Upload an Image</button>
-								<span class="upload--subtext">Image must be 300x300 or less</span>
+								<span className="upload--subtext">Image must be 300x300 or less</span>
 								<input
 							        type="file"
 							        id="achievement-icon"
@@ -91,8 +107,8 @@ export default class ImagePanel extends React.Component {
 							    />
 							</div>
 						</div>
-						<button className="chooseImage--confirm" type="button" onClick={this.props.onConfirm}>Save</button>
-						<button type="button" className="chooseImage--cancel" onClick={this.props.onCancel}>Cancel</button>
+						<button className="chooseImage--confirm" type="button" onClick={this.handleSave}>Save</button>
+						<button type="button" className="chooseImage--cancel" onClick={this.handleCancel}>Cancel</button>
 					</div>
 				</div>
 			</div>

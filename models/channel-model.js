@@ -7,7 +7,11 @@ const channelSchema = new Schema({
 	theme: String,
 	logo: String,
 	achievements: Array,
-	members: Array
+	members: Array,
+	icons: {
+		default: String,
+		hidden: String
+	}
 });
 
 const Channel = mongoose.model("channel", channelSchema);
