@@ -28,10 +28,15 @@
     text-shadow: none;
 }
 
+.achievement.achievement--earned .achievement-logo {
+    opacity: 1;
+}
+
 .achievement-logo {
     position: absolute;
     left: -1px;
     top: auto;
+    opacity: 0.5;
 }
 
 .achievement-logo img {
@@ -68,7 +73,7 @@
     position: absolute;
     right: 3.5em;
     top: 1em;
-    opacity: 0.7;
+    cursor: pointer;
 }
 
 .achievement--gift img {

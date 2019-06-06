@@ -9,6 +9,7 @@
     width: 100%;
     background: rgba(0,0,0,0.5);
     height: 100%;
+    padding-bottom: 15px;
 }
 
 .loading-spinner.loading-spinner--active {
@@ -18,7 +19,7 @@
 .loading-spinner--wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 3em;
+    margin-top: 6em;
 }
 
 .lds-ellipsis {

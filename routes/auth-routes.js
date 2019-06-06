@@ -57,7 +57,7 @@ router.get('/patreon', isAuthorized, (req, res) => {
 	res.redirect(patreonURL);
 });
 
-router.get('/patreon/redirect', (req, res) => {
+router.get('/patreon/redirect', isAuthorized, (req, res) => {
 	let oauthGrantCode = req.query.code;
 
 	return patreonOauthClient.getTokens(oauthGrantCode, CALLBACK_URL).then(tokenResponse => {
@@ -68,7 +68,7 @@ router.get('/patreon/redirect', (req, res) => {
 							
 			let at = cryptr.encrypt(tokenResponse.access_token);
 			let rt = cryptr.encrypt(tokenResponse.refresh_token);
-			console.log(tokenResponse.expires_in);
+			
 			let vanity;
 			let thumb_url;
 
@@ -77,7 +77,6 @@ router.get('/patreon/redirect', (req, res) => {
 					Authorization: `Bearer ${tokenResponse.access_token}`
 				}
 			}).then(res => {
-				console.log(res.data);
 				vanity = res.data.data.attributes.vanity,
 				thumb_url = res.data.data.attributes.thumb_url
 
@@ -93,14 +92,14 @@ router.get('/patreon/redirect', (req, res) => {
 					});
 				} else {
 					//patron is a member via follow, active_patron, declined_patron, or former_patron
-					let longID = (res.data.included[0].id);	
+					let longID = (res.data.included[0].id);
 
 					axios.get(`https://www.patreon.com/api/oauth2/v2/members/${longID}?include=currently_entitled_tiers&fields%5Bmember%5D=patron_status,full_name,is_follower,last_charge_date&fields%5Btier%5D=amount_cents,description,discord_role_ids,patron_count,published,published_at,created_at,edited_at,title,unpublished_at`, {
 						headers: {
 							Authorization: `Bearer ${tokenResponse.access_token}`
 						}
 					}).then(res => {
-						console.log(res.data);
+						
 						//active_patron, declined_patron, former_patron, null
 						let patron_status = res.data.data.attributes.patron_status;
 						let is_follower = res.data.data.attributes.is_follower;
@@ -126,33 +125,39 @@ router.get('/patreon/redirect', (req, res) => {
 		
 		let {id, thumb_url, vanity, at, rt, etid, is_follower, status, is_gold} = patreonData;
 
-		User.findOne({'integration.twitch.etid': etid}).then(foundUser => {
-			if(foundUser) {
+		let integration = Object.assign({}, req.user.integration);
 
-				let integration = Object.assign({}, foundUser.integration);
+		integration.patreon = {id, thumb_url, vanity, at, rt, is_follower, status, is_gold};
 
-				integration.patreon = {id, thumb_url, vanity, at, rt, is_follower, status, is_gold};
+		req.user.integration = integration;
 
-				foundUser.integration = integration;
-
-				foundUser.save().then(savedUser => {
-					//2604384
-					res.redirect('http://localhost:3000/profile');
-				});
-			}
+		req.user.save().then(savedUser => {
+			//2604384
+			res.redirect('http://localhost:3000/profile');
 		});
 
 	});
 });
 
-router.post('/patreon/sync', (req, res) => {
-	User.findOne({'integration.twitch.etid': req.cookies.etid}).then(foundUser => {
-		if(foundUser) {
-			let {at, rt, id} = foundUser.integration.patreon;
+router.post('/patreon/sync', isAuthorized, (req, res) => {
+	
+	patreonSync(req.user, req.cookies.etid).then((user) => {
+		res.json({
+			message: 'return back updated patreon data to store'
+		});
+	})
+});
+
+let patreonSync = (user, etid) => {
+	if(user.integration.patreon) {
+		return new Promise((resolve, reject) => {
+			let {at, rt, id} = user.integration.patreon;
+
+			let access_token = cryptr.decrypt(at);
 
 			axios.get(PATREON_IDENTITY_API, {
 				headers: {
-					Authorization: `Bearer ${tokenResponse.access_token}`
+					Authorization: `Bearer ${access_token}`
 				}
 			}).then(res => {
 				vanity = res.data.data.attributes.vanity,
@@ -169,14 +174,50 @@ router.post('/patreon/sync', (req, res) => {
 						etid
 					});
 				} else {
+					let longID = (res.data.included[0].id);
 
+					axios.get(`https://www.patreon.com/api/oauth2/v2/members/${longID}?include=currently_entitled_tiers&fields%5Bmember%5D=patron_status,full_name,is_follower,last_charge_date&fields%5Btier%5D=amount_cents,description,discord_role_ids,patron_count,published,published_at,created_at,edited_at,title,unpublished_at`, {
+						headers: {
+							Authorization: `Bearer ${access_token}`
+						}
+					}).then(res2 => {
+						
+						//active_patron, declined_patron, former_patron, null
+						let patron_status = res2.data.data.attributes.patron_status;
+						let is_follower = res2.data.data.attributes.is_follower;
+						let tiers = res2.data.data.relationships.currently_entitled_tiers;
+						let isGold = tiers.data.map(tier => tier.id).indexOf(GOLD_TIER_ID) >= 0;
+
+						let patreonData = {
+							id: longID,
+							thumb_url,
+							vanity,
+							at,
+							rt,
+							etid,
+							is_follower,
+							status: patron_status,
+							is_gold: isGold
+						};
+
+						let integration = Object.assign({}, user.integration);
+
+						integration.patreon = {...patreonData};
+
+						user.integration = integration;
+
+						user.save().then(savedUser => {
+							//2604384
+							resolve(savedUser);
+						});
+					});
 				}
-			});
-		} else {
-			res.redirect('http://localhost:3000/');
-		}
-	});
-});
+			});	
+		});
+	} else {
+		return Promise.resolve();
+	}
+}
 
 router.get('/logout', (req, res) => {
 	req.logout();

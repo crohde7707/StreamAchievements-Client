@@ -142,7 +142,7 @@ class ChannelPage extends React.Component {
 								classes = "achievement-blurred";
 							}
 
-							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} className={classes} />)
+							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
 						})}
 						
 					</div>

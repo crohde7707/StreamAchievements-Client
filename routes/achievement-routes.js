@@ -251,8 +251,30 @@ router.post("/create", isAuthorized, (req, res) => {
 									});
 								});
 							} else {
-								uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
-									achData.icon = result.url;
+								if(req.body.icon) {
+									uploadImage(req.body.icon, req.body.iconName, existingChannel.owner).then((result) => {
+										achData.icon = result.url;
+										new Achievement(achData).save().then((newAchievement) => {
+											console.log('new achievement in DB');
+											listenerData.achievement = newAchievement.id;
+											//create listener for achievement
+											new Listener(listenerData).save().then(newListener => {
+												console.log("new listener in DB");
+
+												newAchievement.listener = newListener.id;
+												newAchievement.save().then(updatedAchievement => {
+													result.achievementID = updatedAchievement.id;
+													result.save().then(updateImage => {
+														res.json({
+															created: true,
+															achievement: updatedAchievement
+														});		
+													});
+												});
+											});
+										});
+									});	
+								} else {
 									new Achievement(achData).save().then((newAchievement) => {
 										console.log('new achievement in DB');
 										listenerData.achievement = newAchievement.id;
@@ -262,17 +284,15 @@ router.post("/create", isAuthorized, (req, res) => {
 
 											newAchievement.listener = newListener.id;
 											newAchievement.save().then(updatedAchievement => {
-												result.achievementID = updatedAchievement.id;
-												result.save().then(updateImage => {
-													res.json({
-														created: true,
-														achievement: newAchievement
-													});		
+												res.json({
+													created: true,
+													achievement: updatedAchievement
 												});
 											});
 										});
 									});
-								});
+								}
+								
 							}
 						});	
 					});
@@ -289,7 +309,7 @@ router.post("/create", isAuthorized, (req, res) => {
 
 router.post("/delete", isAuthorized, (req, res) => {
 
-	Channel.findOne({twitchID: foundUser.integration.twitch.etid}).then((existingChannel) => {
+	Channel.findOne({twitchID: req.user.integration.twitch.etid}).then((existingChannel) => {
 		if(existingChannel) {
 			
 			//Check if achievement of same name exists
@@ -381,7 +401,8 @@ router.get("/retrieve", isAuthorized, (req, res) => {
 				Promise.all([achievementPromise, imagePromise]).then(responses => {
 					res.json({
 						achievement: responses[0],
-						images: responses[1]
+						images: responses[1],
+						defaultIcons: existingChannel.icons
 					});
 				});
 			} else {
@@ -477,7 +498,10 @@ router.get('/icons', isAuthorized, (req, res) => {
 			//Get Images
 
 			retrieveImages(existingChannel.owner).then(images => {
-				res.json({images: images});
+				res.json({
+					images: images,
+					defaultIcons: existingChannel.icons
+				});
 			});
 		} else {
 			res.json({

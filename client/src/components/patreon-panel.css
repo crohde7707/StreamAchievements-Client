@@ -117,7 +117,6 @@
 .support > img,
 .upgrade > img {
 	width: 100px;
-    flex: 1;
     margin-top: 10px;
 }
 

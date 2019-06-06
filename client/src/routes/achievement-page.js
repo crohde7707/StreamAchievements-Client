@@ -34,7 +34,8 @@ class AchievementPage extends React.Component {
 			id: '',
 			edit: false,
 			showConfirm: false,
-			showImagePanel: false
+			showImagePanel: false,
+			defaultIcons: {}
 		};
 
 		if(props.profile) {
@@ -72,6 +73,7 @@ class AchievementPage extends React.Component {
 						...res.data.achievement,
 						iconPreview: res.data.achievement.icon,
 						icons: res.data.images,
+						defaultIcons: res.data.defaultIcons,
 						fetch: false,
 						edit: true
 					});
@@ -81,6 +83,7 @@ class AchievementPage extends React.Component {
 			axios.get('/api/achievement/icons').then(res => {
 				this.setState({
 					icons: res.data.images,
+					defaultIcons: res.data.defaultIcons,
 					fetch: false
 				});
 			});
@@ -474,7 +477,7 @@ class AchievementPage extends React.Component {
 
 	render() {
 
-		let content, iconGallery, confirmPanel, imagePanel, imgPreviewContent;
+		let content, iconGallery, confirmPanel, imagePanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
 
 			let {title, description, earnable, limited, secret} = this.state;
@@ -518,8 +521,27 @@ class AchievementPage extends React.Component {
 			
 			if(this.props.patreon && this.props.patreon.gold) {
 				customType = (<option value="4">Custom</option>);
-			} else {
+				iconSection = (
+					<div className="formGroup icon-upload">
+						<label htmlFor="achievement-icon">Icon</label>
+						<div
+							className="currentIcon"
+							onClick={this.showImagePanel}
+							onMouseEnter={() => {this.toggleHover(true)}}
+							onMouseLeave={() => {this.toggleHover(false)}}
+						>
+	                    	{imgPreviewContent}
+	                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
+                    	</div>
+                    </div>
+				)
+			} else if(!this.state.loading) {
 				customType = (<option disabled title="Unlocked wtih Gold Tier!" value="4">Custom (Unlocked with the Gold Tier!)</option>);
+				iconSection = (
+					<div className="formGroup upgradeTier">
+						<p>Upload custom images for each of your achievements by upgrading to the Gold Tier on Patreon!</p> 
+					</div>
+				);
 			}
 
 			if(this.state.iconPreview) {
@@ -544,11 +566,17 @@ class AchievementPage extends React.Component {
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}
 						</div>
-						<h4>Achievement Preview</h4>
+						<h4>
+							Achievement Preview
+							<span className="help" title="This is what your achievement looks like, based on the information below!"></span>
+						</h4>
 						<div className="achievement-preview">
-							<Achievement earned={true} achievement={this.state} />
+							<Achievement earned={true} achievement={this.state} defaultIcons={this.state.defaultIcons} />
 						</div>
-						<h4>Achievement Info</h4>
+						<h4>
+							Achievement Info
+							<span className="help" title="Basic information for your achievement!"></span>
+						</h4>
 						<form onSubmit={this.handleSubmit}>
 							<div className="formGroup">
 								<label htmlFor="achievement-title">Name</label>
@@ -616,7 +644,7 @@ class AchievementPage extends React.Component {
 									</div>
 								</div>
 							</div>
-							<h4>Condition</h4>
+							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>
 							<div className="formGroup">
 								<label htmlFor="achievement-code">Type of Achievement</label>
 								<select 
@@ -636,19 +664,8 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							{this.getConditionContent()}
-							<h4 className="noMargin">Icon</h4>
-							<div className="formGroup icon-upload">
-								<label htmlFor="achievement-icon">Icon</label>
-								<div
-									className="currentIcon"
-									onClick={this.showImagePanel}
-									onMouseEnter={() => {this.toggleHover(true)}}
-									onMouseLeave={() => {this.toggleHover(false)}}
-								>
-			                    	{imgPreviewContent}
-			                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
-		                    	</div>
-		                    </div>
+							<h4 className="noMargin">Icon<span className="help" title="Upload an icon specific for your achievement! Leaving this blank will fall back on the one provided in your general settings!"></span></h4>
+							{iconSection}
 		                    <input type="submit" className="achievement-button submit-achievement" value="Save" />
 		                    <div className="button-bank">
 			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>

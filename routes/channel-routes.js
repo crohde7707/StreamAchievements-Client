@@ -382,6 +382,8 @@ router.post('/preferences', isAuthorized, (req, res) => {
 				existingChannel.icons.default = req.body.defaultImage;
 				console.log('set default icon to what was provided');
 				resolve();
+			} else {
+				resolve();
 			}
 		});
 
@@ -399,6 +401,8 @@ router.post('/preferences', isAuthorized, (req, res) => {
 				existingChannel.icons = existingChannel.icons || {};
 				existingChannel.icons.hidden = req.body.hiddenImage;
 				console.log('set hidden icon to what was provided');
+				resolve();
+			} else {
 				resolve();
 			}
 		});

@@ -83,3 +83,14 @@
 	padding: 10px 15px;
 	width: 48%;
 }
+
+.achievement-wrapper .disabled {
+	display: none;
+	pointer-events: none;
+}
+
+.formGroup.upgradeTier p {
+	text-align: center;
+    width: 100%;
+    padding: 10px 0px;
+}

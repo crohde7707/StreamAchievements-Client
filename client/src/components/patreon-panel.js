@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import './patreon-panel.css';
 
+const PATREON_URL = 'https://www.patreon.com/join/streamachievements?';
+
 class PatreonPanel extends React.Component {
 
 	constructor(props) {
@@ -28,14 +30,24 @@ class PatreonPanel extends React.Component {
 		return true;
 	}
 
+	becomeGold = () => {
+		var win = window.open(PATREON_URL, '_blank');
+		win.focus();
+	}
+
+	becomeSilver = () => {
+		var win = window.open(PATREON_URL, '_blank');
+		win.focus();
+	}
+
 	handleFollow = () => {
 		//API call to follow on Patreon
 	}
 
 	handleSync = () => {
-		// axios.post('/api/patreon/sync').then(res => {
-		// 	this.props.dispatch(syncPatreon(res.data));
-		// });
+		axios.post('/auth/patreon/sync').then(res => {
+			this.props.dispatch(syncPatreon(res.data));
+		});
 	}
 
 	render() {
@@ -111,7 +123,7 @@ class PatreonPanel extends React.Component {
 								<button onClick={this.becomeSilver} type="button">Become a Supporter</button>
 							</div>
 							<div className="upgrade">
-								<div>Are you enjoying offering achievements to your community, and want to extend what you can offer? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
+								<div>Are you enjoying offering achievements to your community, and want to extend the capibilities even further? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
 								<img src={require('../img/gold-ach.png')} />
 								<button onClick={this.becomeGold} type="button">Upgrade to Gold</button>
 							</div>
@@ -131,7 +143,7 @@ class PatreonPanel extends React.Component {
 					);
 				} else {
 					let owner;
-					if(this.props.profile && this.props.profile.owner === 'verified') {
+					if(this.props.profile && this.props.profile.status === 'verified') {
 						owner = (
 							<div className="upgrade">
 								<div>Are you enjoying the features you are providing, but wanting to hook up more for your community? Consider trying out the Gold Achievement tier!</div>

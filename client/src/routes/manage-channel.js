@@ -13,8 +13,9 @@ import ConfirmPanel from '../components/confirm-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 
-
 import './manage-channel.css';
+
+const ICON_SELECTED = 'icon--selected';
 
 class ManageChannel extends React.Component {
 
@@ -28,8 +29,10 @@ class ManageChannel extends React.Component {
 			showConfirm: false,
 			loading: true,
 			showImagePanel: false,
-			selectedDefault: '',
-			selectedHidden: ''
+			selected: {
+				defaultIcon: '',
+				hiddenIcon: ''
+			}
 		};
 
 		this.icons = {
@@ -55,19 +58,38 @@ class ManageChannel extends React.Component {
 					achievements: res.data.achievements,
 					images: res.data.images,
 					members: res.data.members,
-					loading: false
+					loading: false,
+					selected: {}
 				};
 
 				let channelIcons = res.data.channel.icons;
 
 				if(channelIcons) {
 					if(channelIcons.default) {
-						stateUpdate.defaultIconPreview = channelIcons.default;
+						if(channelIcons.default === this.icons.default.gold) {
+							stateUpdate.selected.defaultIcon = 'gold';
+							stateUpdate.defaultIconOriginal = 'gold';
+						} else if (channelIcons.default === this.icons.default.silver) {
+							stateUpdate.selected.defaultIcon = 'silver';
+							stateUpdate.defaultIconOriginal = 'silver';
+						} else {
+							stateUpdate.selected.defaultIcon = 'customDefault';
+							stateUpdate.defaultIconOriginal = 'customDefault';
+							stateUpdate.defaultIconPreview = channelIcons.default;	
+						}
 					}
 
 					if(channelIcons.hidden) {
-						stateUpdate.hiddenIconPreview = channelIcons.hidden;
+						if(channelIcons.hidden !== this.icons.hidden) {
+							stateUpdate.selected.hiddenIcon = 'customHidden';
+							stateUpdate.hiddenIconOriginal = 'customHidden';
+							stateUpdate.hiddenIconPreview = channelIcons.hidden;
+						} else {
+							stateUpdate.selected.hiddenIcon = 'default';
+							stateUpdate.hiddenIconOriginal = 'default';
+						}
 					}
+
 				}
 
 				this.setState(stateUpdate);
@@ -321,78 +343,85 @@ class ManageChannel extends React.Component {
 	}
 
 	handleIconSelect = (evt, iconName, icon) => {
-		if(!evt.target.classList.contains('icon--selected')) {
-			if(this[iconName + 'Selected']) {
-				this[iconName + 'Selected'].classList.remove('icon--selected');
-			} 
+		let name = evt.target.name;
+		let prevIconName = this.state.selected[iconName];
 
-			this[iconName + 'Selected'] = evt.target;
-			this[iconName + 'Selected'].classList.add('icon--selected');
-		}
+		if(prevIconName != name) {
+			let stateUpdate = {
+				selected: this.state.selected
+			};
 
-		let stateUpdate = {};
-		
-		stateUpdate[iconName + 'Selected'] = icon;
-
-		let touched = this.state.touched || {};
-		touched[iconName] = true;
-
-		delete touched[iconName + 'File'];
-		delete touched[iconName + 'Name'];
-		delete touched[iconName + 'Preview'];
-
-
-		stateUpdate.touched = touched;
-
-		this.setState(stateUpdate);
-	}
-
-	handleCustomIcon = (evt, iconName) => {
-		console.log(this[iconName + 'Preview']);
-		if(this[iconName + 'Preview'] && !this[iconName + 'Preview'].classList.contains('icon--selected')) {
-			if(this[iconName + 'Selected']) {
-				this[iconName + 'Selected'].classList.remove('icon--selected');
-			}
-			this[iconName + 'Preview'].classList.add('icon--selected');
-			this[iconName + 'Selected'] = this[iconName + 'Preview'];
-			
-			let stateUpdate = {};
-			stateUpdate[iconName + 'Selected'] = this.state[iconName + 'Preview'];
+			stateUpdate.selected[iconName] = name;
+			stateUpdate[iconName + 'Selected'] = icon;
 
 			let touched = this.state.touched || {};
 
-			touched[iconName] = true;
-			touched[iconName + 'File'] = true;
-
+			if(this.state[iconName + 'Original'] === name) {
+				delete touched[iconName];
+			} else {
+				touched[iconName] = true;
+			
+				if(prevIconName === 'customDefault' || prevIconName === 'customHidden') {
+					delete touched[iconName + 'File'];
+					delete touched[iconName + 'Name'];
+					delete touched[iconName + 'Preview'];
+				}
+			}
 			stateUpdate.touched = touched;
 
 			this.setState(stateUpdate);
+		}
+	}
 
-		} else {
-			this.showImagePanel(evt, iconName);
+	handleCustomIcon = (evt, iconName) => {
+		if(this.props.patreon && this.props.patreon.gold) {
+
+			let identifier = (iconName === 'defaultIcon') ? 'customDefault' : 'customHidden';
+			
+			if(this[iconName + 'Preview'] && this.state.selected[iconName] !== identifier) {
+
+				let stateUpdate = {
+					selected: this.state.selected
+				};
+
+				stateUpdate.selected[iconName] = identifier;
+				this[iconName + 'Selected'] = this[iconName + 'Preview'];
+				stateUpdate[iconName + 'Selected'] = this.state[iconName + 'Preview'];
+
+				let touched = this.state.touched || {};
+
+				touched[iconName] = true;
+				touched[iconName + 'File'] = true;
+
+				stateUpdate.touched = touched;
+
+				this.setState(stateUpdate);
+
+			} else {
+				this.showImagePanel(evt, iconName);
+			}
 		}
 	}
 
 	handleConfirm = () => {
-		let name = this.state.iconName;
-		
-		if(this[name + 'Selected']) {
-			this[name + 'Selected'].classList.remove('icon--selected');
-		}
-		this[name + 'Preview'].classList.add('icon--selected');
-		this[name + 'Selected'] = this[name + 'Preview'];
-
+		let iconName = this.state.iconName;
+		let identifier = (iconName === 'defaultIcon') ? 'customDefault' : 'customHidden';
 		let stateUpdate = {
+			selected: this.state.selected,
 			showImagePanel: false
 		};
 
-		stateUpdate[name + 'Selected'] = this.state[name + 'Preview'];
+		stateUpdate.selected[iconName] = identifier;
+		this[iconName + 'Selected'] = this[iconName + 'Preview'];
+		stateUpdate[iconName + 'Selected'] = this.state[iconName + 'Preview'];
 
 		this.setState(stateUpdate);
 	}
 
 	handleSave = () => {
-		console.log(this.state);
+		this.setState({
+			loading: true
+		});
 
 		let defaultPromise, hiddenPromise;
 		let payload = {};
@@ -444,7 +473,9 @@ class ManageChannel extends React.Component {
 			if(Object.keys(payload).length > 0) {
 				//changes made, call to service
 				axios.post('/api/channel/preferences', payload).then((res) => {
-					console.log(res);
+					this.setState({
+						loading:false
+					});
 				});
 			}
 		
@@ -475,7 +506,13 @@ class ManageChannel extends React.Component {
 				if(this.state.defaultIconPreview) {
 					customDefaultIcon = (
 						<div className="customDefaultImg">
-							<img alt="Default Icon" ref={(el) => (this.defaultIconPreview = el)} src={this.state.defaultIconPreview} />
+							<img
+								alt="Default Icon"
+								name="customDefault"
+								className={this.state.selected.defaultIcon === 'customDefault' ? ICON_SELECTED : ''}
+								ref={(el) => (this.defaultIconPreview = el)}
+								src={this.state.defaultIconPreview} 
+							/>
 						</div>
 					);
 				} else {
@@ -487,7 +524,13 @@ class ManageChannel extends React.Component {
 				if(this.state.hiddenIconPreview) {
 					customHiddenIcon = (
 						<div className="customHiddenImg">
-							<img alt="Hidden icon" ref={(el) => (this.hiddenIconPreview = el)} src={this.state.hiddenIconPreview} />
+							<img
+								alt="Hidden icon"
+								name="customHidden"
+								className={this.state.selected.hiddenIcon === 'customHidden' ? ICON_SELECTED : ''}
+								ref={(el) => (this.hiddenIconPreview = el)} 
+								src={this.state.hiddenIconPreview}
+							/>
 						</div>
 					);
 				} else {
@@ -520,11 +563,12 @@ class ManageChannel extends React.Component {
 				imagePanel = undefined;
 			}
 
-			let defaultHoverText = (this.state.defaultIconPreview) ? ((this._customPreview && this._customPreview.classList.contains('icon--selected')) ? 'Edit' : 'Select') : 'Upload';
+			let defaultHoverText = (this.state.defaultIconPreview) ? ((this.state.selected.defaultIcon === 'customDefault') ? 'Edit' : 'Select') : 'Upload';
+			let hiddenHoverText = (this.state.hiddenIconPreview) ? ((this.state.selected.hiddenIcon === 'customHidden') ? 'Edit' : 'Select') : 'Upload';
 
 			let saveButton;
 
-			if(this.state.touched) {
+			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
 				saveButton = <input className='save-button--active' type="submit" value="Save" onClick={this.handleSave} />
 			} else {
 				saveButton = <input className='save-button--inactive' disabled type="submit" value="Save" />
@@ -559,7 +603,7 @@ class ManageChannel extends React.Component {
 								{defaultBlurb}
 							</div>
 							<div className="section-value default-icons">
-								<div className="formGroup icon-upload">
+								<div className={"formGroup icon-upload" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
 									<div
 										className="defaultIcon"
 										onClick={(evt) => this.handleCustomIcon(evt, 'defaultIcon')}
@@ -575,11 +619,25 @@ class ManageChannel extends React.Component {
 		                    			</div>
 			                    	</div>
 			                    </div>
-			                    <div className="divider">
+			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
 			                    	<span> - OR - </span>
 			                    </div>
-			                    <img alt="" className="icon--stock" src={this.icons.default.gold} onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.gold)}}/>
-			                    <img alt="" className="icon--stock" src={this.icons.default.silver} onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.silver)}}/>
+			                    <img 
+			                    	alt="" 
+			                    	name="gold"
+			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'gold') ? ' ' + ICON_SELECTED : '')}
+			                    	src={this.icons.default.gold}
+			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.gold)}}
+			                    	ref={el => (this.defaultGold = el)}
+		                    	/>
+			                    <img 
+			                    	alt="" 
+			                    	name="silver"
+			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'silver') ? ' ' + ICON_SELECTED : '')}
+			                    	src={this.icons.default.silver} 
+			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.silver)}}
+			                    	ref={el => (this.defaultSilver = el)}
+		                    	/>
 							</div>
 						</div>
 						<div className="section-wrapper">
@@ -588,7 +646,7 @@ class ManageChannel extends React.Component {
 						        <p>This will be the icon used when displaying an achievement that hasn't been earned yet</p>
 						    </div>
 						    <div className="section-value default-icons">
-						    	<div className="formGroup icon-upload">
+						    	<div className={"formGroup icon-upload" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
 									<div
 										className="hiddenIcon"
 										onClick={(evt) => this.handleCustomIcon(evt, 'hiddenIcon')}
@@ -596,13 +654,20 @@ class ManageChannel extends React.Component {
 										onMouseLeave={() => {this.toggleHover(false, this.hiddenHover)}}
 									>
 				                    	{customHiddenIcon}
-				                    	<div className="hoverText" ref={hover => (this.hiddenHover = hover)}>{(this.state.hiddenIconPreview) ? 'Edit' : 'Upload'}</div>
+				                    	<div className="hoverText" ref={hover => (this.hiddenHover = hover)}>{hiddenHoverText}</div>
 			                    	</div>
 			                    </div>
-			                    <div className="divider">
+			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
 			                    	<span> - OR - </span>
 			                    </div>
-						        <img alt="" className="icon--stock" src={this.icons.hidden} onClick={(evt) => {this.handleIconSelect(evt, 'hiddenIcon', this.icons.hidden)}} />
+						        <img 
+						        	alt="" 
+						        	name="default"
+						        	className={"icon--stock" + ((this.state.selected.hiddenIcon === 'default') ? ' ' + ICON_SELECTED : '')}
+						        	src={this.icons.hidden} 
+						        	onClick={(evt) => {this.handleIconSelect(evt, 'hiddenIcon', this.icons.hidden)}} 
+						        	ref={el => (this.defaultHidden = el)}
+						        />
 						    </div>
 						</div>
 						<div className="section-wrapper--end">
@@ -755,7 +820,7 @@ class ManageChannel extends React.Component {
 		}
 
 		return (
-			<Template>
+			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
 					<h2>Manage Channel</h2>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
