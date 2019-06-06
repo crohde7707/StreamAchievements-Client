@@ -58,12 +58,16 @@ class ManageChannel extends React.Component {
 					loading: false
 				};
 
-				if(res.data.images.defaultIcon) {
-					stateUpdate.defaultIconPreview = res.data.images.defaultIcon;
-				}
+				let channelIcons = res.data.channel.icons;
 
-				if(res.data.images.hiddenIcon) {
-					stateUpdate.hiddenIconPreview = res.data.images.hiddenIcon;
+				if(channelIcons) {
+					if(channelIcons.default) {
+						stateUpdate.defaultIconPreview = channelIcons.default;
+					}
+
+					if(channelIcons.hidden) {
+						stateUpdate.hiddenIconPreview = channelIcons.hidden;
+					}
 				}
 
 				this.setState(stateUpdate);
@@ -332,9 +336,10 @@ class ManageChannel extends React.Component {
 
 		let touched = this.state.touched || {};
 		touched[iconName] = true;
-		delete touched[this.state.iconName + 'File'];
-		delete touched[this.state.iconName + 'Name'];
-		delete touched[this.state.iconName + 'Preview'];
+
+		delete touched[iconName + 'File'];
+		delete touched[iconName + 'Name'];
+		delete touched[iconName + 'Preview'];
 
 
 		stateUpdate.touched = touched;
@@ -353,6 +358,13 @@ class ManageChannel extends React.Component {
 			
 			let stateUpdate = {};
 			stateUpdate[iconName + 'Selected'] = this.state[iconName + 'Preview'];
+
+			let touched = this.state.touched || {};
+
+			touched[iconName] = true;
+			touched[iconName + 'File'] = true;
+
+			stateUpdate.touched = touched;
 
 			this.setState(stateUpdate);
 
@@ -384,7 +396,7 @@ class ManageChannel extends React.Component {
 
 		let defaultPromise, hiddenPromise;
 		let payload = {};
-
+		
 		//check for default change
 		if(this.state.touched.defaultIcon) {
 			//change made to default icon
@@ -394,6 +406,7 @@ class ManageChannel extends React.Component {
 					var defaultReader = new FileReader();
 					defaultReader.addEventListener("load", () => {
 						payload.defaultIcon = defaultReader.result;
+						payload.defaultIconName = this.state.defaultIconFile.name;
 						resolve();
 					});
 					defaultReader.readAsDataURL(this.state.defaultIconFile);
@@ -402,6 +415,8 @@ class ManageChannel extends React.Component {
 				payload.defaultImage = this.state.defaultIconSelected
 				defaultPromise = Promise.resolve();
 			}
+		} else {
+			defaultPromise = Promise.resolve();
 		}
 		//check for hidden change
 		if(this.state.touched.hiddenIcon) {
@@ -412,6 +427,7 @@ class ManageChannel extends React.Component {
 					var hiddenReader = new FileReader();
 					hiddenReader.addEventListener("load", () => {
 						payload.hiddenIcon = hiddenReader.result;
+						payload.hiddenIconName = this.state.hiddenIconFile.name;
 						resolve();
 					});
 					hiddenReader.readAsDataURL(this.state.hiddenIconFile);
@@ -420,13 +436,19 @@ class ManageChannel extends React.Component {
 				payload.hiddenImage = this.state.hiddenIconSelected
 				hiddenPromise = Promise.resolve();
 			}
+		} else {
+			hiddenPromise = Promise.resolve();
 		}
 
-		if(Object.keys(payload).length > 0) {
-			Promise.all([defaultPromise, hiddenPromise]).then(results => {
-				console.log(payload);
-			});
-		}
+		Promise.all([defaultPromise, hiddenPromise]).then(results => {
+			if(Object.keys(payload).length > 0) {
+				//changes made, call to service
+				axios.post('/api/channel/preferences', payload).then((res) => {
+					console.log(res);
+				});
+			}
+		
+		});
 	}
 
 	render() {
