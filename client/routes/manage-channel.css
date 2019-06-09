@@ -303,6 +303,7 @@
     border: 1px solid black;
     box-shadow: 1px 1px 3px black;
     position: relative;
+    display: flex;
 }
 
 .image--wrapper.active {
@@ -312,7 +313,8 @@
 .image--wrapper img {
 	width: 125px;
 	height: 125px;
-	opacity: 0.6
+	opacity: 0.6;
+	border-radius: 6px;
 }
 
 .image--wrapper.active img {
@@ -362,6 +364,24 @@
 	align-items: center;
 }
 
+.image--wrapper.default {
+	background: #5a70a7;
+}
+
+.image--wrapper.default img {
+	opacity: 1
+}
+
+.image--label {
+	position: absolute;
+    bottom: 0;
+    width: 126px;
+    text-align: center;
+    background: #00000099;
+    border-radius: 0px 0px 6px 6px;
+    left: 0px;
+}
+
 .delete-image--confirm img {
 	width: 100px;
 }
@@ -396,11 +416,11 @@
 	flex-direction: column;
 	justify-content: center;
 	width: 50px;
-	margin: 1px 5%;
+	margin: 1px 0 1px 5%;
 }
 
 .icon--stock {
-	margin: 1px;
+	margin: 2px;
 	width: 100px;
 	height: 100px;
 	cursor: pointer;
@@ -408,7 +428,7 @@
 
 .icon--selected {
 	background-color: #425583;
-    border: 1px solid white;
+    border: 2px solid white;
     margin: 0;
 	transition: background 0.2s ease;
 }

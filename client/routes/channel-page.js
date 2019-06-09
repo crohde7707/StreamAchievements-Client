@@ -3,6 +3,7 @@ import axios from 'axios';
 import throttle from 'lodash/throttle';
 import connector from '../redux/connector';
 import {setProfile} from '../redux/profile-reducer';
+import {Link} from 'react-router-dom';
 
 import Template from '../components/template';
 import Achievement from '../components/achievement';
@@ -63,10 +64,10 @@ class ChannelPage extends React.Component {
 	}
 
 	updateChannelHeader = () => {
-	  if (document.body.scrollTop > 130 || document.documentElement.scrollTop > 130) {
-	    document.getElementById("channel-header").classList.add('condensed');
+	  if (document.documentElement.scrollHeight > 1060 && (document.body.scrollTop > 130 || document.documentElement.scrollTop > 130)) {
+	    this._channelHeader.classList.add('condensed');
 	  } else {
-	    document.getElementById("channel-header").classList.remove('condensed');
+	    this._channelHeader.classList.remove('condensed');
 	  }
 	}
 
@@ -196,7 +197,7 @@ class ChannelPage extends React.Component {
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
 						<Notice message={this.state.notice} onClear={this.clearNotice} />
-						<div id="channel-header">
+						<div id="channel-header" ref={el => (this._channelHeader = el)}>
 							{favorite}
 							<div className="channel-logo">
 								<img src={logo} />
@@ -207,6 +208,9 @@ class ChannelPage extends React.Component {
 									<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
 										<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
 									</a>
+									<Link to={"/channel/" + owner + "/rankings"} title={'View rankings for ' + owner + '\'s channel'}>
+										<img className="ranking" src="https://res.cloudinary.com/phirehero/image/upload/v1559928373/ranking-icon.png" />
+									</Link>
 								</div>
 								<div className="channel-description"></div>
 							</div>

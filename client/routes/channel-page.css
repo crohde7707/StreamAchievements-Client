@@ -84,6 +84,13 @@
 	background: white;
 }
 
+.channel-name .ranking {
+	background: none;
+    width: 25px;
+    margin-left: 5px;
+    height: 24px;
+}
+
 .channel-achievement-progress {
 	display: flex;
 	flex-direction: column;

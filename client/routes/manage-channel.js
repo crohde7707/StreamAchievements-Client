@@ -38,7 +38,8 @@ class ManageChannel extends React.Component {
 		this.icons = {
 			default: {
 				gold: "https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png",
-				silver: "https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png"
+				silver: "https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png",
+				bronze: "https://res.cloudinary.com/phirehero/image/upload/v1559961119/default-icon-bronze.png"
 			},
 			hidden: "https://res.cloudinary.com/phirehero/image/upload/v1558811887/hidden-icon.png"
 		};
@@ -72,6 +73,9 @@ class ManageChannel extends React.Component {
 						} else if (channelIcons.default === this.icons.default.silver) {
 							stateUpdate.selected.defaultIcon = 'silver';
 							stateUpdate.defaultIconOriginal = 'silver';
+						} else if (channelIcons.default === this.icons.default.bronze) {
+							stateUpdate.selected.defaultIcon = 'bronze';
+							stateUpdate.defaultIconOriginal = 'bronze';
 						} else {
 							stateUpdate.selected.defaultIcon = 'customDefault';
 							stateUpdate.defaultIconOriginal = 'customDefault';
@@ -96,6 +100,36 @@ class ManageChannel extends React.Component {
 			}
 		});
 	}
+
+	// componentDidUpdate(prevProps, prevState) {
+	// 	let prevIcons = prevState.channel.icons;
+	// 	let icons = this.state.channel.icons;
+	// 	let stateUpdate = {...this.state};
+	// 	let update = false;
+
+	// 	debugger;
+	
+	// 	if(prevIcons && icons) {
+
+	// 		if(prevIcons.default !== icons.default) {
+	// 			update = true;
+	// 			delete stateUpdate.selected.defaultIcon;
+	// 			delete stateUpdate.defaultIconOriginal;
+	// 			delete stateUpdate.defaultIconPreview;	
+	// 		}
+
+	// 		if(prevIcons.hidden !== icons.hidden) {
+	// 			update = true;
+	// 			delete stateUpdate.selected.hiddenIcon;
+	// 			delete stateUpdate.hiddenIconOriginal;
+	// 			delete stateUpdate.hiddenIconPreview;
+	// 		}
+
+	// 		if(update) {
+	// 			this.setState(stateUpdate);
+	// 		}
+	// 	}
+	// }
 
 	clearNotice = () => {
 		this.setState({
@@ -233,10 +267,11 @@ class ManageChannel extends React.Component {
 		axios.post('/api/channel/image', {
 			image: image
 		}).then(res => {
+			debugger;
 			if(res.error) {
 
 			} else {
-				this.setState(res.data);				
+				this.setState(res.data);
 			}
 		});
 	}
@@ -473,9 +508,16 @@ class ManageChannel extends React.Component {
 			if(Object.keys(payload).length > 0) {
 				//changes made, call to service
 				axios.post('/api/channel/preferences', payload).then((res) => {
-					this.setState({
-						loading:false
-					});
+					let stateUpdate = {
+						channel: res.data.channel,
+						loading: false
+					};
+
+					if(res.data.images) {
+						stateUpdate.images = res.data.images;
+					}
+
+					this.setState(stateUpdate);
 				});
 			}
 		
@@ -520,7 +562,7 @@ class ManageChannel extends React.Component {
 						<div className="defaultIcon--placeholder"></div>
 					);
 				}
-
+				debugger;
 				if(this.state.hiddenIconPreview) {
 					customHiddenIcon = (
 						<div className="customHiddenImg">
@@ -620,7 +662,7 @@ class ManageChannel extends React.Component {
 			                    	</div>
 			                    </div>
 			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
-			                    	<span> - OR - </span>
+			                    	<span>OR</span>
 			                    </div>
 			                    <img 
 			                    	alt="" 
@@ -637,6 +679,14 @@ class ManageChannel extends React.Component {
 			                    	src={this.icons.default.silver} 
 			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.silver)}}
 			                    	ref={el => (this.defaultSilver = el)}
+		                    	/>
+			                    <img 
+			                    	alt="" 
+			                    	name="bronze"
+			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'bronze') ? ' ' + ICON_SELECTED : '')}
+			                    	src={this.icons.default.bronze} 
+			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.bronze)}}
+			                    	ref={el => (this.defaultBronze = el)}
 		                    	/>
 							</div>
 						</div>
@@ -658,7 +708,7 @@ class ManageChannel extends React.Component {
 			                    	</div>
 			                    </div>
 			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
-			                    	<span> - OR - </span>
+			                    	<span>OR</span>
 			                    </div>
 						        <img 
 						        	alt="" 
@@ -740,14 +790,22 @@ class ManageChannel extends React.Component {
 						<div className="imageGallery">
 							{this.state.images.gallery.map((image, index) => {
 								let classNames = "image--wrapper";
+								let label;
 
 								if(image.achievementID) {
 									classNames += " active"
+								} else if(image.type === 'default') {
+									classNames += " default";
+									label = (<div className="image--label">Default</div>);
+								} else if(image.type === 'hidden' && this.state.channel.icons.hidden === image.url) {
+									classNames += " default"
+									label = (<div className="image--label">Hidden</div>);
 								}
 								return (
 									<div key={'image-' + index} className={classNames}>
 										<div className="deleteImg" onClick={() => {this.promptDelete(image)}}><div className="icon"></div></div>
 										<img alt="" src={image.url}	/>
+										{label}
 									</div>
 								);
 							})}
@@ -812,7 +870,7 @@ class ManageChannel extends React.Component {
 			case 'images':
 				tabIndex = 2;
 				break;
-			case 'members':
+			case 'rankings':
 				tabIndex = 3;
 				break;
 			default:
@@ -829,7 +887,7 @@ class ManageChannel extends React.Component {
 							<Tab className="manage-tab">General</Tab>
 							<Tab className="manage-tab">Achievements</Tab>
 							<Tab className="manage-tab">Images</Tab>
-							<Tab className="manage-tab">Members</Tab>
+							<Tab className="manage-tab">Rankings</Tab>
 						</TabList>
 						<TabPanel>
 							{generalContent}
@@ -842,7 +900,7 @@ class ManageChannel extends React.Component {
 							{confirmPanel}
 						</TabPanel>
 						<TabPanel>
-							<h3>Members</h3>
+							<h3>Rankings</h3>
 							{memberContent}
 						</TabPanel>
 					</Tabs>

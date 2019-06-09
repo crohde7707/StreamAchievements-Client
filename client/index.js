@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './app';
 import HomePage from './routes/home-page';
 import ProfilePage from './routes/profile-page';
 import LandingPage from './routes/landing-page';

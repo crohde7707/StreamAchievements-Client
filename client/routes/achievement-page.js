@@ -518,6 +518,12 @@ class AchievementPage extends React.Component {
 			}
 
 			let customType;
+
+			if(this.state.iconPreview) {
+				imgPreviewContent = (<img src={this.state.iconPreview} />);
+			} else {
+				imgPreviewContent = (<div className="currentIcon--placeholder"></div>);
+			}
 			
 			if(this.props.patreon && this.props.patreon.gold) {
 				customType = (<option value="4">Custom</option>);
@@ -542,12 +548,6 @@ class AchievementPage extends React.Component {
 						<p>Upload custom images for each of your achievements by upgrading to the Gold Tier on Patreon!</p> 
 					</div>
 				);
-			}
-
-			if(this.state.iconPreview) {
-				imgPreviewContent = (<img src={this.state.iconPreview} />);
-			} else {
-				imgPreviewContent = (<div className="currentIcon--placeholder"></div>);
 			}
 
 			let pageHeader = "Create Achievement";

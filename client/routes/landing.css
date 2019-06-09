@@ -98,9 +98,8 @@
 }
 
 .section-wrapper--full p {
-    font-size: 18px;
+    font-size: 17px;
     text-shadow: 1px 1px #000;
-    font-weight: bold;
 }
 
 .section-content > h2,
@@ -136,4 +135,12 @@
 
 .landing-page .footer {
     margin-top: 0;
+}
+
+.landing-page .section-gfx {
+    max-width: 500px;
+}
+
+.landing-page .section-gfx img {
+    max-width: 500px;
 }

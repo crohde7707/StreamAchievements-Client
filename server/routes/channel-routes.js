@@ -286,25 +286,29 @@ router.get('/retrieve', isAuthorized, (req, res) => {
 						if(foundImages) {
 							//filter out default img
 							//filter out hidden img
-							let defaultImg, hiddenImg;
+							// let defaultImg, hiddenImg;
 
-							let returnImgs = foundImages.filter((img) => {
-								if(img.type === 'default') {
-									defaultImg = img;
-									return false;
-								} else if(img.type === 'hidden') {
-									hiddenImg = img;
-									return false;
-								}
+							// let returnImgs = foundImages.filter((img) => {
+							// 	if(img.type === 'default') {
+							// 		defaultImg = img;
+							// 		return false;
+							// 	} else if(img.type === 'hidden') {
+							// 		hiddenImg = img;
+							// 		return false;
+							// 	}
 
-								return true;
-							});
+							// 	return true;
+							// });
+
+							// resolve({
+							// 	gallery: returnImgs,
+							// 	default: defaultImg,
+							// 	hidden: hiddenImg
+							// });
 
 							resolve({
-								gallery: returnImgs,
-								default: defaultImg,
-								hidden: hiddenImg
-							});
+								gallery: foundImages
+							})
 						} else {
 							resolve({
 								gallery: []
@@ -370,17 +374,15 @@ router.post('/preferences', isAuthorized, (req, res) => {
 		defaultPromise = new Promise((resolve, reject) => {
 			if(req.body.defaultIcon && validDataUrl(req.body.defaultIcon)) {
 				//got an image to upload
-				uploadImage(req.body.defaultIcon, req.body.defaultIconName, existingChannel.owner).then(iconImg => {
+				uploadImage(req.body.defaultIcon, req.body.defaultIconName, existingChannel.owner, 'default').then(iconImg => {
 					existingChannel.icons = existingChannel.icons || {};
 					existingChannel.icons.default = iconImg.url
-					console.log('finished uploading default icon');
 					resolve();
 				});
 			} else if(req.body.defaultImage && imgURLRegex.test(req.body.defaultImage)) {
 				//check if URL before setting it
 				existingChannel.icons = existingChannel.icons || {};
 				existingChannel.icons.default = req.body.defaultImage;
-				console.log('set default icon to what was provided');
 				resolve();
 			} else {
 				resolve();
@@ -390,17 +392,15 @@ router.post('/preferences', isAuthorized, (req, res) => {
 		hiddenPromise = new Promise((resolve, reject) => {
 			if(req.body.hiddenIcon && validDataUrl(req.body.hiddenIcon)) {
 				//got an image to upload
-				uploadImage(req.body.hiddenIcon, req.body.hiddenIconName, existingChannel.owner).then(iconImg => {
+				uploadImage(req.body.hiddenIcon, req.body.hiddenIconName, existingChannel.owner, 'hidden').then(iconImg => {
 					existingChannel.icons = existingChannel.icons || {};
 					existingChannel.icons.hidden = iconImg.url
-					console.log('finished uploading hidden icon');
 					resolve();
 				});
 			} else if(req.body.hiddenImage && imgURLRegex.test(req.body.hiddenImage)) {
 				//check if URL before setting it
 				existingChannel.icons = existingChannel.icons || {};
 				existingChannel.icons.hidden = req.body.hiddenImage;
-				console.log('set hidden icon to what was provided');
 				resolve();
 			} else {
 				resolve();
@@ -411,8 +411,19 @@ router.post('/preferences', isAuthorized, (req, res) => {
 			existingChannel.save().then(savedChannel => {
 				console.log(savedChannel.icons);
 
-				res.json({
-					message: 'Preferences updated successfully!'
+				Image.find({channel: existingChannel.owner}).then(foundImages => {
+					if(foundImages) {
+						res.json({
+							channel: savedChannel,
+							images: {
+								gallery: foundImages
+							}
+						});
+					} else {
+						res.json({
+							channel: savedChannel
+						});
+					}
 				});
 			});
 		})
@@ -421,12 +432,16 @@ router.post('/preferences', isAuthorized, (req, res) => {
 
 router.post('/image', isAuthorized, (req, res) => {
 	//delete image from Cloudinary
-	destroyImage(req.body.image.cloudID).then(result => {
-		console.log(result);
+	let image = req.body.image;
+
+	destroyImage(image.cloudID).then(result => {
+
+		let channelUpdatePromise;
+		
 		//if image part of achievement, delete off achievement
 		let achievementPromise = new Promise((resolve, reject) => {
-			if(req.body.image.achievementID !== '') {
-				Achievement.findOne({['_id']: req.body.image.achievementID}).then(foundAchievement => {
+			if(image.achievementID !== '') {
+				Achievement.findOne({['_id']: image.achievementID}).then(foundAchievement => {
 					if(foundAchievement) {
 						foundAchievement.icon = '';
 						foundAchievement.save().then(() => {
@@ -445,7 +460,7 @@ router.post('/image', isAuthorized, (req, res) => {
 
 		//delete image from image table
 		let imagePromise = new Promise((resolve, reject) => {
-			Image.deleteOne({['_id']: req.body.image['_id']}).then(err => {
+			Image.deleteOne({['_id']: image['_id']}).then(err => {
 				//Get Images				
 				Image.find({channel: req.user.name}).then(foundImages => {
 					console.log("\nGetting all images after delete");
@@ -464,7 +479,28 @@ router.post('/image', isAuthorized, (req, res) => {
 			});
 		});
 
-		Promise.all([achievementPromise, imagePromise]).then(values => {
+		if(image.type === 'hidden' || image.type === 'default') {
+
+			channelUpdatePromise = new Promise((resolve, reject) => {
+				//delete image from channel
+				Channel.findOne({twitchID: req.user.integration.twitch.etid}).then(existingChannel => {
+					
+					let icons = {...existingChannel.icons};
+					delete icons[image.type];
+					existingChannel.icons = icons;
+					console.log('hya');
+
+					existingChannel.save().then(savedChannel => {
+						resolve(savedChannel);
+					});
+				});
+			});
+			
+		} else {
+			channelUpdatePromise = Promise.resolve();
+		}
+
+		Promise.all([achievementPromise, imagePromise, channelUpdatePromise]).then(values => {
 			console.log(values);
 			let responseObj = {
 				images: values[1]
@@ -472,6 +508,10 @@ router.post('/image', isAuthorized, (req, res) => {
 
 			if(values[0]) {
 				responseObj.achievements = values[0];
+			}
+
+			if(values[2]) {
+				responseObj.channel = values[2];
 			}
 
 			res.json(responseObj);
@@ -592,7 +632,7 @@ router.post('/confirm', isAdminAuthorized, (req, res) => {
 					    from: keys.gmail.user, // sender address
 					    to: 'phireherottv@gmail.com', // list of receivers
 					    subject: 'Your Confirmation Code!', // Subject line
-					    html: '<div style="background:rgb(40,35,53);padding-bottom:30px;"><h1 style="text-align:center;background:#6441a4;padding:15px;margin-top:0;"><img style="max-width:600px;" src="https://res.cloudinary.com/phirehero/image/upload/v1557947921/sa-logo.png" /></h1><h2 style="color:#FFFFFF; text-align: center;margin-top:30px;margin-bottom:25px;font-size:22px;">Thank you for your interest in Stream Achievements!</h2><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We reviewed your channel and are excited to have you join in on this exciting new feature for streamers!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">To get started, all you need to do is <a style="color: #ecdc19;" href="http://localhost:3000/channel/verify?id=' + generatedToken + '&utm_medium=Email">verify your account</a>, and you\'ll be all set!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We are truly excited to see what you bring in terms of Achievements, and can\'t wait to see how much your community engages!</p></div>'
+					    html: '<div style="background:#222938;padding-bottom:30px;"><h1 style="text-align:center;background:#2f4882;padding:15px;margin-top:0;"><img style="max-width:600px;" src="https://res.cloudinary.com/phirehero/image/upload/v1557947921/sa-logo.png" /></h1><h2 style="color:#FFFFFF; text-align: center;margin-top:30px;margin-bottom:25px;font-size:22px;">Thank you for your interest in Stream Achievements!</h2><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We reviewed your channel and feel you are a perfect fit to join in on this pilot, and test the new features we aim to provide for streamers!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">To get started, all you need to do is <a style="color: #ecdc19;" href="http://localhost:3000/channel/verify?id=' + generatedToken + '&utm_medium=Email">verify your account</a>, and you\'ll be all set!</p><p style="color:#FFFFFF;font-weight:bold;font-size:16px; text-align: center;">We are truly excited to see what you bring in terms of Achievements, and can\'t wait to see how much your community engages!</p></div>'
 					};
 
 					transporter.sendMail(mailOptions, function (err, info) {

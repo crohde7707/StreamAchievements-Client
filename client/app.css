@@ -1,5 +1,6 @@
 body {
-	background: rgb(40,35,53);
+	background: #222938;
+	margin: 0px;
 }
 
 #header {
@@ -67,6 +68,16 @@ body {
 	width: 55px;
 }
 
+.help {
+	margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    background: url(https://res.cloudinary.com/phirehero/image/upload/v1559843373/help.png) no-repeat;
+    cursor: help;
+    display: inline-block;
+    background-size: 16px 16px;
+}
+
 @media only screen and (max-width: 480px) {
     #header {
 		font-family: Destroy;
@@ -89,5 +100,5 @@ body {
 
 @font-face {
 	font-family: 'Destroy';
-	src: url('../fonts/DESTROY_.ttf');
+	src: url('./fonts/DESTROY_.TTF');
 }

@@ -53,6 +53,7 @@ export default class LandingPage extends React.Component {
 						<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community through the power of achievements!</p>
 						<p>With this system, a streamer will be able to create various achievements for their community to earn while interacting with stream!</p>
 						<p>This isn't just for streamers though! For someone who just watches streams, you will be able to keep track of all the achievements you have earned from your favorite streamers!</p>
+						<iframe width="560" height="315" src="https://www.youtube.com/embed/ihFbmjYm7CQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--alt">
@@ -64,11 +65,14 @@ export default class LandingPage extends React.Component {
 				</div>
 				<div className="section-wrapper">
 					<div className="section-content">
-						<div>
+						<div className="section-gfx">
+							<img src="https://res.cloudinary.com/phirehero/image/upload/v1559919160/achievements.png" />
+						</div>
+						<div className="section-info">
+							<h2>Seamless Achievement Creation</h2>
 							<p>Creating your first achievements is quick and painless, with helpful tips to guide you along the way!</p>
 							<p>You are also able to see your achievement come to life as you are creating it!</p>
 						</div>
-						<h2>Seamless Achievement Creation</h2>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--alt">
