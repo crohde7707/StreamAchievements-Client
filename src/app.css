@@ -3,13 +3,6 @@ body {
 	margin: 0px;
 }
 
-#header {
-	font-family: Destroy;
-	color:white;
-	text-shadow: 2px 2px 8px #000000;
-	text-align: center;
-}
-
 #achievements-container {
 	color: white;
 	max-width: 800px;
@@ -79,13 +72,6 @@ body {
 }
 
 @media only screen and (max-width: 480px) {
-    #header {
-		font-family: Destroy;
-		color:white;
-		text-shadow: 2px 2px 8px #000000;
-		text-align: center;
-		font-size: 25px;
-	}
 	
 	#achievements-header {
 		text-align: center;
@@ -96,9 +82,4 @@ body {
 	.achievement-info {
 		margin-left: 40px;
 	}
-}
-
-@font-face {
-	font-family: 'Destroy';
-	src: url('./fonts/DESTROY_.TTF');
 }

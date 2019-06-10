@@ -1,15 +1,15 @@
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
+const uglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const clientConfig = {
     target: "web",
     entry: {
-      app: ["./client/index.js"]
+      app: ["./src/index"]
     },
     output: {
         path: path.resolve(__dirname, "./dist"),
         publicPath: '/',
-        filename: "bundle-front.js"
+        filename: "bundle.[hash].js"
     },
     devServer: {
         host: '0.0.0.0', // Required for docker
@@ -30,19 +30,6 @@ const clientConfig = {
         }
       })]
     }
-    devtool: 'inline-source-map',
 };
 
-const serverConfig = {
-  target: "node",
-  entry: {
-    app: ["./server/main.js"]
-  },
-  output: {
-    path: path.resolve(__dirname, "./serverDist"),
-    filename: "bundle-back.js"
-  },
-  externals: [nodeExternals()],
-};
-
-module.exports = [ serverConfig, clientConfig ];
+module.exports = clientConfig;
