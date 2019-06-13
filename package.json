@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "react-scripts start",
     "devServer": "nodemon server.js",
-    "start": "node server.js",
-    "start2": "serve -s build",
+    "start": "serve -s build",
     "build": "react-scripts build",
     "heroku-postbuild": "react-scripts build"
   },
