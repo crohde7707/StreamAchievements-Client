@@ -45,7 +45,7 @@ class PatreonPanel extends React.Component {
 	}
 
 	handleSync = () => {
-		axios.post('/auth/patreon/sync').then(res => {
+		axios.post('https://streamachievements.com/auth/patreon/sync').then(res => {
 			this.props.dispatch(syncPatreon(res.data));
 		});
 	}
@@ -63,7 +63,7 @@ class PatreonPanel extends React.Component {
 			//Data retrieved, not connected
 			patreonContent = (
 				<div className="integration integration--patreon not-linked">
-					<a className="patreonLink" href="http://localhost:5000/auth/patreon">
+					<a className="patreonLink" href="https://streamachievements.com/auth/patreon">
 						<img alt="" src={require('../img/patreon-badge.png')} />
 					    <span>Link Your Patreon</span>
 				    </a>
