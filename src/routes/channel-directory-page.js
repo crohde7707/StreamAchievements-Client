@@ -22,7 +22,7 @@ class ChannelDirectoryPage extends React.Component {
 	}
 
 	getChannels = () => {
-		axios.get('https://streamachievements.com/api/channel/list').then((res) => {
+		axios.get('http://api.streamachievements.com/api/channel/list').then((res) => {
 			console.log(res.data);
 			this.setState({
 				channels: res.data

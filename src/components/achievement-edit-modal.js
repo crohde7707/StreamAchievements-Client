@@ -361,7 +361,7 @@ class AchievementEditModal extends React.Component {
 			showConfirm:false
 		});
 		
-		axios.post('https://streamachievements.com/api/achievement/delete', {
+		axios.post('http://api.streamachievements.com/api/achievement/delete', {
 			achievementID: this.state._id
 		}).then(response => {
 			let data = {
@@ -376,7 +376,7 @@ class AchievementEditModal extends React.Component {
 
 	sendData = (achievement) => {
 		console.log(achievement);
-		axios.post('https://streamachievements.com/api/achievement/create', achievement).then((res) => {
+		axios.post('http://api.streamachievements.com/api/achievement/create', achievement).then((res) => {
 			console.log(res.data);
 			if(res.data.created) {
 				this.onMaskClick();

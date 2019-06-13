@@ -118,7 +118,7 @@ export default class GiftAchievementModal extends React.Component {
 
 		console.log(chosenMembers);
 
-		axios.post('https://streamachievements.com/api/achievement/award', {
+		axios.post('http://api.streamachievements.com/api/achievement/award', {
 			members: chosenMembers.map(member => member.name),
 			aid: this.state.aid
 		}).then(response => {

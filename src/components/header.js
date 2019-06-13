@@ -20,7 +20,7 @@ class Header extends React.Component {
 
 	componentDidMount() {
 		if(!this.props.profile) {
-			axios.get('https://streamachievements.com/api/user').then((res) => {
+			axios.get('http://api.streamachievements.com/api/user').then((res) => {
 				console.log(res.data);
 				this.props.dispatch(setProfile(res.data));
 			});
@@ -108,7 +108,7 @@ class Header extends React.Component {
 						{channelLink}
 						{adminLink}
 						<li><Link to='/support'>Support Us!</Link></li>
-						<li className="logout"><a href="http://localhost:5000/auth/logout">Log Out</a></li>
+						<li className="logout"><a href="http://api.streamachievements.com/auth/logout">Log Out</a></li>
 					</ul>
 				</div>
 				<div className="menu-mask" ref={mask => (this._mask = mask)} onClick={this.toggleMenu}></div>

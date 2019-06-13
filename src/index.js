@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { hydrate, render } from 'react-dom';
 import App from './app';
 import HomePage from './routes/home-page';
 import ProfilePage from './routes/profile-page';
@@ -18,9 +18,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootElem = document.getElementById('root');
 
-ReactDOM.render((
+let app = (
 	<BrowserRouter>
 		<Provider store={store}>
 			<App>
@@ -41,4 +41,10 @@ ReactDOM.render((
 			</App>
 		</Provider>
 	</BrowserRouter>
-), document.getElementById('root'));
+);
+
+if(rootElem.hasChildNodes()) {
+	hydrate(app, rootElem);
+} else {
+	render(app, rootElem);
+}
