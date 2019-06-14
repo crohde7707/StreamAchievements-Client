@@ -9,6 +9,8 @@ import PatreonPanel from '../components/patreon-panel';
 
 import './profile-page.css';
 
+import twitchGlitch from '../img/twitch-glitch.png';
+
 class ManageChannel extends React.Component {
 
 	constructor() {
@@ -70,7 +72,7 @@ class ManageChannel extends React.Component {
 				<div>
 					<div className="integration integration--twitch">
 						<div className="integration-header">
-							<img alt="" src={require('../img/twitch-glitch.png')} />
+							<img alt="" src={twitchGlitch} />
 							<h3>Twitch</h3>
 							<div className="integration-sync">
 								<a href="javascript:;"><img alt="" src={require('../img/sync-white.png')} /></a>
