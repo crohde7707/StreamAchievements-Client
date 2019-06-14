@@ -9,7 +9,9 @@
     "devServer": "nodemon server.js",
     "start": "serve -s build",
     "build": "react-scripts build && react-snap",
-    "heroku-postbuild": "react-scripts build"
+    "postbuild": "react-snap",
+    "heroku-postbuild": "react-scripts build",
+    "pack": "webpack -p --production --config webpack.config.js --progress"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +19,6 @@
   "dependencies": {
     "axios": "^0.19.0",
     "cookie": "^0.3.1",
-    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
@@ -36,10 +37,6 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  },
-  "devDependencies": {
-    "rimraf": "^2.6.3",
-    "react-snap": "^1.23.0"
   },
   "browserslist": [
     ">0.2%",
