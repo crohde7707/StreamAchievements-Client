@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "react-scripts start",
     "devServer": "nodemon server.js",
-    "start": "serve -s build",
+    "start": "node server.js",
+    "serve": "serve -s build",
     "build": "react-scripts build",
     "pack": "webpack -p --production --config webpack.config.js --progress"
   },

@@ -21,7 +21,7 @@ import store from './redux/store';
 const rootElem = document.getElementById('root');
 
 let app = (
-	<BrowserRouter>
+	<BrowserRouter basename={process.env.PUBLIC_URL}>
 		<Provider store={store}>
 			<App>
 				<Switch>
