@@ -23,7 +23,9 @@ class ManageChannel extends React.Component {
 
 	componentDidMount() {
 
-		axios.get('http://api.streamachievements.com/api/profile').then((res) => {
+		axios.get('http://api.streamachievements.com/api/profile', {
+				withCredentials: true
+			}).then((res) => {
 			this.setState({
 				channels: res.data
 			});	
