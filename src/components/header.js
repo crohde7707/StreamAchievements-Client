@@ -20,7 +20,9 @@ class Header extends React.Component {
 
 	componentDidMount() {
 		if(!this.props.profile) {
-			axios.get('http://api.streamachievements.com/api/user').then((res) => {
+			axios.get('http://api.streamachievements.com/api/user', {
+				withCredentials: true
+			}).then((res) => {
 				console.log(res.data);
 				this.props.dispatch(setProfile(res.data));
 			});
