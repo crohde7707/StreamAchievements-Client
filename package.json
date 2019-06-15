@@ -9,7 +9,7 @@
     "devServer": "nodemon server.js",
     "serve": "node server.js",
     "start": "serve -s build",
-    "build": "react-scripts build",
+    "build": "react-scripts build && react-snap",
     "pack": "webpack -p --production --config webpack.config.js --progress"
   },
   "keywords": [],
@@ -43,5 +43,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "react-snap": "^1.23.0"
+  }
 }
