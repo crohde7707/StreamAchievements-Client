@@ -9,7 +9,7 @@
     "devServer": "nodemon server.js",
     "serve": "node server.js",
     "start": "serve -s build",
-    "build": "react-scripts build && react-snap",
+    "build": "react-scripts build",
     "pack": "webpack -p --production --config webpack.config.js --progress"
   },
   "keywords": [],
