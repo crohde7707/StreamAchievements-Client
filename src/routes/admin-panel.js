@@ -20,7 +20,9 @@ class AdminPanel extends React.Component {
 	}
 
 	componentDidMount() {
-		axios.get('http://api.streamachievements.com/api/users').then(res => {
+		axios.get('http://api.streamachievements.com/api/users', {
+			withCredentials: true
+		}).then(res => {
 			this.setState({
 				users: res.data.users || []
 			});
@@ -29,7 +31,9 @@ class AdminPanel extends React.Component {
 
 	approveMember = (evt, name) => {
 		evt.preventDefault();
-		axios.post('http://api.streamachievements.com/api/channel/confirm', {name}, res => {
+		axios.post('http://api.streamachievements.com/api/channel/confirm', {name}, {
+			withCredentials: true
+		}).then(res => {
 			console.log(res);
 		});
 	}

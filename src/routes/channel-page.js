@@ -31,8 +31,9 @@ class ChannelPage extends React.Component {
 			withCredentials: true
 		});
 
-		authAxios.get('http://api.streamachievements.com/api/channel/retrieve?id=' + this.props.match.params.channelid).then((res) => {
-			console.log(res.data.achievements);
+		authAxios.get('http://api.streamachievements.com/api/channel/retrieve?id=' + this.props.match.params.channelid, {
+			withCredentials: true
+		}).then((res) => {
 			this.setState({
 				channel: res.data.channel,
 				achievements: res.data.achievements,
@@ -52,7 +53,6 @@ class ChannelPage extends React.Component {
 	}
 
 	componentWillUnmount() {
-		console.log('unmounting...');
 		window.removeEventListener('scroll', this._updateChannelHeader);
 		window.removeEventListener('resize', this._updateChannelSize);
 	}
@@ -86,6 +86,8 @@ class ChannelPage extends React.Component {
 	joinChannel = () => {
 		axios.post('http://api.streamachievements.com/api/channel/join', {
 			channel: this.state.channel.owner
+		}, {
+			withCredentials: true
 		})
 		.then((res) => {
 			this.setState({
@@ -98,9 +100,10 @@ class ChannelPage extends React.Component {
 	leaveChannel = () => {
 		axios.post('http://api.streamachievements.com/api/channel/leave', {
 			channel: this.state.channel.owner
+		}, {
+			withCredentials: true
 		})
 		.then((res) => {
-			console.log(res.data);
 			if(res.data.leave) {
 				this.props.history.push('/home');
 			}

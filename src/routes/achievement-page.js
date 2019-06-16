@@ -14,7 +14,6 @@ import './achievement-page.css';
 class AchievementPage extends React.Component {
 
 	constructor(props) {
-		console.log('constructor');
 		super(props);
 
 		this.state = {
@@ -53,17 +52,11 @@ class AchievementPage extends React.Component {
 		return true;
 	}
 
-	componentWillUpdate(nextProps, nextState) {
-		console.log('componentWillUpdate');
-	}
-
-	componentWillUnmount() {
-		console.log('unmount');
-	}
-
 	fetchData = () => {
 		if(this.props.match.params.achievementid) {
-			axios.get('http://api.streamachievements.com/api/achievement/retrieve?aid=' + this.props.match.params.achievementid).then((res) => {
+			axios.get('http://api.streamachievements.com/api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
+				withCredentials: true
+			}).then((res) => {
 				if(res.data.error) {
 					//redirect to home
 				} else {
@@ -80,7 +73,9 @@ class AchievementPage extends React.Component {
 				}
 			});
 		} else {
-			axios.get('http://api.streamachievements.com/api/achievement/icons').then(res => {
+			axios.get('http://api.streamachievements.com/api/achievement/icons', {
+				withCredentials: true
+			}).then(res => {
 				this.setState({
 					icons: res.data.images,
 					defaultIcons: res.data.defaultIcons,
@@ -128,7 +123,7 @@ class AchievementPage extends React.Component {
 			if(event.target.files[0]) {
 				let file = event.target.files[0];
 				let preview = URL.createObjectURL(file);
-				console.log(event.target);
+
 				var img = new Image();
 	       		img.src = preview;
 
@@ -406,6 +401,8 @@ class AchievementPage extends React.Component {
 		
 		axios.post('http://api.streamachievements.com/api/achievement/delete', {
 			achievementID: this.state._id
+		}, {
+			withCredentials: true
 		}).then(response => {
 			let data = {
 				notice: "\"" + this.state.title + "\" achievement was deleted successfully!",
@@ -418,14 +415,15 @@ class AchievementPage extends React.Component {
 	}
 
 	sendData = (achievement) => {
-		console.log(achievement);
 		let api = 'http://api.streamachievements.com/api/achievement/create';
 
 		if(this.state.edit) {
 			api = 'http://api.streamachievements.com/api/achievement/update';
 		}
 
-		axios.post(api, achievement).then((res) => {
+		axios.post(api, achievement, {
+			withCredentials: true
+		}).then((res) => {
 			
 			if(res.data.created || res.data.update) {
 				//redirect to manage-channel#achievements

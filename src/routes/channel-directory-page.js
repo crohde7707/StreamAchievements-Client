@@ -25,7 +25,6 @@ class ChannelDirectoryPage extends React.Component {
 		axios.get('http://api.streamachievements.com/api/channel/list', {
 				withCredentials: true
 			}).then((res) => {
-			console.log(res.data);
 			this.setState({
 				channels: res.data
 			});
@@ -43,13 +42,11 @@ class ChannelDirectoryPage extends React.Component {
 		      return (channel.owner).toLowerCase().search(
 		        event.target.value.toLowerCase()) !== -1;
 		    });
-		    console.log(updatedList);
 		    this.setState({filteredChannels: updatedList});
 	    }	    
   	}
 
   	loadChannel = (channel) => {
-  		console.log(channel.owner);
   		this.props.history.push('/channel/' + channel.owner);
   	}
 

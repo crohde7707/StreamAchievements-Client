@@ -18,9 +18,6 @@ class PatreonPanel extends React.Component {
 	}
 
 	shouldDidUpdate(prevProps, prevState) {
-		console.log('shouldComponentUpdate');
-		console.log(prevProps.patreon);
-		console.log(this.props.patreon)
 		if(prevProps.patreon === undefined && this.props.patreon !== undefined) {
 			this.setState({
 				loading: false
@@ -45,14 +42,14 @@ class PatreonPanel extends React.Component {
 	}
 
 	handleSync = () => {
-		axios.post('http://api.streamachievements.com/auth/patreon/sync').then(res => {
+		axios.post('http://api.streamachievements.com/auth/patreon/sync', {
+			withCredentials: true
+		}).then(res => {
 			this.props.dispatch(syncPatreon(res.data));
 		});
 	}
 
 	render() {
-		console.log(this.state.loading);
-		console.log(this.props.patreon);
 		if(this.state.loading && this.props.patreon === undefined) {
 			return null;
 		}
@@ -195,7 +192,6 @@ class PatreonPanel extends React.Component {
 }
 
 function headerMapStateToProps(state) {
-	console.log(state);
 	return {
 		profile: state.profile,
 		patreon: state.patreon

@@ -23,7 +23,6 @@ class Header extends React.Component {
 			axios.get('http://api.streamachievements.com/api/user', {
 				withCredentials: true
 			}).then((res) => {
-				console.log(res.data);
 				this.props.dispatch(setProfile(res.data));
 			});
 		}
@@ -69,8 +68,6 @@ class Header extends React.Component {
 
 		if(this.props.profile) {
 			let status = this.props.profile.status;
-			console.log(this.props.profile)
-
 
 			switch(status) {
 				case 'verified':
@@ -93,7 +90,6 @@ class Header extends React.Component {
 		let adminLink;
 
 		if(this.props.profile && this.props.profile.type === 'admin') {
-			console.log('hellu');
 			adminLink = (<li className="admin"><Link to={"/admin"}>Admin Panel</Link></li>);
 		}
 

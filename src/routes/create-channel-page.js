@@ -29,7 +29,9 @@ class CreateChannelPage extends React.Component {
 	onSubmit = (event) => {
 		event.preventDefault();
 
-		axios.post('http://api.streamachievements.com/api/channel/signup').then(res => {
+		axios.post('http://api.streamachievements.com/api/channel/signup', {
+			withCredentials: true
+		}).then(res => {
 			if(res.data.error) {
 
 			} else {

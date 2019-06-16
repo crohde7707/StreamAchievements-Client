@@ -47,9 +47,9 @@ class ManageChannel extends React.Component {
 
 	componentDidMount() {
 
-		axios.get('http://api.streamachievements.com/api/channel/retrieve').then((res) => {
-			console.log(res.data);
-
+		axios.get('http://api.streamachievements.com/api/channel/retrieve', {
+			withCredentials: true
+		}).then((res) => {
 			if(res.data.error) {
 				//redirect to home
 			} else {
@@ -154,7 +154,7 @@ class ManageChannel extends React.Component {
   	}
 
   	showGiftModal = (aid) => {
-  		console.log(aid);
+
   		this.setState({
 			isModalActive: true,
 			aid
@@ -266,6 +266,8 @@ class ManageChannel extends React.Component {
 
 		axios.post('http://api.streamachievements.com/api/channel/image', {
 			image: image
+		}, {
+			withCredentials: true
 		}).then(res => {
 			debugger;
 			if(res.error) {
@@ -507,7 +509,9 @@ class ManageChannel extends React.Component {
 		Promise.all([defaultPromise, hiddenPromise]).then(results => {
 			if(Object.keys(payload).length > 0) {
 				//changes made, call to service
-				axios.post('http://api.streamachievements.com/api/channel/preferences', payload).then((res) => {
+				axios.post('http://api.streamachievements.com/api/channel/preferences', payload, {
+					withCredentials: true
+				}).then((res) => {
 					let stateUpdate = {
 						channel: res.data.channel,
 						loading: false

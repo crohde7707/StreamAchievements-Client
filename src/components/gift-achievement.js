@@ -26,7 +26,6 @@ export default class GiftAchievementModal extends React.Component {
 	}
 
 	filterMembers() {
-		console.log(this.props.members);
 
 	}
 
@@ -116,11 +115,12 @@ export default class GiftAchievementModal extends React.Component {
 	awardAchievement = () => {
 		let chosenMembers = this.state.members.filter(member => member.selected);
 
-		console.log(chosenMembers);
 
 		axios.post('http://api.streamachievements.com/api/achievement/award', {
 			members: chosenMembers.map(member => member.name),
 			aid: this.state.aid
+		}, {
+			withCredentials: true
 		}).then(response => {
 			this.props.onSubmit(response.data.members);
 		});

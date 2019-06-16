@@ -22,10 +22,7 @@ export default class LandingPage extends React.Component {
 	}
 
 	render() {
-
 		let redirect;
-
-		console.log(this.state);
 
 		if(this.state.redirect) {
 			let Redirect = require('react-router-dom').Redirect;

@@ -293,7 +293,6 @@ class AchievementEditModal extends React.Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(this.state);
 
 		let achievement = {};
 
@@ -343,7 +342,6 @@ class AchievementEditModal extends React.Component {
 
 		if(this.state.file) {
 			var reader  = new FileReader();
-			console.log(this.state.file);
 			reader.addEventListener("load", () => {
 				
 		    	achievement.icon = reader.result;
@@ -362,8 +360,8 @@ class AchievementEditModal extends React.Component {
 		});
 		
 		axios.post('http://api.streamachievements.com/api/achievement/delete', {
-			achievementID: this.state._id
-		}).then(response => {
+			achievementID: this.state._id,
+		}, { withCredentials: true}).then(response => {
 			let data = {
 				notice: "\"" + this.state.title + "\" achievement was deleted successfully!",
 				delete: this.state._id
@@ -375,12 +373,12 @@ class AchievementEditModal extends React.Component {
 	}
 
 	sendData = (achievement) => {
-		console.log(achievement);
-		axios.post('http://api.streamachievements.com/api/achievement/create', achievement).then((res) => {
-			console.log(res.data);
+		axios.post('http://api.streamachievements.com/api/achievement/create', achievement, {
+				withCredentials: true
+			}).then((res) => {
+			
 			if(res.data.created) {
 				this.onMaskClick();
-				console.log(res.data.achievement);
 				this.props.onSubmit({
 					notice: "\"" + res.data.achievement.title + "\" achievement was created successfully!",
 					achievement: res.data.achievement
