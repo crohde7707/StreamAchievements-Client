@@ -13,7 +13,7 @@ class Achievement extends React.Component {
 		description = this.props.achievement.description;
 
 		let achievementClass = "achievement";
-		let icon = this.props.achievement.icon || defaultIcons.default;
+		let icon = this.props.achievement.icon || defaultIcons.default || '';
 
 		if(earned || this.props.editable) {
 			achievementClass += " achievement--earned";
@@ -21,7 +21,7 @@ class Achievement extends React.Component {
 		} else if(secret) {
 			title = "????";
 			description = "????????????";
-			icon = defaultIcons.hidden
+			icon = defaultIcons.hidden || ''
 		}
 
 		if(this.props.editable) {

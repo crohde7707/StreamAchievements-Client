@@ -780,6 +780,7 @@ class ManageChannel extends React.Component {
 								editable={true}
 								achievement={achievement}
 								onGift={this.showGiftModal}
+								defaultIcons={this.state.channel.icons}
 								onClick={() => {this.props.history.push('/manage/achievement/' + achievement.uid)}}
 							/>
 						))}
