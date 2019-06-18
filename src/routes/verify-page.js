@@ -22,7 +22,7 @@ class VerifyPage extends React.Component {
 	componentDidMount() {
 		let queries = qs.parse(this.props.location.search);
 		if(queries.id && queries['utm_medium'] === 'Email' && fetch) {
-			axios.post('http://api.streamachievements.com/api/channel/verify', {id: queries.id}, {
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/verify', {id: queries.id}, {
 				withCredentials: true
 			}).then(res => {
 				

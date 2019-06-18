@@ -47,7 +47,7 @@ class ManageChannel extends React.Component {
 
 	componentDidMount() {
 
-		axios.get('http://api.streamachievements.com/api/channel/retrieve', {
+		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve', {
 			withCredentials: true
 		}).then((res) => {
 			if(res.data.error) {
@@ -264,7 +264,7 @@ class ManageChannel extends React.Component {
 			imageToDelete: null
 		});
 
-		axios.post('http://api.streamachievements.com/api/channel/image', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/image', {
 			image: image
 		}, {
 			withCredentials: true
@@ -509,7 +509,7 @@ class ManageChannel extends React.Component {
 		Promise.all([defaultPromise, hiddenPromise]).then(results => {
 			if(Object.keys(payload).length > 0) {
 				//changes made, call to service
-				axios.post('http://api.streamachievements.com/api/channel/preferences', payload, {
+				axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/preferences', payload, {
 					withCredentials: true
 				}).then((res) => {
 					let stateUpdate = {

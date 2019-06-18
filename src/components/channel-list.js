@@ -20,7 +20,7 @@ class ChannelList extends React.Component {
 	}
 
 	getChannels = () => {
-		axios.get('http://api.streamachievements.com/api/channel/user', {
+		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/user', {
 			withCredentials: true
 		}).then((res) => {
 			this.setState({

@@ -116,7 +116,7 @@ export default class GiftAchievementModal extends React.Component {
 		let chosenMembers = this.state.members.filter(member => member.selected);
 
 
-		axios.post('http://api.streamachievements.com/api/achievement/award', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/award', {
 			members: chosenMembers.map(member => member.name),
 			aid: this.state.aid
 		}, {

@@ -36,7 +36,7 @@ export default class LandingPage extends React.Component {
 				<div className="section-wrapper main">
 					<div className="section-content">
 						<img className="logo" src={require('../img/logo.png')} />
-						<a href="http://api.streamachievements.com/auth/twitch" className="login-button twitch-login-button">
+						<a href={process.env.REACT_APP_API_DOMAIN + "auth/twitch"} className="login-button twitch-login-button">
 							<span className="login-button-icon">
 								<img alt="" src={require('../img/twitch-glitch.png')} />
 							</span>
@@ -92,7 +92,7 @@ export default class LandingPage extends React.Component {
 				<div className="section-wrapper section-wrapper--login">
 					<div className="section-content">
 						<p>What are you waiting for? Get started with your channel today, or use our tools to help spread the word to your favorite streamers to create achievements today!</p>
-						<a href="http://api.streamachievements.com/auth/twitch" className="login-button twitch-login-button">
+						<a href={process.env.REACT_APP_API_DOMAIN + "auth/twitch"} className="login-button twitch-login-button">
 							<span className="login-button-icon">
 								<img alt="" src={require('../img/twitch-glitch.png')} />
 							</span>

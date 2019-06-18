@@ -359,7 +359,7 @@ class AchievementEditModal extends React.Component {
 			showConfirm:false
 		});
 		
-		axios.post('http://api.streamachievements.com/api/achievement/delete', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/delete', {
 			achievementID: this.state._id,
 		}, { withCredentials: true}).then(response => {
 			let data = {
@@ -373,7 +373,7 @@ class AchievementEditModal extends React.Component {
 	}
 
 	sendData = (achievement) => {
-		axios.post('http://api.streamachievements.com/api/achievement/create', achievement, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/create', achievement, {
 				withCredentials: true
 			}).then((res) => {
 			

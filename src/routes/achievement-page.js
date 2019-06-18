@@ -54,7 +54,7 @@ class AchievementPage extends React.Component {
 
 	fetchData = () => {
 		if(this.props.match.params.achievementid) {
-			axios.get('http://api.streamachievements.com/api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
 				withCredentials: true
 			}).then((res) => {
 				if(res.data.error) {
@@ -73,7 +73,7 @@ class AchievementPage extends React.Component {
 				}
 			});
 		} else {
-			axios.get('http://api.streamachievements.com/api/achievement/icons', {
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
 				withCredentials: true
 			}).then(res => {
 				this.setState({
@@ -399,7 +399,7 @@ class AchievementPage extends React.Component {
 			showConfirm:false
 		});
 		
-		axios.post('http://api.streamachievements.com/api/achievement/delete', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/delete', {
 			achievementID: this.state._id
 		}, {
 			withCredentials: true
@@ -415,10 +415,10 @@ class AchievementPage extends React.Component {
 	}
 
 	sendData = (achievement) => {
-		let api = 'http://api.streamachievements.com/api/achievement/create';
+		let api = process.env.REACT_APP_API_DOMAIN + 'api/achievement/create';
 
 		if(this.state.edit) {
-			api = 'http://api.streamachievements.com/api/achievement/update';
+			api = process.env.REACT_APP_API_DOMAIN + 'api/achievement/update';
 		}
 
 		axios.post(api, achievement, {

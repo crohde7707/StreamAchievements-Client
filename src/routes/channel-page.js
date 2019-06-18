@@ -31,7 +31,7 @@ class ChannelPage extends React.Component {
 			withCredentials: true
 		});
 
-		authAxios.get('http://api.streamachievements.com/api/channel/retrieve?id=' + this.props.match.params.channelid, {
+		authAxios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve?id=' + this.props.match.params.channelid, {
 			withCredentials: true
 		}).then((res) => {
 			this.setState({
@@ -84,7 +84,7 @@ class ChannelPage extends React.Component {
 	}
 
 	joinChannel = () => {
-		axios.post('http://api.streamachievements.com/api/channel/join', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
 			channel: this.state.channel.owner
 		}, {
 			withCredentials: true
@@ -98,7 +98,7 @@ class ChannelPage extends React.Component {
 	}
 
 	leaveChannel = () => {
-		axios.post('http://api.streamachievements.com/api/channel/leave', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/leave', {
 			channel: this.state.channel.owner
 		}, {
 			withCredentials: true
