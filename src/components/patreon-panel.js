@@ -42,9 +42,11 @@ class PatreonPanel extends React.Component {
 	}
 
 	handleSync = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/patreon/sync', {
+		this._sync.classList.add('active');
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/patreon/sync', {}, {
 			withCredentials: true
 		}).then(res => {
+			this._sync.classList.remove('active');
 			this.props.dispatch(syncPatreon(res.data));
 		});
 	}
@@ -166,7 +168,7 @@ class PatreonPanel extends React.Component {
 					<div className="integration-header">
 						<img alt="" src={require('../img/patreon-icon.png')} />
 						<h3>Patreon</h3>
-						<div className="integration-sync">
+						<div className="integration-sync" ref={(el) => {this._sync = el}}>
 							<a href="javascript:;" onClick={this.handleSync}><img alt="" src={require('../img/sync-white.png')} /></a>
 						</div>
 					</div>

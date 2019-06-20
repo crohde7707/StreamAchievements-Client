@@ -15,6 +15,8 @@ class ChannelDirectoryPage extends React.Component {
 		this.state = {
 			channels: []
 		}
+
+		this._search = {};
 	}
 
 	componentDidMount() {
@@ -69,12 +71,22 @@ class ChannelDirectoryPage extends React.Component {
 		}
 
 		if(Array.isArray(channels)) {
-			content = channels.map((channel, index) => (
-				<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
-					<div className="channel-item--logo"><img src={channel.logo} /></div>
-					<div className="channel-item--name">{channel.owner}</div>
-				</div>
-			));
+			if(channels.length > 0) {
+				content = channels.map((channel, index) => (
+					<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
+						<div className="channel-item--logo"><img src={channel.logo} /></div>
+						<div className="channel-item--name">{channel.owner}</div>
+					</div>
+				));	
+			} else {
+				content = (
+					<div className="directory--no-results">
+						<h3>Looks like they haven't made it here yet!</h3>
+						<div>If you want someone to offer achievements, make sure to let them know and show that interest!!</div>
+					</div>
+				);
+			}
+			
 		}
 
 		return (
@@ -82,7 +94,7 @@ class ChannelDirectoryPage extends React.Component {
 				<Template>
 					<div className="main-content">
 						<div className="directory-search">
-							<input type="text" onChange={this.filterList} placeholder="Search channels..." />
+							<input type="text" onChange={this.filterList} placeholder="Search channels..." ref={(el) => {this._search = el}} />
 						</div>
 						<div className="directory-results">
 							<div className="channels">

@@ -197,12 +197,8 @@
 		padding: 10px 15px;
 	}
 
-	.integration {
-		margin: 0 8px;
-	}
-
-	.integration-header {
-		padding: 15px;
+	.integration .integration-header {
+		padding: 10px 15px;
 	}
 
 	.integration h3 {

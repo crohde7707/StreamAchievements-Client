@@ -7,3 +7,9 @@
 .directory-results {
 	margin-top: 30px;
 }
+
+.directory--no-results {
+	text-align: center;
+	color: white;
+	padding-top: 20px
+}

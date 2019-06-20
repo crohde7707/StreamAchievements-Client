@@ -120,6 +120,10 @@
     margin-top: 10px;
 }
 
+.integration--patreon .integration-sync.active img {
+    animation: rotation 1s infinite linear;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -127,4 +131,31 @@
   to {
     transform: rotate(359deg);
   }
+}
+
+@media only screen and (max-width: 480px) {
+    .integration--patreon .integration-content {
+        flex-direction: column;
+    }
+
+    .patreon--thumb {
+        text-align: center;
+    }
+
+    .patreon--left {
+        padding: 10px;
+    }
+
+    .patreon--thumb img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .patreon--features div {
+        width: 45%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 36px;
+    }
 }

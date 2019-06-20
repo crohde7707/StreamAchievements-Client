@@ -17,17 +17,19 @@ class ManageChannel extends React.Component {
 		this.state = {
 			channel: '',
 			achievements: '',
-			notice: ''
+			notice: '',
+			loading: true
 		};
 	}
 
 	componentDidMount() {
 
 		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/profile', {
-				withCredentials: true
-			}).then((res) => {
+			withCredentials: true
+		}).then((res) => {
 			this.setState({
-				channels: res.data
+				channels: res.data,
+				loading: false
 			});	
 		});
 	}
@@ -115,7 +117,7 @@ class ManageChannel extends React.Component {
 		}
 
 		return (
-			<Template>
+			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
 					<h2>Profile</h2>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
