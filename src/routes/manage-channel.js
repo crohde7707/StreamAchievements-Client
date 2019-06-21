@@ -101,36 +101,6 @@ class ManageChannel extends React.Component {
 		});
 	}
 
-	// componentDidUpdate(prevProps, prevState) {
-	// 	let prevIcons = prevState.channel.icons;
-	// 	let icons = this.state.channel.icons;
-	// 	let stateUpdate = {...this.state};
-	// 	let update = false;
-
-	// 	debugger;
-	
-	// 	if(prevIcons && icons) {
-
-	// 		if(prevIcons.default !== icons.default) {
-	// 			update = true;
-	// 			delete stateUpdate.selected.defaultIcon;
-	// 			delete stateUpdate.defaultIconOriginal;
-	// 			delete stateUpdate.defaultIconPreview;	
-	// 		}
-
-	// 		if(prevIcons.hidden !== icons.hidden) {
-	// 			update = true;
-	// 			delete stateUpdate.selected.hiddenIcon;
-	// 			delete stateUpdate.hiddenIconOriginal;
-	// 			delete stateUpdate.hiddenIconPreview;
-	// 		}
-
-	// 		if(update) {
-	// 			this.setState(stateUpdate);
-	// 		}
-	// 	}
-	// }
-
 	clearNotice = () => {
 		this.setState({
 			notice: ''
@@ -259,8 +229,10 @@ class ManageChannel extends React.Component {
 
 	handleImageDelete = () => {
 		let image = this.state.imageToDelete;
+
 		this.setState({
 			showConfirm: false,
+			loading: true,
 			imageToDelete: null
 		});
 
@@ -269,17 +241,26 @@ class ManageChannel extends React.Component {
 		}, {
 			withCredentials: true
 		}).then(res => {
-			debugger;
 			if(res.error) {
 
 			} else {
-				this.setState(res.data);
+				let stateUpdate = {
+					loading: false,
+					...res.data
+				};
+
+				if(image.type === 'default') {
+					stateUpdate.defaultIconPreview = '';
+					this.handleIconSelect({target: { name: 'gold' }}, 'defaultIcon', this.icons.default.gold);
+				} else if(image.type === 'hidden') {
+					stateUpdate.hiddenIconPreview = '';
+					this.handleIconSelect({target: { name: 'default' }}, 'hiddenIcon', this.icons.hidden);
+				}
+
+				this.setState(stateUpdate);					
+				
 			}
 		});
-	}
-
-	handleSubmit = (foo) => {
-		debugger;
 	}
 
 	showImagePanel = (event, iconName) => {
@@ -566,7 +547,7 @@ class ManageChannel extends React.Component {
 						<div className="defaultIcon--placeholder"></div>
 					);
 				}
-				debugger;
+				
 				if(this.state.hiddenIconPreview) {
 					customHiddenIcon = (
 						<div className="customHiddenImg">
@@ -799,7 +780,7 @@ class ManageChannel extends React.Component {
 
 								if(image.achievementID) {
 									classNames += " active"
-								} else if(image.type === 'default') {
+								} else if(image.type === 'default' && this.state.channel.icons.default === image.url) {
 									classNames += " default";
 									label = (<div className="image--label">Default</div>);
 								} else if(image.type === 'hidden' && this.state.channel.icons.hidden === image.url) {
