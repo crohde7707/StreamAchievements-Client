@@ -135,7 +135,8 @@ class ManageChannel extends React.Component {
 	hideGiftModal = (members) => {
 		
 		let stateUpdate = {
-			isModalActive: false
+			isModalActive: false,
+			notice: "Awarded achievements successfully!"
 		};
 
 		if(members) {
@@ -495,7 +496,8 @@ class ManageChannel extends React.Component {
 				}).then((res) => {
 					let stateUpdate = {
 						channel: res.data.channel,
-						loading: false
+						loading: false,
+						touched: {}
 					};
 
 					if(res.data.images) {

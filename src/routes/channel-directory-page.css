@@ -13,3 +13,7 @@
 	color: white;
 	padding-top: 20px
 }
+
+.directory--no-results .share {
+	margin-top: 20px;
+}

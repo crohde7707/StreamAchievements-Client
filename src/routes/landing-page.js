@@ -56,14 +56,16 @@ export default class LandingPage extends React.Component {
 				<div className="section-wrapper section-wrapper--alt">
 					<div className="section-content">
 						<h2>Easy To Use</h2>
-						<p>Getting your channel stood up is quick and easy, thanks to integration with the support streaming platform!</p>
-						<p>You'll be ready to get your fans engaged in no time!</p>
+						<div>
+							<p>Getting your channel stood up is quick and easy, thanks to integration with the support streaming platform!</p>
+							<p>You'll be ready to get your fans engaged in no time!</p>
+						</div>
 					</div>
 				</div>
 				<div className="section-wrapper">
 					<div className="section-content">
 						<div className="section-gfx">
-							<img src="https://res.cloudinary.com/phirehero/image/upload/v1559919160/achievements.png" />
+							<img src="https://res.cloudinary.com/phirehero/image/upload/v1561146121/achgfx.png" />
 						</div>
 						<div className="section-info">
 							<h2>Seamless Achievement Creation</h2>

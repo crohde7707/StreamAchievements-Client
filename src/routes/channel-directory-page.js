@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
+import { TwitterShareButton } from 'react-twitter-embed';
 
 import './channel-directory-page.css';
 
@@ -82,7 +83,16 @@ class ChannelDirectoryPage extends React.Component {
 				content = (
 					<div className="directory--no-results">
 						<h3>Looks like they haven't made it here yet!</h3>
-						<div>If you want someone to offer achievements, make sure to let them know and show that interest!!</div>
+						<div>Want to get your favorite streamer to make some achievements for their stream? Spread the word!</div>
+						<div className="share">
+							<TwitterShareButton
+							    url={'https://streamachievements.com/'}
+							    options={{
+							    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream!',
+							    	size: 'large'
+							    }}
+							  />
+						</div>
 					</div>
 				);
 			}
