@@ -55,6 +55,7 @@ class ChannelPage extends React.Component {
 	componentWillUnmount() {
 		window.removeEventListener('scroll', this._updateChannelHeader);
 		window.removeEventListener('resize', this._updateChannelSize);
+		document.body.classList.remove('no-scroll');
 	}
 
 	clearNotice = () => {
