@@ -757,16 +757,25 @@ class ManageChannel extends React.Component {
 								
 							</div>
 						</div>
-						{achievements.map((achievement, index) => (
-							<Achievement 
-								key={'achievement-' + index}
-								editable={true}
-								achievement={achievement}
-								onGift={this.showGiftModal}
-								defaultIcons={this.state.channel.icons}
-								onClick={() => {this.props.history.push('/manage/achievement/' + achievement.uid)}}
-							/>
-						))}
+						{achievements.map((achievement, index) => {
+							let className = '';
+
+							if(achievement.code === '4' && !this.props.patreon.gold) {
+								className = 'achievement--disabled';
+							}
+							return (
+								<Achievement 
+									key={'achievement-' + index}
+									unlocked={this.props.patreon && this.props.patreon.gold}
+									className={className}
+									editable={true}
+									achievement={achievement}
+									onGift={this.showGiftModal}
+									defaultIcons={this.state.channel.icons}
+									onClick={() => {this.props.history.push('/manage/achievement/' + achievement.uid)}}
+								/>
+							)
+						})}
 						{modal}
 					</div>
 				);

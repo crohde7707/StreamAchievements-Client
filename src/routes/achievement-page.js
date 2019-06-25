@@ -230,13 +230,13 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Condition</label>
+								<label htmlFor="achievement-condition">Condition</label>
 								<input
-									id="achievement-query"
-									name="query"
+									id="achievement-condition"
+									name="condition"
 									className="textInput"
 									type="text"
-									value={this.state.query}
+									value={this.state.condition}
 									onChange={this.handleDataChange}
 								/>
 							</div>
@@ -252,13 +252,13 @@ class AchievementPage extends React.Component {
 					conditionContent = (
 						<div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Condition</label>
+								<label htmlFor="achievement-condition">Condition</label>
 								<input
-									id="achievement-query"
-									name="query"
+									id="achievement-condition"
+									name="condition"
 									className="textInput"
 									type="text"
-									value={this.state.query}
+									value={this.state.condition}
 									onChange={this.handleDataChange}
 								/>
 							</div>
@@ -269,27 +269,34 @@ class AchievementPage extends React.Component {
 					);
 					break;
 				case "3":
-					//Raid
-					helpText = "Total raids from the viewer (defaults to 1)";
 					conditionContent = (
 						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-query">Condition</label>
-								<input
-									id="achievement-query"
-									name="query"
-									className="textInput"
-									type="text"
-									value={this.state.query}
-									onChange={this.handleDataChange}
-								/>
-							</div>
-							<div className="helpText">
-								{helpText}
-							</div>
+							<div className="achievementTypeInfo">For manual achievements, they can only be obtained by you gifting them out to your community!</div>
 						</div>
 					);
 					break;
+				// case "3":
+				// 	//Manual
+				// 	helpText = "Total raids from the viewer (defaults to 1)";
+				// 	conditionContent = (
+				// 		<div>
+				// 			<div className="formGroup">
+				// 				<label htmlFor="achievement-condition">Condition</label>
+				// 				<input
+				// 					id="achievement-condition"
+				// 					name="condition"
+				// 					className="textInput"
+				// 					type="text"
+				// 					value={this.state.condition}
+				// 					onChange={this.handleDataChange}
+				// 				/>
+				// 			</div>
+				// 			<div className="helpText">
+				// 				{helpText}
+				// 			</div>
+				// 		</div>
+				// 	);
+				// 	break;
 				case "4":
 					//Custom
 					conditionContent = (
@@ -306,7 +313,7 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Message</label>
+								<label htmlFor="achievement-query">Chat Message</label>
 								<input
 									id="achievement-query"
 									name="query"
@@ -365,7 +372,7 @@ class AchievementPage extends React.Component {
 			};
 
 			if(this.state.code !== '0') {
-				achievement.query = this.state.query;
+				achievement.condition = this.state.condition;
 
 				if(this.state.code === "1") {
 					achievement.resubType = this.state.resubType;
@@ -373,7 +380,7 @@ class AchievementPage extends React.Component {
 
 				if(this.state.code === "4") {
 					achievement.bot = this.state.bot;
-					achievement.condition = this.state.condition;
+					achievement.query = this.state.query;
 				}
 			}
 		}
@@ -569,7 +576,12 @@ class AchievementPage extends React.Component {
 							<span className="help" title="This is what your achievement looks like, based on the information below!"></span>
 						</h4>
 						<div className="achievement-preview">
-							<Achievement earned={true} achievement={this.state} defaultIcons={this.state.defaultIcons} />
+							<Achievement
+								earned={true}
+								unlocked={this.props.patreon && this.props.patreon.gold}
+								achievement={this.state}
+								defaultIcons={this.state.defaultIcons}
+							/>
 						</div>
 						<h4>
 							Achievement Info
@@ -657,7 +669,7 @@ class AchievementPage extends React.Component {
 									<option value="0">New Sub</option>
 									<option value="1">Resub</option>
 									<option value="2">Gifted Sub</option>
-									<option value="3">Raid</option>
+									<option value="3">Manual</option>
 									{customType}
 								</select>
 							</div>

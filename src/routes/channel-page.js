@@ -19,6 +19,7 @@ class ChannelPage extends React.Component {
 			channel: '',
 			notice: '',
 			loading: true,
+			fullAccess: false,
 			small: false,
 			progress: true
 		}
@@ -38,6 +39,7 @@ class ChannelPage extends React.Component {
 				channel: res.data.channel,
 				achievements: res.data.achievements,
 				joined: res.data.joined,
+				fullAccess: res.data.fullAccess,
 				loading: false
 			}, () => {
 				this.updateChannelHeader();
@@ -65,8 +67,15 @@ class ChannelPage extends React.Component {
 	}
 
 	updateChannelHeader = () => {
-	  if (document.documentElement.scrollHeight > 1060 && (document.body.scrollTop > 130 || document.documentElement.scrollTop > 130)) {
-	    this._channelHeader.classList.add('condensed');
+
+		let height = document.documentElement.scrollHeight;
+		let top = document.documentElement.scrollTop;
+		let bodyTop = document.body.scrollTop;
+
+	  if (height > 1000 && (bodyTop > 130 || top > 130)) {
+	  	if(!this._channelHeader.classList.contains('condensed')) {
+	  		this._channelHeader.classList.add('condensed');	
+	  	}
 	  } else {
 	    this._channelHeader.classList.remove('condensed');
 	  }
@@ -147,7 +156,7 @@ class ChannelPage extends React.Component {
 								classes = "achievement-blurred";
 							}
 
-							return (<Achievement key={'achievement-' + index} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
+							return (<Achievement key={'achievement-' + index} unlocked={this.state.fullAccess} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
 						})}
 						
 					</div>

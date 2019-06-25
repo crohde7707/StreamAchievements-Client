@@ -22,6 +22,10 @@
     align-items: center;
 }
 
+.achievement.achievement--disabled {
+    opacity: 0.5;
+}
+
 .achievement.achievement--earned {
     background: #DDD;
     color: black;
