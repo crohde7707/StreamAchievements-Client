@@ -12,10 +12,6 @@ export default class NotificationPanel extends React.Component {
 		};
 	}
 
-	componentDidMount() {
-
-	}
-
 	shouldComponentUpdate(nextProps, nextState) {
 				
 		return true;
