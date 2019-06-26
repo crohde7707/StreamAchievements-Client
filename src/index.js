@@ -12,6 +12,7 @@ import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
 import AdminPanelPage from './routes/admin-panel';
+import HowTo from './routes/how-to';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 //Redux
@@ -37,6 +38,7 @@ let app = (
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/support" component={SupportPage} />
+	        		<Route path="/howto" component={HowTo} />
 	    		</Switch>
 			</App>
 		</Provider>
