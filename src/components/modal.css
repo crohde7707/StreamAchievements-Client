@@ -114,6 +114,10 @@
     margin-left: 2%;
 }
 
+.formGroup .selectInput {
+    padding-right: 7%;
+}
+
 .formGroup.checkboxGroup {
     flex-direction: row;
     margin-bottom: 4px;
@@ -155,9 +159,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex: 1;
     margin: 3%;
-    width: 90%;
+    width: 20%;
     border: 2px inset #AAA;
     background-color: #BBB;
     cursor: pointer;

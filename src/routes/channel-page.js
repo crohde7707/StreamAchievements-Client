@@ -21,7 +21,8 @@ class ChannelPage extends React.Component {
 			loading: true,
 			fullAccess: false,
 			small: false,
-			progress: true
+			progress: true,
+			condensedHeader: false
 		}
 	}
 
@@ -71,13 +72,17 @@ class ChannelPage extends React.Component {
 		let height = document.documentElement.scrollHeight;
 		let top = document.documentElement.scrollTop;
 		let bodyTop = document.body.scrollTop;
-
-	  if (height > 1000 && (bodyTop > 130 || top > 130)) {
-	  	if(!this._channelHeader.classList.contains('condensed')) {
-	  		this._channelHeader.classList.add('condensed');	
+		
+	  if (height > 1000 && (bodyTop > 230 || top > 230)) {
+	  	if(!this.state.condensedHeader) {
+	  		this.setState({
+	  			condensedHeader: true
+	  		});
 	  	}
 	  } else {
-	    this._channelHeader.classList.remove('condensed');
+	  	this.setState({
+  			condensedHeader: false
+  		});
 	  }
 	}
 
@@ -206,11 +211,17 @@ class ChannelPage extends React.Component {
 				wrapperClasses += ' channel-page--sm';
 			}
 
+			let channelHeaderStub;
+
+			if(this.state.condensedHeader) {
+				channelHeaderStub = (<div className="channel-header--stub"></div>)	
+			}
+
 			content = (
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
 						<Notice message={this.state.notice} onClear={this.clearNotice} />
-						<div id="channel-header" ref={el => (this._channelHeader = el)}>
+						<div id="channel-header" ref={el => (this._channelHeader = el)} className={(this.state.condensedHeader) ? "condensed" : ""}>
 							{favorite}
 							<div className="channel-logo">
 								<img src={logo} />
@@ -232,6 +243,7 @@ class ChannelPage extends React.Component {
 								{membershipContent}
 							</div>
 						</div>
+						{channelHeaderStub}
 						{((this.state.small) ? achievementProgress : null)}
 						{achievementsContent}
 					</div>

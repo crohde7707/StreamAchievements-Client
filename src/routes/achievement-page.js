@@ -378,6 +378,12 @@ class AchievementPage extends React.Component {
 					achievement.resubType = this.state.resubType;
 				}
 
+				if(this.state.code === "2") {
+					if(!this.state.condition) {
+						achievement.condition = 1;
+					}
+				}
+
 				if(this.state.code === "4") {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
@@ -416,8 +422,7 @@ class AchievementPage extends React.Component {
 				delete: this.state._id
 			};
 
-			this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');
-			//redirect to manage-channel#achievements
+			this.props.history.push('/dashboard/' + this.props.profile.username + '?tab=achievements');
 		});
 	}
 
@@ -435,7 +440,7 @@ class AchievementPage extends React.Component {
 			if(res.data.created || res.data.update) {
 				//redirect to manage-channel#achievements
 				this.clearState();
-				this.props.history.push('/manage/?tab=achievements');
+				this.props.history.push('/dashboard/?tab=achievements');
 			} else {
 				this.setState({
 					error: res.data.message
@@ -547,10 +552,10 @@ class AchievementPage extends React.Component {
                     </div>
 				)
 			} else if(!this.state.loading) {
-				customType = (<option disabled title="Unlocked wtih Gold Tier!" value="4">Custom (Unlocked with the Gold Tier!)</option>);
+				customType = (<option disabled title="Unlocked wtih StreamAchievements Gold!" value="4">Custom [Gold])</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
-						<p>Upload custom images for each of your achievements by upgrading to the Gold Tier on Patreon!</p> 
+						<p>Upload custom images for each of your achievements by upgrading to <span className="gold">StreamAchievements Gold</span> via Patreon!</p> 
 					</div>
 				);
 			}
@@ -589,7 +594,7 @@ class AchievementPage extends React.Component {
 						</h4>
 						<form onSubmit={this.handleSubmit}>
 							<div className="formGroup">
-								<label htmlFor="achievement-title">Name</label>
+								<label htmlFor="achievement-title">Title</label>
 								<input
 									id="achievement-title"
 									name="title"
@@ -679,7 +684,7 @@ class AchievementPage extends React.Component {
 		                    <input type="submit" className="achievement-button submit-achievement" value="Save" />
 		                    <div className="button-bank">
 			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>
-			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/manage/' + this.props.profile.username + '?tab=achievements');}}>Cancel</button>
+			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/dashboard/' + this.props.profile.username + '?tab=achievements');}}>Cancel</button>
 		                    </div>
 		                    {confirmPanel}
 		                    {imagePanel}

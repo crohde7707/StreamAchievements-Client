@@ -9,7 +9,7 @@ import PatreonPanel from '../components/patreon-panel';
 
 import './profile-page.css';
 
-class ManageChannel extends React.Component {
+class ProfilePage extends React.Component {
 
 	constructor() {
 		super();
@@ -76,6 +76,9 @@ class ManageChannel extends React.Component {
 						<div className="integration-header">
 							<img alt="" src={require('../img/twitch-glitch.png')} />
 							<h3>Twitch</h3>
+							<div className="integration-settings">
+								<a title="Opens Twitch settings in new tab" href={'https://twitch.tv/' + username + '/settings'} target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
+							</div>
 							<div className="integration-sync">
 								<a href="javascript:;"><img alt="" src={require('../img/sync-white.png')} /></a>
 							</div>
@@ -124,7 +127,7 @@ class ManageChannel extends React.Component {
 					<Tabs>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">Integration</Tab>
-							<Tab className="manage-tab">Channels</Tab>
+							<Tab className="manage-tab">Joined Channels</Tab>
 						</TabList>
 						<TabPanel>
 							{integrationContent}
@@ -145,6 +148,4 @@ function headerMapStateToProps(state) {
 	};
 }
 
-export default connector(headerMapStateToProps)(ManageChannel);
-
-//export default ManageChannel;
+export default connector(headerMapStateToProps)(ProfilePage);

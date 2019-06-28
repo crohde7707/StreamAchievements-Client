@@ -44,57 +44,6 @@
 	background: rgba(200,200,200,0.5);
 }*/
 
-
-.integration--patreon {
-	background: #DDD;
-}
-
-.integration-header,
-.integration-content {
-	padding: 20px;
-}
-
-.integration-header {
-	border-radius: 6px 6px 0px 0px;
-	display: flex;
-}
-
-.integration--twitch .integration-header {
-	background: #6441a4;
-}
-
-.integration--patreon .integration-header {
-	background: rgb(232, 91, 70);
-}
-
-.integration-header h3 {
-	margin: 0 0 0 20px;
-	align-self: center;
-}
-
-.integration-header img {
-	width: 26px;
-	height: 28px;
-}
-
-.integration-sync {
-	text-align: right;
-	width: 30px;
-	flex: 1;
-}
-
-.integration-sync a {
-	cursor: pointer;
-}
-
-.integration-content {
-	display:flex;
-}
-
-.integration--patreon .integration-content {
-	color: black;
-}
-
 .channelInfo--logo img{
 	width: 100px;
 	height: 100px;
@@ -287,6 +236,7 @@
     box-shadow: -1px -1px 1px black;
     text-shadow: 1px 1px 3px black;
     transition: all .2s ease;
+    cursor: pointer;
 }
 
 .imageGallery {

@@ -1,7 +1,8 @@
 import React from 'react';
 import connector from '../redux/connector';
-import {syncPatreon} from '../redux/profile-reducer';
+import {syncPatreon, unlinkService} from '../redux/profile-reducer';
 import axios from 'axios';
+import ConfirmPanel from '../components/confirm-panel';
 
 import './patreon-panel.css';
 
@@ -51,12 +52,49 @@ class PatreonPanel extends React.Component {
 		});
 	}
 
+	showUnlink = () => {
+		this.setState({
+			showConfirm: true
+		})
+	}
+
+	handleUnlink = () => {
+		this.setState({
+			showConfirm: false
+		});
+
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/patreon/unlink', {}, {
+			withCredentials: true
+		}).then(res => {
+			if(res.data.success) {
+				this.props.dispatch(unlinkService(res.data.service));
+			} else {
+				//handle error
+			}
+			
+		});
+
+		//call out to api to delete patreon info from profile
+	}
+
 	render() {
 		if(this.state.loading && this.props.patreon === undefined) {
 			return null;
 		}
 
-		let patreonContent;
+		let patreonContent, confirmPanel;
+
+		if(this.state.showConfirm) {
+			confirmPanel = (
+				<ConfirmPanel
+					onConfirm={this.handleUnlink}
+					onCancel={() => {this.setState({showConfirm: false})}}
+				>
+					<div>Are you sure you want to unlink your Patreon?</div>
+					<div className="strong">Note: This will NOT cancel your patreon pledge!! You will need to manage your pledge through Patreon!</div>
+				</ConfirmPanel>
+			);
+		}
 
 		if(this.props.patreon === false) {
 			//Data retrieved, not connected
@@ -133,7 +171,7 @@ class PatreonPanel extends React.Component {
 				if(gold) {
 					bodyContent = (
 						<div className="patreon--content column-layout">
-							<h3>You are currently a <span>Gold Achievement</span>!</h3>
+							<h3>StreamAchievements Gold</h3>
 							<p>Thank you so much for support Stream Achievements! With your generous support, we are able to keep this site running, and providing you a way to truly engage your communty members!</p>
 							<p>With this level of support, you have enabled the full potential that Stream Achievements has to offer! Take a look below at the features you have, and adjust your achievements to take advantage of the full suite!</p>
 							<h4>List of Features</h4>
@@ -168,8 +206,11 @@ class PatreonPanel extends React.Component {
 					<div className="integration-header">
 						<img alt="" src={require('../img/patreon-icon.png')} />
 						<h3>Patreon</h3>
+						<div className="integration-settings">
+							<a title="Opens Patreon profile in new tab" href="https://www.patreon.com/user/creators" target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
+						</div>
 						<div className="integration-sync" ref={(el) => {this._sync = el}}>
-							<a href="javascript:;" onClick={this.handleSync}><img alt="" src={require('../img/sync-white.png')} /></a>
+							<a title="Sync with Patreon" href="javascript:;" onClick={this.handleSync}><img alt="" src={require('../img/sync-white.png')} /></a>
 						</div>
 					</div>
 					<div className="integration-content">
@@ -178,6 +219,9 @@ class PatreonPanel extends React.Component {
 								<img alt="Patreon User Thumbnail" src={thumb_url} />
 							</div>
 							{vanityContent}
+							<div className="patreon--unlink">
+								<a href="javascript:;" onClick={this.showUnlink}>Unlink</a>
+							</div>
 						</div>
 						<div className="patreon--right">
 							{/*banner*/}
@@ -185,6 +229,7 @@ class PatreonPanel extends React.Component {
 							{bodyContent}
 						</div>
 					</div>
+					{confirmPanel}
 				</div>
 			);
 		}

@@ -71,7 +71,7 @@ class Header extends React.Component {
 
 			switch(status) {
 				case 'verified':
-					channelLink = (<li><Link to={"/manage/" + this.props.profile.username}>Manage Channel</Link></li>);	
+					channelLink = (<li><Link to={"/dashboard/" + this.props.profile.username}>Dashboard</Link></li>);	
 					break;
 				case 'pending':
 					channelLink = (<li className="reviewing">Go check your email!!</li>);

@@ -1,5 +1,6 @@
 const SET_PROFILE = 'SET_PROFILE';
 const SYNC_PATREON = 'SYNC_PATREON';
+const UNLINK_SERVICE = 'UNLINK_SERVICE';
 
 let initialState = {
 	username: '',
@@ -21,11 +22,21 @@ export default function ProfileReducer(state = initialState, action) {
 				},
 				patreon: action.data.patreon
 			}
+			break;
 		case SYNC_PATREON:
 			return {
 				...state,
 				patreon: action.data
 			}
+			break;
+		case UNLINK_SERVICE:
+			let newState = {...state};
+			newState[action.data] = false;
+
+			return {
+				...newState
+			}
+			break;
 		default:
 			return {
 				...state
@@ -43,6 +54,13 @@ export function setProfile(data) {
 export function syncPatreon(data) {
 	return {
 		type: SYNC_PATREON,
+		data
+	};
+}
+
+export function unlinkService(data) {
+	return {
+		type: UNLINK_SERVICE,
 		data
 	};
 }

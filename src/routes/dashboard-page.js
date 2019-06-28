@@ -13,11 +13,11 @@ import ConfirmPanel from '../components/confirm-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 
-import './manage-channel.css';
+import './dashboard-page.css';
 
 const ICON_SELECTED = 'icon--selected';
 
-class ManageChannel extends React.Component {
+class DashboardPage extends React.Component {
 
 	constructor() {
 		super();
@@ -735,7 +735,7 @@ class ManageChannel extends React.Component {
 				achievementTab = (
 					<div>
 						<div onClick={() => {
-							this.props.history.push('/manage/achievement');
+							this.props.history.push('/dashboard/achievement');
 						}} className="add-achievement">
 							<div>Add your first achievement!</div>
 							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
@@ -751,7 +751,7 @@ class ManageChannel extends React.Component {
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
 							<div className="achievementsHeader--add">
-								<Link to={"/manage/achievement"}>Add New...<div className="achievementsHeader--plus">
+								<Link to={"/dashboard/achievement"}>Add New...<div className="achievementsHeader--plus">
 									<img alt="" src={require('../img/plus.png')} />
 								</div></Link>
 								
@@ -772,7 +772,7 @@ class ManageChannel extends React.Component {
 									achievement={achievement}
 									onGift={this.showGiftModal}
 									defaultIcons={this.state.channel.icons}
-									onClick={() => {this.props.history.push('/manage/achievement/' + achievement.uid)}}
+									onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
 								/>
 							)
 						})}
@@ -877,7 +877,7 @@ class ManageChannel extends React.Component {
 		return (
 			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
-					<h2>Manage Channel</h2>
+					<h2>Your Dashboard</h2>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
@@ -914,6 +914,4 @@ function headerMapStateToProps(state) {
 	};
 }
 
-export default connector(headerMapStateToProps)(ManageChannel);
-
-//export default ManageChannel;
+export default connector(headerMapStateToProps)(DashboardPage);

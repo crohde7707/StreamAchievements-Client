@@ -7,7 +7,7 @@ import LandingPage from './routes/landing-page';
 import ChannelPage from './routes/channel-page';
 import VerifyPage from './routes/verify-page';
 import SupportPage from './routes/support-page';
-import ManageChannelPage from './routes/manage-channel';
+import DashboardPage from './routes/dashboard-page';
 import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
@@ -31,9 +31,9 @@ let app = (
 					<Route path='/profile' component={ProfilePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
 	        		<Route path='/admin' component={AdminPanelPage} />
-	        		<Route path='/manage/achievement/:achievementid' component={AchievementPage} />
-	        		<Route path='/manage/achievement' component={AchievementPage} />
-	        		<Route path='/manage/' component={ManageChannelPage} />
+	        		<Route path='/dashboard/achievement/:achievementid' component={AchievementPage} />
+	        		<Route path='/dashboard/achievement' component={AchievementPage} />
+	        		<Route path='/dashboard/' component={DashboardPage} />
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
