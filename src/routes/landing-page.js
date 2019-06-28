@@ -11,7 +11,8 @@ export default class LandingPage extends React.Component {
 		super();
 
 		this.state = {
-			redirect: false
+			redirect: false,
+			cookieConsent: true
 		};
 
 		let cookies = cookie.parse(document.cookie);
@@ -19,15 +20,35 @@ export default class LandingPage extends React.Component {
 		if(cookies.etid) {
 			this.state.redirect = true;
 		}
+
+		if(!cookies._sacc) {
+			this.state.cookieConsent = false;
+		}
+	}
+
+	handleConsent = () => {
+		document.cookie= `_sacc=true;domain=${process.env.REACT_APP_COOKIE_DOMAIN}`;
+		this.setState({
+			cookieConsent: true
+		});
 	}
 
 	render() {
-		let redirect;
+		let redirect, cookieConsentBanner;
 
 		if(this.state.redirect) {
 			let Redirect = require('react-router-dom').Redirect;
 
 			redirect = <Redirect to='/home' />;
+		}
+
+		if(!this.state.cookieConsent) {
+			cookieConsentBanner = (
+				<div className="cookie-consent">
+					<div className="verbage">This site uses cookies in order to function properly and to provide the best experience! By using StreamAchievements, you agree to our <a href="https://app.termly.io/document/cookie-policy/2ac2531d-6f49-4c78-8f41-ac8edd8b3c39" target="_blank">use</a> of cookies.</div>
+					<div><a href="javascript:;" onClick={this.handleConsent} className="accept">Accept</a></div>
+				</div>
+			);
 		}
 
 		return (
@@ -103,6 +124,7 @@ export default class LandingPage extends React.Component {
 					</div>
 				</div>
 				<Footer />
+				{cookieConsentBanner}
 			</div>
 		);
 	}

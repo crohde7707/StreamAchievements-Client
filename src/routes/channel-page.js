@@ -136,7 +136,7 @@ class ChannelPage extends React.Component {
 				membershipContent = null;
 				document.body.classList.remove('no-scroll');
 			} else {
-				membershipContent = <a href="javascript:;" onClick={this.joinChannel} className="join">Join Channel</a>
+				membershipContent = <a className="join-channel" href="javascript:;" onClick={this.joinChannel}>Join Channel</a>
 
 				document.body.classList.add('no-scroll');
 			}

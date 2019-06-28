@@ -64,7 +64,7 @@
 
 .section-wrapper {
     background-color: rgba(0,0,0,0.5);
-    padding: 10px 20px;
+    padding: 20px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,6 +107,10 @@
     max-width: 48%;
 }
 
+.section-content > h2 {
+    flex: 1;
+}
+
 .main .section-content > h2,
 .main .section-content > div,
 .section-wrapper--full .section-content > h2 {
@@ -114,7 +118,7 @@
 }
 
 .section-wrapper.section-wrapper--login {
-    padding: 40px;
+    padding: 30px 0 40px;
 }
 
 .section-wrapper--login .section-content {
@@ -143,4 +147,37 @@
 
 .landing-page .section-gfx img {
     max-width: 500px;
+}
+
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    background: #1c2741;
+    width: 96%;
+    padding: 15px 2%;
+    font-size: 18px;
+    display: flex;
+    text-align: left;
+    align-items: center;
+}
+
+.cookie-consent .verbage {
+    flex: 1;
+}
+
+.cookie-consent a,
+.cookie-consent a:visited {
+    color: #ecdc19;
+}
+
+.cookie-consent .accept {
+    border-radius: 6px;
+    padding: 5px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.cookie-consent .accept:hover {
+    background-color: #37425d;
+    transition: all 0.2s ease;
 }
