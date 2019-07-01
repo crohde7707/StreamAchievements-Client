@@ -1,6 +1,7 @@
 import React from 'react';
 import connector from '../redux/connector';
 import Template from '../components/template';
+import {updateStatus} from '../redux/profile-reducer';
 import {Link} from 'react-router-dom';
 import {Redirect} from 'react-router';
 import axios from 'axios';
@@ -27,14 +28,13 @@ class CreateChannelPage extends React.Component {
 	}
 
 	onSubmit = (event) => {
-		event.preventDefault();
-
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {}, {
 			withCredentials: true
 		}).then(res => {
 			if(res.data.error) {
 
 			} else {
+				this.props.dispatch(updateStatus({status: 'review'}));
 				this.setState({
 					received: true
 				});	
@@ -67,7 +67,7 @@ class CreateChannelPage extends React.Component {
 				form = (
 					<form className="confirmForm" onSubmit={this.onSubmit}>
 						<input type="text" name="confirm" onChange={this.handleUpdate} />
-						<button disabled={(!this.state.validated) ? 'disabled' : ''}>Send</button>
+						<button type="button" onClick={this.onSubmit} disabled={(!this.state.validated) ? 'disabled' : ''}>Send</button>
 					</form>
 				);
 			}

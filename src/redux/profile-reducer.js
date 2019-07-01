@@ -1,6 +1,7 @@
 const SET_PROFILE = 'SET_PROFILE';
 const SYNC_PATREON = 'SYNC_PATREON';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
+const UPDATE_STATUS = 'UPDATE_STATUS';
 
 let initialState = {
 	username: '',
@@ -37,6 +38,15 @@ export default function ProfileReducer(state = initialState, action) {
 				...newState
 			}
 			break;
+		case UPDATE_STATUS:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					status: action.data.status
+				}
+			}
+			break;
 		default:
 			return {
 				...state
@@ -63,4 +73,11 @@ export function unlinkService(data) {
 		type: UNLINK_SERVICE,
 		data
 	};
+}
+
+export function updateStatus(data) {
+	return {
+		type: UPDATE_STATUS,
+		data
+	}
 }
