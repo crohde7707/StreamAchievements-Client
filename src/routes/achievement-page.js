@@ -21,7 +21,7 @@ class AchievementPage extends React.Component {
 			title: "",
 			description: "",
 			icon: "",
-			code: "",
+			type: "",
 			resubType: "0",
 			query: "",
 			bot: "",
@@ -99,7 +99,7 @@ class AchievementPage extends React.Component {
 				title: "",
 				description: "",
 				icon: "",
-				code: "",
+				type: "",
 				resubType: "0",
 				query: "",
 				bot: "",
@@ -187,7 +187,7 @@ class AchievementPage extends React.Component {
 			touched
 		};
 
-		if(name === "code") {
+		if(name === "type") {
 			stateUpdate.touched['query'] = true;
 			stateUpdate.query = '';
 		}
@@ -198,12 +198,12 @@ class AchievementPage extends React.Component {
 	}
 
 	getConditionContent = () => {
-		if(this.state.code !== "" && this.state.code !== "0") {
+		if(this.state.type !== "" && this.state.type !== "0") {
 
 			let conditionContent;
 			let helpText;
 
-			switch(this.state.code) {
+			switch(this.state.type) {
 				case "1":
 					if(this.state.resubType) {
 						if(this.state.resubType === "0") {
@@ -230,7 +230,7 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Condition</label>
+								<label htmlFor="achievement-condition">Months</label>
 								<input
 									id="achievement-condition"
 									name="condition"
@@ -248,11 +248,11 @@ class AchievementPage extends React.Component {
 					break;
 				case "2":
 					//Gifted Sub
-					helpText = "Total number of gifted subs (defaults to 1)";
+					helpText = "Total number of gifted subs given";
 					conditionContent = (
 						<div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Condition</label>
+								<label htmlFor="achievement-condition">Gifted Subs</label>
 								<input
 									id="achievement-condition"
 									name="condition"
@@ -275,28 +275,6 @@ class AchievementPage extends React.Component {
 						</div>
 					);
 					break;
-				// case "3":
-				// 	//Manual
-				// 	helpText = "Total raids from the viewer (defaults to 1)";
-				// 	conditionContent = (
-				// 		<div>
-				// 			<div className="formGroup">
-				// 				<label htmlFor="achievement-condition">Condition</label>
-				// 				<input
-				// 					id="achievement-condition"
-				// 					name="condition"
-				// 					className="textInput"
-				// 					type="text"
-				// 					value={this.state.condition}
-				// 					onChange={this.handleDataChange}
-				// 				/>
-				// 			</div>
-				// 			<div className="helpText">
-				// 				{helpText}
-				// 			</div>
-				// 		</div>
-				// 	);
-				// 	break;
 				case "4":
 					//Custom
 					conditionContent = (
@@ -368,23 +346,17 @@ class AchievementPage extends React.Component {
 				limited: this.state.limited,
 				secret: this.state.secret,
 				iconName: (this.state.file) ? this.state.file.name : '',
-				code: this.state.code
+				type: this.state.type
 			};
 
-			if(this.state.code !== '0') {
+			if(this.state.type !== '0') {
 				achievement.condition = this.state.condition;
 
-				if(this.state.code === "1") {
+				if(this.state.type === "1") {
 					achievement.resubType = this.state.resubType;
 				}
 
-				if(this.state.code === "2") {
-					if(!this.state.condition) {
-						achievement.condition = 1;
-					}
-				}
-
-				if(this.state.code === "4") {
+				if(this.state.type === "4") {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
 				}
@@ -469,7 +441,7 @@ class AchievementPage extends React.Component {
 			title: "",
 			description: "",
 			icon: "",
-			code: "",
+			type: "",
 			resubType: "0",
 			query: "",
 			bot: "",
@@ -661,14 +633,14 @@ class AchievementPage extends React.Component {
 							</div>
 							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>
 							<div className="formGroup">
-								<label htmlFor="achievement-code">Type of Achievement</label>
+								<label htmlFor="achievement-type">Type of Achievement</label>
 								<select 
-									id="achievement-code"
-									name="code"
+									id="achievement-type"
+									name="type"
 									className="selectInput"
-									title="The code of event that this achievement will be awarded for!"
+									title="The type of event that this achievement will be awarded for!"
 									onChange={this.handleDataChange}
-									value={this.state.code}
+									value={this.state.type}
 								>
 									<option value=""></option>
 									<option value="0">New Sub</option>
