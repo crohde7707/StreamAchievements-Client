@@ -21,7 +21,7 @@ class AchievementPage extends React.Component {
 			title: "",
 			description: "",
 			icon: "",
-			code: "",
+			achType: "",
 			resubType: "0",
 			query: "",
 			bot: "",
@@ -89,17 +89,22 @@ class AchievementPage extends React.Component {
 		let originalAchievement = this.state.originalAchievement;
 
 		if(originalAchievement) {
-			this.setState({
+			let stateUpdate = {
+				...this.state,
 				...originalAchievement,
 				iconPreview: originalAchievement.icon,
 				touched: {}
-			});	
+			};
+
+			delete stateUpdate.iconName;
+
+			this.setState(stateUpdate);	
 		} else {
 			this.setState({
 				title: "",
 				description: "",
 				icon: "",
-				code: "",
+				achType: "",
 				resubType: "0",
 				query: "",
 				bot: "",
@@ -187,9 +192,11 @@ class AchievementPage extends React.Component {
 			touched
 		};
 
-		if(name === "code") {
+		if(name === "achType") {
 			stateUpdate.touched['query'] = true;
+			stateUpdate.touched['condition'] = true;
 			stateUpdate.query = '';
+			stateUpdate.condition = '';
 		}
 
 
@@ -198,12 +205,12 @@ class AchievementPage extends React.Component {
 	}
 
 	getConditionContent = () => {
-		if(this.state.code !== "" && this.state.code !== "0") {
+		if(this.state.achType !== "" && this.state.achType !== "0") {
 
 			let conditionContent;
 			let helpText;
 
-			switch(this.state.code) {
+			switch(this.state.achType) {
 				case "1":
 					if(this.state.resubType) {
 						if(this.state.resubType === "0") {
@@ -224,13 +231,14 @@ class AchievementPage extends React.Component {
 									name="resubType"
 									className="selectInput"
 									onChange={this.handleDataChange}
+									value={this.state.resubType}
 								>
 									<option value="0">Streak</option>
 									<option value="1">Total</option>
 								</select>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Condition</label>
+								<label htmlFor="achievement-condition">Months</label>
 								<input
 									id="achievement-condition"
 									name="condition"
@@ -252,7 +260,7 @@ class AchievementPage extends React.Component {
 					conditionContent = (
 						<div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Condition</label>
+								<label htmlFor="achievement-condition"># of Gifted Subs</label>
 								<input
 									id="achievement-condition"
 									name="condition"
@@ -368,23 +376,23 @@ class AchievementPage extends React.Component {
 				limited: this.state.limited,
 				secret: this.state.secret,
 				iconName: (this.state.file) ? this.state.file.name : '',
-				code: this.state.code
+				achType: this.state.achType
 			};
 
-			if(this.state.code !== '0') {
+			if(this.state.achType !== '0') {
 				achievement.condition = this.state.condition;
 
-				if(this.state.code === "1") {
+				if(this.state.achType === "1") {
 					achievement.resubType = this.state.resubType;
 				}
 
-				if(this.state.code === "2") {
+				if(this.state.achType === "2") {
 					if(!this.state.condition) {
 						achievement.condition = 1;
 					}
 				}
 
-				if(this.state.code === "4") {
+				if(this.state.achType === "4") {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
 				}
@@ -469,7 +477,7 @@ class AchievementPage extends React.Component {
 			title: "",
 			description: "",
 			icon: "",
-			code: "",
+			achType: "",
 			resubType: "0",
 			query: "",
 			bot: "",
@@ -661,14 +669,14 @@ class AchievementPage extends React.Component {
 							</div>
 							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>
 							<div className="formGroup">
-								<label htmlFor="achievement-code">Type of Achievement</label>
+								<label htmlFor="achievement-achType">Type of Achievement</label>
 								<select 
-									id="achievement-code"
-									name="code"
+									id="achievement-achType"
+									name="achType"
 									className="selectInput"
-									title="The code of event that this achievement will be awarded for!"
+									title="The type of event that this achievement will be awarded for!"
 									onChange={this.handleDataChange}
-									value={this.state.code}
+									value={this.state.achType}
 								>
 									<option value=""></option>
 									<option value="0">New Sub</option>

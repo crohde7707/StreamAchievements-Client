@@ -17,6 +17,19 @@ export default class TestListeners extends React.Component {
 		}
 	}
 
+	sendListener = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [
+			{
+				channel: 'phirehero',
+				achievementID: "5d1cd618086d0b27d8370d5e",
+				tier: 1000,
+				user: "phiredamsel"
+			}
+		],{
+			withCredentials: true
+		});
+	}
+
 	sendData = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {
 			channel: this.state.channel,
@@ -61,6 +74,9 @@ export default class TestListeners extends React.Component {
 						<input name="username" value={this.state.username} onChange={this.handleDataChange} type="text" />
 					</div>
 					<button onClick={this.sendData} type="button">Test</button>
+					<div>
+						<button onClick={this.sendListener} type="button">Test IRC endpoint</button>
+					</div>
 				</div>
 			</Template>
 		);
