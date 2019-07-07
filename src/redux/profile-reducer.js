@@ -2,6 +2,7 @@ const SET_PROFILE = 'SET_PROFILE';
 const SYNC_PATREON = 'SYNC_PATREON';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
+const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
 
 let initialState = {
 	username: '',
@@ -13,13 +14,15 @@ let initialState = {
 export default function ProfileReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_PROFILE: 
+			console.log(action.data);
 			return {
 				...state,
 				profile: {
 					username: action.data.username,
 					logo: action.data.logo,
 					status: action.data.status,
-					type: action.data.type
+					type: action.data.type,
+					preferences: action.data.preferences
 				},
 				patreon: action.data.patreon
 			}
@@ -47,6 +50,14 @@ export default function ProfileReducer(state = initialState, action) {
 				}
 			}
 			break;
+		case UPDATE_PREFERENCES:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					preferences: action.data.preferences
+				}
+			}
 		default:
 			return {
 				...state
@@ -78,6 +89,13 @@ export function unlinkService(data) {
 export function updateStatus(data) {
 	return {
 		type: UPDATE_STATUS,
+		data
+	}
+}
+
+export function updatePreferences(data) {
+	return {
+		type: UPDATE_PREFERENCES,
 		data
 	}
 }

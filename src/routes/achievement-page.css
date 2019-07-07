@@ -99,3 +99,8 @@
 	text-align: center;
     padding: 15px 0px;
 }
+
+.formGroup .invalid {
+	border-style: inset;
+	border: 2px solid red;
+}

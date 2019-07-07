@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { TwitterShareButton } from 'react-twitter-embed';
+import io from "socket.io-client";
 
 import './channel-directory-page.css';
 
@@ -21,35 +22,65 @@ class ChannelDirectoryPage extends React.Component {
 	}
 
 	componentDidMount() {
-		this.getChannels();
-	}
+		this._socket = io.connect(process.env.REACT_APP_API_DOMAIN, {
+    		reconnection: true
+    	});
 
-	getChannels = () => {
-		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/list', {
-				withCredentials: true
-			}).then((res) => {
-			this.setState({
-				channels: res.data
-			});
-		});
+    	this._socket.on('channel-results', (channels) => {
+    		this.setState({
+    			channels
+    		});
+    	});
 	}
 
 	filterList = (event) => {
-	    var updatedList = this.state.channels;
+		if(this._searchTimeout !== null) {
+			clearTimeout(this._searchTimeout);
+		}
 
-	    if(event.target.value === '') {
-	    	//nothing in text box
-	    	this.setState({filteredChannels: false});
-	    } else {
-	    	updatedList = updatedList.filter(function(channel){
-		      return (channel.owner).toLowerCase().search(
-		        event.target.value.toLowerCase()) !== -1;
-		    });
-		    this.setState({filteredChannels: updatedList});
-	    }	    
-  	}
+		this._searchTimeout = setTimeout(() => {
+			this._socket.emit('search-directory', this._search.value);
+			this._searchTimeout = null;
+		}, 500);
+		
+	}
+
+	componentWillUnmount() {
+		console.log('hello');
+		this._socket.close();
+	}
+
+	// componentDidMount() {
+	// 	this.getChannels();
+	// }
+
+	// getChannels = () => {
+	// 	axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/list', {
+	// 			withCredentials: true
+	// 		}).then((res) => {
+	// 		this.setState({
+	// 			channels: res.data
+	// 		});
+	// 	});
+	// }
+
+	// filterList = (event) => {
+	//     var updatedList = this.state.channels;
+
+	//     if(event.target.value === '') {
+	//     	//nothing in text box
+	//     	this.setState({filteredChannels: false});
+	//     } else {
+	//     	updatedList = updatedList.filter(function(channel){
+	// 	      return (channel.owner).toLowerCase().search(
+	// 	        event.target.value.toLowerCase()) !== -1;
+	// 	    });
+	// 	    this.setState({filteredChannels: updatedList});
+	//     }	    
+ //  	}
 
   	loadChannel = (channel) => {
+  		this._socket.close();
   		this.props.history.push('/channel/' + channel.owner);
   	}
 

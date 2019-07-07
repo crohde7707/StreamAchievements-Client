@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {updatePreferences} from '../redux/profile-reducer';
 import connector from '../redux/connector';
 
 import Notice from '../components/notice';
@@ -11,14 +12,16 @@ import './profile-page.css';
 
 class ProfilePage extends React.Component {
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			channel: '',
 			achievements: '',
 			notice: '',
-			loading: true
+			fetching: true,
+			loading: true,
+			preferences: (this.props.profile) ? this.props.profile.preferences : {}
 		};
 	}
 
@@ -28,10 +31,28 @@ class ProfilePage extends React.Component {
 			withCredentials: true
 		}).then((res) => {
 			this.setState({
-				channels: res.data,
-				loading: false
+				channels: res.data.channels,
+				fetching: false
 			});	
 		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.loading) {
+			if(!this.state.fetching && this.props.profile) {
+				this.setState({
+					loading: false,
+					preferences: this.props.profile.preferences
+				});
+			}
+
+			if(this.props.profile && !prevProps.profile && !this.state.fetching) {
+				this.setState({
+					loading: false,
+					preferences: this.props.profile.preferences
+				});
+			}
+		}
 	}
 
 	clearNotice = () => {
@@ -56,9 +77,41 @@ class ProfilePage extends React.Component {
 	    }	    
   	}
 
+  	handleDataChange = (event) => {
+  		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
+
+		let touched = this.state.touched || {};
+		let preferences = {...this.state.preferences}
+		touched[name] = true;
+		preferences[name] = value;
+
+		this.setState({
+			preferences,
+			touched
+		});
+  	}
+
+  	savePreferences = () => {
+  		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/profile/preferences', {
+  			preferences: this.state.preferences
+  		}, {
+  			withCredentials: true
+  		}).then((res) => {
+  			this.props.dispatch(updatePreferences({preferences: res.data}));
+
+  			this.setState({
+  				preferences: res.data,
+  				touched: undefined,
+				notice: "Preferences updated successfully!"
+  			});
+  		});
+  	}
+
 	render() {
 
-		let integrationContent, channelContent, patreonContent;
+		let preferencesContent, integrationContent, channelContent, patreonContent;
 
 		if(this.state.channels && this.props.profile) {
 
@@ -69,6 +122,40 @@ class ProfilePage extends React.Component {
 
 				channels = this.state.filteredChannels;
 			}
+
+			let saveButton;
+
+			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
+				saveButton = <input className='save-button--active' type="submit" value="Save" onClick={this.savePreferences} />
+			} else {
+				saveButton = <input className='save-button--inactive' disabled type="submit" value="Save" />
+			}
+
+			preferencesContent = (
+				<div>
+					<div className="section-wrapper">
+						<div className="section-label">
+					        <label htmlFor="name">Auto-Join Channel</label>
+					        <p>When turned on, you will automatically join a channel that you receive an achievement in!</p>
+					    </div>
+					    <div className="section-value">
+							<label class="switch">
+							  	<input 
+							  		id="preferences-autojoin"
+							  		name="autojoin"
+									type="checkbox"
+									checked={this.state.preferences.autojoin}
+									onChange={this.handleDataChange}
+								/>
+							  <span class="slider round"></span>
+							</label>
+					    </div>
+					</div>
+					<div className="section-wrapper--end">
+						 {saveButton}
+					</div>
+				</div>
+			)
 
 			integrationContent = (
 				<div>
@@ -126,9 +213,13 @@ class ProfilePage extends React.Component {
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<Tabs>
 						<TabList className="manage-tabs">
+							<Tab className="manage-tab">Preferences</Tab>
 							<Tab className="manage-tab">Integration</Tab>
 							<Tab className="manage-tab">Joined Channels</Tab>
 						</TabList>
+						<TabPanel>
+							{preferencesContent}
+						</TabPanel>
 						<TabPanel>
 							{integrationContent}
 						</TabPanel>
@@ -144,7 +235,8 @@ class ProfilePage extends React.Component {
 
 function headerMapStateToProps(state) {
 	return {
-		profile: state.profile
+		profile: state.profile,
+		patreon: state.patreon
 	};
 }
 

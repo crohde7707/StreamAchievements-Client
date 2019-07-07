@@ -199,7 +199,11 @@ class AchievementPage extends React.Component {
 			stateUpdate.condition = '';
 		}
 
-
+		if(this.state.valid && !this.state.valid[name]) {
+			stateUpdate.valid = {
+				[name]: true
+			};
+		}
 
 		this.setState(stateUpdate);
 	}
@@ -238,11 +242,11 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Months</label>
+								<label htmlFor="achievement-condition">Months *</label>
 								<input
 									id="achievement-condition"
 									name="condition"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
 									type="text"
 									value={this.state.condition}
 									onChange={this.handleDataChange}
@@ -260,11 +264,11 @@ class AchievementPage extends React.Component {
 					conditionContent = (
 						<div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition"># of Gifted Subs</label>
+								<label htmlFor="achievement-condition"># of Gifted Subs *</label>
 								<input
 									id="achievement-condition"
 									name="condition"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
 									type="text"
 									value={this.state.condition}
 									onChange={this.handleDataChange}
@@ -310,22 +314,22 @@ class AchievementPage extends React.Component {
 					conditionContent = (
 						<div>
 							<div className="formGroup">
-								<label htmlFor="achievement-bot">Bot Name</label>
+								<label htmlFor="achievement-bot">Bot Name *</label>
 								<input
 									id="achievement-bot"
 									name="bot"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
 									type="text"
 									value={this.state.bot}
 									onChange={this.handleDataChange}
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Chat Message</label>
+								<label htmlFor="achievement-query">Chat Message *</label>
 								<input
 									id="achievement-query"
 									name="query"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
 									type="text"
 									value={this.state.query}
 									onChange={this.handleDataChange}
@@ -356,62 +360,141 @@ class AchievementPage extends React.Component {
 	handleSubmit = (event) => {
 		event.preventDefault();
 
-		let achievement = {};
+		if(this.isFormValid()) {
 
-		if(this.state.edit) {
-			if(this.state.touched) {
-				Object.keys(this.state.touched).forEach((key) => {
-					if(this.state.touched[key]) {
-					    achievement[key] = this.state[key];
+			let achievement = {};
+
+			if(this.state.edit) {
+				if(this.state.touched) {
+					Object.keys(this.state.touched).forEach((key) => {
+						if(this.state.touched[key]) {
+						    achievement[key] = this.state[key];
+						}
+					});	
+				}
+				
+			} else {
+
+				achievement = {
+					title: this.state.title,
+					description: this.state.description,
+					earnable: this.state.earnable,
+					limited: this.state.limited,
+					secret: this.state.secret,
+					iconName: (this.state.file) ? this.state.file.name : '',
+					achType: this.state.achType
+				};
+
+				if(this.state.achType !== '0') {
+					achievement.condition = this.state.condition;
+
+					if(this.state.achType === "1") {
+						achievement.resubType = this.state.resubType;
 					}
-				});	
+
+					if(this.state.achType === "2") {
+						if(!this.state.condition) {
+							achievement.condition = 1;
+						}
+					}
+
+					if(this.state.achType === "4") {
+						achievement.bot = this.state.bot;
+						achievement.query = this.state.query;
+					}
+				}
 			}
-			
-		} else {
 
-			achievement = {
-				title: this.state.title,
-				description: this.state.description,
-				earnable: this.state.earnable,
-				limited: this.state.limited,
-				secret: this.state.secret,
-				iconName: (this.state.file) ? this.state.file.name : '',
-				achType: this.state.achType
-			};
+			achievement.id = this.state._id;
 
-			if(this.state.achType !== '0') {
-				achievement.condition = this.state.condition;
+			if(this.state.file && this.state.file != '') {
+				var reader  = new FileReader();
+				
+				reader.addEventListener("load", () => {
+			    	achievement.icon = reader.result;
+			    	this.sendData(achievement);
+			  	}, false);
 
-				if(this.state.achType === "1") {
-					achievement.resubType = this.state.resubType;
-				}
+			  	reader.readAsDataURL(this.state.file);
+			} else {
+				this.sendData(achievement);
+			}
 
-				if(this.state.achType === "2") {
-					if(!this.state.condition) {
-						achievement.condition = 1;
-					}
-				}
+		}
+	}
 
-				if(this.state.achType === "4") {
-					achievement.bot = this.state.bot;
-					achievement.query = this.state.query;
-				}
+	isFormValid = () => {
+		let validUpdate = {};
+
+		this.isNullorEmpty(validUpdate, 'title');
+		this.isNullorEmpty(validUpdate, 'description');
+		this.isNullorEmpty(validUpdate, 'achType');
+
+		switch(this.state.achType) {
+			case "1":
+				this.isNumber(validUpdate, 'condition');
+				break;
+			case "2":
+				this.isNumber(validUpdate, 'condition');
+				break;
+			case "4":
+				this.isNullorEmpty(validUpdate, 'bot');
+				this.isNullorEmpty(validUpdate, 'query');
+				this.isValidCondition(validUpdate, 'condition');
+			default:
+				break;
+		}
+
+		this.setState({
+			valid: validUpdate
+		});
+		return false;
+	}
+
+	isValidCondition = (fieldSet, field) => {
+		let pattern = /[a-zA-Z0-9_]+=[a-zA-Z0-9_,]+;*/g;
+		let matches = this.state[field].match(pattern);
+
+		if(matches) {
+			let combined = matches.join('');
+
+			if(combined.length === this.state[field].length) {
+				fieldSet[field] = true;
+				return;
 			}
 		}
 
-		achievement.id = this.state._id;
+		fieldSet[field] = false;
 
-		if(this.state.file && this.state.file != '') {
-			var reader  = new FileReader();
-			
-			reader.addEventListener("load", () => {
-		    	achievement.icon = reader.result;
-		    	this.sendData(achievement);
-		  	}, false);
+	}
 
-		  	reader.readAsDataURL(this.state.file);
+	isNullorEmpty = (fieldSet, field) => {
+		if(!this.state[field] || this.state[field] === '') {
+			fieldSet[field] = false;
 		} else {
-			this.sendData(achievement);
+			fieldSet[field] = true;
+		}
+	}
+
+	isNumber = (fieldSet, field) => {
+		let fieldValue = parseInt(this.state[field]);
+		if(!Number.isNaN(fieldValue)) {
+			if(fieldValue.toString().length !== this.state[field].length) {
+				this.setState({
+					[field]: fieldValue
+				});
+			}
+			fieldSet[field] = true;
+		} else {
+			fieldSet[field] = false;
+		}
+	}
+
+	isInvalid = (field) => {
+		if(this.state.valid && typeof this.state.valid[field] === 'boolean' && !this.state.valid[field]) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -602,18 +685,19 @@ class AchievementPage extends React.Component {
 						</h4>
 						<form onSubmit={this.handleSubmit}>
 							<div className="formGroup">
-								<label htmlFor="achievement-title">Title</label>
+								<label htmlFor="achievement-title">Title *</label>
 								<input
 									id="achievement-title"
 									name="title"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("title")) ? " invalid" : "")}
 									type="text"
 									value={this.state.title}
 									onChange={this.handleDataChange}
+									ref={(el) => {this._title = el}}
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-description">Description</label>
+								<label htmlFor="achievement-description">Description *</label>
 								<input
 									id="achievement-description"
 									name="description"
@@ -669,11 +753,11 @@ class AchievementPage extends React.Component {
 							</div>
 							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>
 							<div className="formGroup">
-								<label htmlFor="achievement-achType">Type of Achievement</label>
+								<label htmlFor="achievement-achType">Type of Achievement *</label>
 								<select 
 									id="achievement-achType"
 									name="achType"
-									className="selectInput"
+									className={"selectInput" + ((this.isInvalid("achType")) ? " invalid" : "")}
 									title="The type of event that this achievement will be awarded for!"
 									onChange={this.handleDataChange}
 									value={this.state.achType}
