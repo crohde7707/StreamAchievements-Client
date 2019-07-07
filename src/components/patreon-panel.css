@@ -129,8 +129,22 @@
     margin-top: 10px;
 }
 
-.integration--patreon .integration-sync.active img {
+.integration--patreon .integration-sync.active img,
+.integration--twitch .integration-sync.active img {
     animation: rotation 1s infinite linear;
+}
+
+.patreon--unlink {
+    display: flex;
+    flex: 1;
+}
+
+.patreon--unlink a {
+        padding: 6px 12px;
+    background: rgb(232, 91, 70);
+    color: white;
+    text-decoration: none;
+    margin: 5px auto 0px;
 }
 
 @keyframes rotation {

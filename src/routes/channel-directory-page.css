@@ -1,3 +1,7 @@
+.directory-search {
+    position: relative;
+}
+
 .directory-search input {
 	width: 98%;
     height: 40px;
@@ -16,4 +20,27 @@
 
 .directory--no-results .share {
 	margin-top: 20px;
+}
+
+.directory-search .loading-spinner {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.directory-search .loading-spinner--wrapper {
+	margin: 0;
+}
+
+.directory-search .lds-ellipsis {
+	width: 46px;
+	height: 46px;
+	left: -10px;
+}
+
+.directory-search .lds-ellipsis div {
+	width: 8px;
+	height: 8px;
+	top: 20px;
+	background: #555;
 }

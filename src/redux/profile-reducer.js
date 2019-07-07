@@ -1,4 +1,5 @@
 const SET_PROFILE = 'SET_PROFILE';
+const SYNC_TWITCH = 'SYNC_TWITCH';
 const SYNC_PATREON = 'SYNC_PATREON';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
@@ -27,6 +28,15 @@ export default function ProfileReducer(state = initialState, action) {
 				patreon: action.data.patreon
 			}
 			break;
+		case SYNC_TWITCH:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					username: action.data.username,
+					logo: action.data.logo
+				}
+			}
 		case SYNC_PATREON:
 			return {
 				...state,
@@ -68,6 +78,13 @@ export default function ProfileReducer(state = initialState, action) {
 export function setProfile(data) {
 	return {
 		type: SET_PROFILE,
+		data
+	};
+}
+
+export function syncTwitch(data) {
+	return {
+		type: SYNC_TWITCH,
 		data
 	};
 }

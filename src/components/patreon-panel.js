@@ -85,12 +85,18 @@ class PatreonPanel extends React.Component {
 		let patreonContent, confirmPanel;
 
 		if(this.state.showConfirm) {
+			let goldInfo;
+
+			if(this.props.patreon.gold) {
+				goldInfo = (<div>Being a gold status, your benefits will be disabled until you add back a patreon that is an active patron to StreamAchievements! You will still be able to use the free tier benefits!</div>);
+			}
 			confirmPanel = (
 				<ConfirmPanel
 					onConfirm={this.handleUnlink}
 					onCancel={() => {this.setState({showConfirm: false})}}
 				>
 					<div>Are you sure you want to unlink your Patreon?</div>
+					{goldInfo}
 					<div className="strong">Note: This will NOT cancel your patreon pledge!! You will need to manage your pledge through Patreon!</div>
 				</ConfirmPanel>
 			);

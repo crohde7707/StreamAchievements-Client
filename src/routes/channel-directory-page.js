@@ -8,6 +8,7 @@ import './channel-directory-page.css';
 
 import Template from '../components/template';
 import {isAuthenticated} from '../utils/auth-utils';
+import LoadingSpinner from '../components/loading-spinner';
 
 class ChannelDirectoryPage extends React.Component {
 
@@ -15,7 +16,8 @@ class ChannelDirectoryPage extends React.Component {
 		super(props);
 
 		this.state = {
-			channels: []
+			channels: "",
+			searching: false
 		}
 
 		this._search = {};
@@ -34,14 +36,28 @@ class ChannelDirectoryPage extends React.Component {
 	}
 
 	filterList = (event) => {
+		this.setState({
+			searching: true
+		});
+
 		if(this._searchTimeout !== null) {
 			clearTimeout(this._searchTimeout);
 		}
 
 		this._searchTimeout = setTimeout(() => {
-			this._socket.emit('search-directory', this._search.value);
-			this._searchTimeout = null;
-		}, 500);
+			if(this._search.value.length > 0) {
+				this._socket.emit('search-directory', this._search.value);
+				this._searchTimeout = null;
+				this.setState({
+					searching: false
+				});
+			} else {
+				this.setState({
+					channels: "",
+					searching: false
+				});
+			}
+		}, 400);
 		
 	}
 
@@ -113,21 +129,26 @@ class ChannelDirectoryPage extends React.Component {
 			} else {
 				content = (
 					<div className="directory--no-results">
-						<h3>Looks like they haven't made it here yet!</h3>
+						<h3>Looks like they haven't found their way here yet!</h3>
 						<div>Want to get your favorite streamer to make some achievements for their stream? Spread the word!</div>
 						<div className="share">
 							<TwitterShareButton
 							    url={'https://streamachievements.com/'}
 							    options={{
-							    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream!',
+							    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream! Through achievements, you can reward your community for the support they show!',
 							    	size: 'large'
 							    }}
 							  />
 						</div>
 					</div>
 				);
-			}
-			
+			}	
+		} else {
+			content = (
+				<div className="directory--no-results">
+					<h3>Start typing above to search for a streamer!</h3>
+				</div>
+			)
 		}
 
 		return (
@@ -136,6 +157,7 @@ class ChannelDirectoryPage extends React.Component {
 					<div className="main-content">
 						<div className="directory-search">
 							<input type="text" onChange={this.filterList} placeholder="Search channels..." ref={(el) => {this._search = el}} />
+							<LoadingSpinner isLoading={this.state.searching} />
 						</div>
 						<div className="directory-results">
 							<div className="channels">
