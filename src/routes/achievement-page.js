@@ -425,9 +425,9 @@ class AchievementPage extends React.Component {
 
 	isFormValid = () => {
 		let validUpdate = {};
+		let isValid = true;
 
 		this.isNullorEmpty(validUpdate, 'title');
-		this.isNullorEmpty(validUpdate, 'description');
 		this.isNullorEmpty(validUpdate, 'achType');
 
 		switch(this.state.achType) {
@@ -448,7 +448,15 @@ class AchievementPage extends React.Component {
 		this.setState({
 			valid: validUpdate
 		});
-		return false;
+
+		Object.keys(validUpdate).forEach(field => {
+			if(!validUpdate[field]) {
+				isValid = false;
+			}
+		});
+
+		return isValid;
+
 	}
 
 	isValidCondition = (fieldSet, field) => {
