@@ -454,26 +454,27 @@ class AchievementPage extends React.Component {
 				isValid = false;
 			}
 		});
-
+		
 		return isValid;
 
 	}
 
 	isValidCondition = (fieldSet, field) => {
-		let pattern = /[a-zA-Z0-9_]+=[a-zA-Z0-9_,]+;*/g;
-		let matches = this.state[field].match(pattern);
+		if(this.state[field].length > 0) {
+			let pattern = /[a-zA-Z0-9_]+=[a-zA-Z0-9_,]+;*/g;
+			let matches = this.state[field].match(pattern);
 
-		if(matches) {
-			let combined = matches.join('');
+			if(matches) {
+				let combined = matches.join('');
 
-			if(combined.length === this.state[field].length) {
-				fieldSet[field] = true;
-				return;
+				if(combined.length === this.state[field].length) {
+					fieldSet[field] = true;
+					return;
+				}
 			}
+
+			fieldSet[field] = false;	
 		}
-
-		fieldSet[field] = false;
-
 	}
 
 	isNullorEmpty = (fieldSet, field) => {
@@ -482,6 +483,8 @@ class AchievementPage extends React.Component {
 		} else {
 			fieldSet[field] = true;
 		}
+
+		return fieldSet[field];
 	}
 
 	isNumber = (fieldSet, field) => {

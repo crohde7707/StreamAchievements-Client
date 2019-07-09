@@ -157,9 +157,6 @@
 .achievement--edit {
 	width: 32px;
     height: 32px;
-    position: absolute;
-    right: 1em;
-    top: 1em;
 }
 
 .achievement--edit img {

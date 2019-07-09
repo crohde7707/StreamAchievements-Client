@@ -18,7 +18,10 @@ export default class Notice extends React.Component {
 				message: this.props.message
 			}, () => {
 				this.positionNotice();
-				this.notice.classList.add('notice--visible');
+				setTimeout(() => {
+					this.notice.classList.add('notice--visible');
+				}, 500)
+				
 			});
 
 			setTimeout(() => {
@@ -29,8 +32,8 @@ export default class Notice extends React.Component {
 						message: ''
 					});
 					this.props.onClear();
-				}, 2000);
-			}, 3000);
+				}, 2500);
+			}, 3500);
 		}
 	}
 

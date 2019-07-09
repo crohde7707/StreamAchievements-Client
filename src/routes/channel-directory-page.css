@@ -1,11 +1,25 @@
 .directory-search {
     position: relative;
+    display: flex;
 }
 
 .directory-search input {
-	width: 98%;
+	flex: 1;
     height: 40px;
     padding-left: 2%;
+    border: none;
+}
+
+.directory-search button {
+	background: #e6ba05;
+	border: none;
+
+}
+
+.directory-search button img {
+	width: 20px;
+	height: 20px;
+	padding: 0 10px;
 }
 
 .directory-results {
@@ -24,8 +38,8 @@
 
 .directory-search .loading-spinner {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: -2px;
+	right: 10px;
 }
 
 .directory-search .loading-spinner--wrapper {

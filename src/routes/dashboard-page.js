@@ -135,12 +135,12 @@ class DashboardPage extends React.Component {
 	hideGiftModal = (members) => {
 		
 		let stateUpdate = {
-			isModalActive: false,
-			notice: "Awarded achievements successfully!"
+			isModalActive: false
 		};
 
 		if(members) {
 			stateUpdate.members = members;
+			stateUpdate.notice = 'Awarded achievements successfully!';
 		}
 		this.setState(stateUpdate);
 	}

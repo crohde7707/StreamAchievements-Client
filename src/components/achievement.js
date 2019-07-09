@@ -2,6 +2,9 @@ import React from 'react';
 
 import './achievement.css';
 
+const LIMITED = "https://res.cloudinary.com/phirehero/image/upload/v1562639754/limited.png";
+const LIMITED_EARNED = "https://res.cloudinary.com/phirehero/image/upload/v1562639754/limited-earned.png";
+
 class Achievement extends React.Component {
 
 	render() {
@@ -14,6 +17,7 @@ class Achievement extends React.Component {
 
 		let achievementClass = "achievement";
 		let icon = this.props.achievement.icon || defaultIcons.default || '';
+		let limitedContent;
 
 		if(!unlocked) {
 			icon = defaultIcons.default;
@@ -26,6 +30,14 @@ class Achievement extends React.Component {
 			title = "????";
 			description = "????????????";
 			icon = defaultIcons.hidden || ''
+		}
+
+		if(limited && (!earned && !this.props.editable)) {
+			limitedContent = (
+				<div className="achievement--limited">
+					<img src={LIMITED} />
+				</div>
+			)
 		}
 
 		if(this.props.editable) {
@@ -64,8 +76,11 @@ class Achievement extends React.Component {
 					<div className="achievement-title">{title}</div>
 					<div className="achievement-description">{description}</div>
 				</div>
-				{giftIcon}
-				{editIcon}
+				<div className="achievement--icons">
+					{limitedContent}
+					{giftIcon}
+					{editIcon}
+				</div>
 				{earnDate}
 			</div>
 		)
