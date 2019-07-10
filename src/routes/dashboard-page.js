@@ -607,7 +607,7 @@ class DashboardPage extends React.Component {
 				<div className="general-configuration">
 					<h4>Basic Info</h4>
 					<span className="subText">This information is managed by Twitch</span>
-					<div className="section-wrapper">
+					<div className="section-wrapper basic-info">
 						<div className="section-label">
 					        <label htmlFor="name">Twitch Name</label>
 					    </div>
@@ -615,7 +615,7 @@ class DashboardPage extends React.Component {
 					        <span name="name">{owner}</span>
 					    </div>
 					</div>
-					<div className="section-wrapper">
+					<div className="section-wrapper basic-info">
 						<div className="section-label">
 					        <label htmlFor="logo">Channel Logo</label>
 					    </div>

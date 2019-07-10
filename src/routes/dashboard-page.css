@@ -390,6 +390,10 @@
 		margin-left: 15px;
 	}
 
+	.manage-container h4 {
+		font-size: 20px;
+	}
+
 	.manage-tabs {
 		justify-content: space-around;
 	}
@@ -412,5 +416,40 @@
 
 	.twitch-integration h3 {
 		font-size: 1.1em;
+	}
+
+	.section-wrapper {
+		flex-direction: column;
+	}
+
+	.section-label {
+		text-align: left;
+		width: 100%;
+	}
+
+	.general-configuration img {
+		width: 80px;
+		height: 80px;
+	}
+
+	.defaultIcon, .hiddenIcon {
+		height: 78px;
+		width: 78px;
+	}
+
+	.section-wrapper.basic-info {
+		flex-direction: row;
+	}
+
+	.basic-info .section-label {
+		width: 30%;
+	}
+
+	.achievement-title {
+		font-size: 21px;
+	}
+
+	.achievement-description {
+		font-size: 15px;
 	}
 }

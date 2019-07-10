@@ -161,7 +161,7 @@ class ChannelDirectoryPage extends React.Component {
 		return (
 			<div>
 				<Template>
-					<div className="main-content">
+					<div className="channel-directory main-content">
 						<div className="directory-search">
 							<input type="text" onChange={this.filterList} placeholder="Search channels..." ref={(el) => {this._search = el}} />
 							<LoadingSpinner isLoading={this.state.searching} />
