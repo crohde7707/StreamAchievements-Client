@@ -60,10 +60,15 @@ class AchievementPage extends React.Component {
 				if(res.data.error) {
 					//redirect to home
 				} else {
+					let achievement = {...res.data.achievement};
+
+					if(!achievement.achType) {
+						achievement.achType = "3";
+					}
 
 					this.setState({
 						originalAchievement: res.data.achievement,
-						...res.data.achievement,
+						...achievement,
 						iconPreview: res.data.achievement.icon,
 						icons: res.data.images,
 						defaultIcons: res.data.defaultIcons,
@@ -93,7 +98,7 @@ class AchievementPage extends React.Component {
 				...this.state,
 				...originalAchievement,
 				iconPreview: originalAchievement.icon,
-				touched: {}
+				touched: undefined
 			};
 
 			delete stateUpdate.iconName;
@@ -116,7 +121,8 @@ class AchievementPage extends React.Component {
 				id: '',
 				edit: false,
 				showConfirm: false,
-				showImagePanel: false
+				showImagePanel: false,
+				touched: undefined
 			});
 		}
 		
@@ -668,6 +674,14 @@ class AchievementPage extends React.Component {
 				pageHeader = "Edit Achievement";
 			}
 
+			let saveButton;
+
+			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
+				saveButton = <input className='achievement-button submit-achievement submit-achievement--active' type="submit" value="Save" />
+			} else {
+				saveButton = <input className='achievement-button submit-achievement' disabled type="submit" value="Save" />
+			}
+
 			content = (
 				<Template spinner={{isLoading: this.state.fetch, fullscreen: true}}>
 					<div className="achievement-wrapper">
@@ -784,7 +798,7 @@ class AchievementPage extends React.Component {
 							{this.getConditionContent()}
 							<h4 className="noMargin">Icon<span className="help" title="Upload an icon specific for your achievement! Leaving this blank will fall back on the one provided in your general settings!"></span></h4>
 							{iconSection}
-		                    <input type="submit" className="achievement-button submit-achievement" value="Save" />
+		                    {saveButton}
 		                    <div className="button-bank">
 			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>
 			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/dashboard/' + this.props.profile.username + '?tab=achievements');}}>Cancel</button>

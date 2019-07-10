@@ -118,30 +118,37 @@ class ChannelDirectoryPage extends React.Component {
 			channels = this.state.filteredChannels;
 		}
 
+		let notFound = (
+			<div className="directory--no-results">
+				<h3>Don't see who you are looking for? Looks like they haven't found their way here yet!</h3>
+				<div>Want to get your favorite streamer to make some achievements for their stream? Spread the word!</div>
+				<div className="share">
+					<TwitterShareButton
+					    url={'https://streamachievements.com/'}
+					    options={{
+					    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream! Through achievements, you can reward your community for the support they show!',
+					    	size: 'large'
+					    }}
+					  />
+				</div>
+			</div>
+		);
+
 		if(Array.isArray(channels)) {
 			if(channels.length > 0) {
-				content = channels.map((channel, index) => (
-					<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
-						<div className="channel-item--logo"><img src={channel.logo} /></div>
-						<div className="channel-item--name">{channel.owner}</div>
-					</div>
-				));	
-			} else {
 				content = (
-					<div className="directory--no-results">
-						<h3>Looks like they haven't found their way here yet!</h3>
-						<div>Want to get your favorite streamer to make some achievements for their stream? Spread the word!</div>
-						<div className="share">
-							<TwitterShareButton
-							    url={'https://streamachievements.com/'}
-							    options={{
-							    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream! Through achievements, you can reward your community for the support they show!',
-							    	size: 'large'
-							    }}
-							  />
-						</div>
+					<div>
+						{channels.map((channel, index) => (
+							<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
+								<div className="channel-item--logo"><img src={channel.logo} /></div>
+								<div className="channel-item--name">{channel.owner}</div>
+							</div>
+						))}
+						{notFound}
 					</div>
 				);
+			} else {
+				content = notFound
 			}	
 		} else {
 			content = (

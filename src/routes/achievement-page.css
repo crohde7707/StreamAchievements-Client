@@ -66,11 +66,24 @@
 .achievement-button.submit-achievement {
 	width: 98%;
 	padding: 10px 15px;
-    height: auto;
+	height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+    transition: all .2s ease;
+}
+
+.submit-achievement.submit-achievement--active {
+	background: #007d00;
+    border: none;
+    color: white;
+    font-weight: bold;
+    box-shadow: -1px -1px 1px black;
+    text-shadow: 1px 1px 3px black;
+    -webkit-transition: all .2s ease;
+    transition: all .2s ease;
+    cursor: pointer;
 }
 
 .button-bank {
@@ -81,6 +94,7 @@
 
 .button-bank button {
 	padding: 10px 15px;
+	height: 40px;
 	width: 48%;
 }
 

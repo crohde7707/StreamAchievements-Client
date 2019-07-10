@@ -27,7 +27,8 @@ export default class LandingPage extends React.Component {
 	}
 
 	handleConsent = () => {
-		document.cookie= `_sacc=true;domain=${process.env.REACT_APP_COOKIE_DOMAIN}`;
+		let expires = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toUTCString();
+		document.cookie= `_sacc=true;domain=${process.env.REACT_APP_COOKIE_DOMAIN};expires=${expires}`;
 		this.setState({
 			cookieConsent: true
 		});
@@ -78,8 +79,8 @@ export default class LandingPage extends React.Component {
 					<div className="section-content">
 						<h2>Easy To Use</h2>
 						<div>
-							<p>Getting your channel stood up is quick and easy, thanks to integration with the support streaming platform!</p>
-							<p>You'll be ready to get your fans engaged in no time!</p>
+							<p>Getting your channel stood up is quick and easy, thanks to integration with the supported streaming platform!</p>
+							<p>You'll be ready to get your community engaged in no time!</p>
 						</div>
 					</div>
 				</div>
@@ -100,8 +101,8 @@ export default class LandingPage extends React.Component {
 						<h2>Custom Achievements</h2>
 						<div>
 							<p>The sky is the limits!</p>
-							<p>Award achievements for numerous activities, such as following, subbing, hosting, raiding, etc.!</p>
-							<p>Create custom achievements for those quirks that make your stream awesome!</p>
+							<p>Award achievements for numerous activities, such as following, subbing, hosting, gifting, etc.!</p>
+							<p>Create custom achievements for those quirks that make your stream unique and awesome!</p>
 						</div>
 					</div>
 				</div>
