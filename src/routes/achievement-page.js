@@ -8,6 +8,7 @@ import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
 import connector from '../redux/connector';
 import LoadingSpinner from '../components/loading-spinner';
+import {Link} from 'react-router-dom';
 
 import './achievement-page.css';
 
@@ -663,7 +664,7 @@ class AchievementPage extends React.Component {
 				customType = (<option disabled title="Unlocked wtih StreamAchievements Gold!" value="4">Custom [Gold])</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
-						<p>Upload custom images for each of your achievements by upgrading to <span className="gold">StreamAchievements Gold</span> via Patreon!</p> 
+						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">StreamAchievement Gold!</Link> via Patreon!</p> 
 					</div>
 				);
 			}

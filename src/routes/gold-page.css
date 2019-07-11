@@ -1,0 +1,64 @@
+.gold-page {
+	color: white;
+	font-size: 14px;
+	font-family: Helvetica;
+}
+
+.gold-page h2 {
+	text-align: center;
+	font-size: 32px;
+}
+
+.gold-page h3 {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.gold-page .section {
+	margin-top: 40px;
+}
+
+.gold-page .feature-table {
+	display: flex;
+	flex-direction: column;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.gold-page .feature-table img {
+	width: 18px;
+}
+
+.gold-page .feature-table .row {
+	display: flex;
+	flex: 1;
+	justify-content: center;
+	padding: 2px 4px;
+	background: rgba(0,0,0,0.4);
+}
+
+.gold-page .feature-table .row.row-stripe {
+	background: rgba(0,0,0,0.2);
+}
+
+.gold-page .feature-table .row-header {
+	font-weight: bold;
+	font-size: 20px;
+	background: none;
+}
+
+.gold-page .feature-table .row div {
+	flex: 1;
+	text-align: center;
+	padding: 5px;
+}
+
+.gold-page .feature-table .row div:first-child {
+	flex: 3;
+	text-align: left;
+}
+
+.gold-page a,
+.gold-page a:visited {
+	color: #ecdc19;
+}

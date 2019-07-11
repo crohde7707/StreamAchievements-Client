@@ -105,7 +105,7 @@ class Header extends React.Component {
 						<li><Link to='/profile'>Profile</Link></li>
 						{channelLink}
 						{adminLink}
-						{/*<li><Link to='/support'>Support Us!</Link></li>*/}
+						<li><Link to='/gold'>StreamAchievements Gold</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>

@@ -574,7 +574,7 @@ class DashboardPage extends React.Component {
 			if(this.props.patreon && this.props.patreon.gold) {
 				defaultBlurb = (<p>Being a patreon supporter, you have the option to upload a custom icon for each achievement when creating one! Also, you can upload a custom image here to use for all achievements by default!</p>);
 			} else {
-				defaultBlurb = (<p>Wan't to provide your own custom icons for your achievements? Consider upgrading to <Link to="/profile?tab=integration">StreamAchievement Gold!</Link> You will be able to upload an icon to use for all achievements, or provide a custom icon for each achievement when creating them!</p>);
+				defaultBlurb = (<p>Wan't to provide your own custom icons for your achievements? Consider upgrading to <Link className="gold" to="/gold">StreamAchievement Gold!</Link> You will be able to upload an icon to use for all achievements, or provide a custom icon for each achievement when creating them!</p>);
 			}
 
 
