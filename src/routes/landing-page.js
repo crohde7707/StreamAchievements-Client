@@ -72,8 +72,10 @@ export default class LandingPage extends React.Component {
 						<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community through the power of achievements!</p>
 						<p>With this system, a streamer will be able to create various achievements for their community to earn while interacting with stream!</p>
 						<p>This isn't just for streamers though! For someone who just watches streams, you will be able to keep track of all the achievements you have earned from your favorite streamers!</p>
-						<div className="yt-container">
-							<iframe className="yt-vid" src="https://www.youtube.com/embed/PS5k6bIW8q4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<div className="yt-wrapper">
+							<div className="yt-container">
+								<iframe className="yt-vid" src="https://www.youtube.com/embed/PS5k6bIW8q4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							</div>
 						</div>
 					</div>
 				</div>

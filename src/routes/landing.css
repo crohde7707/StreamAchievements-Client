@@ -202,6 +202,10 @@
     height: 100%;
 }
 
+.yt-wrapper {
+    margin: 0 auto;
+}
+
 @media only screen and (max-width: 480px) {
     .logo {
         width: 90%;
@@ -209,7 +213,7 @@
 
     .landing-page h2 {
         margin-left: 0;
-        font-size:32px;
+        font-size:30px;
     }
 
     .landing-page p {
@@ -232,5 +236,18 @@
 
     .section-wrapper.section-wrapper--login {
         padding: 30px 20px 40px;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    .landing-page .section-gfx img {
+        max-width: inherit;
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .section-content .yt-wrapper {
+        max-width: 70%;
     }
 }
