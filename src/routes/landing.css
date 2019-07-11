@@ -209,7 +209,13 @@
 
     .landing-page h2 {
         margin-left: 0;
+        font-size:32px;
     }
+
+    .landing-page p {
+        font-size: 16px;
+    }
+
     .landing-page .section-gfx img {
         max-width: inherit;
         width: 100%;
@@ -222,5 +228,9 @@
     .section-content > h2,
     .section-content > div {
         max-width: 98%;
+    }
+
+    .section-wrapper.section-wrapper--login {
+        padding: 30px 20px 40px;
     }
 }

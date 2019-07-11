@@ -45,7 +45,7 @@ class Header extends React.Component {
 	}
 
 	positionModal = () => {
-		let maskHeight = window.innerHeight - 130;
+		let maskHeight = document.documentElement.scrollHeight - 130;
 
 		document.documentElement.scrollTop = 0
 		this._mask.style.top = '130px';
