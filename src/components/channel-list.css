@@ -28,7 +28,7 @@
 
 .channel-item--name {
 	flex-grow: 2;
-	font-size: 22px;
+	font-size: 18px;
 }
 
 @media only screen and (max-width: 480px) {
@@ -48,6 +48,6 @@
     }
 
     .channel-item--name {
-        font-size: 20px;
+        font-size: 16px;
     }
 }
