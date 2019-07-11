@@ -6,7 +6,7 @@ import ProfilePage from './routes/profile-page';
 import LandingPage from './routes/landing-page';
 import ChannelPage from './routes/channel-page';
 import VerifyPage from './routes/verify-page';
-import SupportPage from './routes/support-page';
+import GoldPage from './routes/gold-page';
 import DashboardPage from './routes/dashboard-page';
 import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
@@ -38,7 +38,7 @@ let app = (
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
-	        		<Route path="/support" component={SupportPage} />
+	        		<Route path="/gold" component={GoldPage} />
 	        		<Route path="/howto" component={HowTo} />
 	        		<Route path="/test" component={TestListeners} />
 	    		</Switch>
