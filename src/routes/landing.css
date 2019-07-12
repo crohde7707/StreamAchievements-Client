@@ -159,7 +159,7 @@
     background: #1c2741;
     width: 96%;
     padding: 15px 2%;
-    font-size: 18px;
+    font-size: 14px;
     display: flex;
     text-align: left;
     align-items: center;
@@ -236,6 +236,10 @@
 
     .section-wrapper.section-wrapper--login {
         padding: 30px 20px 40px;
+    }
+
+    .cookie-consent {
+        font-size: 12px
     }
 }
 

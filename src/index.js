@@ -13,6 +13,7 @@ import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
 import AdminPanelPage from './routes/admin-panel';
 import HowTo from './routes/how-to';
+import OverlayPanel from './routes/overlay-panel';
 import TestListeners from './routes/test-listeners';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -41,6 +42,8 @@ let app = (
 	        		<Route path="/gold" component={GoldPage} />
 	        		<Route path="/howto" component={HowTo} />
 	        		<Route path="/test" component={TestListeners} />
+	        		<Route path="/overlay/:uid" component={OverlayPanel} />
+	        		<Route path="/overlay" component={OverlayPanel} />
 	    		</Switch>
 			</App>
 		</Provider>
