@@ -17,15 +17,8 @@ export default class TestListeners extends React.Component {
 		}
 	}
 
-	sendListener = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [
-			{
-				channel: 'phirehero',
-				achievementID: "5d1cd618086d0b27d8370d5e",
-				tier: 1000,
-				user: "phiredamsel"
-			}
-		],{
+	fixListeners = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/fixit', {},{
 			withCredentials: true
 		});
 	}
@@ -75,7 +68,7 @@ export default class TestListeners extends React.Component {
 					</div>
 					<button onClick={this.sendData} type="button">Test</button>
 					<div>
-						<button onClick={this.sendListener} type="button">Test IRC endpoint</button>
+						<button onClick={this.fixListeners} type="button">Test IRC endpoint</button>
 					</div>
 				</div>
 			</Template>
