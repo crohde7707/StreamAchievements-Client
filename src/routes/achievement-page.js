@@ -23,7 +23,6 @@ class AchievementPage extends React.Component {
 			description: "",
 			icon: "",
 			achType: "",
-			resubType: "0",
 			query: "",
 			bot: "",
 			condition: "",
@@ -111,7 +110,6 @@ class AchievementPage extends React.Component {
 				description: "",
 				icon: "",
 				achType: "",
-				resubType: "0",
 				query: "",
 				bot: "",
 				condition: "",
@@ -223,31 +221,8 @@ class AchievementPage extends React.Component {
 
 			switch(this.state.achType) {
 				case "1":
-					if(this.state.resubType) {
-						if(this.state.resubType === "0") {
-							helpText = "Number of months viewer has kept a streak";
-						} else {
-							helpText = "Number of months a viewer has subbed altogether";
-						}
-					} else {
-						helpText = "Number of months viewer has kept a streak";
-					}
-
 					conditionContent = (
 						<div>
-							<div className="formGroup">
-								<label htmlFor="resubType">Resub Type</label>
-								<select 
-									id="resubType"
-									name="resubType"
-									className="selectInput"
-									onChange={this.handleDataChange}
-									value={this.state.resubType}
-								>
-									<option value="0">Streak</option>
-									<option value="1">Total</option>
-								</select>
-							</div>
 							<div className="formGroup">
 								<label htmlFor="achievement-condition">Months *</label>
 								<input
@@ -259,9 +234,7 @@ class AchievementPage extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
-							<div className="helpText">
-								{helpText}
-							</div>
+							<div className="helpText">Number of months a viewer has subbed altogether</div>
 						</div>
 					);
 					break;
@@ -394,10 +367,6 @@ class AchievementPage extends React.Component {
 
 				if(this.state.achType !== '0') {
 					achievement.condition = this.state.condition;
-
-					if(this.state.achType === "1") {
-						achievement.resubType = this.state.resubType;
-					}
 
 					if(this.state.achType === "2") {
 						if(!this.state.condition) {
@@ -579,7 +548,6 @@ class AchievementPage extends React.Component {
 			description: "",
 			icon: "",
 			achType: "",
-			resubType: "0",
 			query: "",
 			bot: "",
 			condition: "",
