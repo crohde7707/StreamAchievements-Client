@@ -46,7 +46,7 @@ class AdminPanel extends React.Component {
 		let newCCContent, pendingCCContent;
 
 		if(this.state.users) {
-			let users = this.state.users.map((member, index) => (
+			let newUsers = this.state.users.filter(user => user.status === 'new').map((member, index) => (
 				<div key={'pendingMember-' + index} className="pendingMember">
 					<div className="member-logo">
 						<img alt="" src={member.logo} />
@@ -70,20 +70,37 @@ class AdminPanel extends React.Component {
 				</div>
 			));
 
+			let pendingUsers = this.state.users.filter(user => user.status === 'pending').map((member, index) => (
+				<div key={'pendingMember-' + index} className="pendingMember">
+					<div className="member-logo">
+						<img alt="" src={member.logo} />
+					</div>
+					<div className="member-mobileWrapper">
+						<div className="member-info">
+							{member.name}
+							<a title={'Go to ' + member.name + '\'s channel on Twitch!'} href={"https://twitch.tv/" + member.name} target="_blank">
+								<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
+							</a>
+						</div>
+						<div className="member-action">
+						
+						</div>
+					</div>
+				</div>
+			));
+
 			newCCContent = (
 				<div>
-					<h3>Pending Users</h3>
 					<div className="pendingMembers-wrapper">
-						{users}
+						{newUsers}
 					</div>
 				</div>
 			);
 
 			pendingCCContent = (
 				<div>
-					<h3>Waiting For Verification</h3>
 					<div className="pendingMembers-wrapper">
-
+						{pendingUsers}
 					</div>
 				</div>
 			);

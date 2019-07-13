@@ -23,6 +23,12 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	flushQueue = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/flush', {}, {
+			withCredentials: true
+		});
+	}
+
 	sendData = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {
 			channel: this.state.channel,
@@ -69,6 +75,9 @@ export default class TestListeners extends React.Component {
 					<button onClick={this.sendData} type="button">Test</button>
 					<div>
 						<button onClick={this.fixListeners} type="button">Test IRC endpoint</button>
+					</div>
+					<div>
+						<button onClick={this.flushQueue} type="button">Flush Queue</button>
 					</div>
 				</div>
 			</Template>
