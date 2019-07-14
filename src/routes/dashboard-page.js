@@ -10,6 +10,7 @@ import Template from '../components/template';
 import Achievement from '../components/achievement';
 import GiftAchievementModal from '../components/gift-achievement';
 import ConfirmPanel from '../components/confirm-panel';
+import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 

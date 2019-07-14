@@ -10,7 +10,8 @@ class OverlayPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			uid: props.match.params.uid
+			uid: props.match.params.uid,
+			alert: undefined
 		}
 
 		this._queue = [];
@@ -24,21 +25,50 @@ class OverlayPanel extends React.Component {
 
 			this._socket.on('alert-recieved', (alert) => {
 				this.queueAlert(alert);
+				console.log(alert);
 			});
 		} else {
 			this.props.history.push('/home');
 		}
+
+		this._showAlert = setInterval(() => {
+			console.log('showAlert');
+			if(this._queue.length > 0) {
+				console.log('alert found');
+				let alert = this._queue.shift();
+				console.log(alert);
+				this.setState({
+					alert
+				});
+
+				setTimeout(() => {
+					this.setState({
+						alert: undefined
+					});
+				}, 6000);
+			}
+		}, 10000)
 	}
 
 	queueAlert = (alert) => {
-		console.log(alert);
+		this._queue.push(alert);
 	}
 
 	render() {
 
+		let alertContent;
+
+		if(this.state.alert) {
+			alertContent = (
+				<div className="overlay-container">
+					<h2>{this.state.alert.member} just earned the {this.state.alert.achievement} achievement!</h2>
+				</div>
+			)
+		}
+
 		return (
 			<div id={this.state.uid} className="overlay-wrapper">
-				
+				{alertContent}
 			</div>
 		);
 	}

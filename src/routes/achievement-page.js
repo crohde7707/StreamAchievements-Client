@@ -437,7 +437,7 @@ class AchievementPage extends React.Component {
 
 	isValidCondition = (fieldSet, field) => {
 		if(this.state[field].length > 0) {
-			let pattern = /[a-zA-Z0-9_]+=[a-zA-Z0-9_,]+;*/g;
+			let pattern = /[a-zA-Z0-9_]+[<>=]+[a-zA-Z0-9_,]+;*/g;
 			let matches = this.state[field].match(pattern);
 
 			if(matches) {
