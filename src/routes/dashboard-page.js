@@ -708,6 +708,7 @@ class DashboardPage extends React.Component {
 						        />
 						    </div>
 						</div>
+						{/*<AlertConfig />*/}
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>
