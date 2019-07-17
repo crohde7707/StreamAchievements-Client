@@ -10,13 +10,13 @@
 
 .alert-overlay input[type="text"] {
 	width: 80%;
-	padding: 5px 2%;
+	padding: 2%;
 }
 
 .alert-overlay #alert-sound {
 	margin-right: 10px;
 	width: 30%;
-	padding: 5px 2%;
+	padding:2 %;
 }
 
 .alert-overlay .play-sound {
@@ -27,4 +27,44 @@
 	width: 24px;
 	height: 24px;
 	cursor: pointer;
+}
+
+/* The slider itself */
+.sliderInput {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 10px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.sliderInput:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #425583; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 10px;
+  border: 2px solid white;
+  box-shadow: 0px 0px 5px #000;
+}
+
+.sliderInput::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #425583; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 10px;
+  border: 2px solid white;
 }

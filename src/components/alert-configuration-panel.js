@@ -11,7 +11,7 @@ export default class AlertConfigurationPanel extends React.Component {
 
 		this.state = {
 			message: alert.message || "",
-			sound: alert.sound || "",
+			sound: alert.sound || "001",
 			volume: alert.volume || 100,
 			duration: alert.duration || 1
 		};
@@ -47,7 +47,15 @@ export default class AlertConfigurationPanel extends React.Component {
 		}
 	}
 
+	playSound = () => {
+		console.log(this.audioRef);
+		this.audioRef.play();
+	}
+
 	render() {
+		let audioSrc = `/sounds/achievement.${this.state.sound}.mp3`;
+		let audioVolume = parseFloat(this.state.volume) / 100;
+
 		return (
 			<div className="alert-overlay">
 				<h4>Alert Configuration</h4>
@@ -79,15 +87,25 @@ export default class AlertConfigurationPanel extends React.Component {
 							onChange={this.handleDataChange}
 							value={this.state.sound}
 						>
-							<option value="1">SFX 1</option>
-							<option value="2">SFX 2</option>
-							<option value="3">SFX 3</option>
-							<option value="4">SFX 4</option>
-							<option value="5">SFX 5</option>
-							<option value="6">SFX 6</option>
+							<option value="001">SFX 1</option>
+							<option value="002">SFX 2</option>
+							<option value="003">SFX 3</option>
+							<option value="004">SFX 4</option>
+							<option value="005">SFX 5</option>
+							<option value="006">SFX 6</option>
+							<option value="007">SFX 7</option>
+							<option value="008">SFX 8</option>
 						</select>
 						<div className="play-sound">
-							<img src="https://res.cloudinary.com/phirehero/image/upload/v1563245261/play.png" />
+							<img src="https://res.cloudinary.com/phirehero/image/upload/v1563245261/play.png" onClick={this.playSound} />
+						</div>
+						<div className="hidden">
+							<audio 
+								preload="auto"
+								src={audioSrc}
+								ref={(audio) => this.audioRef = audio}
+								volume={audioVolume}
+							/>
 						</div>
 				    </div>
 				</div>
@@ -99,7 +117,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				       <input 
 							id="alert-volume"
 							name="volume"
-							className={"selectInput" + ((this.isInvalid("volume")) ? " invalid" : "")}
+							className={"sliderInput" + ((this.isInvalid("volume")) ? " invalid" : "")}
 							title="Volume"
 							onChange={this.handleDataChange}
 							type="range"
@@ -118,7 +136,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				       <input 
 							id="alert-duration"
 							name="duration"
-							className={"selectInput" + ((this.isInvalid("duration")) ? " invalid" : "")}
+							className={"sliderInput" + ((this.isInvalid("duration")) ? " invalid" : "")}
 							title="Duration"
 							onChange={this.handleDataChange}
 							type="range"

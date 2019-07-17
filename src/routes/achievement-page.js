@@ -6,6 +6,7 @@ import Achievement from '../components/achievement';
 import Notice from '../components/notice';
 import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
+import InfoPanel from '../components/info-panel';
 import connector from '../redux/connector';
 import LoadingSpinner from '../components/loading-spinner';
 import {Link} from 'react-router-dom';
@@ -40,6 +41,49 @@ class AchievementPage extends React.Component {
 		if(props.profile) {
 			this.fetchData();
 		}
+
+		this._info = {
+			customMessage: {
+				title: 'Custom Message',
+				content: (
+					<div>
+						<p>The StreamAchievements bot listens to the chat for a specific message you provide! You will need to tell the bot which data you are looking for!</p>
+						<p>You have the following variables to use when writing out your message:
+							<ul>
+								<li><span>{"{user}"}</span>: The person that will be recieveing the acheivement'</li>
+								<li><span>{"{target}"}</span>: The intended target (usually another viewer in chat)</li>
+								<li><span>{"{amount}"}</span>: Any numeric amount (think achievements for chat currency, minigame results, counters, etc)</li>
+								<li><span>{"{total}"}</span>: Same as above, in the event there are two numeric values in your message</li>
+								<li><span>{"{time}"}</span>: Useful when getting time from your chatbot!</li>
+							</ul>
+						</p>
+						<h4>Example</h4>
+						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563304527/custom_message_example.png" />
+						<p>With this message above, an achievement will occur for this message in chat:</p>
+						<span>phirehero has 3485 Tacos in their taco wallet!</span>
+					</div>
+				)
+			},
+			customCondition: {
+				title: 'Custom Condition',
+				content: (
+					<div>
+						<p>There are 2 ways an achievement will trigger: Just by a message happening, or by a certain condition being met.</p>
+						<p>To have an achievement be awarded based on the message happening (i.e. you don't care about any values or time, just that it was spoken), you will just leave the condition field blank!</p>
+						<p>If you are looking for a certain criteria to be met, just specify what that criteria is!</p>
+						<p className="separator">The conditions are based on the following operators:
+							<ul>
+								<li><span>{"Equality (=)"}</span>: Value matches exactly {"(amount=400)"}</li>
+								<li><span>{"Less Than (<)"}</span>: Value is less than what you specify {"(amount<400)"}</li>
+								<li><span>{"Less Than or Equal (<=)"}</span>: Value is less than or exactly what you specify {"(amount<=400)"}</li>
+								<li><span>{"Greater Than (<)"}</span>: Value is greater than what you specify {"(amount>400)"}</li>
+								<li><span>{"Greater Than or Equal (<=)"}</span>: Value is greater than or exactly what you specify {"(amount>=400)"}</li>
+							</ul>
+						</p>
+					</div>
+				)
+			}
+		};
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -184,6 +228,13 @@ class AchievementPage extends React.Component {
 		
 	}
 
+	showPopup = (key) => {
+		this.setState({
+			key,
+			showInfoPanel: true
+		});
+	}
+
 	handleDataChange = (event) => {
 		const target = event.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -305,7 +356,9 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-query">Chat Message *</label>
+								<label htmlFor="achievement-query">
+									<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
+								</label>
 								<input
 									id="achievement-query"
 									name="query"
@@ -316,11 +369,13 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="formGroup">
-								<label htmlFor="achievement-condition">Condition</label>
+								<label htmlFor="achievement-condition">
+									<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
+								</label>
 								<input
 									id="achievement-condition"
 									name="condition"
-									className="textInput"
+									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
 									type="text"
 									value={this.state.condition}
 									onChange={this.handleDataChange}
@@ -449,7 +504,8 @@ class AchievementPage extends React.Component {
 				}
 			}
 
-			fieldSet[field] = false;	
+			fieldSet[field] = false;
+
 		}
 	}
 
@@ -558,13 +614,14 @@ class AchievementPage extends React.Component {
 			id: '',
 			edit: false,
 			showConfirm: false,
-			showImagePanel: false
+			showImagePanel: false,
+			showInfoPanel: false
 		});
 	}
 
 	render() {
 
-		let content, iconGallery, confirmPanel, imagePanel, imgPreviewContent, iconSection;
+		let content, iconGallery, confirmPanel, imagePanel, infoPanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
 
 			let {title, description, earnable, limited, secret} = this.state;
@@ -592,6 +649,19 @@ class AchievementPage extends React.Component {
 				);
 			} else {
 				imagePanel = undefined;
+			}
+
+			if(this.state.showInfoPanel) {
+				infoPanel = (
+					<InfoPanel 
+						title={this._info[this.state.key].title}
+						onClose={() => {this.setState({showInfoPanel: false})}}
+					>
+						{this._info[this.state.key].content}
+					</InfoPanel>
+				);
+			} else {
+				infoPanel = undefined;
 			}
 
 			if(this.state.edit) {
@@ -774,6 +844,7 @@ class AchievementPage extends React.Component {
 		                    </div>
 		                    {confirmPanel}
 		                    {imagePanel}
+		                    {infoPanel}
 						</form>
 					</div>
 				</Template>		

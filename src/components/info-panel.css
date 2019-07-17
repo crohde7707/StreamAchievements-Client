@@ -1,0 +1,40 @@
+.info-panel .modal-content div {
+	margin: 0 0 20px;
+	text-align: center;
+	font-size: 16px;
+}
+
+.info-panel ul {
+	margin: 0 auto;
+	width: 85%;
+	text-align: left;
+	padding-top: 15px;
+}
+
+.info-panel li {
+	margin: 10px 0;
+}
+
+.info-panel .separator {
+	margin-top: 30px;
+}
+
+.info-panel ul span {
+	font-weight: bold
+}
+
+.info-panel button {
+	height: auto;
+	width: 98%;
+	padding: 10px;
+	margin-top: 5px;
+	cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.info-panel .info-close-button {
+	background: #2f4882;
+    color: white;
+    border: none;
+}
