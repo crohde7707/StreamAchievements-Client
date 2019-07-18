@@ -52,6 +52,11 @@ export default class AlertConfigurationPanel extends React.Component {
 		this.audioRef.play();
 	}
 
+	copyOverlayURL = () => {
+		this._overlayURL.select();
+		document.execCommand("copy");
+	}
+
 	render() {
 		let audioSrc = `/sounds/achievement.${this.state.sound}.mp3`;
 		let audioVolume = parseFloat(this.state.volume) / 100;
@@ -59,6 +64,23 @@ export default class AlertConfigurationPanel extends React.Component {
 		return (
 			<div className="alert-overlay">
 				<h4>Alert Configuration</h4>
+				<div className="section-wrapper">
+				    <div className="section-label">
+				        <label htmlFor="message">Overlay URL</label>
+				    </div>
+				    <div className="section-value">
+				       	<div className="overlay-url--wrapper">
+				       		<input 
+				       			type="text"
+				       			readOnly
+				       			className="textInput overlay-url"
+				       			ref={(el) => {this._overlayURL = el}}
+				       			value={`https://streamachievements.com/overlay/${this.props.oid}`}
+				       		/>
+				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
+				       	</div>
+				    </div>
+				</div>
 				<div className="section-wrapper">
 				    <div className="section-label">
 				        <label htmlFor="message">Alert Message</label>

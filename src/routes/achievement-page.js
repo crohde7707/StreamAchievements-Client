@@ -76,8 +76,8 @@ class AchievementPage extends React.Component {
 								<li><span>{"Equality (=)"}</span>: Value matches exactly {"(amount=400)"}</li>
 								<li><span>{"Less Than (<)"}</span>: Value is less than what you specify {"(amount<400)"}</li>
 								<li><span>{"Less Than or Equal (<=)"}</span>: Value is less than or exactly what you specify {"(amount<=400)"}</li>
-								<li><span>{"Greater Than (<)"}</span>: Value is greater than what you specify {"(amount>400)"}</li>
-								<li><span>{"Greater Than or Equal (<=)"}</span>: Value is greater than or exactly what you specify {"(amount>=400)"}</li>
+								<li><span>{"Greater Than (>)"}</span>: Value is greater than what you specify {"(amount>400)"}</li>
+								<li><span>{"Greater Than or Equal (>=)"}</span>: Value is greater than or exactly what you specify {"(amount>=400)"}</li>
 							</ul>
 						</p>
 					</div>

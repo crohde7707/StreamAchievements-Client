@@ -68,3 +68,23 @@
   border-radius: 10px;
   border: 2px solid white;
 }
+
+.overlay-url--wrapper {
+  width: 100%;
+}
+
+.overlay-url--wrapper .overlay-url {
+  background: none;
+  color: white;
+  border: 1px solid #425583;
+}
+
+.overlay-url--wrapper button {
+  padding: 5px 15px;
+  height: 36px;
+  margin-left: 5px;
+  background: #425583;
+  border: none;
+  color: white;
+  cursor: pointer;
+}

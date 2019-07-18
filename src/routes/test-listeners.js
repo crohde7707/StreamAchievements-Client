@@ -30,7 +30,7 @@ export default class TestListeners extends React.Component {
 	}
 
 	fixSync = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/sync', {}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/fixpreferences', {}, {
 			withCredentials: true
 		});
 	}

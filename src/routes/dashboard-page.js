@@ -708,7 +708,7 @@ class DashboardPage extends React.Component {
 						        />
 						    </div>
 						</div>
-						{/*<AlertConfig />*/}
+						{/*<AlertConfig oid={this.state.channel.oid}/>*/}
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>

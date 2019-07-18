@@ -68,10 +68,10 @@ export default class LandingPage extends React.Component {
 				</div>
 				<div className="section-wrapper section-wrapper--full">
 					<div className="section-content">
-						<h2>What is StreamAchievements?</h2>
-						<p>Stream Achievements is a fun and interactive platform to add that extra flair to a streaming channel's community through the power of achievements!</p>
-						<p>With this system, a streamer will be able to create various achievements for their community to earn while interacting with stream!</p>
-						<p>This isn't just for streamers though! For someone who just watches streams, you will be able to keep track of all the achievements you have earned from your favorite streamers!</p>
+						<h2>What is Stream Achievements?</h2>
+						<p>Stream Achievements is a fun and interactive platform that adds in extra flair to a streaming channel's community through the power of achievements!</p>
+						<p>With this system, a content creator is able to provide various achievements for their community to earn while they interact with the stream!</p>
+						<p>This isn't just for streamers though! As a community member, you will be able to keep track of all the achievements you have earned from your favorite streamers!</p>
 						<div className="yt-wrapper">
 							<div className="yt-container">
 								<iframe className="yt-vid" src="https://www.youtube.com/embed/PS5k6bIW8q4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -83,8 +83,8 @@ export default class LandingPage extends React.Component {
 					<div className="section-content">
 						<h2>Easy To Use</h2>
 						<div>
-							<p>Getting your channel stood up is quick and easy, thanks to integration with the supported streaming platform!</p>
-							<p>You'll be ready to get your community engaged in no time!</p>
+							<p>Getting started with your channel is quick and easy thanks to our integration with the supported streaming platforms!</p>
+							<p>You'll be ready to further engage your community in no time!</p>
 						</div>
 					</div>
 				</div>
@@ -95,8 +95,8 @@ export default class LandingPage extends React.Component {
 						</div>
 						<div className="section-info">
 							<h2>Seamless Achievement Creation</h2>
-							<p>Creating your first achievements is quick and painless, with helpful tips to guide you along the way!</p>
-							<p>You are also able to see your achievement come to life as you are creating it!</p>
+							<p>Creating your first achievements will be quick and painless, with helpful tips guiding you along the way!</p>
+							<p>You will also able to see your achievements come to life as you are creating them!</p>
 						</div>
 					</div>
 				</div>
@@ -104,22 +104,22 @@ export default class LandingPage extends React.Component {
 					<div className="section-content">
 						<h2>Custom Achievements</h2>
 						<div>
-							<p>The sky is the limits!</p>
-							<p>Award achievements for numerous activities, such as following, subbing, hosting, gifting, etc.!</p>
-							<p>Create custom achievements for those quirks that make your stream unique and awesome!</p>
+							<p>The possibilities are limitless when it comes to custom achievements!</p>
+							<p>Award achievements for numerous activities, including follows, subs, hosts, donations, etc.!</p>
+							<p>Create custom achievements for those unique moments that make your stream stand out!</p>
 						</div>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--full">
 					<div className="section-content">
 						<h2>We are still growing!</h2>
-						<p>At launch, we wanted to provide a ton of exciting features for both the streamer and community alike, but know that this isn't all there is!</p>
-						<p>As we press forward, more and more features will be released into StreamAchievements to add even more fun & engagement!</p>
+						<p>At launch, we wanted to provide many exciting features for both the content creators and their communities, however, this isn't where it ends!</p>
+						<p>As we continue to work towards providing the best experience, you can look forward to more features being released that will add even more fun & engagement to your channel!</p>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--login">
 					<div className="section-content">
-						<p>What are you waiting for? Get started with your channel today, or use our tools to help spread the word to your favorite streamers to create achievements today!</p>
+						<p>What are you waiting for? Get started today with Stream Achievements and help spread the word to get your favorite streamers creating their own achievements!</p>
 						<a href={process.env.REACT_APP_API_DOMAIN + "auth/twitch"} className="login-button twitch-login-button">
 							<span className="login-button-icon">
 								<img alt="" src={require('../img/twitch-glitch.png')} />
