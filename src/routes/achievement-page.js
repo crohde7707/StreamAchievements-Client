@@ -470,7 +470,7 @@ class AchievementPage extends React.Component {
 				break;
 			case "4":
 				this.isNullorEmpty(validUpdate, 'bot');
-				this.isNullorEmpty(validUpdate, 'query');
+				this.isValidQuery(validUpdate, 'query');
 				this.isValidCondition(validUpdate, 'condition');
 			default:
 				break;
@@ -490,8 +490,26 @@ class AchievementPage extends React.Component {
 
 	}
 
+	isValidQuery = (fieldSet, field) => {
+		debugger;
+		if(!this.isNullorEmpty(fieldSet, field)) {
+			return;
+		} else {
+			let userFound = this.state[field].indexOf('{user}') >= 0;
+
+			if(!userFound) {
+				fieldSet[field] = false;
+			} else {
+				fieldSet[field] = true;
+			}
+		}
+	}
+
 	isValidCondition = (fieldSet, field) => {
 		if(this.state[field].length > 0) {
+			let query = this.state['query'];
+			let queryMatches = query.match(/({[a-zA-Z0-9_,\.]+})/g);
+
 			let pattern = /[a-zA-Z0-9_]+[<>=]+[a-zA-Z0-9_,\.]+;*/g;
 			let matches = this.state[field].match(pattern);
 
@@ -499,13 +517,25 @@ class AchievementPage extends React.Component {
 				let combined = matches.join('');
 
 				if(combined.length === this.state[field].length) {
-					fieldSet[field] = true;
-					return;
+
+					let found = false;
+					//check if provided condition is in message
+					queryMatches.length > 0 && queryMatches.forEach(query => {
+						let key = query.replace(/[{}]+/g, '');
+
+						if(key !== 'user' && !found) {
+							found = this.state[field].indexOf(key + '=') >= 0;
+						}
+					});
+
+					if(found) {
+						fieldSet[field] = true;	
+						return;
+					}
 				}
 			}
 
 			fieldSet[field] = false;
-
 		}
 	}
 
