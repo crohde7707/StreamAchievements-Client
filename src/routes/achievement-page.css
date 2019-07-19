@@ -17,19 +17,36 @@
 }
 
 .achievementPage-header h2 {
-	flex: 1;
+	font-size: 22px
 }
 
 .delete-achievement-button {
+	flex: 1;
+	margin-left: 5px;
+}
+
+.delete-achievement-button img {
     height:25px;
     padding: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.delete-achievement-button:hover {
+.delete-achievement-button img:hover {
 	background:rgb(63, 56, 82);
     transition: all 0.2s ease;
+}
+
+.tutorial-button {
+	padding: 10px 20px;
+    height: 36px;
+    display: block;
+    margin: 0;
+    border: 0;
+    background: #425583;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .achievement-preview {

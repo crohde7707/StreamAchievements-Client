@@ -7,6 +7,7 @@ import Notice from '../components/notice';
 import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
 import InfoPanel from '../components/info-panel';
+import TutorialPanel from '../components/tutorial-panel';
 import connector from '../redux/connector';
 import LoadingSpinner from '../components/loading-spinner';
 import {Link} from 'react-router-dom';
@@ -619,6 +620,12 @@ class AchievementPage extends React.Component {
 		});
 	}
 
+	showTutorial = () => {
+		this.setState({
+			showTutorial: true
+		});
+	}
+
 	toggleHover = (showHover) => {
 		if(showHover) {
 			this.hover.classList.add('hoverText--active');
@@ -645,13 +652,14 @@ class AchievementPage extends React.Component {
 			edit: false,
 			showConfirm: false,
 			showImagePanel: false,
-			showInfoPanel: false
+			showInfoPanel: false,
+			showTutorial: false
 		});
 	}
 
 	render() {
 
-		let content, iconGallery, confirmPanel, imagePanel, infoPanel, imgPreviewContent, iconSection;
+		let content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
 
 			let {title, description, earnable, limited, secret} = this.state;
@@ -692,6 +700,14 @@ class AchievementPage extends React.Component {
 				);
 			} else {
 				infoPanel = undefined;
+			}
+
+			if(this.state.showTutorial) {
+				tutorialPanel = (
+					<TutorialPanel onClose={() => {this.setState({showTutorial: false})}} />
+				);
+			} else {
+				tutorialPanel = undefined
 			}
 
 			if(this.state.edit) {
@@ -756,7 +772,8 @@ class AchievementPage extends React.Component {
 					<div className="achievement-wrapper">
 						<div className="achievementPage-header">
 							<h2>{pageHeader}</h2>
-							<span>{deleteButton}</span>
+							<span className="delete-achievement-button">{deleteButton}</span>
+							<button type="button" class="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
 						</div>
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}
@@ -875,6 +892,7 @@ class AchievementPage extends React.Component {
 		                    {confirmPanel}
 		                    {imagePanel}
 		                    {infoPanel}
+		                    {tutorialPanel}
 						</form>
 					</div>
 				</Template>		
