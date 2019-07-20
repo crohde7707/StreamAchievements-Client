@@ -17,7 +17,11 @@ class Achievement extends React.Component {
 
 		let achievementClass = "achievement";
 		let icon = this.props.achievement.icon || defaultIcons.default || '';
+		
+		console.log(icon);
 		let limitedContent;
+
+		console.log(this.props.achievement);
 
 		if(!unlocked) {
 			icon = defaultIcons.default;
@@ -58,7 +62,6 @@ class Achievement extends React.Component {
 		}
 
 		let logo;
-
 		if(icon) {
 			logo = (
 				<div className="achievement-logo"><img src={icon} /></div>

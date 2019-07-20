@@ -2,5 +2,25 @@
 	background: #00000000;
     width: 100%;
     height: 100%;
+    margin: 10px;
+    bottom: 0;
     position: absolute;
+}
+
+.overlay-container {
+	position: absolute;
+	width: 100%;
+}
+
+.overlay-container.top {
+	top: 30px;
+}
+
+.overlay-container.bottom {
+	bottom: 30px;
+}
+
+.overlay-container .achievement {
+	width:25%;
+	margin: 0 auto;
 }

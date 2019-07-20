@@ -7,13 +7,16 @@ export default class AlertConfigurationPanel extends React.Component {
 	constructor(props) {
 		super(props);
 
-		let alert = props.alert || {};
+		let overlay = props.overlay || {};
 
 		this.state = {
-			message: alert.message || "",
-			sound: alert.sound || "001",
-			volume: alert.volume || 100,
-			duration: alert.duration || 1
+			chat: overlay.chat || true,
+			message: overlay.message || "",
+			sound: overlay.sound || "001",
+			enterEffect: overlay.enterEffect || "easeIn",
+			exitEffect: overlay.exitEffect || "easeOut",
+			volume: overlay.volume || 100,
+			duration: overlay.duration || 1
 		};
 	}
 
@@ -55,11 +58,37 @@ export default class AlertConfigurationPanel extends React.Component {
 	copyOverlayURL = () => {
 		this._overlayURL.select();
 		document.execCommand("copy");
+		document.getSelection().removeAllRanges();
 	}
 
 	render() {
 		let audioSrc = `/sounds/achievement.${this.state.sound}.mp3`;
 		let audioVolume = parseFloat(this.state.volume) / 100;
+
+		let chatMessage;
+
+		if(this.state.chat) {
+			chatMessage = (
+				<div className="section-wrapper">
+				    <div className="section-label">
+				        <label htmlFor="message">Chat Message</label>
+				    </div>
+				    <div className="section-value">
+				       <input
+							id="alert-message"
+							name="message"
+							className="textInput"
+							type="text"
+							value={this.state.message}
+							placeholder="{user} just earned the {achievement} achievement! PogChamp"
+							onChange={this.handleDataChange}
+						/>
+				    </div>
+				</div>
+			)
+		} else {
+			chatMessage = undefined;
+		}
 
 		return (
 			<div className="alert-overlay">
@@ -68,7 +97,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				    <div className="section-label">
 				        <label htmlFor="message">Overlay URL</label>
 				    </div>
-				    <div className="section-value">
+				    <div className="section-value overlay-url">
 				       	<div className="overlay-url--wrapper">
 				       		<input 
 				       			type="text"
@@ -79,22 +108,67 @@ export default class AlertConfigurationPanel extends React.Component {
 				       		/>
 				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
 				       	</div>
+				       	<div className="helpText">This URL is unique to you! Don't share it with anyone!</div>
 				    </div>
 				</div>
-				<div className="section-wrapper">
-				    <div className="section-label">
-				        <label htmlFor="message">Alert Message</label>
-				    </div>
-				    <div className="section-value">
-				       <input
-							id="alert-message"
-							name="message"
-							className="textInput"
-							type="text"
-							value={this.state.message}
-							onChange={this.handleDataChange}
-						/>
-				    </div>
+				<div className="section-group">
+					<div className="section-wrapper">
+					    <div className="section-label">
+					        <label htmlFor="message">Alert in Chat?</label>
+					    </div>
+					    <div className="section-value">
+					       <input
+								id="alert-message"
+								name="chat"
+								className="textInput"
+								type="checkbox"
+								checked={this.state.chat}
+								value="chat"
+								onChange={this.handleDataChange}
+							/>
+					    </div>
+					</div>
+					{chatMessage}
+				</div>
+				<div className="section-group">
+					<div className="section-wrapper">
+					    <div className="section-label">
+					        <label htmlFor="enterEffect">Enter Animation</label>
+					    </div>
+					    <div className="section-value">
+					       <select 
+								name="enterEffect"
+								className={"selectInput" + ((this.isInvalid("enterEffect")) ? " invalid" : "")}
+								title="Enter Animation"
+								onChange={this.handleDataChange}
+								value={this.state.enterEffect}
+							>
+								<option value="easeIn">Ease In</option>
+								<option value="fadeIn">Fade In</option>
+								<option value="zoomIn">Zoom In</option>
+								<option value="slideIn-Top">Slide In</option>
+							</select>
+					    </div>
+					</div>
+					<div className="section-wrapper">
+					    <div className="section-label">
+					        <label htmlFor="exitEffect">Exit Animation</label>
+					    </div>
+					    <div className="section-value">
+					       <select 
+								name="exitEffect"
+								className={"selectInput" + ((this.isInvalid("exitEffect")) ? " invalid" : "")}
+								title="Exit Animation"
+								onChange={this.handleDataChange}
+								value={this.state.exitEffect}
+							>
+								<option value="easeOut">Ease Out</option>
+								<option value="fadeOut">Fade Out</option>
+								<option value="zoomOut">Zoom Out</option>
+								<option value="slideOut-Top">Slide Out</option>
+							</select>
+					    </div>
+					</div>
 				</div>
 				<div className="section-wrapper">
 				    <div className="section-label">

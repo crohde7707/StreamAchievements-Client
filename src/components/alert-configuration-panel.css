@@ -3,20 +3,49 @@
 	align-items: center;
 }
 
+.alert-overlay .section-group {
+  padding: 20px;
+  background: rgba(0,0,0,0.5)
+}
+
+.alert-overlay .section-group .section-wrapper {
+  padding: 1px 20px;
+  background: none;
+  margin-left: -10px;
+}
+
+.alert-overlay .overlay-url {
+  flex-direction: column;
+}
+
+.alert-overlay .helpText {
+    width: 100%;
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: left;
+}
+
 .alert-overlay input[type="range"] {
 	flex: 1;
 	margin-right: 10px;
 }
 
-.alert-overlay input[type="text"] {
+.alert-overlay input[type="text"],
+.alert-overlay input[type="password"] {
 	width: 80%;
 	padding: 2%;
+}
+
+.alert-overlay select {
+  padding: 2%;
+  min-width: 200px
 }
 
 .alert-overlay #alert-sound {
 	margin-right: 10px;
 	width: 30%;
-	padding:2 %;
 }
 
 .alert-overlay .play-sound {
@@ -77,6 +106,8 @@
   background: none;
   color: white;
   border: 1px solid #425583;
+  color:transparent;
+  text-shadow: 0px 0px 5px #FFF;
 }
 
 .overlay-url--wrapper button {

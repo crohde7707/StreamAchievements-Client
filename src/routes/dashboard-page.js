@@ -30,6 +30,7 @@ class DashboardPage extends React.Component {
 			showConfirm: false,
 			loading: true,
 			showImagePanel: false,
+			overlay: '',
 			selected: {
 				defaultIcon: '',
 				hiddenIcon: ''
@@ -60,6 +61,7 @@ class DashboardPage extends React.Component {
 					achievements: res.data.achievements,
 					images: res.data.images,
 					members: res.data.members,
+					overlay: res.data.channel.overlay,
 					loading: false,
 					selected: {}
 				};
@@ -423,6 +425,10 @@ class DashboardPage extends React.Component {
 		}
 	}
 
+	handleOverlayChange = (evt, field) => {
+		console.log(evt);
+	}
+
 	handleConfirm = () => {
 		let iconName = this.state.iconName;
 		let identifier = (iconName === 'defaultIcon') ? 'customDefault' : 'customHidden';
@@ -708,7 +714,7 @@ class DashboardPage extends React.Component {
 						        />
 						    </div>
 						</div>
-						{/*<AlertConfig oid={this.state.channel.oid}/>*/}
+						{/*<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange}/>*/}
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>

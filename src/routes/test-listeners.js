@@ -35,6 +35,12 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	testOverlay = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/overlay', {}, {
+			withCredentials: true
+		})
+	}
+
 	sendData = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {
 			channel: this.state.channel,
@@ -87,6 +93,9 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.fixSync} type="button">Fix Sync</button>
+					</div>
+					<div>
+						<button onClick={this.testOverlay} type="button">Test Overlay</button>
 					</div>
 				</div>
 			</Template>
