@@ -34,7 +34,7 @@ class OverlayPanel extends React.Component {
 				});
 			});
 
-			this._socket = io.connect(`${process.env.REACT_APP_API_DOMAIN}?uid=${this.state.uid}`, {
+			this._socket = io.connect(`${process.env.REACT_APP_SOCKET_DOMAIN}?uid=${this.state.uid}`, {
 				reconnection: true,
 				transports: ['websocket']
 			});
