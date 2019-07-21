@@ -525,7 +525,11 @@ class AchievementPage extends React.Component {
 						let key = query.replace(/[{}]+/g, '');
 
 						if(key !== 'user' && !found) {
-							found = this.state[field].indexOf(key + '=') >= 0;
+							let test = new RegExp(key + '[<>=]+');
+
+							if(this.state[field].match(test)) {
+								found = true;
+							}
 						}
 					});
 
