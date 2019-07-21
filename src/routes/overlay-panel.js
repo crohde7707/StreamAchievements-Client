@@ -104,7 +104,7 @@ class OverlayPanel extends React.Component {
 		if(this.state.alert) {
 			alertContent = (
 				<div className="overlay-container bottom">
-					<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} earned={true}/>
+					<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true}/>
 					<div className="hidden">
 						<audio 
 							preload="auto"
