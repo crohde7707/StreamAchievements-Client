@@ -17,11 +17,8 @@ class Achievement extends React.Component {
 
 		let achievementClass = "achievement";
 		let icon = this.props.achievement.icon || defaultIcons.default || '';
-		
-		console.log(icon);
-		let limitedContent;
 
-		console.log(this.props.achievement);
+		let limitedContent;
 
 		if(!unlocked) {
 			icon = defaultIcons.default;

@@ -16,7 +16,8 @@ export default class AlertConfigurationPanel extends React.Component {
 			enterEffect: overlay.enterEffect || "easeIn",
 			exitEffect: overlay.exitEffect || "easeOut",
 			volume: overlay.volume || 100,
-			duration: overlay.duration || 1
+			duration: overlay.duration || 1,
+			delay: overlay.delay || 2
 		};
 	}
 
@@ -241,6 +242,25 @@ export default class AlertConfigurationPanel extends React.Component {
 							value={this.state.duration}
 						/>
 						<span>{this.state.duration} seconds</span>
+				    </div>
+				</div>
+				<div className="section-wrapper">
+					<div className="section-label">
+				        <label htmlFor="delay">Alert Delay</label>
+				    </div>
+				    <div className="section-value">
+				       <input 
+							id="alert-delay"
+							name="delay"
+							className={"sliderInput" + ((this.isInvalid("delay")) ? " invalid" : "")}
+							title="Delay"
+							onChange={this.handleDataChange}
+							type="range"
+							min={1}
+							max={8}
+							value={this.state.delay}
+						/>
+						<span>{this.state.delay} seconds</span>
 				    </div>
 				</div>
 			</div>
