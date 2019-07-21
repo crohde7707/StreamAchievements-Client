@@ -24,7 +24,7 @@ class ChannelDirectoryPage extends React.Component {
 	}
 
 	componentDidMount() {
-		this._socket = io.connect(process.env.REACT_APP_API_DOMAIN, {
+		this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
     		reconnection: true
     	});
 
