@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "985c947615b310fb3d68",
+    "revision": "ecef265e5a09bfef820e",
     "url": "/static/css/main.b13de2a7.chunk.css"
   },
   {
-    "revision": "985c947615b310fb3d68",
-    "url": "/static/js/main.fe994fed.chunk.js"
+    "revision": "ecef265e5a09bfef820e",
+    "url": "/static/js/main.9abce27f.chunk.js"
   },
   {
     "revision": "42ac5946195a7306e2a5",
@@ -28,7 +28,7 @@ self.__precacheManifest = [
     "url": "/static/media/gold-ach.609896e9.png"
   },
   {
-    "revision": "400dbb99980dafe813b91763ff249788",
+    "revision": "70209e4477dd88bbe2ebd0aa2bab9a8e",
     "url": "/index.html"
   }
 ];

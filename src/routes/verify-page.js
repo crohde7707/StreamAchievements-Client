@@ -17,8 +17,8 @@ class VerifyPage extends React.Component {
 
 		this.state = {
 			expired: false,
-			verified: true,
-			fetch: false
+			verified: false,
+			fetch: true
 		}
 	}
 
