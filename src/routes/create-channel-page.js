@@ -74,7 +74,8 @@ class CreateChannelPage extends React.Component {
 
 			content = (
 				<div className="main-content createChannel--wrapper">
-					<h3>{`Thank you for your interest in wanting to provide achievements to the community, ${user}!`}</h3>
+					<h3>{`Thank you for your interest in joining Stream Achievements, ${user}!`}</h3>
+					<p>We are certain that your community is going to love having achievements that they can earn while supporting you!</p>
 					<p>To send your confirmation, just type the word 'ACHIEVEMENT' in the box below!</p>
 					<p>Once received, we will review your Stream channel to confirm activity! Once we have the confirmation, you will receive an email with a validation code to start creating achievements!</p>
 					{form}

@@ -12,9 +12,13 @@
 }
 
 .verify-wrapper h2 {
-    font-size: 30px;
+    font-size: 36px;
 }
 
 .verify-wrapper a {
 	color: #ecdc19;
+}
+
+.verify-wrapper .congrats-icon {
+	max-width: 300px;
 }

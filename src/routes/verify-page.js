@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import qs from 'query-string';
+import connector from '../redux/connector';
+import {updateStatus} from '../redux/profile-reducer';
+import { TwitterShareButton } from 'react-twitter-embed';
 
 import Template from '../components/template';
 
@@ -14,8 +17,8 @@ class VerifyPage extends React.Component {
 
 		this.state = {
 			expired: false,
-			verified: false,
-			fetch: true
+			verified: true,
+			fetch: false
 		}
 	}
 
@@ -33,6 +36,7 @@ class VerifyPage extends React.Component {
 						fetch: false
 					});
 				} else if(res.data.verified) {
+					this.props.dispatch(updateStatus({status: "verified"}));
 					this.setState({
 						verified: true,
 						expired: false,
@@ -63,10 +67,21 @@ class VerifyPage extends React.Component {
 		} else if(this.state.verified) {
 			content = (
 				<div class='verify-wrapper'>
-					<h2>Success!! You have been verified!</h2>
+					<h2>You have been verified!</h2>
+					<img className="congrats-icon" src="https://res.cloudinary.com/phirehero/image/upload/v1563800518/congrats.png" />
 					<p>You are now ready to start creating those achievmenets for your community to earn!</p>
 					<p>Let your community know that you now offer achievements! Click the 'Share on Twitter' button below to inform the masses!</p>
-					<p><a href="https://ctt.ac/eLcfl" target="_blank">Click</a></p>
+					<div className="share">
+					<TwitterShareButton
+					    url={'https://streamachievements.com/'}
+					    options={{
+					    	text: 'I was just verified to start offering achievements for our #Twitch community through #StreamAchievements! @streamachieve',
+					    	size: 'large'
+					    }}
+					  />
+					<p>To start creating achievements, drop into your <Link to='/dashboard'>dashboard</Link>!</p>
+
+				</div>
 				</div>
 			);
 		}
@@ -79,4 +94,10 @@ class VerifyPage extends React.Component {
 	}
 }
 
-export default VerifyPage;
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default connector(headerMapStateToProps)(VerifyPage);

@@ -21,26 +21,17 @@ export default class AlertConfigurationPanel extends React.Component {
 		};
 	}
 
-	handleDataChange = (event) => {
-		const target = event.target;
+	handleDataChange = (evt) => {
+		const target = evt.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
 		const name = target.name;
 
-		let touched = this.state.touched || {};
-		touched[name] = true;
-
 		let stateUpdate = {
-			[name]: value,
-			touched
+			[name]: value
 		};
 
-		if(this.state.valid && !this.state.valid[name]) {
-			stateUpdate.valid = {
-				[name]: true
-			};
-		}
-
 		this.setState(stateUpdate);
+		this.props.onChange(evt);
 	}
 
 	isInvalid = (field) => {
@@ -52,7 +43,6 @@ export default class AlertConfigurationPanel extends React.Component {
 	}
 
 	playSound = () => {
-		console.log(this.audioRef);
 		this.audioRef.play();
 	}
 
@@ -106,6 +96,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				       			className="textInput overlay-url"
 				       			ref={(el) => {this._overlayURL = el}}
 				       			value={`https://streamachievements.com/overlay/${this.props.oid}`}
+								onChange={this.handleDataChange}
 				       		/>
 				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
 				       	</div>

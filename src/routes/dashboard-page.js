@@ -425,8 +425,26 @@ class DashboardPage extends React.Component {
 		}
 	}
 
-	handleOverlayChange = (evt, field) => {
-		console.log(evt);
+	handleOverlayChange = (event) => {
+		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
+
+		let touched = this.state.touched || {};
+		touched[name] = true;
+
+		let stateUpdate = {
+			[name]: value,
+			touched
+		};
+
+		if(this.state.valid && !this.state.valid[name]) {
+			stateUpdate.valid = {
+				[name]: true
+			};
+		}
+
+		this.setState(stateUpdate);
 	}
 
 	handleConfirm = () => {
@@ -451,44 +469,54 @@ class DashboardPage extends React.Component {
 
 		let defaultPromise, hiddenPromise;
 		let payload = {};
+
+		let {
+			defaultIcon,
+			defaultIconFile,
+			defaultIconSelected,
+			hiddenIcon,
+			hiddenIconFile,
+			hiddenIconSelected,
+			...other
+		} = this.state.touched;
 		
 		//check for default change
-		if(this.state.touched.defaultIcon) {
+		if(defaultIcon) {
 			//change made to default icon
-			if(this.state.touched.defaultIconFile) {
+			if(defaultIconFile) {
 				//need to upload
 				defaultPromise = new Promise((resolve, reject) => {
 					var defaultReader = new FileReader();
 					defaultReader.addEventListener("load", () => {
 						payload.defaultIcon = defaultReader.result;
-						payload.defaultIconName = this.state.defaultIconFile.name;
+						payload.defaultIconName = defaultIconFile.name;
 						resolve();
 					});
-					defaultReader.readAsDataURL(this.state.defaultIconFile);
+					defaultReader.readAsDataURL(defaultIconFile);
 				});
 			} else {
-				payload.defaultImage = this.state.defaultIconSelected
+				payload.defaultImage = defaultIconSelected
 				defaultPromise = Promise.resolve();
 			}
 		} else {
 			defaultPromise = Promise.resolve();
 		}
 		//check for hidden change
-		if(this.state.touched.hiddenIcon) {
+		if(hiddenIcon) {
 			//change made to default icon
-			if(this.state.touched.hiddenIconFile) {
+			if(hiddenIconFile) {
 				//need to upload
 				hiddenPromise = new Promise((resolve, reject) => {
 					var hiddenReader = new FileReader();
 					hiddenReader.addEventListener("load", () => {
 						payload.hiddenIcon = hiddenReader.result;
-						payload.hiddenIconName = this.state.hiddenIconFile.name;
+						payload.hiddenIconName = hiddenIconFile.name;
 						resolve();
 					});
-					hiddenReader.readAsDataURL(this.state.hiddenIconFile);
+					hiddenReader.readAsDataURL(hiddenIconFile);
 				});
 			} else {
-				payload.hiddenImage = this.state.hiddenIconSelected
+				payload.hiddenImage = hiddenIconSelected
 				hiddenPromise = Promise.resolve();
 			}
 		} else {
@@ -496,6 +524,14 @@ class DashboardPage extends React.Component {
 		}
 
 		Promise.all([defaultPromise, hiddenPromise]).then(results => {
+			if(other) {
+				let otherKeys = Object.keys(other);
+				payload.overlay = {};
+				otherKeys.forEach(key => {
+					payload.overlay[key] = this.state[key];
+				});
+			}
+
 			if(Object.keys(payload).length > 0) {
 				//changes made, call to service
 				axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/preferences', payload, {
