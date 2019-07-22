@@ -106,6 +106,12 @@ class Header extends React.Component {
 						{channelLink}
 						{adminLink}
 						<li><Link to='/gold'>StreamAchievements Gold</Link></li>
+						<li className="discord">
+							<a href="https://discord.gg/xkF35Qj" target="_blank">
+								<span className="discord-icon"><img src="https://res.cloudinary.com/phirehero/image/upload/v1563803703/Discord-Logo-White.png" /></span>
+								<span className="discord-text">Discord</span>
+							</a>
+						</li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>
