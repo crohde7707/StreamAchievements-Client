@@ -212,6 +212,10 @@
 	    transition: all 0.2s ease;
 	}
 
+	.long-description { 
+		display: none;
+	}
+
 	.channel-header--stub {
 		height: 60px;
 	}
@@ -227,10 +231,19 @@
 		transition: all 0.2s ease;
 	}
 
+	.channel-logo {
+		margin: 0 10px;
+	}
+
 	.channel-logo img {
 		width: 55px;
 		height: 55px;
 		transition: all 0.2s ease;
+	}
+
+	.channel-name span {
+	    font-size: 18px;
+	    margin-right: 8px;
 	}
 
 	.achievements-container .achievement-logo img {
