@@ -62,7 +62,8 @@ class OverlayPanel extends React.Component {
 					let achievement = {
 						title: alert.title,
 						description: alert.user,
-						icon: alert.icon
+						icon: alert.icon,
+						unlocked: alert.unlocked
 					}
 
 					this.setState({
