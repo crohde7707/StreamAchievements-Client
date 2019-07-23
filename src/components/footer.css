@@ -16,6 +16,22 @@
     text-align: center;
 }
 
+.footer-content.social {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 125px;
+}
+
+.footer-content.social a {
+
+}
+
+.footer-content.social img {
+    width: 30px;
+}
+
 @media only screen and (max-width: 480px) {
     .footer {
         height: 80px;
