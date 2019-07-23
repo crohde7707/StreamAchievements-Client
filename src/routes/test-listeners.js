@@ -24,7 +24,7 @@ export default class TestListeners extends React.Component {
 	}
 
 	flushQueue = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/flush', {}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/flush', {}, {
 			withCredentials: true
 		});
 	}

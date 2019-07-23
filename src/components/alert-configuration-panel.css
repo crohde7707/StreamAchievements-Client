@@ -119,3 +119,26 @@
   color: white;
   cursor: pointer;
 }
+
+.full .section-value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0;
+}
+
+.full .section-value button {
+    padding: 5px 15px;
+    height: 36px;
+    margin-left: 5px;
+    background: #425583;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+#alert-chat {
+    width: 25px;
+    height: 25px;
+    margin-left: 0;
+}

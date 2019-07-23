@@ -750,7 +750,7 @@ class DashboardPage extends React.Component {
 						        />
 						    </div>
 						</div>
-						{/*<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange}/>*/}
+						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange}/>
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>

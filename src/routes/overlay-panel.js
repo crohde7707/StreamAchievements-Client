@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import io from "socket.io-client";
 import Achievement from '../components/achievement';
-import {CSSTransition} from 'react-transition-group';
+import {Animated} from "react-animated-css";
+import {Helmet} from 'react-helmet';
 
 import './overlay-panel.css';
 
@@ -18,6 +19,7 @@ class OverlayPanel extends React.Component {
 		}
 
 		this._queue = [];
+		this._alert = new Audio();
 	}
 
 	componentDidMount() {
@@ -28,6 +30,8 @@ class OverlayPanel extends React.Component {
 					id: this.props.match.params.uid
 				}
 			}).then((res) => {
+				this._alert.src = res.data.overlay.sfx;
+				this._alert.volume = parseFloat(res.data.overlay.volume) / 100;
 				this.setState({
 					settings: res.data.overlay,
 					icons: res.data.icons
@@ -47,6 +51,14 @@ class OverlayPanel extends React.Component {
 					this.queueAlert(alert);	
 				}
 			});
+
+			this._socket.on('update-settings', (settings) => {
+				this._alert.src = settings.sfx;
+				this._alert.volume = parseFloat(settings.volume) / 100;
+				this.setState({
+					settings
+				});
+			})
 		} else {
 			this.props.history.push('/home');
 		}
@@ -70,6 +82,7 @@ class OverlayPanel extends React.Component {
 						alert: achievement,
 						showAlert: true
 					}, () => {
+						this._alert.play();
 						setTimeout(() => {
 							this.setState({
 								showAlert: false
@@ -100,38 +113,35 @@ class OverlayPanel extends React.Component {
 
 	render() {
 
-		let alertContent;
+		let alertContent, audioVolume;
 
 		if(this.state.alert) {
 			alertContent = (
 				<div className="overlay-container bottom">
-					<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true}/>
-					<div className="hidden">
-						<audio 
-							preload="auto"
-							src={this.state.settings.sfx}
-							ref={(audio) => this.audioRef = audio}
-							volume={this.state.settings.volume}
-							autoPlay={true}
-						/>
-					</div>
-					{/*<h2>{this.state.alert.member} just earned the {this.state.alert.achievement} achievement!</h2>*/}
+						<Animated
+							animationIn={this.state.settings.enterEffect}
+							animationOut={this.state.settings.exitEffect}
+							animationInDuration={400}
+							animationOutDuration={400}
+							isVisible={this.state.showAlert}
+							className="alert-overlay"
+							animateOnMount={true}
+						>
+							<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true}/>
+						</Animated>
 				</div>
 			)
 		}
 
 		return (
-			<div id={this.state.uid} className="overlay-wrapper">
-				<CSSTransition
-						in={this.state.showAlert}
-						timeout={200}
-						classNames="alert-overlay"
-					>
-					<div>
-						{alertContent}
-					</div>
-				</CSSTransition>
-			</div>
+			<React.Fragment>
+				<Helmet>
+      				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
+      			</Helmet>
+				<div id={this.state.uid} className="overlay-wrapper">
+					{alertContent}
+				</div>
+			</React.Fragment>
 		);
 	}
 }
