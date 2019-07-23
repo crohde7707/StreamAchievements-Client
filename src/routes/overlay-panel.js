@@ -23,6 +23,8 @@ class OverlayPanel extends React.Component {
 	}
 
 	componentDidMount() {
+		document.body.classList.add('no-background');
+		document.getElementsByTagName('html')[0].classList.add('no-background');
 		if(this.state.uid) {
 
 			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/overlay', {

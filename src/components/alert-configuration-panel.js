@@ -121,6 +121,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
 				       	</div>
 				       	<div className="helpText">This URL is unique to you! Don't share it with anyone!</div>
+				       	<div className="helpText">Place overlay full screen, positioning options coming soon!</div>
 				    </div>
 				</div>
 				<div className="section-group">
