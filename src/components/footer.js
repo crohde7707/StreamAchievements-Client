@@ -11,13 +11,13 @@ export default class Footer extends React.Component {
 					‎© 2019 StreamAchievements. All Rights Reserved.
 				</div>
 				<div class="footer-content social">
-					<a href="https://twitter.com/streamachieve">
+					<a target="_blank" href="https://twitter.com/streamachieve">
 						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/twitter-icon.png" />
 					</a>
-					<a href="https://discord.gg/xkF35Qj">
+					<a target="_blank" href="https://discord.gg/xkF35Qj">
 						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/discord-icon.png" />
 					</a>
-					<a href="https://www.youtube.com/channel/UC06LsnP9p8woHBqwjN_jJtw">
+					<a target="_blank" href="https://www.youtube.com/channel/UC06LsnP9p8woHBqwjN_jJtw">
 						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/yt-icon.png" />
 					</a>
 				</div>
