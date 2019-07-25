@@ -85,23 +85,23 @@ class OverlayPanel extends React.Component {
 						showAlert: true
 					}, () => {
 						this._alert.play();
-						setTimeout(() => {
-							this.setState({
-								showAlert: false
-							});
+						// setTimeout(() => {
+						// 	this.setState({
+						// 		showAlert: false
+						// 	});
 							
-						}, (this.state.settings.duration * 1000) - 500);
+						// }, (this.state.settings.duration * 1000) - 500);
 
-						setTimeout(() => {
-							this.setState({
-								alert: undefined
-							}, () => {
-								if(this._queue.length > 0) {
-									console.log('alert in queue');
-									this.showAlert();
-								}
-							});
-						}, this.state.settings.duration * 1000);
+						// setTimeout(() => {
+						// 	this.setState({
+						// 		alert: undefined
+						// 	}, () => {
+						// 		if(this._queue.length > 0) {
+						// 			console.log('alert in queue');
+						// 			this.showAlert();
+						// 		}
+						// 	});
+						// }, this.state.settings.duration * 1000);
 					});
 				}
 			}, this.state.settings.delay * 1000);
@@ -119,7 +119,7 @@ class OverlayPanel extends React.Component {
 
 		if(this.state.alert) {
 			alertContent = (
-				<div className="overlay-container bottom">
+				<div className="overlay-container achievement-theme">
 						<Animated
 							animationIn={this.state.settings.enterEffect}
 							animationOut={this.state.settings.exitEffect}
