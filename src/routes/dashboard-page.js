@@ -13,6 +13,7 @@ import ConfirmPanel from '../components/confirm-panel';
 import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
 
@@ -554,6 +555,10 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	onDragEnd = result => {
+
+	}
+
 	render() {
 
 		if(this.props.profile && !this.props.profile.stats === 'verified') {
@@ -801,25 +806,39 @@ class DashboardPage extends React.Component {
 								
 							</div>
 						</div>
-						{achievements.map((achievement, index) => {
-							let className = '';
+						<DragDropContext onDragEnd={this.onDragEnd}>
+							<Droppable droppableId={"achievement-list"}>
+								{(provided) => (
+									<div
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+									>
+										{achievements.map((achievement, index) => {
+											let className = '';
 
-							if(achievement.code === '4' && !this.props.patreon.gold) {
-								className = 'achievement--disabled';
-							}
-							return (
-								<Achievement 
-									key={'achievement-' + index}
-									unlocked={this.props.patreon && this.props.patreon.gold}
-									className={className}
-									editable={true}
-									achievement={achievement}
-									onGift={this.showGiftModal}
-									defaultIcons={this.state.channel.icons}
-									onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
-								/>
-							)
-						})}
+											if(achievement.code === '4' && !this.props.patreon.gold) {
+												className = 'achievement--disabled';
+											}
+											return (
+												<Achievement 
+													key={'achievement-' + index}
+													unlocked={this.props.patreon && this.props.patreon.gold}
+													className={className}
+													editable={true}
+													achievement={achievement}
+													onGift={this.showGiftModal}
+													defaultIcons={this.state.channel.icons}
+													onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
+													draggable={true}
+													index={index}
+												/>
+											)
+										})}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
 						{modal}
 					</div>
 				);
@@ -948,6 +967,17 @@ class DashboardPage extends React.Component {
 				</div>
 			</Template>
 		);
+	}
+}
+
+class AchievementList extends React.Component {
+
+	render() {
+		return (
+			<div>
+				{this.props.children}
+			</div>
+		)
 	}
 }
 
