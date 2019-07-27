@@ -605,7 +605,7 @@ class DashboardPage extends React.Component {
 			reordering: false,
 			loading: true
 		});
-		debugger;
+
 		let achievements = this.state.achievements.map((ach, idx) => {
 			return {
 				...ach,
