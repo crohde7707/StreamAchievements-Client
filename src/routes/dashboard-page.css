@@ -149,7 +149,7 @@
 }
 
 .achievement-search input {
-	width: 98%;
+	max-width: 90%;
 	height: 25px;
     padding-left: 2%;
 }
@@ -383,6 +383,86 @@
 .manage-container .disabled {
 	display: none;
 	pointer-events: none;
+}
+
+.achievementsHeader--actionMenu {
+	position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.achievementsHeader--menu {
+	padding: 8px 10px;
+    border: 0;
+    color: white;
+    background: #425583;
+    cursor: pointer;
+}
+
+.achievementsHeader--actions {
+	position: absolute;
+    display: block;
+    top: 42px;
+    right: 0;
+    background: #ffffff;
+    color: black;
+    width: 150px;
+    z-index: 100;
+    border: 0px solid #888;
+    box-shadow: 0px 0px 0px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.achievementsHeader--actions.achievementsHeader--actionsVisible {
+	max-height: 200px;
+    border: 1px solid #888;
+    box-shadow: 1px 1px 3px;
+}
+
+.achievementsHeader--actions ul {
+	list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.achievementsHeader--actions ul a {
+	padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+}
+
+.achievementsHeader--actions ul a:hover {
+	background: #DDD;
+}
+
+.saveReorder--wrapper {
+	position: fixed;
+    z-index: 2000;
+    bottom: 0;
+    right: 0;
+    margin: 50px;
+}
+
+.saveReorder--button {
+	border: 0;
+    padding: 25px;
+    border-radius: 100px;
+    height: 80px;
+    color: white;
+    background: #56658a;
+    box-shadow: 2px 2px 4px black;
+    cursor: pointer;
+}
+
+.achievement-list {
+	background: #00000066;
+    border: 1px dashed;
+    padding-top: 5px;
 }
 
 @media only screen and (max-width: 480px) {

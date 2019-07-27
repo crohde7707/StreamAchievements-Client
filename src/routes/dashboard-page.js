@@ -29,13 +29,15 @@ class DashboardPage extends React.Component {
 			achievements: '',
 			notice: '',
 			showConfirm: false,
+			showAction: false,
 			loading: true,
 			showImagePanel: false,
 			overlay: '',
 			selected: {
 				defaultIcon: '',
 				hiddenIcon: ''
-			}
+			},
+			reordering: false
 		};
 
 		this.icons = {
@@ -223,6 +225,12 @@ class DashboardPage extends React.Component {
 			this.setState(stateUpdate);
 		}
 		
+	}
+
+	toggleActionMenu = () => {
+		this.setState({
+			showAction: !this.state.showAction
+		});
 	}
 
 	promptDelete = (image) => {
@@ -555,8 +563,66 @@ class DashboardPage extends React.Component {
 		});
 	}
 
-	onDragEnd = result => {
+	toggleReorder = () => {
 
+		if(this.state.reordering) {
+			this.setState({
+				achievements: this.state.preorderedAchievements,
+				preorderedAchievements: null,
+				reordering: false,
+				showAction: false
+			});
+		} else {
+			this.setState({
+				preorderedAchievements: this.state.achievements.slice(0),
+				reordering: true,
+				showAction: false
+			});	
+		}
+	}
+
+	onDragEnd = result => {
+		
+		if(result.destination) {
+			let achievements = this.state.achievements;
+
+			let source = result.source.index;
+			let destination = result.destination.index;
+
+			let movedAchievement = achievements.splice(source, 1);
+
+				achievements.splice(destination, 0, movedAchievement[0]);
+
+			this.setState({
+				achievements
+			});
+		}
+		
+	}
+
+	saveReorder = () => {
+		this.setState({
+			reordering: false,
+			loading: true
+		});
+
+		let achievement = this.state.achievement.map((ach, idx) => {
+			return {
+				...ach,
+				order: idx
+			}
+		});
+
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/reorder', {
+			achievements: this.state.achievements
+		},{
+			withCredentials: true
+		}).then((res) => {
+			console.log(res.data);
+			this.setState({
+				loading: false
+			});
+		});
 	}
 
 	render() {
@@ -792,6 +858,27 @@ class DashboardPage extends React.Component {
 					</div>
 				);
 			} else {
+				let actionClasses = "achievementsHeader--actions";
+
+				if(this.state.showAction) {
+					actionClasses += " achievementsHeader--actionsVisible";
+				}
+
+				let saveReorderButton = undefined;
+				let reorderText = "Reorder";
+
+				if(this.state.reordering) {
+					saveReorderButton =  (
+						<div className="saveReorder--wrapper">
+							<button className="saveReorder--button" type="button">
+								{/*save image*/}
+								Save
+							</button>
+						</div>
+					);
+					reorderText = "Cancel Reorder";
+				}
+
 				achievementTab = (
 					<div>
 						<div className="achievementsHeader">
@@ -799,11 +886,14 @@ class DashboardPage extends React.Component {
 							<div className="achievement-search">
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
-							<div className="achievementsHeader--add">
-								<Link to={"/dashboard/achievement"}>Add New...<div className="achievementsHeader--plus">
-									<img alt="" src={require('../img/plus.png')} />
-								</div></Link>
-								
+							<div className="achievementsHeader--actionMenu">
+								<button type="button" className="achievementsHeader--menu" onClick={this.toggleActionMenu}>Actions</button>
+								<div className={actionClasses}>
+									<ul>
+										<li><Link to={"/dashboard/achievement"}>Create</Link></li>
+										<li><a href="javascript:;" onClick={this.toggleReorder}>{reorderText}</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
 						<DragDropContext onDragEnd={this.onDragEnd}>
@@ -812,6 +902,7 @@ class DashboardPage extends React.Component {
 									<div
 										ref={provided.innerRef}
 										{...provided.droppableProps}
+										className="achievement-list"
 									>
 										{achievements.map((achievement, index) => {
 											let className = '';
@@ -829,7 +920,7 @@ class DashboardPage extends React.Component {
 													onGift={this.showGiftModal}
 													defaultIcons={this.state.channel.icons}
 													onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
-													draggable={true}
+													draggable={this.state.reordering}
 													index={index}
 												/>
 											)
@@ -840,6 +931,7 @@ class DashboardPage extends React.Component {
 							</Droppable>
 						</DragDropContext>
 						{modal}
+						{saveReorderButton}
 					</div>
 				);
 			}
