@@ -227,10 +227,19 @@ class DashboardPage extends React.Component {
 		
 	}
 
-	toggleActionMenu = () => {
-		this.setState({
-			showAction: !this.state.showAction
-		});
+	handleAction = () => {
+		if(this.state.reordering) {
+			this.setState({
+				achievements: this.state.preorderedAchievements,
+				preorderedAchievements: null,
+				reordering: false,
+				showAction: false
+			});
+		} else {
+			this.setState({
+				showAction: true
+			});	
+		}
 	}
 
 	promptDelete = (image) => {
@@ -565,20 +574,11 @@ class DashboardPage extends React.Component {
 
 	toggleReorder = () => {
 
-		if(this.state.reordering) {
-			this.setState({
-				achievements: this.state.preorderedAchievements,
-				preorderedAchievements: null,
-				reordering: false,
-				showAction: false
-			});
-		} else {
-			this.setState({
-				preorderedAchievements: this.state.achievements.slice(0),
-				reordering: true,
-				showAction: false
-			});	
-		}
+		this.setState({
+			preorderedAchievements: this.state.achievements.slice(0),
+			reordering: true,
+			showAction: false
+		});	
 	}
 
 	onDragEnd = result => {
@@ -605,8 +605,8 @@ class DashboardPage extends React.Component {
 			reordering: false,
 			loading: true
 		});
-
-		let achievement = this.state.achievement.map((ach, idx) => {
+		debugger;
+		let achievements = this.state.achievements.map((ach, idx) => {
 			return {
 				...ach,
 				order: idx
@@ -614,7 +614,7 @@ class DashboardPage extends React.Component {
 		});
 
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/reorder', {
-			achievements: this.state.achievements
+			achievements
 		},{
 			withCredentials: true
 		}).then((res) => {
@@ -864,34 +864,29 @@ class DashboardPage extends React.Component {
 					actionClasses += " achievementsHeader--actionsVisible";
 				}
 
-				let saveReorderButton = undefined;
-				let reorderText = "Reorder";
+				let saveAction = undefined;
+				let wrapperClass = "achievementTab";
+				let actionText = "Actions";
 
 				if(this.state.reordering) {
-					saveReorderButton =  (
-						<div className="saveReorder--wrapper">
-							<button className="saveReorder--button" type="button">
-								{/*save image*/}
-								Save
-							</button>
-						</div>
-					);
-					reorderText = "Cancel Reorder";
+					saveAction = this.saveReorder;
+					actionText = "Cancel Reorder";
+					wrapperClass += " achievementTab--reordering"
 				}
 
 				achievementTab = (
-					<div>
+					<div className={wrapperClass}>
 						<div className="achievementsHeader">
 							<h3>Showing {achievements.length} Achievements</h3>
 							<div className="achievement-search">
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
 							<div className="achievementsHeader--actionMenu">
-								<button type="button" className="achievementsHeader--menu" onClick={this.toggleActionMenu}>Actions</button>
+								<button type="button" className="achievementsHeader--menu" onClick={this.handleAction}>{actionText}</button>
 								<div className={actionClasses}>
 									<ul>
 										<li><Link to={"/dashboard/achievement"}>Create</Link></li>
-										<li><a href="javascript:;" onClick={this.toggleReorder}>{reorderText}</a></li>
+										<li><a href="javascript:;" onClick={this.toggleReorder}>Reorder</a></li>
 									</ul>
 								</div>
 							</div>
@@ -931,7 +926,11 @@ class DashboardPage extends React.Component {
 							</Droppable>
 						</DragDropContext>
 						{modal}
-						{saveReorderButton}
+						<div className="saveReorder--wrapper">
+							<button className="saveReorder--button" type="button" onClick={saveAction}>
+								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+							</button>
+						</div>
 					</div>
 				);
 			}

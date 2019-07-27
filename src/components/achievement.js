@@ -72,7 +72,7 @@ class Achievement extends React.Component {
 
 		let content;
 
-		if(this.props.noDrag) {
+		if(!this.props.draggable) {
 			content = (
 				<div className={achievementClass}>
 					{logo}

@@ -444,25 +444,43 @@
 	position: fixed;
     z-index: 2000;
     bottom: 0;
-    right: 0;
+    right: -150px;
     margin: 50px;
+    transition: all 0.2s ease;
+}
+
+.achievementTab--reordering .saveReorder--wrapper {
+	transition: all 0.2s ease;
+	right: 0;
 }
 
 .saveReorder--button {
 	border: 0;
-    padding: 25px;
+    padding: 20px;
     border-radius: 100px;
-    height: 80px;
     color: white;
     background: #56658a;
     box-shadow: 2px 2px 4px black;
     cursor: pointer;
 }
 
+.saveReorder--button img {
+	height: 50px;
+	width: 50px;
+	display: block;
+}
+
 .achievement-list {
+	background: #00000000;
+    border: 0px dashed;
+    padding-top: 25px;
+    user-select: none;
+}
+
+.achievementTab--reordering .achievement-list {
 	background: #00000066;
-    border: 1px dashed;
-    padding-top: 5px;
+	border: 1px dashed;
+	padding-top: 24px;
 }
 
 @media only screen and (max-width: 480px) {
