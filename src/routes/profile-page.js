@@ -149,7 +149,7 @@ class ProfilePage extends React.Component {
 					        <p>When turned on, you will automatically join a channel that you receive an achievement in!</p>
 					    </div>
 					    <div className="section-value">
-							<label class="switch">
+							<label className="switch">
 							  	<input 
 							  		id="preferences-autojoin"
 							  		name="autojoin"
@@ -157,7 +157,7 @@ class ProfilePage extends React.Component {
 									checked={this.state.preferences.autojoin}
 									onChange={this.handleDataChange}
 								/>
-							  <span class="slider round"></span>
+							  <span className="slider round"></span>
 							</label>
 					    </div>
 					</div>

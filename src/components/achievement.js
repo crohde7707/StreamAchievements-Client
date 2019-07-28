@@ -1,4 +1,5 @@
 import React from 'react';
+import {Draggable} from 'react-beautiful-dnd';
 
 import './achievement.css';
 
@@ -69,21 +70,52 @@ class Achievement extends React.Component {
 			earnDate = (<div className="achievement--earnDate">{new Date(earned).toLocaleDateString()}</div>);
 		}
 
-		return (
-			<div className={achievementClass}>
-				{logo}
-				<div className="achievement-info">
-					<div className="achievement-title">{title}</div>
-					<div className="achievement-description">{description}</div>
+		let content;
+
+		if(!this.props.draggable) {
+			content = (
+				<div className={achievementClass}>
+					{logo}
+					<div className="achievement-info">
+						<div className="achievement-title">{title}</div>
+						<div className="achievement-description">{description}</div>
+					</div>
+					<div className="achievement--icons">
+						{limitedContent}
+						{giftIcon}
+						{editIcon}
+					</div>
+					{earnDate}
 				</div>
-				<div className="achievement--icons">
-					{limitedContent}
-					{giftIcon}
-					{editIcon}
-				</div>
-				{earnDate}
-			</div>
-		)
+			)
+		} else {
+			content = (
+				<Draggable draggableId={this.props.achievement.uid} index={this.props.index} isDragDisabled={!this.props.draggable}>
+					{(provided) => (
+							<div 
+								className={achievementClass}
+								{...provided.draggableProps}
+								{...provided.dragHandleProps}
+								ref={provided.innerRef}
+							>
+								{logo}
+								<div className="achievement-info">
+									<div className="achievement-title">{title}</div>
+									<div className="achievement-description">{description}</div>
+								</div>
+								<div className="achievement--icons">
+									{limitedContent}
+									{giftIcon}
+									{editIcon}
+								</div>
+								{earnDate}
+							</div>
+					)}
+				</Draggable>
+			)
+		}
+
+		return content;
 	}
 }
 

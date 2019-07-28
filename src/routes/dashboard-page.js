@@ -13,6 +13,7 @@ import ConfirmPanel from '../components/confirm-panel';
 import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
 
@@ -28,13 +29,15 @@ class DashboardPage extends React.Component {
 			achievements: '',
 			notice: '',
 			showConfirm: false,
+			showAction: false,
 			loading: true,
 			showImagePanel: false,
 			overlay: '',
 			selected: {
 				defaultIcon: '',
 				hiddenIcon: ''
-			}
+			},
+			reordering: false
 		};
 
 		this.icons = {
@@ -222,6 +225,21 @@ class DashboardPage extends React.Component {
 			this.setState(stateUpdate);
 		}
 		
+	}
+
+	handleAction = () => {
+		if(this.state.reordering) {
+			this.setState({
+				achievements: this.state.preorderedAchievements,
+				preorderedAchievements: null,
+				reordering: false,
+				showAction: false
+			});
+		} else {
+			this.setState({
+				showAction: true
+			});	
+		}
 	}
 
 	promptDelete = (image) => {
@@ -554,6 +572,59 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	toggleReorder = () => {
+
+		this.setState({
+			preorderedAchievements: this.state.achievements.slice(0),
+			reordering: true,
+			showAction: false
+		});	
+	}
+
+	onDragEnd = result => {
+		
+		if(result.destination) {
+			let achievements = this.state.achievements;
+
+			let source = result.source.index;
+			let destination = result.destination.index;
+
+			let movedAchievement = achievements.splice(source, 1);
+
+				achievements.splice(destination, 0, movedAchievement[0]);
+
+			this.setState({
+				achievements
+			});
+		}
+		
+	}
+
+	saveReorder = () => {
+		this.setState({
+			reordering: false,
+			loading: true
+		});
+
+		let achievements = this.state.achievements.map((ach, idx) => {
+			return {
+				...ach,
+				order: idx
+			}
+		});
+
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/reorder', {
+			achievements
+		},{
+			withCredentials: true
+		}).then((res) => {
+			console.log(res.data);
+			this.setState({
+				loading: false
+			});
+		});
+	}
+
 	render() {
 
 		if(this.props.profile && !this.props.profile.stats === 'verified') {
@@ -787,40 +858,79 @@ class DashboardPage extends React.Component {
 					</div>
 				);
 			} else {
+				let actionClasses = "achievementsHeader--actions";
+
+				if(this.state.showAction) {
+					actionClasses += " achievementsHeader--actionsVisible";
+				}
+
+				let saveAction = undefined;
+				let wrapperClass = "achievementTab";
+				let actionText = "Actions";
+
+				if(this.state.reordering) {
+					saveAction = this.saveReorder;
+					actionText = "Cancel Reorder";
+					wrapperClass += " achievementTab--reordering"
+				}
+
 				achievementTab = (
-					<div>
+					<div className={wrapperClass}>
 						<div className="achievementsHeader">
 							<h3>Showing {achievements.length} Achievements</h3>
 							<div className="achievement-search">
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
-							<div className="achievementsHeader--add">
-								<Link to={"/dashboard/achievement"}>Add New...<div className="achievementsHeader--plus">
-									<img alt="" src={require('../img/plus.png')} />
-								</div></Link>
-								
+							<div className="achievementsHeader--actionMenu">
+								<button type="button" className="achievementsHeader--menu" onClick={this.handleAction}>{actionText}</button>
+								<div className={actionClasses}>
+									<ul>
+										<li><Link to={"/dashboard/achievement"}>Create</Link></li>
+										<li><a href="javascript:;" onClick={this.toggleReorder}>Reorder</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
-						{achievements.map((achievement, index) => {
-							let className = '';
+						<DragDropContext onDragEnd={this.onDragEnd}>
+							<Droppable droppableId={"achievement-list"}>
+								{(provided) => (
+									<div
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+										className="achievement-list"
+									>
+										{achievements.map((achievement, index) => {
+											let className = '';
 
-							if(achievement.code === '4' && !this.props.patreon.gold) {
-								className = 'achievement--disabled';
-							}
-							return (
-								<Achievement 
-									key={'achievement-' + index}
-									unlocked={this.props.patreon && this.props.patreon.gold}
-									className={className}
-									editable={true}
-									achievement={achievement}
-									onGift={this.showGiftModal}
-									defaultIcons={this.state.channel.icons}
-									onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
-								/>
-							)
-						})}
+											if(achievement.code === '4' && !this.props.patreon.gold) {
+												className = 'achievement--disabled';
+											}
+											return (
+												<Achievement 
+													key={'achievement-' + index}
+													unlocked={this.props.patreon && this.props.patreon.gold}
+													className={className}
+													editable={true}
+													achievement={achievement}
+													onGift={this.showGiftModal}
+													defaultIcons={this.state.channel.icons}
+													onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
+													draggable={this.state.reordering}
+													index={index}
+												/>
+											)
+										})}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
 						{modal}
+						<div className="saveReorder--wrapper">
+							<button className="saveReorder--button" type="button" onClick={saveAction}>
+								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+							</button>
+						</div>
 					</div>
 				);
 			}
@@ -948,6 +1058,17 @@ class DashboardPage extends React.Component {
 				</div>
 			</Template>
 		);
+	}
+}
+
+class AchievementList extends React.Component {
+
+	render() {
+		return (
+			<div>
+				{this.props.children}
+			</div>
+		)
 	}
 }
 

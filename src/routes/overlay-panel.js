@@ -129,7 +129,7 @@ class OverlayPanel extends React.Component {
 							className="alert-overlay"
 							animateOnMount={true}
 						>
-							<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true}/>
+							<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true} noDrag={true}/>
 						</Animated>
 				</div>
 			)

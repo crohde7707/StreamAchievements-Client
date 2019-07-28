@@ -10,7 +10,7 @@ export default class Footer extends React.Component {
 				<div className="footer-content">
 					‎© 2019 StreamAchievements. All Rights Reserved.
 				</div>
-				<div class="footer-content social">
+				<div className="footer-content social">
 					<a target="_blank" href="https://twitter.com/streamachieve">
 						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/twitter-icon.png" />
 					</a>
