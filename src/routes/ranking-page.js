@@ -141,44 +141,86 @@ class RankingPage extends React.Component {
 				let userAchievements = this.state.achievements.earned;
 
 				rankingContent = (
-					<div>
+					<div className="rankingWrapper">
 						<div class="rankingProfile">
-							<div class="ranking--rankProfile">
+							<div class="ranking--info">
     							<div class="ranking--logo">
     								<img src={this.props.profile.logo} />
 								</div>
     							<div class="ranking--rank">Rank: #21</div>
-    							<div class="ranking--total">38 / 50</div>
+    							<div class="ranking--total">38 / 50 Achievements</div>
     						</div>
 							<div class="ranking--earnings">
     							<div class="ranking--type">
 									<div class="ranking--icon">
 										<img src="https://res.cloudinary.com/phirehero/image/upload/v1559961119/default-icon-bronze.png" />
 									</div>
-    								<div class="ranking--value">: 12</div>
+    								<div class="ranking--value">: 12/30</div>
 								</div>
 									<div class="ranking--type">
 										<div class="ranking--icon">
 											<img src="https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png" />
 										</div>
-								    	<div class="ranking--value">: 9</div>
+								    	<div class="ranking--value">: 9/15</div>
 								</div>
 									<div class="ranking--type">
 										<div class="ranking--icon">
 											<img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />
 										</div>
-								    	<div class="ranking--value">: 2</div>
+								    	<div class="ranking--value">: 2/5</div>
 									</div>
 									<div class="ranking--type">
 										<div class="ranking--icon">
-											<img src="https://res.cloudinary.com/phirehero/image/upload/v1559961119/default-icon-bronze.png" />
+											<img src="https://res.cloudinary.com/phirehero/image/upload/v1564621881/default-icon-platinum.png" />
 										</div>
 								    	<div class="ranking--value">: 5</div>
 									</div>
     						</div>
 						</div>
 						<div className="ranking-top">
-
+							<h2>Top 20 Achievement Hunters</h2>
+							<div className="ranking-memberList">
+								<div className="ranking--member">
+									<div className="ranking-member--rank">1</div>
+									<div className="ranking-member--info">
+										<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" />
+										<span>Thorlar</span>
+									</div>
+									<div className="ranking-member--total">48</div>
+								</div>
+								<div className="ranking--member">
+									<div className="ranking-member--rank">2</div>
+									<div className="ranking-member--info">
+										<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" />
+										<span>Thorlar</span>
+									</div>
+									<div className="ranking-member--total">48</div>
+								</div>
+								<div className="ranking--member">
+									<div className="ranking-member--rank">3</div>
+									<div className="ranking-member--info">
+										<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" />
+										<span>Thorlar</span>
+									</div>
+									<div className="ranking-member--total">46</div>
+								</div>
+								<div className="ranking--member">
+									<div className="ranking-member--rank">4</div>
+									<div className="ranking-member--info">
+										<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" />
+										<span>Thorlar</span>
+									</div>
+									<div className="ranking-member--total">40</div>
+								</div>
+								<div className="ranking--member">
+									<div className="ranking-member--rank">5</div>
+									<div className="ranking-member--info">
+										<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/thorlar-profile_image-4bd4d7b82e71afc3-300x300.jpeg" />
+										<span>Thorlar</span>
+									</div>
+									<div className="ranking-member--total">39</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				);
