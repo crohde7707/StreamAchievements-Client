@@ -73,6 +73,8 @@
 
 .channel-name {
 	display: flex;
+	align-items: center;
+	margin-bottom: 5px
 }
 
 .channel-name span {
@@ -86,7 +88,8 @@
 }
 
 .channel-name img {
-	background: white;
+	width: 18px;
+	height: 18px;
 }
 
 .channel-name .ranking {
@@ -229,6 +232,19 @@
 	.channel-fav img {
 		width: 30px;
 		transition: all 0.2s ease;
+	}
+
+	.channel-info {
+		display: flex;
+		flex: 1;
+	}
+
+	.channel-name {
+		flex: 1;
+	}
+
+	.channel-links {
+		margin-right: 20px;
 	}
 
 	.channel-logo {

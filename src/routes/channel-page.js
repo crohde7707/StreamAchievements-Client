@@ -220,6 +220,12 @@ class ChannelPage extends React.Component {
 				channelHeaderStub = (<div className="channel-header--stub"></div>)	
 			}
 
+			let badges;
+
+			if(this.state.channel.broadcaster_type && this.state.channel.broadcaster_type.twitch === "partner") {
+				badges = (<img title="Twitch Partner" alt="Twitch Partner" src="https://res.cloudinary.com/phirehero/image/upload/v1564851737/twitch-partner-icon.png" />);
+			}
+
 			content = (
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
@@ -232,14 +238,16 @@ class ChannelPage extends React.Component {
 							<div className="channel-info">
 								<div className="channel-name">
 									<span>{owner}</span>
-									<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
-										<img src="https://res.cloudinary.com/phirehero/image/upload/v1553267941/GlitchBadge_Purple_24px.png" />
-									</a>
-									<Link to={"/channel/" + owner + "/rankings"} title={'View rankings for ' + owner + '\'s channel'}>
+									{badges}
+									{/*<Link to={"/channel/" + owner + "/rankings"} title={'View rankings for ' + owner + '\'s channel'}>
 										<img className="ranking" src="https://res.cloudinary.com/phirehero/image/upload/v1559928373/ranking-icon.png" />
-									</Link>
+									</Link>*/}
 								</div>
-								<div className="channel-description"></div>
+								<div className="channel-links">
+									<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
+										<img src="https://res.cloudinary.com/phirehero/image/upload/v1564853282/twitch-icon.png" />
+									</a>
+								</div>
 							</div>
 							{((this.state.small) ? null : achievementProgress)}
 							<div className="channel-buttons">
