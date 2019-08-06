@@ -48,7 +48,7 @@ class AchievementPage extends React.Component {
 				title: 'Custom Message',
 				content: (
 					<div>
-						<p>The StreamAchievements bot listens to the chat for a specific message you provide! You will need to tell the bot which data you are looking for!</p>
+						<p>The Stream Achievements bot listens to the chat for a specific message you provide! You will need to tell the bot which data you are looking for!</p>
 						<p>You have the following variables to use when writing out your message:
 							<ul>
 								<li><span>{"{user}"}</span>: The person that will be recieveing the acheivement'</li>
@@ -749,10 +749,10 @@ class AchievementPage extends React.Component {
                     </div>
 				)
 			} else if(!this.state.loading) {
-				customType = (<option disabled title="Unlocked wtih StreamAchievements Gold!" value="4">Custom [Gold])</option>);
+				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold])</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
-						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">StreamAchievement Gold!</Link> via Patreon!</p> 
+						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold!</Link> via Patreon!</p> 
 					</div>
 				);
 			}

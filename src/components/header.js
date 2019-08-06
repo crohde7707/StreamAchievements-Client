@@ -14,7 +14,8 @@ class Header extends React.Component {
 		super();
 
 		this.state = {
-			menuActive: false
+			menuActive: false,
+			notifications: []
 		}
 	}
 
@@ -37,11 +38,11 @@ class Header extends React.Component {
 	}
 
 	toggleNotifications = () => {
-		this.positionNotificationPanel();
-		this.setState({
-			notificationActive: !this.state.notificationActive,
-			menuActive: false
-		});
+		// this.positionNotificationPanel();
+		// this.setState({
+		// 	notificationActive: !this.state.notificationActive,
+		// 	menuActive: false
+		// });
 	}
 
 	positionModal = () => {
@@ -105,7 +106,7 @@ class Header extends React.Component {
 						<li><Link to='/profile'>Profile</Link></li>
 						{channelLink}
 						{adminLink}
-						<li><Link to='/gold'>StreamAchievements Gold</Link></li>
+						<li><Link to='/gold'>Stream Achievements Gold</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>
@@ -118,7 +119,7 @@ class Header extends React.Component {
 				<div className="logo">
 					<Link to="/home"><img src={require('../img/logo.png')} alt="" /></Link>
 				</div>
-				<Notifications onClick={this.toggleNotifications} profile={this.props.profile} active={this.state.notificationActive} />
+				<Notifications profile={this.props.profile} active={this.state.notificationActive} count={this.state.notifications.length}/>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>
 					<div className="menu--label">{username}</div>

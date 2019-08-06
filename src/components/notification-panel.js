@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 import './notification-panel.css';
 
@@ -25,10 +26,15 @@ export default class NotificationPanel extends React.Component {
 
 		let badge;
 
-		let count = 0;
+		let count = this.props.count;
 
 		if(count > 0) {
-			badge = (<div className="notificationPanel-badge">{count}</div>);
+			if(count > 9) {
+				badge = (<div className="notificationPanel-badge offset">9+</div>);
+			} else {
+				badge = (<div className="notificationPanel-badge">{count}</div>);
+			}
+			
 		}
 
 		let notificationContent = (
@@ -52,13 +58,15 @@ export default class NotificationPanel extends React.Component {
 		);
 
 		return (
-			<div title="Notifications coming soon!" className={"notificationPanel-wrapper" + ((this.props.active) ? " notificationPanel--active" : "")}>
-				<div className="notificationPanel" /*onClick={this.props.onClick}*/>
-					<img alt="" src={require('../img/notification.png')} />
-					{badge}
+			<Link to="/profile?tab=notifications">
+				<div className={"notificationPanel-wrapper" + ((this.props.active) ? " notificationPanel--active" : "")}>
+					<div className="notificationPanel" /*onClick={this.props.onClick}*/>
+						<img alt="" src={require('../img/notification.png')} />
+						{badge}
+					</div>
+					{notificationContent}
 				</div>
-				{notificationContent}
-			</div>
+			</Link>
 		)
 
 	}

@@ -248,9 +248,128 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+/* Notification Styles */
+.notification {
+	display: flex;
+	align-items: center;
+	min-width: 350px;
+	border: none;
+	background: #00000055;
+	height: 80px;
+	transition: all 0.3s ease;
+	opacity: 1;
+	border-left: 8px solid #888;
+}
+
+.notification.notification-hiding {
+	opacity: 0;
+	transition: all 0.3s ease;
+}
+
+.notification.notification-sliding {
+	height: 0px;
+	transition: all 0.3s ease;
+}
+
+.notification-logo {
+	width: 80px;
+	height: 80px;
+}
+
+.notification-logo img {
+	width: 80px;
+	height: 80px;
+	opacity: 0.5;
+}
+
+.notification-message {
+	flex: 1;
+	margin-left: 15px;
+}
+
+.notification.new {
+	font-weight: 700;
+	font-size: 15px;
+	border-left: 8px solid #ecdc19;
+	background: #00000099;
+}
+
+.notification.new .notification-logo img {
+	opacity: 1;
+}
+
+.notification-date {
+	margin: 0 5px;
+}
+
+.notification-delete {
+	height: 80px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 12px;
+    cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.notification-delete:hover {
+	background: #425583;
+	transition: all 0.2s ease;
+}
+
+.notification-delete img {
+	width: 25px;
+    flex: 0;
+    height: 25px;
+    margin-left: 0;
+    display: block;
+}
+
+.load-more-button {
+	display: flex;
+	margin-top: 15px;
+	position: relative;
+	justify-content: center;
+}
+
+.load-more-button button {
+	margin: 0 auto;
+    padding: 10px 20px;
+    background: #425583;
+    border: none;
+    color: white;
+	cursor: pointer;
+}
+
+.load-more-button.loading button {
+	color: transparent;
+}
+
+.load-more-button .loading-spinner {
+	position: absolute;
+	top: 0;
+	margin-top: -15px;
+}
+
+.load-more-button .loading-spinner--wrapper {
+	margin-top: 0;
+}
+
+.no-notifications {
+	display: flex;
+    justify-content: center;
+    font-size: 25px;
+    margin-top: 2em;
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 480px) {
 	h2 {
 		margin-left: 15px;
+	}
+
+	.manage-container {
+		padding: 0;
 	}
 
 	.manage-tabs {
@@ -271,5 +390,45 @@ input:checked + .slider:before {
 
 	.integration h3 {
 		font-size: 1.1em;
+	}
+
+	.notification {
+		height: 50px;
+		min-width: 0px;
+		font-size: 12px;
+	}
+
+	.notification-logo,
+	.notification-logo img {
+		height: 50px;
+		width: 50px;
+	}
+
+	.notification-date {
+		display: none;
+	}
+
+	.notification.new {
+		font-size: 13px;
+	}
+
+	.notification-delete {
+		height: 50px;
+		padding: 0 8px;
+	}
+
+	.notification-delete img {
+		height: 20px;
+		width: 20px;
+		display: block;
+	}
+
+	#profile-page.manage-container {
+	padding: 0;
+}
+
+	#profile-page .manage-tabs {
+		overflow-x: scroll;
+		padding-left: 50px;
 	}
 }

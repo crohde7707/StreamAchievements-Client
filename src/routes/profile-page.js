@@ -1,12 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import io from "socket.io-client";
+
 import {updatePreferences, syncTwitch} from '../redux/profile-reducer';
 import connector from '../redux/connector';
 
 import Notice from '../components/notice';
 import Template from '../components/template';
 import PatreonPanel from '../components/patreon-panel';
+import LoadingSpinner from '../components/loading-spinner';
 
 import './profile-page.css';
 
@@ -21,6 +24,7 @@ class ProfilePage extends React.Component {
 			notice: '',
 			fetching: true,
 			loading: true,
+			retrieving: false,
 			preferences: (this.props.profile) ? this.props.profile.preferences : {}
 		};
 	}
@@ -32,8 +36,27 @@ class ProfilePage extends React.Component {
 		}).then((res) => {
 			this.setState({
 				channels: res.data.channels,
+				notifications: res.data.notifications,
+				next: res.data.next,
 				fetching: false
-			});	
+			});
+
+			this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
+				reconnection: true
+			});
+
+			this._socket.on('notification-removed', (removed) => {
+				let idx = this.state.notifications.findIndex(notification => {
+					return notification.id === removed
+				});
+
+				let newNotifications = this.state.notifications;
+				newNotifications.splice(idx, 1);
+
+				this.setState({
+					notifications: newNotifications
+				});
+			});
 		});
 	}
 
@@ -53,6 +76,58 @@ class ProfilePage extends React.Component {
 				});
 			}
 		}
+	}
+
+	retrieveMoreNotifications = () => {
+		if(!this.state.retrieving) {
+			this.setState({
+				retrieving: true
+			}, () => {
+				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/notifications', {
+					params: {
+						next: this.state.next
+					},
+					withCredentials: true
+				}).then(res => {
+					
+					setTimeout(() => {
+						if(res.data.notifications) {
+							this.setState({
+								notifications: this.state.notifications.concat(res.data.notifications),
+								next: res.data.next,
+								retrieving: false
+							});
+						}
+					}, 700);
+				})
+			})
+		}
+	}
+
+	navigate = (notification) => {
+		//mark notification as read
+		if(notification.status === 'new') {
+			this._socket.emit('mark-notification-read', notification);	
+		}
+		
+		switch (notification.type) {
+			case 'achievement':
+				this.props.history.push(`/channel/${notification.channel}`);
+				break;
+			case 'confirmation':
+				break;
+			case 'profile':
+				this.props.history.push('/profile?tab=integration');
+				break;
+			default:
+				break;
+		}
+	}
+
+	deleteNotification = (evt, notification) => {
+		console.log(evt.target);
+		evt.stopPropagation();
+		this._socket.emit('delete-notification', notification);
 	}
 
 	clearNotice = () => {
@@ -121,7 +196,7 @@ class ProfilePage extends React.Component {
 
 	render() {
 
-		let preferencesContent, integrationContent, channelContent, patreonContent;
+		let preferencesContent, integrationContent, notificationContent, channelContent, patreonContent;
 
 		if(this.state.channels && this.props.profile) {
 
@@ -194,6 +269,54 @@ class ProfilePage extends React.Component {
 				</div>
 			);
 
+			let loadMoreButton, noNotifications;
+
+			if(this.state.next) {
+				loadMoreButton = (
+					<div className={("load-more-button") + (this.state.retrieving ? " loading" : "")}>
+						<button type="button" onClick={this.retrieveMoreNotifications}>Load More</button>
+						<LoadingSpinner isLoading={this.state.retrieving} />
+					</div>
+				);
+			}
+
+			if(this.state.notifications.length === 0) {
+				noNotifications = (
+					<div className="no-notifications">
+						Looks like you are all caught up!
+					</div>
+				)
+			}
+
+			notificationContent = (
+				<div>
+					{this.state.notifications.map((notification, index) => {
+
+						let classes = "notification";
+
+						if(notification.status === 'new') {
+							classes += " new";
+						}
+
+						return (
+							<div onClick={() => {this.navigate(notification)}} key={"notification." + index} className={classes}>
+								<div className="notification-logo"><img alt="" src={notification.logo} /></div>
+								<div className="notification-message">{notification.message}</div>
+								<div className="notification-date">{new Date(notification.date).toLocaleDateString()}</div>
+								<div className="notification-delete" onClick={(evt) => {this.deleteNotification(evt, notification)}}>
+									<img
+										className="delete-notification-button"
+										src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png"
+									/>
+								</div>
+							</div>
+						);
+					})}
+					{noNotifications}
+					{loadMoreButton}
+				</div>
+			)
+
 			channelContent = (
 				<div className="profile--channels">
 					<div className="achievementsHeader">
@@ -211,27 +334,46 @@ class ProfilePage extends React.Component {
 				</div>
 			);
 
-		} else {
-			integrationContent = (<div>Fetching Integration...</div>);
-			channelContent = (<div>Fetching Channels...</div>);
+		}
+
+		const params = new URLSearchParams(this.props.location.search);
+		const tab = params.get('tab');
+		let tabIndex = 0;
+
+		switch(tab) {
+			case 'integration':
+				tabIndex = 1;
+				break;
+			case 'notifications':
+				tabIndex = 2;
+				break;
+			case 'joined':
+				tabIndex = 3;
+				break;
+			default:
+				break;
 		}
 
 		return (
 			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
-				<div className="manage-container">
+				<div id="profile-page" className="manage-container">
 					<h2>Profile</h2>
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
-					<Tabs>
+					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">Preferences</Tab>
 							<Tab className="manage-tab">Integration</Tab>
-							<Tab className="manage-tab">Joined Channels</Tab>
+							<Tab className="manage-tab">Notifications</Tab>
+							<Tab className="manage-tab">Channels</Tab>
 						</TabList>
 						<TabPanel>
 							{preferencesContent}
 						</TabPanel>
 						<TabPanel>
 							{integrationContent}
+						</TabPanel>
+						<TabPanel>
+							{notificationContent}
 						</TabPanel>
 						<TabPanel>
 							{channelContent}
