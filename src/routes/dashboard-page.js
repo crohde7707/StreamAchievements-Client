@@ -507,13 +507,13 @@ class DashboardPage extends React.Component {
 					var defaultReader = new FileReader();
 					defaultReader.addEventListener("load", () => {
 						payload.defaultIcon = defaultReader.result;
-						payload.defaultIconName = defaultIconFile.name;
+						payload.defaultIconName = this.state.defaultIconFile.name;
 						resolve();
 					});
-					defaultReader.readAsDataURL(defaultIconFile);
+					defaultReader.readAsDataURL(this.state.defaultIconFile);
 				});
 			} else {
-				payload.defaultImage = defaultIconSelected
+				payload.defaultImage = this.state.defaultIconSelected
 				defaultPromise = Promise.resolve();
 			}
 		} else {
@@ -528,13 +528,13 @@ class DashboardPage extends React.Component {
 					var hiddenReader = new FileReader();
 					hiddenReader.addEventListener("load", () => {
 						payload.hiddenIcon = hiddenReader.result;
-						payload.hiddenIconName = hiddenIconFile.name;
+						payload.hiddenIconName = this.state.hiddenIconFile.name;
 						resolve();
 					});
-					hiddenReader.readAsDataURL(hiddenIconFile);
+					hiddenReader.readAsDataURL(this.state.hiddenIconFile);
 				});
 			} else {
-				payload.hiddenImage = hiddenIconSelected
+				payload.hiddenImage = this.state.hiddenIconSelected
 				hiddenPromise = Promise.resolve();
 			}
 		} else {
