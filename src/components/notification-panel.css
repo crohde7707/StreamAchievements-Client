@@ -7,7 +7,6 @@
 .notificationPanel {
 	position: relative;
 	padding: 60px 20px 35px;
-	cursor: not-allowed;
 }
 
 .notificationPanel--active .notificationPanel {
@@ -25,10 +24,14 @@
 	border-radius: 15px;
 	position: absolute;
 	padding: 3px 8px;
-	font-size: 16px;
+	font-size: 12px;
 	right: 15px;
 	top: 50px;
 	font-weight: 800;
+}
+
+.notificationPanel-badge.offset {
+	right: 7px;
 }
 
 .notificationContent {

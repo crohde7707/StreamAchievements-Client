@@ -4,6 +4,7 @@ const SYNC_PATREON = 'SYNC_PATREON';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
+const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
 
 let initialState = {
 	username: '',
@@ -15,7 +16,6 @@ let initialState = {
 export default function ProfileReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_PROFILE: 
-			console.log(action.data);
 			return {
 				...state,
 				profile: {
@@ -23,7 +23,10 @@ export default function ProfileReducer(state = initialState, action) {
 					logo: action.data.logo,
 					status: action.data.status,
 					type: action.data.type,
-					preferences: action.data.preferences
+					preferences: action.data.preferences,
+					unreadNotifications: action.data.notificationCount,
+					nid: action.data.uid,
+					socket: action.data.socket
 				},
 				patreon: action.data.patreon
 			}
@@ -66,6 +69,21 @@ export default function ProfileReducer(state = initialState, action) {
 				profile: {
 					...state.profile,
 					preferences: action.data.preferences
+				}
+			}
+		case UPDATE_NOTIFICATIONS:
+			let countUpdate;
+
+			if(action.data.hasOwnProperty('count')) {
+				countUpdate = action.data.count;
+			} else {
+				countUpdate = state.profile.unreadNotifications + 1
+			}
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					unreadNotifications: countUpdate
 				}
 			}
 		default:
@@ -113,6 +131,14 @@ export function updateStatus(data) {
 export function updatePreferences(data) {
 	return {
 		type: UPDATE_PREFERENCES,
+		data
+	}
+}
+
+export function updateNotifications(data) {
+	console.log(data);
+	return {
+		type: UPDATE_NOTIFICATIONS,
 		data
 	}
 }

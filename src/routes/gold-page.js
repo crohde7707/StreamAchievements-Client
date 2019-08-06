@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import './gold-page.css'
 
 
-const PATREON_URL = 'https://www.patreon.com/join/streamachievements';
+const PATREON_URL = 'https://www.patreon.com/join/Stream Achievements';
 
 class GoldPage extends React.Component {
 
@@ -18,10 +18,10 @@ class GoldPage extends React.Component {
 		return (
 			<Template>
 				<div className="main-content gold-page">
-					<h2 className="gold">StreamAchievements Gold</h2>
+					<h2 className="gold">Stream Achievements Gold</h2>
 					<div className="section">
-						<h3>What is StreamAchievements Gold?</h3>
-						<p>StreamAchievements Gold is a premium tier system that is offered to members and content creators that choose to support StreamAchievements!</p>
+						<h3>What is Stream Achievements Gold?</h3>
+						<p>Stream Achievements Gold is a premium tier system that is offered to members and content creators that choose to support Stream Achievements!</p>
 					</div>
 					<div className="section">
 						<h3>Why Should I Upgrade?</h3>
@@ -109,12 +109,12 @@ class GoldPage extends React.Component {
 						</div>
 					</div>
 					<div className="section">
-						<h3>Cool! How do I join StreamAchievements Gold?</h3>
+						<h3>Cool! How do I join Stream Achievements Gold?</h3>
 						<p>The program is currently integrated through Patreon, so all you need to do is followed 2 simple steps:</p>
 						<p>
 							<ol>
 								<li>Head over to your <Link to="/profile">integrations</Link> within your profile, and link up your Patreon account</li>
-								<li>Visit the Patreon page for StreamAchievements and <a href={PATREON_URL}>make your pledge</a> for the gold tier!</li>
+								<li>Visit the Patreon page for Stream Achievements and <a href={PATREON_URL}>make your pledge</a> for the gold tier!</li>
 								<li>Return to your integrations and hit the sync button, and it will reflect that you are an active patron!</li>
 							</ol>
 						</p>
@@ -127,7 +127,7 @@ class GoldPage extends React.Component {
 					</div>
 					<div className="section">
 						<h3>I am not a streamer, but I want to show support!</h3>
-						<p>First off, thank you for your enthusiasm! If you are looking to just show support, you can also go through <a href={PATREON_URL}>Patreon</a> the same way! Being at the StreamAchievements Gold tier doesn't have to be just for content creators!</p>
+						<p>First off, thank you for your enthusiasm! If you are looking to just show support, you can also go through <a href={PATREON_URL}>Patreon</a> the same way! Being at the Stream Achievements Gold tier doesn't have to be just for content creators!</p>
 					</div>
 				</div>
 			</Template>

@@ -46,7 +46,7 @@ export default class LandingPage extends React.Component {
 		if(!this.state.cookieConsent) {
 			cookieConsentBanner = (
 				<div className="cookie-consent">
-					<div className="verbage">This site uses cookies in order to function properly and to provide the best experience! By using StreamAchievements, you agree to our <a href="https://app.termly.io/document/cookie-policy/2ac2531d-6f49-4c78-8f41-ac8edd8b3c39" target="_blank">use</a> of cookies.</div>
+					<div className="verbage">This site uses cookies in order to function properly and to provide the best experience! By using Stream Achievements, you agree to our <a href="https://app.termly.io/document/cookie-policy/2ac2531d-6f49-4c78-8f41-ac8edd8b3c39" target="_blank">use</a> of cookies.</div>
 					<div><a href="javascript:;" onClick={this.handleConsent} className="accept">Accept</a></div>
 				</div>
 			);

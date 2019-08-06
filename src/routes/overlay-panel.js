@@ -113,6 +113,12 @@ class OverlayPanel extends React.Component {
 		console.log('alert added to queue: ' + this._queue.length);
 	}
 
+	componentWillUnmount() {
+		if(this._socket) {
+			this._socket.close();
+		}
+	}
+
 	render() {
 
 		let alertContent, audioVolume;
