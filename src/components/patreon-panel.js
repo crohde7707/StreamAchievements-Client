@@ -87,7 +87,7 @@ class PatreonPanel extends React.Component {
 			let goldInfo;
 
 			if(this.props.patreon.gold) {
-				goldInfo = (<div>Being a gold status, your benefits will be disabled until you add back a patreon that is an active patron to StreamAchievements! You will still be able to use the free tier benefits!</div>);
+				goldInfo = (<div>Being a gold status, your benefits will be disabled until you add back a patreon that is an active patron to Stream Achievements! You will still be able to use the free tier benefits!</div>);
 			}
 			confirmPanel = (
 				<ConfirmPanel
@@ -175,7 +175,7 @@ class PatreonPanel extends React.Component {
 				if(gold) {
 					bodyContent = (
 						<div className="patreon--content column-layout">
-							<h3>StreamAchievements Gold</h3>
+							<h3>Stream Achievements Gold</h3>
 							<p>Thank you so much for support Stream Achievements! With your generous support, we are able to keep this site running, and continue providing a way to truly engage with the communities you love!</p>
 							<p>With this level of support, you have enabled the full potential that Stream Achievements has to offer! Take a look below at the features you have, and adjust your achievements to take advantage of the full suite!</p>
 							<h4>List of Features</h4>

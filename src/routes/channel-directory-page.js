@@ -126,7 +126,7 @@ class ChannelDirectoryPage extends React.Component {
 					<TwitterShareButton
 					    url={'https://streamachievements.com/'}
 					    options={{
-					    	text: 'Come and check out StreamAchievements, a service that adds customizable achievements to your stream! Through achievements, you can reward your community for the support they show!',
+					    	text: 'Come and check out Stream Achievements, a service that adds customizable achievements to your stream! Through achievements, you can reward your community for the support they show!',
 					    	size: 'large'
 					    }}
 					  />
