@@ -72,12 +72,13 @@ export default function ProfileReducer(state = initialState, action) {
 				}
 			}
 		case UPDATE_NOTIFICATIONS:
+			console.log(action);
 			let countUpdate;
 
-			if(action.data.count) {
+			if(action.data.hasOwnProperty('count')) {
 				countUpdate = action.data.count;
 			} else {
-				countUpdate = state.profile.unreadNotifications++
+				countUpdate = state.profile.unreadNotifications + 1
 			}
 			return {
 				...state,
@@ -136,6 +137,7 @@ export function updatePreferences(data) {
 }
 
 export function updateNotifications(data) {
+	console.log(data);
 	return {
 		type: UPDATE_NOTIFICATIONS,
 		data

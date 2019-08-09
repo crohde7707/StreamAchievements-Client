@@ -206,7 +206,18 @@ class ProfilePage extends React.Component {
 	}
 
 	markAllRead = () => {
-		this._socket.emit('mark-notifications-read', {nid: this.props.profile.nid});
+		//this._socket.emit('mark-notification-read', {nid: this.props.profile.nid});
+
+		let newNotifications = this.state.notifications;
+		newNotifications.forEach(notification => {
+			notification.status = "read";
+		});
+
+		console.log(newNotifications);
+
+		this.setState({
+			notifications: newNotifications
+		});
 		this.props.dispatch(updateNotifications({count: 0}));
 	}
 
