@@ -107,7 +107,7 @@ class ProfilePage extends React.Component {
 	navigate = (notification) => {
 		//mark notification as read
 		if(notification.status === 'new') {
-			this._socket.emit('mark-notification-read', notification);
+			this._socket.emit('mark-notification-read', {notification});
 			this.props.dispatch(updateNotifications({count: this.props.profile.unreadNotifications - 1}));
 		}
 
@@ -206,7 +206,7 @@ class ProfilePage extends React.Component {
 	}
 
 	markAllRead = () => {
-		this._socket.emit('mark-notifications-read')
+		this._socket.emit('mark-notifications-read', {nid: this.props.profile.nid});
 		this.props.dispatch(updateNotifications({count: 0}));
 	}
 
