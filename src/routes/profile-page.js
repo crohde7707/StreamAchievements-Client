@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import io from "socket.io-client";
 
-import {updatePreferences, syncTwitch} from '../redux/profile-reducer';
+import {updatePreferences, syncTwitch, updateNotifications} from '../redux/profile-reducer';
 import connector from '../redux/connector';
 
 import Notice from '../components/notice';
@@ -107,8 +107,19 @@ class ProfilePage extends React.Component {
 	navigate = (notification) => {
 		//mark notification as read
 		if(notification.status === 'new') {
-			this._socket.emit('mark-notification-read', notification);	
+			this._socket.emit('mark-notification-read', notification);
+			this.props.dispatch(updateNotifications({count: this.props.profile.unreadNotifications - 1}));
 		}
+
+		let newNotifications = this.state.notifications;
+		let nindex = newNotifications.findIndex(not => {
+			return not.id === notification.id
+		});
+
+		newNotifications[nindex].status = 'read';
+		this.setState({
+			notifications: newNotifications
+		});
 		
 		switch (notification.type) {
 			case 'achievement':
@@ -194,6 +205,11 @@ class ProfilePage extends React.Component {
 		});
 	}
 
+	markAllRead = () => {
+		this._socket.emit('mark-notifications-read')
+		this.props.dispatch(updateNotifications({count: 0}));
+	}
+
 	render() {
 
 		let preferencesContent, integrationContent, notificationContent, channelContent, patreonContent;
@@ -269,7 +285,7 @@ class ProfilePage extends React.Component {
 				</div>
 			);
 
-			let loadMoreButton, noNotifications;
+			let loadMoreButton, noNotifications, markReadButton;
 
 			if(this.state.next) {
 				loadMoreButton = (
@@ -286,10 +302,22 @@ class ProfilePage extends React.Component {
 						Looks like you are all caught up!
 					</div>
 				)
+			} else {
+				markReadButton = (<button type="button" onClick={this.markAllRead} className="mark-read-button">Mark All Read</button>);
+			}
+
+			let notificationText = 'Notification';
+
+			if(this.state.notifications.length !== 1) {
+				notificationText += 's';
 			}
 
 			notificationContent = (
 				<div>
+					<div className="notifications-header">
+						<h3>Showing {this.state.notifications.length} {notificationText}</h3>
+						{markReadButton}
+					</div>
 					{this.state.notifications.map((notification, index) => {
 
 						let classes = "notification";

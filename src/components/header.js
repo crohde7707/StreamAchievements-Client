@@ -1,8 +1,9 @@
 import React from 'react';
 import connector from '../redux/connector';
-import {setProfile} from '../redux/profile-reducer';
+import {setProfile, updateNotifications} from '../redux/profile-reducer';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import io from "socket.io-client";
 
 import Notifications from './notification-panel';
 
@@ -15,7 +16,7 @@ class Header extends React.Component {
 
 		this.state = {
 			menuActive: false,
-			notifications: []
+			count: 0
 		}
 	}
 
@@ -24,9 +25,31 @@ class Header extends React.Component {
 			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/user', {
 				withCredentials: true
 			}).then((res) => {
-				this.props.dispatch(setProfile(res.data));
+
+				this.connectSocket(res.data.uid)
+
+				let profileData = {
+					...res.data,
+					socket: this._socket
+				}
+
+				this.props.dispatch(setProfile(profileData));
 			});
+		} else {
+			this._socket = this.props.profile.socket;
+			console.log(this._socket);
 		}
+	}
+
+	connectSocket = (nid) => {
+		
+		this._socket = io.connect(`${process.env.REACT_APP_SOCKET_DOMAIN}?nid=${nid}`, {
+			reconnection: true
+		});
+
+		this._socket.on('notification-received', (count) => {
+			this.props.dispatch(updateNotifications(count));
+		});
 	}
 
 	toggleMenu = () => {
@@ -37,14 +60,6 @@ class Header extends React.Component {
 		});
 	}
 
-	toggleNotifications = () => {
-		// this.positionNotificationPanel();
-		// this.setState({
-		// 	notificationActive: !this.state.notificationActive,
-		// 	menuActive: false
-		// });
-	}
-
 	positionModal = () => {
 		let maskHeight = document.documentElement.scrollHeight - 130;
 
@@ -53,21 +68,14 @@ class Header extends React.Component {
 		this._mask.style.height = maskHeight + 'px';
 	}
 
-	positionNotificationPanel = () => {
-		
-	}
-
 	render() {
-		let username, logo;
+		let username, logo, count, channelLink;
 		
 		if(this.props.profile) {
 			username = this.props.profile.username
 			logo = <img alt="User Profile Icon" src={this.props.profile.logo} />;
-		}
+			count = this.props.profile.unreadNotifications;
 
-		let channelLink = null;
-
-		if(this.props.profile) {
 			let status = this.props.profile.status;
 
 			switch(status) {
@@ -85,17 +93,13 @@ class Header extends React.Component {
 					break;
 				default:
 					break;			
-			}		
+			}
 		}
 
 		let adminLink;
 
 		if(this.props.profile && this.props.profile.type === 'admin') {
 			adminLink = (<li className="admin"><Link to={"/admin"}>Admin Panel</Link></li>);
-		}
-
-		if(this.props.profile && this.props.profile.notifications) {
-			let notifications = this.props.profile.notifications;
 		}
 
 		let menu = (
@@ -119,7 +123,7 @@ class Header extends React.Component {
 				<div className="logo">
 					<Link to="/home"><img src={require('../img/logo.png')} alt="" /></Link>
 				</div>
-				<Notifications profile={this.props.profile} active={this.state.notificationActive} count={this.state.notifications.length}/>
+				<Notifications profile={this.props.profile} active={this.state.notificationActive} count={count}/>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>
 					<div className="menu--logo">{logo}</div>
 					<div className="menu--label">{username}</div>

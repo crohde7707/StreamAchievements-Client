@@ -62,7 +62,6 @@ class ChannelDirectoryPage extends React.Component {
 	}
 
 	componentWillUnmount() {
-		console.log('hello');
 		this._socket.close();
 	}
 
