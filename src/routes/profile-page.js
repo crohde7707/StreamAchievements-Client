@@ -25,7 +25,8 @@ class ProfilePage extends React.Component {
 			fetching: true,
 			loading: true,
 			retrieving: false,
-			preferences: (this.props.profile) ? this.props.profile.preferences : {}
+			preferences: (this.props.profile) ? this.props.profile.preferences : {},
+			showMore: false
 		};
 	}
 
@@ -57,6 +58,8 @@ class ProfilePage extends React.Component {
 					notifications: newNotifications
 				});
 			});
+
+			
 		});
 	}
 
@@ -76,16 +79,23 @@ class ProfilePage extends React.Component {
 				});
 			}
 		}
+
+		if(prevProps.profile && prevProps.profile.unreadNotifications < this.props.profile.unreadNotifications) {
+			//show "show new notificaitons" button
+			this.setState({
+				showMore: true
+			});
+		}
 	}
 
-	retrieveMoreNotifications = () => {
+	retrieveMoreNotifications = (force) => {
 		if(!this.state.retrieving) {
 			this.setState({
 				retrieving: true
 			}, () => {
 				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/notifications', {
 					params: {
-						next: this.state.next
+						next: force ? 0 : this.state.next
 					},
 					withCredentials: true
 				}).then(res => {
@@ -93,9 +103,10 @@ class ProfilePage extends React.Component {
 					setTimeout(() => {
 						if(res.data.notifications) {
 							this.setState({
-								notifications: this.state.notifications.concat(res.data.notifications),
+								notifications: force ? res.data.notifications : this.state.notifications.concat(res.data.notifications),
 								next: res.data.next,
-								retrieving: false
+								retrieving: false,
+								showMore: false
 							});
 						}
 					}, 700);
@@ -136,9 +147,9 @@ class ProfilePage extends React.Component {
 	}
 
 	deleteNotification = (evt, notification) => {
-		console.log(evt.target);
 		evt.stopPropagation();
 		this._socket.emit('delete-notification', notification);
+		this.props.dispatch(updateNotifications({count: this.props.profile.unreadNotifications - 1}));
 	}
 
 	clearNotice = () => {
@@ -206,24 +217,25 @@ class ProfilePage extends React.Component {
 	}
 
 	markAllRead = () => {
-		//this._socket.emit('mark-notification-read', {nid: this.props.profile.nid});
+		if(this.props.profile.unreadNotifications > 0) {
 
-		let newNotifications = this.state.notifications;
-		newNotifications.forEach(notification => {
-			notification.status = "read";
-		});
+			this._socket.emit('mark-notification-read', {nid: this.props.profile.nid});
 
-		console.log(newNotifications);
+			let newNotifications = this.state.notifications;
+			newNotifications.forEach(notification => {
+				notification.status = "read";
+			});
 
-		this.setState({
-			notifications: newNotifications
-		});
-		this.props.dispatch(updateNotifications({count: 0}));
+			this.setState({
+				notifications: newNotifications
+			});
+			this.props.dispatch(updateNotifications({count: 0}));
+		}
 	}
 
 	render() {
 
-		let preferencesContent, integrationContent, notificationContent, channelContent, patreonContent;
+		let preferencesContent, integrationContent, notificationContent, channelContent, patreonContent, showMoreButton;
 
 		if(this.state.channels && this.props.profile) {
 
@@ -301,8 +313,16 @@ class ProfilePage extends React.Component {
 			if(this.state.next) {
 				loadMoreButton = (
 					<div className={("load-more-button") + (this.state.retrieving ? " loading" : "")}>
-						<button type="button" onClick={this.retrieveMoreNotifications}>Load More</button>
+						<button type="button" onClick={() => {this.retrieveMoreNotifications()}}>Load More</button>
 						<LoadingSpinner isLoading={this.state.retrieving} />
+					</div>
+				);
+			}
+
+			if(this.state.showMore) {
+				showMoreButton = (
+					<div class="show-new-notifications" onClick={() => {this.retrieveMoreNotifications(true)}}>
+						<div class="notification-message">Show new notifications</div>
 					</div>
 				);
 			}
@@ -313,7 +333,7 @@ class ProfilePage extends React.Component {
 						Looks like you are all caught up!
 					</div>
 				)
-			} else {
+			} else if(this.props.profile && this.props.profile.unreadNotifications > 0) {
 				markReadButton = (<button type="button" onClick={this.markAllRead} className="mark-read-button">Mark All Read</button>);
 			}
 
@@ -329,6 +349,7 @@ class ProfilePage extends React.Component {
 						<h3>Showing {this.state.notifications.length} {notificationText}</h3>
 						{markReadButton}
 					</div>
+					{showMoreButton}
 					{this.state.notifications.map((notification, index) => {
 
 						let classes = "notification";

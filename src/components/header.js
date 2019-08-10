@@ -37,7 +37,6 @@ class Header extends React.Component {
 			});
 		} else {
 			this._socket = this.props.profile.socket;
-			console.log(this._socket);
 		}
 	}
 
@@ -47,8 +46,8 @@ class Header extends React.Component {
 			reconnection: true
 		});
 
-		this._socket.on('notification-received', (count) => {
-			this.props.dispatch(updateNotifications(count));
+		this._socket.on('notification-received', (data) => {
+			this.props.dispatch(updateNotifications(data));
 		});
 	}
 

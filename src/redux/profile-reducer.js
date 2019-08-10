@@ -72,7 +72,6 @@ export default function ProfileReducer(state = initialState, action) {
 				}
 			}
 		case UPDATE_NOTIFICATIONS:
-			console.log(action);
 			let countUpdate;
 
 			if(action.data.hasOwnProperty('count')) {

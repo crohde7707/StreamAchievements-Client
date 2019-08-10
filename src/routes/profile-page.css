@@ -259,6 +259,7 @@ input:checked + .slider:before {
 	transition: all 0.3s ease;
 	opacity: 1;
 	border-left: 8px solid #888;
+	cursor: pointer;
 }
 
 .notification.notification-hiding {
@@ -378,6 +379,27 @@ input:checked + .slider:before {
     color: white;
     background: #425583;
     cursor: pointer;
+}
+
+.show-new-notifications {
+	border: 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #00000022;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    margin-bottom: 10px;
+    height: 55px;
+    text-decoration: underline;
+    display: flex;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.show-new-notifications:hover {
+	background: #42558388;
+	transition: all 0.2s ease
 }
 
 @media only screen and (max-width: 480px) {
