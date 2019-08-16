@@ -237,7 +237,7 @@ class DashboardPage extends React.Component {
 			});
 		} else {
 			this.setState({
-				showAction: true
+				showAction: !this.state.showAction
 			});	
 		}
 	}
@@ -765,30 +765,32 @@ class DashboardPage extends React.Component {
 			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
 			                    	<span>OR</span>
 			                    </div>
-			                    <img 
-			                    	alt="" 
-			                    	name="gold"
-			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'gold') ? ' ' + ICON_SELECTED : '')}
-			                    	src={this.icons.default.gold}
-			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.gold)}}
-			                    	ref={el => (this.defaultGold = el)}
-		                    	/>
-			                    <img 
-			                    	alt="" 
-			                    	name="silver"
-			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'silver') ? ' ' + ICON_SELECTED : '')}
-			                    	src={this.icons.default.silver} 
-			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.silver)}}
-			                    	ref={el => (this.defaultSilver = el)}
-		                    	/>
-			                    <img 
-			                    	alt="" 
-			                    	name="bronze"
-			                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'bronze') ? ' ' + ICON_SELECTED : '')}
-			                    	src={this.icons.default.bronze} 
-			                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.bronze)}}
-			                    	ref={el => (this.defaultBronze = el)}
-		                    	/>
+			                    <div className="defaultIcon--defaults">
+				                    <img 
+				                    	alt="" 
+				                    	name="gold"
+				                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'gold') ? ' ' + ICON_SELECTED : '')}
+				                    	src={this.icons.default.gold}
+				                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.gold)}}
+				                    	ref={el => (this.defaultGold = el)}
+			                    	/>
+				                    <img 
+				                    	alt="" 
+				                    	name="silver"
+				                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'silver') ? ' ' + ICON_SELECTED : '')}
+				                    	src={this.icons.default.silver} 
+				                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.silver)}}
+				                    	ref={el => (this.defaultSilver = el)}
+			                    	/>
+				                    <img 
+				                    	alt="" 
+				                    	name="bronze"
+				                    	className={"icon--stock" + ((this.state.selected.defaultIcon === 'bronze') ? ' ' + ICON_SELECTED : '')}
+				                    	src={this.icons.default.bronze} 
+				                    	onClick={(evt) => {this.handleIconSelect(evt, 'defaultIcon', this.icons.default.bronze)}}
+				                    	ref={el => (this.defaultBronze = el)}
+			                    	/>
+		                    	</div>
 							</div>
 						</div>
 						<div className="section-wrapper">

@@ -40,13 +40,13 @@
 .achievement-logo {
     position: absolute;
     left: -1px;
-    top: auto;
+    top: -10px;
     opacity: 0.5;
 }
 
 .achievement-logo img {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
 }
 
 .achievement-info {
@@ -65,18 +65,94 @@
 
 .achievement--icons {
     position: absolute;
-    top: 1em;
-    right: 1em;
+    top: 0;
+    right: 0;
     display: flex;
     align-items: flex-end;
-    flex: 1;
+    flex: 1 1;
+    height: 100%;
+    /* width: 0; */
+    overflow: hidden;
+    transition: all 0.2s ease;
 }
 
-.achievement--icons div {
+.achievement-menu {
+    height: 100%;
+    margin: 0;
+    width: 32px;
+    display: flex;
+    transition: all 0.2s ease;
+}
+
+.achievement-menu.visible {
+    width:150px;
+}
+
+.achievement-menu--button {
+    height: 100%;
+    width: 32px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 1px solid #666;
+    border-right: 1px solid #666;
+}
+
+.achievement-menu--button:hover {
+    background: #425583;
+}
+
+.achievement-menu--button img {
+    width: 32px;
+    filter: invert(0);
+    transition: all 0.2s ease;
+}
+
+.achievement-menu--button:hover img {
+    filter: invert(1);
+}
+
+.achievement-menu--drawer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 118px;
+    justify-content: space-evenly;
+}
+
+.achievement-menu--drawer div {
+    height: 100%;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.achievement-menu--drawer div:hover {
+    background: #425583;
+}
+
+.achievement-menu--drawer div img {
+    filter: invert(0);
+    transition: all 0.2s ease;
+}
+
+.achievement-menu--drawer div:hover img {
+    filter: invert(.95);
+}
+
+.achievement--gift {
+    height: 32px;
+}
+
+/*.achievement--icons div {
     margin-left: 3px;
     width: 32px;
     height: 32px;
-}
+}*/
 
 .achievement--edit {
     cursor: pointer;
