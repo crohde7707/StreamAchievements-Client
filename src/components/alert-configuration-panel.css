@@ -1,6 +1,6 @@
 .alert-overlay .section-value {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .alert-overlay .section-group {
@@ -28,14 +28,14 @@
 }
 
 .alert-overlay input[type="range"] {
-	flex: 1;
-	margin-right: 10px;
+  flex: 1;
+  margin-right: 10px;
 }
 
 .alert-overlay input[type="text"],
 .alert-overlay input[type="password"] {
-	width: 80%;
-	padding: 2%;
+  width: 80%;
+  padding: 2%;
 }
 
 .alert-overlay select {
@@ -44,18 +44,18 @@
 }
 
 .alert-overlay #alert-sound {
-	margin-right: 10px;
-	width: 30%;
+  margin-right: 10px;
+  width: 30%;
 }
 
 .alert-overlay .play-sound {
-	width: 20px;
+  width: 20px;
 }
 
 .alert-overlay .play-sound img {
-	width: 24px;
-	height: 24px;
-	cursor: pointer;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
 /* The slider itself */
@@ -141,4 +141,18 @@
     width: 25px;
     height: 25px;
     margin-left: 0;
+}
+
+@media only screen and (max-width: 480px) {
+  .overlay-url-section {
+    display: none;
+  }
+
+  .alert-overlay .section-value {
+    width: 100%;
+  }
+
+  .section-wrapper.section--inline {
+    flex-direction: row;
+  }
 }

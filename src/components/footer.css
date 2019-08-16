@@ -38,4 +38,8 @@
         font-size: 14px;
         transition: all 0.2s ease;
     }
+
+    .footer-content {
+        padding-top: 15px;
+    }
 }

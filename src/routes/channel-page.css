@@ -172,6 +172,7 @@
 
 .channel-progress {
 	flex: 1;
+	transition: all 0.2s ease;
 }
 
 .channel-page--sm .channel-progress {
@@ -185,6 +186,10 @@
     flex-direction: column;
     border-bottom: 1px solid;
     padding-bottom: 5px;
+}
+
+.channel-page--sm .channel-progress.channel-progress--condensed {
+	position: fixed;
 }
 
 .channel-page--sm .progress-bar--label {
@@ -213,6 +218,14 @@
 	    min-height: inherit;
 	    box-shadow: 0px 2px;
 	    transition: all 0.2s ease;
+	}
+
+	#channel-header:after {
+		content: "\2024 \2024 \2024 \2024 \2024";
+	    bottom: 3px;
+	    position: absolute;
+	    width: 100%;
+	    text-align: center;
 	}
 
 	.long-description { 
@@ -262,8 +275,13 @@
 	    margin-right: 8px;
 	}
 
+	.achievements-container .achievement-logo {
+		top: -5px;
+	}
+
 	.achievements-container .achievement-logo img {
-		width: 80px;
+		width: 65px;
+		height: 65px;
 	}
 
 	.achievements-container .achievement-title {

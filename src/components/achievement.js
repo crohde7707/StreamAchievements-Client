@@ -8,8 +8,22 @@ const LIMITED_EARNED = "https://res.cloudinary.com/phirehero/image/upload/v15626
 
 class Achievement extends React.Component {
 
+	constructor() {
+		super();
+
+		this.state = {
+			menuVisible: false
+		}
+	}
+
+	toggleMenu = () => {
+		this.setState({
+			menuVisible: !this.state.menuVisible
+		});
+	}
+
 	render() {
-		let keyProp, editIcon, giftIcon, title, description, earnDate;
+		let keyProp, editIcon, giftIcon, title, description, earnDate, menu;
 		let {earned, className, defaultIcons, unlocked} = this.props;
 		let {secret, limited} = this.props.achievement;
 
@@ -43,6 +57,23 @@ class Achievement extends React.Component {
 		}
 
 		if(this.props.editable) {
+
+			menu = (
+				<div className={("achievement-menu") + ((this.state.menuVisible) ? " visible" : "")}>
+					<button className="achievement-menu--button" onClick={this.toggleMenu}>
+						<img src="https://res.cloudinary.com/phirehero/image/upload/v1565714661/856781-200.png" />
+					</button>
+					<div className="achievement-menu--drawer">
+						<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
+							<img src={require('../img/gift.png')} />
+						</div>
+						<div className="achievement--edit" onClick={() => {this.props.onClick(this.props.achievement)}}>
+							<img src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
+						</div>
+					</div>
+				</div>
+			)
+
 			giftIcon = (
 				<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
 					<img src={require('../img/gift.png')} />
@@ -82,8 +113,7 @@ class Achievement extends React.Component {
 					</div>
 					<div className="achievement--icons">
 						{limitedContent}
-						{giftIcon}
-						{editIcon}
+						{menu}
 					</div>
 					{earnDate}
 				</div>

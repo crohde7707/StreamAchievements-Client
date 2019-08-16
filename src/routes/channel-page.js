@@ -21,7 +21,7 @@ class ChannelPage extends React.Component {
 			loading: true,
 			fullAccess: false,
 			small: false,
-			progress: true,
+			progress: false,
 			condensedHeader: false
 		}
 	}
@@ -125,6 +125,14 @@ class ChannelPage extends React.Component {
 		});
 	}
 
+	toggleProgress = () => {
+		if(this.state.small) {
+			this.setState({
+				progress: !this.state.progress
+			});
+		}
+	}
+
 	render() {
 
 		let content;
@@ -181,6 +189,10 @@ class ChannelPage extends React.Component {
 						progressClasses += ' channel-progress--visible';
 					}
 
+					if(this.state.condensedHeader) {
+						progressClasses += ' channel-progress--condensed';
+					}
+
 					achievementProgress = (
 						<div className={progressClasses}>
 							<div className="channel-achievement-progress">
@@ -230,7 +242,12 @@ class ChannelPage extends React.Component {
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
 						<Notice message={this.state.notice} onClear={this.clearNotice} />
-						<div id="channel-header" ref={el => (this._channelHeader = el)} className={(this.state.condensedHeader) ? "condensed" : ""}>
+						<div
+							id="channel-header"
+							ref={el => (this._channelHeader = el)}
+							className={(this.state.condensedHeader) ? "condensed" : ""}
+							onClick={this.toggleProgress}
+						>
 							{favorite}
 							<div className="channel-logo">
 								<img src={logo} />

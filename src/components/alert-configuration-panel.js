@@ -104,7 +104,7 @@ export default class AlertConfigurationPanel extends React.Component {
 		return (
 			<div className="alert-overlay">
 				<h4>Alert Configuration</h4>
-				<div className="section-wrapper">
+				<div className="section-wrapper overlay-url-section">
 				    <div className="section-label">
 				        <label htmlFor="message">Overlay URL</label>
 				    </div>
@@ -125,7 +125,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				    </div>
 				</div>
 				<div className="section-group">
-					<div className="section-wrapper">
+					<div className="section-wrapper section--inline">
 					    <div className="section-label">
 					        <label htmlFor="chat">Alert in Chat?</label>
 					    </div>
