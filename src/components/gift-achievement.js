@@ -1,32 +1,37 @@
 import React from 'react';
 import axios from 'axios';
+import io from "socket.io-client";
 
 import './modal.css';
 import './gift-achievement.css';
+import LoadingSpinner from '../components/loading-spinner';
 
 export default class GiftAchievementModal extends React.Component {
 
 	constructor(props) {
 		super(props);
 
-		let unearnedMembers = props.members.filter(member => {
-			let notEarned = (member.achievements.filter(achievement => achievement.aid === props.aid).length === 0);
-			return notEarned;
-		});
-
 		this.state = {
-			members: unearnedMembers,
-			aid: props.aid
+			members: "",
+			searching: false,
+			selectedMembers: []
 		}
+
+		this._search = {};
 	}
 
 	componentDidMount() {
-		this.filterMembers();
 		this.positionModal();
-	}
 
-	filterMembers() {
+		this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
+			reconnection: true
+		});
 
+		this._socket.on('members-retrieved', members => {
+			this.setState({
+				members
+			});
+		});
 	}
 
 	positionModal = () => {
@@ -40,74 +45,100 @@ export default class GiftAchievementModal extends React.Component {
 	}
 
 	filterList = (event) => {
-	    var updatedList = this.state.members;
+	    this.setState({
+			searching: true
+		});
 
-	    if(event.target.value === '') {
-	    	//nothing in text box
-	    	this.setState({filteredMembers: false});
-	    } else {
-	    	updatedList = updatedList.filter(member => {
-		      return (member.name).toLowerCase().search(
-		        event.target.value.toLowerCase()) !== -1;
-		    });
-		    
-		    this.setState({filteredMembers: updatedList});
-	    }	    
+		if(this._searchTimeout !== null) {
+			clearTimeout(this._searchTimeout);
+		}
+
+		this._searchTimeout = setTimeout(() => {
+			if(this._search.value.length > 0) {
+
+				this._socket.emit('search-gift-member', {
+					aid: this.props.aid,
+					value: this._search.value,
+					owner: this.props.channel
+				});
+				this._searchTimeout = null;
+				this.setState({
+					searching: false
+				});
+			} else {
+				this.setState({
+					members: "",
+					searching: false
+				});
+			}
+		}, 400);
   	}
 
-	onChange = (event) => {
-		this.props.onChange(event).then(res => {
-			if(res.error) {
-				console.log(res.error);
+  	componentWillUnmount() {
+  		this._socket.close();
+  	}
+
+	selectMember = (member, event, fromChild) => {
+
+		let selectedMembers = this.state.selectedMembers;
+
+		selectedMembers.push(member);
+
+		this.setState({
+			selectedMembers
+		});
+	}
+
+	deselectMember = (index) => {
+		let selectedMembers = this.state.selectedMembers;
+
+		selectedMembers.splice(index, 1);
+
+		this.setState({
+			selectedMembers: selectedMembers
+		}, () => {
+			if(this._search.value.length > 0) {
+				this._socket.emit('search-gift-member', this._search.value);
 			}
 		});
 	}
 
-	toggleMember = (member, event, fromChild) => {
-		let members = this.state.members;
+	buildMemberList = (members, className, logo) => {
 
-		let memberIdx = members.map((member) => { return member.name }).indexOf(member.name);
-
-		if(members[memberIdx].selected) {
-			delete members[memberIdx].selected;
-		} else {
-			members[memberIdx].selected = true
-		}
-
-		this.setState({
-			members
-		});
-	}
-
-	buildMemberList = (members, className) => {
-		if(Array.isArray(members) && members.length > 0) {
+		if(Array.isArray(members)) {
 
 			return (
 				<div className={className}>
-					{members.map((member, index) => (
-						<button
-							type="button"
-							key={'member-' + index}
-							className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "") + ((member.selected) ? " channelMember--selected" : "")}
-							onClick={(event) => { this.toggleMember(member, event) }}
-						>
-							<div className="member-logo">
-								<img src={member.logo} />
-							</div>
-							<div className="member-info">
-								{member.name}
-							</div>
-						</button>
-					))}
+					{members.map((member, index) => {
+						let memberLogo;
+
+						if(!logo) {
+							memberLogo = undefined;
+						} else {
+							memberLogo = (
+								<div className="member-logo">
+									<img src={member.logo} />
+								</div>
+							);
+						}
+						return (
+							<button
+								type="button"
+								key={'member-' + index}
+								className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}
+								onClick={(event) => { this.selectMember(member, event) }}
+							>
+								{memberLogo}
+								<div className="member-info">
+									{member.name}
+								</div>
+							</button>
+						)
+					})}
 				</div>
 			)	
 		} else {
-			if(this.props.members.length > 0) {
-				return (<h5>Your whole community currently has this achievement!</h5>);
-			} else {
-				return (<h5>Currently no members for your channel!</h5>);	
-			}
-			
+			return (<h5>Start typing above to search!</h5>);	
 		}
 		
 	}
@@ -128,11 +159,7 @@ export default class GiftAchievementModal extends React.Component {
 
 	render() {
 
-		let {members, membersToGift} = this.state;
-
-		if(Array.isArray(this.state.filteredMembers)) {
-			members = this.state.filteredMembers;
-		}
+		let {members, selectedMembers} = this.state;
 
 		return (
 			<div className="gift-modal">
@@ -144,10 +171,16 @@ export default class GiftAchievementModal extends React.Component {
 						</div>
 						<div className="modal-content chooseMember--wrapper">
 							<div className="member-search">
-								<input placeholder="Search for member..." type="text" onChange={this.filterList} />
+								<input 
+									placeholder="Search for member..."
+									type="text"
+									onChange={this.filterList}
+									ref={(el) => {this._search = el}}
+								/>
 							</div>
 							<h4>Members</h4>
-							{this.buildMemberList(members, 'member-list')}
+							{this.buildMemberList(selectedMembers, 'selected-members', false)}
+							{this.buildMemberList(members, 'member-list', true)}
 						</div>
 						<button className="chooseMember--award" type="button" onClick={this.awardAchievement}>Award</button>
 						<button className="chooseMember--cancel" type="button" onClick={() => this.props.onClose()}>Cancel</button>

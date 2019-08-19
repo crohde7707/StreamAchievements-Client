@@ -28,6 +28,14 @@
 	flex: 0;
 }
 
+.member-list .channelMember.selected .member-info {
+	color: #888;
+}
+
+.member-list .channelMember.selected .member-logo {
+	opacity: 0.5;
+}
+
 .member-list .channelMember--stripe {
 	background: #EEE;
     -webkit-transition: all 0.2s ease;
@@ -39,6 +47,20 @@
     color: white;
     -webkit-transition: all 0.2s ease;
     transition: all 0.2s ease;
+}
+
+.selected-members .channelMember {
+	color: white;
+    background: #455c96;
+    text-align: center;
+    margin: 5px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.selected-members .channelMember:hover {
+	background: #5a70a7;
 }
 
 .chooseMember--award,

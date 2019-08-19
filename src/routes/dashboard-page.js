@@ -837,7 +837,7 @@ class DashboardPage extends React.Component {
 				modal = (
 					<GiftAchievementModal 
 						aid={this.state.aid}
-						channel={this.state.channel._id}
+						channel={this.state.channel.owner}
 						active={this.state.isModalActive}
 						onClose={this.hideGiftModal}
 						onSubmit={this.hideGiftModal}
