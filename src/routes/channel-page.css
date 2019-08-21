@@ -25,12 +25,12 @@
 }
 
 .channel-fav {
-	padding: 0 2px;
-	min-height: 115px;
 	display: block;
 	align-items: center;
     transition: all 0.2s ease;
     width: 35px;
+    margin: 0px 10px;
+    cursor: pointer;
 }
 
 .channel-buttons {
@@ -62,7 +62,7 @@
 	display: flex;
 	align-items: center;
 	transition: all 0.5s ease;
-	margin: 0px 20px;
+	margin: 0px 20px 0px 0px;
 }
 
 .condensed .channel-logo img {
@@ -237,13 +237,12 @@
 	}
 
 	.channel-fav {
-		height: 70px;
 		transition: all 0.2s ease;
-		width: 5px;
+		width: 20px;
 	}
 
 	.channel-fav img {
-		width: 30px;
+		width: 20px;
 		transition: all 0.2s ease;
 	}
 
@@ -261,7 +260,7 @@
 	}
 
 	.channel-logo {
-		margin: 0 10px;
+		margin: 0 10px 0 0;
 	}
 
 	.channel-logo img {

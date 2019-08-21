@@ -22,7 +22,8 @@ class ChannelPage extends React.Component {
 			fullAccess: false,
 			small: false,
 			progress: false,
-			condensedHeader: false
+			condensedHeader: false,
+			favorite: false
 		}
 	}
 
@@ -41,6 +42,7 @@ class ChannelPage extends React.Component {
 				achievements: res.data.achievements,
 				joined: res.data.joined,
 				fullAccess: res.data.fullAccess,
+				favorite: res.data.favorite,
 				loading: false
 			}, () => {
 				this.updateChannelHeader();
@@ -133,6 +135,18 @@ class ChannelPage extends React.Component {
 		}
 	}
 
+	favoriteChannel = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/favorite', {
+			channel: this.state.channel.owner
+		}, {
+			withCredentials: true
+		}).then(res => {
+			this.setState({
+				favorite: true
+			});
+		});
+	}
+
 	render() {
 
 		let content;
@@ -207,9 +221,21 @@ class ChannelPage extends React.Component {
 						</div>
 					)
 
-					//TODO: Future Perk
-					//favorite = (<div className="channel-fav"><img src={require('../img/star-not-favorited.png')} /></div>);
-					//favorite = (<div className="channel-fav"></div>);
+					if(this.state.favorite) {
+						favorite = (
+							<div className="channel-fav" onClick={this.favoriteChannel}>
+								<img src={require('../img/star-favorited.png')} />
+							</div>
+						);	
+					} else {
+						favorite = (
+						<div className="channel-fav" onClick={this.favoriteChannel}>
+							<img src={require('../img/star-not-favorited.png')} />
+						</div>
+					);
+					}
+
+					
 				}
 			} else {
 				achievementsContent = (
