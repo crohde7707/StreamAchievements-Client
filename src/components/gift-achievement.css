@@ -1,3 +1,9 @@
+.gift-modal .modal {
+	width: 100%;
+	max-width: 500px;
+	min-width: 0px;
+}
+
 .chooseMember--wrapper h5 {
 	text-align: center;
 	font-size: 18px;
@@ -25,7 +31,7 @@
 }
 
 .member-list .channelMember .member-info {
-	flex: 0;
+	text-align: left;
 }
 
 .member-list .channelMember.selected .member-info {
@@ -47,6 +53,33 @@
     color: white;
     -webkit-transition: all 0.2s ease;
     transition: all 0.2s ease;
+}
+
+.member-list .channelMember.channelMember--earned img {
+	opacity: 0.5;
+}
+
+.member-list .channelMember.channelMember--earned {
+	color: #999;
+	cursor: default;
+	pointer-events: none;
+}
+
+.selected-members {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.selected-members .clear-member {
+	display: flex;
+}
+
+.selected-members .clear-member img {
+	width: 14px;
+}
+
+.selected-members .channelMember .member-info {
+	margin-left: 10px;
 }
 
 .selected-members .channelMember {
@@ -76,4 +109,14 @@
 
 .chooseMember--award {
 	background-color: #2f4882;
+}
+
+@media only screen and (max-width: 480px) {
+    .gift-modal .modal {
+    	width: 90%;
+    	min-width: 0px;
+    	max-width: 500px;
+    	padding: 3% 5%;
+    	left: 0 !important;
+    }
 }

@@ -78,15 +78,22 @@ export default class GiftAchievementModal extends React.Component {
   		this._socket.close();
   	}
 
-	selectMember = (member, event, fromChild) => {
+	selectMember = (member, isMemberSelected) => {
 
-		let selectedMembers = this.state.selectedMembers;
+		if(!isMemberSelected && !member.earned) {
+			let { selectedMembers, members } = this.state;
 
-		selectedMembers.push(member);
+			selectedMembers.push(member);
 
-		this.setState({
-			selectedMembers
-		});
+			let memberIdx = members.map((member) => { return member.name }).indexOf(member.name);
+
+			members[memberIdx].selected = true;
+
+			this.setState({
+				members,
+				selectedMembers
+			});
+		}
 	}
 
 	deselectMember = (index) => {
@@ -103,17 +110,29 @@ export default class GiftAchievementModal extends React.Component {
 		});
 	}
 
-	buildMemberList = (members, className, logo) => {
+	isSelected = (member) => {
+		let selectedIdx = this.state.selectedMembers.findIndex(sMember => { return sMember.name === member.name });
+
+		return selectedIdx >= 0;
+	}
+
+	buildMemberList = (members, className, selected) => {
 
 		if(Array.isArray(members)) {
 
 			return (
 				<div className={className}>
 					{members.map((member, index) => {
-						let memberLogo;
+						let memberLogo, isMemberSelected, earned;
 
-						if(!logo) {
-							memberLogo = undefined;
+						isMemberSelected = this.isSelected(member);
+
+						if(selected) {
+							memberLogo = (
+								<div className="clear-member">
+									<img src="https://res.cloudinary.com/phirehero/image/upload/v1566235862/x.png" />
+								</div>
+							);
 						} else {
 							memberLogo = (
 								<div className="member-logo">
@@ -121,16 +140,42 @@ export default class GiftAchievementModal extends React.Component {
 								</div>
 							);
 						}
+
+						let className = "channelMember";
+
+						if(index % 2 === 1) {
+							className += " channelMember--stripe";
+						}
+
+						if(isMemberSelected) {
+							className += " channelMember--selected";
+						}
+
+						if(member.earned) {
+							className += " channelMember--earned";
+
+							earned = (<img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />);
+						}
+
 						return (
 							<button
 								type="button"
 								key={'member-' + index}
-								className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}
-								onClick={(event) => { this.selectMember(member, event) }}
+								className={className}
+								onClick={(event) => { 
+									if(selected) {
+										this.deselectMember(index);
+									} else {
+										this.selectMember(member, isMemberSelected);
+									}
+								}}
 							>
 								{memberLogo}
 								<div className="member-info">
 									{member.name}
+								</div>
+								<div className="member-earned">
+									{earned}
 								</div>
 							</button>
 						)
@@ -144,12 +189,9 @@ export default class GiftAchievementModal extends React.Component {
 	}
 
 	awardAchievement = () => {
-		let chosenMembers = this.state.members.filter(member => member.selected);
-
-
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/award', {
-			members: chosenMembers.map(member => member.name),
-			aid: this.state.aid
+			members: this.state.selectedMembers.map(member => member.name),
+			aid: this.props.aid
 		}, {
 			withCredentials: true
 		}).then(response => {
@@ -179,8 +221,8 @@ export default class GiftAchievementModal extends React.Component {
 								/>
 							</div>
 							<h4>Members</h4>
-							{this.buildMemberList(selectedMembers, 'selected-members', false)}
-							{this.buildMemberList(members, 'member-list', true)}
+							{this.buildMemberList(selectedMembers, 'selected-members', true)}
+							{this.buildMemberList(members, 'member-list', false)}
 						</div>
 						<button className="chooseMember--award" type="button" onClick={this.awardAchievement}>Award</button>
 						<button className="chooseMember--cancel" type="button" onClick={() => this.props.onClose()}>Cancel</button>
