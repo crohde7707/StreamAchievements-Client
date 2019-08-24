@@ -6,7 +6,13 @@
 
 .notificationPanel {
 	position: relative;
-	padding: 60px 20px 35px;
+	padding: 60px 20px 37px;
+	transition: all 0.2s ease;
+}
+
+.notificationPanel:hover {
+	background-color: #455c96;
+	transition: all 0.2s ease;
 }
 
 .notificationPanel--active .notificationPanel {
@@ -80,7 +86,7 @@
 
 @media only screen and (max-width: 480px) {
 	.notificationPanel {
-		padding: 20px 15px 17px;
+		padding: 20px 15px 18px;
 	}
 
 	.notificationPanel > img {

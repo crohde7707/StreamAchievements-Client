@@ -135,9 +135,11 @@ class ChannelPage extends React.Component {
 		}
 	}
 
-	favoriteChannel = () => {
+	favoriteChannel = (evt, task) => {
+		evt.stopPropagation();
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/favorite', {
-			channel: this.state.channel.owner
+			channel: this.state.channel.owner,
+			task
 		}, {
 			withCredentials: true
 		}).then(res => {
@@ -223,13 +225,13 @@ class ChannelPage extends React.Component {
 
 					if(this.state.favorite) {
 						favorite = (
-							<div className="channel-fav" onClick={this.favoriteChannel}>
+							<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "remove")}>
 								<img src={require('../img/star-favorited.png')} />
 							</div>
 						);	
 					} else {
 						favorite = (
-						<div className="channel-fav" onClick={this.favoriteChannel}>
+						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "add")}>
 							<img src={require('../img/star-not-favorited.png')} />
 						</div>
 					);
