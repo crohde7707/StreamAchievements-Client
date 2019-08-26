@@ -42,7 +42,7 @@ class ChannelPage extends React.Component {
 				achievements: res.data.achievements,
 				joined: res.data.joined,
 				fullAccess: res.data.fullAccess,
-				favorite: res.data.favorite,
+				favorite: res.data.favorited,
 				loading: false
 			}, () => {
 				this.updateChannelHeader();
@@ -143,8 +143,9 @@ class ChannelPage extends React.Component {
 		}, {
 			withCredentials: true
 		}).then(res => {
+			//update in redux?
 			this.setState({
-				favorite: true
+				favorite: res.data.favorited
 			});
 		});
 	}
