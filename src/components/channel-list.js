@@ -23,8 +23,20 @@ class ChannelList extends React.Component {
 		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/user', {
 			withCredentials: true
 		}).then((res) => {
+			let favChannels = [];
+			let otherChannels = [];
+
+			res.data.channels.forEach(channel => {
+				if(channel.favorite) {
+					favChannels.push(channel);
+				} else {
+					otherChannels.push(channel);
+				}
+			});
+
 			this.setState({
-				channels: res.data
+				channels: otherChannels,
+				favorites: favChannels
 			});
 
 			if(this.props.onLoad) {
@@ -43,7 +55,7 @@ class ChannelList extends React.Component {
 
 	render() {
 
-		let content, headerJoinButton, joinFirstChannel;
+		let content, favContent, headerJoinButton, joinFirstChannel;
 
 		if(!this.state.channels) {
 			content = null;
@@ -54,6 +66,14 @@ class ChannelList extends React.Component {
 				if(channels.length > 0) {
 					//we have some channels!
 					content = channels.map((channel, index) => (
+						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
+							<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+							<div className="channel-item--name">{channel.owner}</div>
+							<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+						</div>
+					));
+
+					favContent = this.state.favorites.map((channel, index) => (
 						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
 							<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
 							<div className="channel-item--name">{channel.owner}</div>
@@ -81,8 +101,14 @@ class ChannelList extends React.Component {
 		return (
 			<div>
 				<div className="channel-header">
-					<h3>My Channels</h3>
+					<h3>Favorites</h3>
 					{headerJoinButton}
+				</div>
+				<div className="channel-list">
+					{favContent}
+				</div>
+				<div className="channel-header">
+					<h3>Joined Channels</h3>
 				</div>
 				<div className="channel-list">
 					{content}
