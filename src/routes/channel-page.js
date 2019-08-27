@@ -25,7 +25,7 @@ class ChannelPage extends React.Component {
 			progress: false,
 			condensedHeader: false,
 			favorite: false,
-			joining: true
+			joining: false
 		}
 	}
 
@@ -106,16 +106,34 @@ class ChannelPage extends React.Component {
 		this.setState({
 			joining: true
 		});
+		let minimumReached = new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve();
+			}, 2000);
+		});
+		
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
 			channel: this.state.channel.owner
 		}, {
 			withCredentials: true
 		})
 		.then((res) => {
-			this.setState({
-				joining: false,
-				joined: true
-			});
+
+			minimumReached.then(() => {
+				this.setState({
+					joined: true
+				});
+
+				setTimeout(() => {
+					this._joinButton.classList.add('fade');
+				}, 1000);
+
+				setTimeout(() => {
+					this.setState({
+						joining: false
+					});
+				}, 1200);
+			});	
 		});
 	}
 
@@ -186,25 +204,25 @@ class ChannelPage extends React.Component {
 				}
 			} else {
 				favorite = (<div className="channel-fav-placeholder"></div>);
-				membershipContent = (
-					<a className="join-channel" href="javascript:;" onClick={this.joinChannel}>
-						<span>Join</span><span className="long-description"> Channel</span>
-					</a>
-				);
 				document.body.classList.add('no-scroll');
 			}
 
-			if(this.state.joining) {
+			if(!this.state.joined && !this.state.joining) {
+				//joined already
 				membershipContent = (
-					<div className="join-channel joining">
+					<a className="join-channel" href="javascript:;" onClick={this.joinChannel} ref={(el) => this._joinButton = el}>
+						<span>Join</span><span className="long-description"> Channel</span>
+					</a>
+				);
+			} else if(!this.state.joined && this.state.joining) {
+				membershipContent = (
+					<div className="join-channel joining" ref={(el) => this._joinButton = el}>
 						<LoadingSpinner isLoading={true} />
 					</div>
 				)
-			}
-
-			if(this.state.joinedOut) {
+			} else if(this.state.joined && this.state.joining) {
 				membershipContent = (
-					<div className="join-channel joining joined">
+					<div className="join-channel joining joined" ref={(el) => this._joinButton = el}>
 						<img src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" />
 					</div>
 				);
@@ -287,6 +305,16 @@ class ChannelPage extends React.Component {
 				badges = (<img title="Twitch Partner" alt="Twitch Partner" src="https://res.cloudinary.com/phirehero/image/upload/v1564851737/twitch-partner-icon.png" />);
 			}
 
+			let headerClasses = "channel-header";
+
+			if(this.state.condensedHeader) {
+				headerClasses += " condensed";
+			}
+
+			if(!this.state.joined || this.state.joining) {
+				headerClasses += " not-joined";
+			}
+
 			content = (
 				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
@@ -294,7 +322,7 @@ class ChannelPage extends React.Component {
 						<div
 							id="channel-header"
 							ref={el => (this._channelHeader = el)}
-							className={(this.state.condensedHeader) ? "condensed" : ""}
+							className={headerClasses}
 							onClick={this.toggleProgress}
 						>
 							{favorite}

@@ -272,14 +272,21 @@
 	.channel-info {
 		display: flex;
 		flex: 1;
+		transition: all 0.2s ease;
+	}
+
+	.channel-header.not-joined .channel-info {
+		margin-right: 86px;
 	}
 
 	.channel-name {
 		flex: 1;
+		transition: all 0.2s ease;
 	}
 
 	.channel-links {
 		margin-right: 20px;
+		transition: all 0.2s ease;
 	}
 
 	.channel-logo {
@@ -295,6 +302,11 @@
 	.channel-name span {
 	    font-size: 18px;
 	    margin-right: 8px;
+	}
+
+	.channel-buttons {
+		position: absolute;
+		right: 0;
 	}
 
 	.achievements-container .achievement-logo {
@@ -324,6 +336,17 @@
 		background: green;
 		border-color: #BBB;
 		transition: all 0.2s ease;
+		text-align: center;
+		opacity: 1;
+	}
+
+	.join-channel.joined.fade {
+		opacity: 0;
+	}
+
+	.join-channel.joined img {
+		width: 26px;
+		height: 26px;
 	}
 
 	.join-channel.joining .loading-spinner--wrapper {
