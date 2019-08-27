@@ -190,4 +190,5 @@
 
 .achievement-blurred {
     filter: blur(7px);
+    transition: all 0.2s ease;
 }

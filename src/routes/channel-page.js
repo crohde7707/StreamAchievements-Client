@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom';
 import Template from '../components/template';
 import Achievement from '../components/achievement';
 import Notice from '../components/notice';
+import LoadingSpinner from '../components/loading-spinner.js';
 
 import './channel-page.css';
 
@@ -23,7 +24,8 @@ class ChannelPage extends React.Component {
 			small: false,
 			progress: false,
 			condensedHeader: false,
-			favorite: false
+			favorite: false,
+			joining: true
 		}
 	}
 
@@ -101,6 +103,9 @@ class ChannelPage extends React.Component {
 	}
 
 	joinChannel = () => {
+		this.setState({
+			joining: true
+		});
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
 			channel: this.state.channel.owner
 		}, {
@@ -108,8 +113,8 @@ class ChannelPage extends React.Component {
 		})
 		.then((res) => {
 			this.setState({
-				joined: true,
-				notice: "Joined channel successfully!"
+				joining: false,
+				joined: true
 			});
 		});
 	}
@@ -165,13 +170,44 @@ class ChannelPage extends React.Component {
 				// membershipContent = <a href="javascript:;" onClick={this.leaveChannel} className="leave">Leave Channel</a>
 				membershipContent = null;
 				document.body.classList.remove('no-scroll');
+
+				if(this.state.favorite) {
+					favorite = (
+						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "remove")}>
+							<img src={require('../img/star-favorited.png')} />
+						</div>
+					);	
+				} else {
+					favorite = (
+						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "add")}>
+							<img src={require('../img/star-not-favorited.png')} />
+						</div>
+					);
+				}
 			} else {
+				favorite = (<div className="channel-fav-placeholder"></div>);
 				membershipContent = (
 					<a className="join-channel" href="javascript:;" onClick={this.joinChannel}>
 						<span>Join</span><span className="long-description"> Channel</span>
 					</a>
 				);
 				document.body.classList.add('no-scroll');
+			}
+
+			if(this.state.joining) {
+				membershipContent = (
+					<div className="join-channel joining">
+						<LoadingSpinner isLoading={true} />
+					</div>
+				)
+			}
+
+			if(this.state.joinedOut) {
+				membershipContent = (
+					<div className="join-channel joining joined">
+						<img src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" />
+					</div>
+				);
 			}
 
 
@@ -222,23 +258,7 @@ class ChannelPage extends React.Component {
 								</div>
 							</div>
 						</div>
-					)
-
-					if(this.state.favorite) {
-						favorite = (
-							<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "remove")}>
-								<img src={require('../img/star-favorited.png')} />
-							</div>
-						);	
-					} else {
-						favorite = (
-						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "add")}>
-							<img src={require('../img/star-not-favorited.png')} />
-						</div>
-					);
-					}
-
-					
+					)					
 				}
 			} else {
 				achievementsContent = (

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import throttle from 'lodash/throttle';
 import { withRouter } from 'react-router-dom';
 
 import './channel-list.css';
@@ -11,7 +12,7 @@ class ChannelList extends React.Component {
 
 		this.state = {
 			channels: false,
-			isAddChannelActive: false
+			fetching: false
 		};
 	}
 
@@ -36,13 +37,65 @@ class ChannelList extends React.Component {
 
 			this.setState({
 				channels: otherChannels,
-				favorites: favChannels
+				favorites: favChannels,
+				offset: res.data.offset
 			});
 
 			if(this.props.onLoad) {
 				this.props.onLoad();
 			}
+
+			if(res.data.offset !== -1) {
+				this._checkToLoad = throttle(this.checkToLoad, 200);
+				window.addEventListener('scroll', this._checkToLoad);
+			}
 		});
+	}
+
+	checkToLoad = () => {
+		let height = document.documentElement.scrollHeight;
+		let top = document.documentElement.scrollTop;
+		let bodyTop = document.body.scrollTop;
+
+		this._loadMore = this._loadMore || document.getElementById('load-more-channels');
+
+		let loadTop = this._loadMore.getBoundingClientRect().top;
+
+		if(loadTop - top <= 150 || loadTop - bodyTop <= 150) {
+			
+			if(!this.state.fetching) {
+				this.retrieveMoreChannels(this.state.offset);
+			}
+		}
+	}
+
+	retrieveMoreChannels = (offset) => {
+		
+		if(offset !== -1) {
+			this.setState({
+				fetching: true
+			});
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/user/retrieve', {
+				params: {
+					offset: this.state.offset
+				},
+				withCredentials: true
+			}).then(res => {
+
+				let updateChannelArray = this.state.channels.concat(res.data.channels);
+
+				if(res.data.offset === -1) {
+					//no more to retrieve, remove functionality
+					window.removeEventListener('scroll', this._checkToLoad);
+				}
+
+				this.setState({
+					channels: updateChannelArray,
+					offset: res.data.offset,
+					fetching: false
+				});
+			})
+		}
 	}
 
 	showDirectory = () => {
@@ -53,9 +106,13 @@ class ChannelList extends React.Component {
 		this.props.history.push('/channel/' + channel);
 	}
 
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this._checkToLoad);
+	}
+
 	render() {
 
-		let content, favContent, headerJoinButton, joinFirstChannel;
+		let content, favContent, headerJoinButton, joinFirstChannel, loadMore;
 
 		if(!this.state.channels) {
 			content = null;
@@ -87,6 +144,10 @@ class ChannelList extends React.Component {
 							<span>Join a channel</span>
 						</div>
 					);
+
+					if(this.state.offset !== -1) {
+						loadMore = (<div id="load-more-channels"></div>);
+					}
 				} else {
 					joinFirstChannel = (
 						<div onClick={this.showDirectory} className="add-channel">
@@ -114,6 +175,7 @@ class ChannelList extends React.Component {
 					{content}
 					{joinFirstChannel}
 				</div>
+				{loadMore}
 			</div>
 		)
 	}

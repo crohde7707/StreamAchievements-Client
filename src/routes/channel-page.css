@@ -45,7 +45,9 @@
 
 .condensed .channel-fav {
 	transition: all 0.2s ease;
-	width: 5px;
+	width: 20px;
+	height: 60px;
+	padding: 0px 5px;
 }
 
 .channel-fav img {
@@ -54,7 +56,7 @@
 }
 
 .condensed .channel-fav img {
-	width: 30px;
+	width: 20px;
 	transition: all 0.2s ease;
 }
 
@@ -111,7 +113,7 @@
     text-decoration: none;
     font-weight: bold;
     border-radius: 6px;
-    background: #2f4882;
+    background: #425583;
     color: white;
     box-shadow: 0px 1px 2px black;
 }
@@ -216,6 +218,11 @@
 	transition: all 0.2s ease;
 }
 
+.channel-fav-placeholder + .channel-logo {
+	margin-left: 10px;
+	transition: all 0.2s ease;
+}
+
 @media only screen and (max-width: 480px) {
 	#channel-header {
 	    width: 100%;
@@ -248,11 +255,17 @@
 		transition: all 0.2s ease;
 		width: 20px;
 		height: 60px;
+		padding: 0px 5px;
 	}
 
 	.channel-fav img,
 	.condensed .channel-fav img {
 		width: 20px;
+		transition: all 0.2s ease;
+	}
+
+	.channel-fav-placeholder + .channel-logo {
+		margin-left: 5px;
 		transition: all 0.2s ease;
 	}
 
@@ -296,5 +309,37 @@
 	.achievements-container .achievement-title {
 		margin-top: -5px;
 		font-size: 20px;
+	}
+
+	.join-channel {
+		width: 29px;
+		display: block;
+	}
+
+	.join-channel.joining {
+		padding: 3px 20px;
+	}
+
+	.join-channel.joined {
+		background: green;
+		border-color: #BBB;
+		transition: all 0.2s ease;
+	}
+
+	.join-channel.joining .loading-spinner--wrapper {
+		margin-top: 0px;
+	}
+
+	.join-channel.joining .lds-ellipsis {
+		left: -14px;
+		top: -8px;
+		width: 30px;
+		height: 30px;
+	}
+
+	.join-channel.joining .lds-ellipsis div {
+		width: 8px;
+		height: 8px;
+		top: 20px;
 	}
 }

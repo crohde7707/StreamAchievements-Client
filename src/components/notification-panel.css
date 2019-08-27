@@ -92,4 +92,11 @@
 	.notificationPanel > img {
 		width: 24px;
 	}
+
+	.notificationPanel-badge {
+		padding: 3px 6px;
+		font-size: 10px;
+		right: 12px;
+		top: 12px;
+	}
 }

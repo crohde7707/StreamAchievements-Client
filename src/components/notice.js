@@ -19,21 +19,25 @@ export default class Notice extends React.Component {
 			}, () => {
 				this.positionNotice();
 				setTimeout(() => {
-					this.notice.classList.add('notice--visible');
+					if(this.notice) {
+						this.notice.classList.add('notice--visible');
+					}
 				}, 500)
 				
 			});
 
-			setTimeout(() => {
+			// setTimeout(() => {
 
-				this.notice.classList.remove('notice--visible');
-				setTimeout(() => {
-					this.setState({
-						message: ''
-					});
-					this.props.onClear();
-				}, 2500);
-			}, 3500);
+			// 	if(this.notice) {
+			// 		this.notice.classList.remove('notice--visible');
+			// 	}
+			// 	setTimeout(() => {
+			// 		this.setState({
+			// 			message: ''
+			// 		});
+			// 		this.props.onClear();
+			// 	}, 2500);
+			// }, 3500);
 		}
 	}
 
