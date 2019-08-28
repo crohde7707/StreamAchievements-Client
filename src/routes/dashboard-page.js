@@ -10,6 +10,7 @@ import Template from '../components/template';
 import Achievement from '../components/achievement';
 import GiftAchievementModal from '../components/gift-achievement';
 import ConfirmPanel from '../components/confirm-panel';
+import ModeratorPanel from '../components/moderator-panel';
 import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
@@ -625,13 +626,17 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	updateModerators = (moderators) => {
+		
+	}
+
 	render() {
 
 		if(this.props.profile && !this.props.profile.stats === 'verified') {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, achievementTab, imageContent, memberContent, imagePanel;
+		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel;
 
 		if(this.state.channel) {
 
@@ -831,6 +836,8 @@ class DashboardPage extends React.Component {
 				</div>
 			);
 
+			moderatorContent = (<ModeratorPanel moderators={this.state.moderators} onUpdate={this.updateModerators} />);
+
 			let modal;
 
 			if(this.state.isModalActive) {
@@ -991,6 +998,7 @@ class DashboardPage extends React.Component {
 			);
 		} else {
 			generalContent = (<LoadingSpinner />);
+			moderatorContent = (<LoadingSpinner />);
 			achievementTab = (<LoadingSpinner />);
 			imageContent = (<LoadingSpinner />);
 			memberContent = (<LoadingSpinner />);
@@ -1017,14 +1025,17 @@ class DashboardPage extends React.Component {
 		}
 
 		switch(tab) {
-			case 'achievements':
+			case 'moderators':
 				tabIndex = 1;
 				break;
-			case 'images':
+			case 'achievements':
 				tabIndex = 2;
 				break;
-			case 'rankings':
+			case 'images':
 				tabIndex = 3;
+				break;
+			case 'rankings':
+				tabIndex = 4;
 				break;
 			default:
 				break;
@@ -1038,12 +1049,16 @@ class DashboardPage extends React.Component {
 					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
 							<Tab className="manage-tab">General</Tab>
+							<Tab className="manage-tab">Moderators</Tab>
 							<Tab className="manage-tab">Achievements</Tab>
 							<Tab className="manage-tab">Images</Tab>
 							<Tab className="manage-tab">Rankings</Tab>
 						</TabList>
 						<TabPanel>
 							{generalContent}
+						</TabPanel>
+						<TabPanel>
+							{moderatorContent}
 						</TabPanel>
 						<TabPanel>
 							{achievementTab}

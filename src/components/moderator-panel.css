@@ -1,0 +1,60 @@
+.moderators-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.moderator {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.moderator.stripe {
+	background: #00000033;
+}
+
+.moderator .moderator-name {
+	flex: 1;
+	margin-left: 15px;
+}
+
+.moderator img {
+	width: 80px;
+	height: 80px;
+}
+
+.moderator-permissions {
+	display: flex;
+}
+
+.moderator-permissions .permission {
+	display: flex;
+	margin: 0 20px;
+}
+
+.permission .permissions--label {
+	margin-right: 10px;
+}
+
+.moderator-header {
+	display: flex;
+}
+
+.moderator-header h3 {
+	flex: 1;
+}
+
+.add-moderator-button {
+    text-align: right;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.add-moderator-button img {
+	width: 24px;
+    margin-right: 5px;
+}
