@@ -1,12 +1,14 @@
 {
-  "main.css": "/static/css/main.d635fe67.chunk.css",
-  "main.js": "/static/js/main.1132da70.chunk.js",
+  "main.css": "/static/css/main.c552977e.chunk.css",
+  "main.js": "/static/js/main.c985d55f.chunk.js",
   "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-  "static/js/2.91924e19.chunk.js": "/static/js/2.91924e19.chunk.js",
+  "static/js/2.03ce9b09.chunk.js": "/static/js/2.03ce9b09.chunk.js",
   "index.html": "/index.html",
-  "precache-manifest.e5bfeece64eb22bfec8b38fd752b6540.js": "/precache-manifest.e5bfeece64eb22bfec8b38fd752b6540.js",
+  "precache-manifest.310eed0240a29a7d4e8bd0552088a830.js": "/precache-manifest.310eed0240a29a7d4e8bd0552088a830.js",
   "service-worker.js": "/service-worker.js",
   "static/media/gold-ach.png": "/static/media/gold-ach.609896e9.png",
   "static/media/logo.png": "/static/media/logo.64831256.png",
-  "static/media/silver-ach.png": "/static/media/silver-ach.cb44a8b2.png"
+  "static/media/silver-ach.png": "/static/media/silver-ach.cb44a8b2.png",
+  "static/media/star-favorited.png": "/static/media/star-favorited.84433def.png",
+  "static/media/star-not-favorited.png": "/static/media/star-not-favorited.eb9e3c2a.png"
 }
