@@ -81,6 +81,10 @@
     text-align: center;
 }
 
+.section-wrapper.section-wrapper--full .section-content {
+    max-width: 800px;
+}
+
 .section-wrapper.section-wrapper--alt {
     background-color: rgba(0,0,0,0.6);
 }
@@ -115,6 +119,10 @@
     flex: 1;
 }
 
+.section-content > div {
+    text-align: left;
+}
+
 .main .section-content > h2,
 .main .section-content > div,
 .section-wrapper--full .section-content > h2 {
@@ -127,6 +135,7 @@
 
 .section-wrapper--login .section-content {
     flex-direction: column;
+    max-width: 800px;
 }
 
 .section-wrapper--login p {

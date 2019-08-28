@@ -223,6 +223,44 @@
 	transition: all 0.2s ease;
 }
 
+.join-channel.joining {
+		padding: 3px 49px;
+	}
+
+	.join-channel.joined {
+		background: green;
+		border-color: #BBB;
+		transition: all 0.2s ease;
+		text-align: center;
+		opacity: 1;
+	}
+
+	.join-channel.joined.fade {
+		opacity: 0;
+	}
+
+	.join-channel.joined img {
+		width: 26px;
+		height: 26px;
+	}
+
+	.join-channel.joining .loading-spinner--wrapper {
+		margin-top: 0px;
+	}
+
+	.join-channel.joining .lds-ellipsis {
+		left: -14px;
+		top: -8px;
+		width: 30px;
+		height: 30px;
+	}
+
+	.join-channel.joining .lds-ellipsis div {
+		width: 8px;
+		height: 8px;
+		top: 20px;
+	}
+
 @media only screen and (max-width: 480px) {
 	#channel-header {
 	    width: 100%;
