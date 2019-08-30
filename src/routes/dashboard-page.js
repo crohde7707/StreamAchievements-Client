@@ -62,6 +62,7 @@ class DashboardPage extends React.Component {
 
 				let stateUpdate = {
 					channel: res.data.channel,
+					moderators: res.data.moderators,
 					achievements: res.data.achievements,
 					images: res.data.images,
 					members: res.data.members,
@@ -836,7 +837,7 @@ class DashboardPage extends React.Component {
 				</div>
 			);
 
-			moderatorContent = (<ModeratorPanel moderators={this.state.moderators} onUpdate={this.updateModerators} />);
+			moderatorContent = (<ModeratorPanel channel={this.state.channel.owner} moderators={this.state.moderators} onUpdate={this.updateModerators} />);
 
 			let modal;
 
