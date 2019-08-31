@@ -38,7 +38,8 @@ class DashboardPage extends React.Component {
 				defaultIcon: '',
 				hiddenIcon: ''
 			},
-			reordering: false
+			reordering: false,
+			isMod: false
 		};
 
 		this.icons = {
@@ -52,61 +53,115 @@ class DashboardPage extends React.Component {
 	}
 
 	componentDidMount() {
+		if(this.props.match.url.indexOf('/mod/') === 0 && this.props.match.params.channelid) {
+			this.setState({
+				isMod: true
+			}, () => {
+				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/mod/retrieve?channel=' + this.props.match.params.channelid, {
+					withCredentials: true
+				}).then(res => {
+					let stateUpdate = {
+						channel: res.data.channel,
+						achievements: res.data.achievements,
+						overlay: res.data.channel.overlay,
+						loading: false,
+						selected: {},
+						isMod: true
+					};
 
-		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve', {
-			withCredentials: true
-		}).then((res) => {
-			if(res.data.error) {
-				//redirect to home
-			} else {
+					let channelIcons = res.data.channel.icons;
 
-				let stateUpdate = {
-					channel: res.data.channel,
-					moderators: res.data.moderators,
-					achievements: res.data.achievements,
-					images: res.data.images,
-					members: res.data.members,
-					overlay: res.data.channel.overlay,
-					loading: false,
-					selected: {}
-				};
-
-				let channelIcons = res.data.channel.icons;
-
-				if(channelIcons) {
-					if(channelIcons.default) {
-						if(channelIcons.default === this.icons.default.gold) {
-							stateUpdate.selected.defaultIcon = 'gold';
-							stateUpdate.defaultIconOriginal = 'gold';
-						} else if (channelIcons.default === this.icons.default.silver) {
-							stateUpdate.selected.defaultIcon = 'silver';
-							stateUpdate.defaultIconOriginal = 'silver';
-						} else if (channelIcons.default === this.icons.default.bronze) {
-							stateUpdate.selected.defaultIcon = 'bronze';
-							stateUpdate.defaultIconOriginal = 'bronze';
-						} else {
-							stateUpdate.selected.defaultIcon = 'customDefault';
-							stateUpdate.defaultIconOriginal = 'customDefault';
-							stateUpdate.defaultIconPreview = channelIcons.default;	
+					if(channelIcons) {
+						if(channelIcons.default) {
+							if(channelIcons.default === this.icons.default.gold) {
+								stateUpdate.selected.defaultIcon = 'gold';
+								stateUpdate.defaultIconOriginal = 'gold';
+							} else if (channelIcons.default === this.icons.default.silver) {
+								stateUpdate.selected.defaultIcon = 'silver';
+								stateUpdate.defaultIconOriginal = 'silver';
+							} else if (channelIcons.default === this.icons.default.bronze) {
+								stateUpdate.selected.defaultIcon = 'bronze';
+								stateUpdate.defaultIconOriginal = 'bronze';
+							} else {
+								stateUpdate.selected.defaultIcon = 'customDefault';
+								stateUpdate.defaultIconOriginal = 'customDefault';
+								stateUpdate.defaultIconPreview = channelIcons.default;	
+							}
 						}
+
+						if(channelIcons.hidden) {
+							if(channelIcons.hidden !== this.icons.hidden) {
+								stateUpdate.selected.hiddenIcon = 'customHidden';
+								stateUpdate.hiddenIconOriginal = 'customHidden';
+								stateUpdate.hiddenIconPreview = channelIcons.hidden;
+							} else {
+								stateUpdate.selected.hiddenIcon = 'default';
+								stateUpdate.hiddenIconOriginal = 'default';
+							}
+						}
+
 					}
 
-					if(channelIcons.hidden) {
-						if(channelIcons.hidden !== this.icons.hidden) {
-							stateUpdate.selected.hiddenIcon = 'customHidden';
-							stateUpdate.hiddenIconOriginal = 'customHidden';
-							stateUpdate.hiddenIconPreview = channelIcons.hidden;
-						} else {
-							stateUpdate.selected.hiddenIcon = 'default';
-							stateUpdate.hiddenIconOriginal = 'default';
+					this.setState(stateUpdate);
+				})
+			})
+			
+		} else {
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve', {
+				withCredentials: true
+			}).then((res) => {
+				if(res.data.error) {
+					//redirect to home
+				} else {
+
+					let stateUpdate = {
+						channel: res.data.channel,
+						moderators: res.data.moderators,
+						achievements: res.data.achievements,
+						images: res.data.images,
+						members: res.data.members,
+						overlay: res.data.channel.overlay,
+						loading: false,
+						selected: {}
+					};
+
+					let channelIcons = res.data.channel.icons;
+
+					if(channelIcons) {
+						if(channelIcons.default) {
+							if(channelIcons.default === this.icons.default.gold) {
+								stateUpdate.selected.defaultIcon = 'gold';
+								stateUpdate.defaultIconOriginal = 'gold';
+							} else if (channelIcons.default === this.icons.default.silver) {
+								stateUpdate.selected.defaultIcon = 'silver';
+								stateUpdate.defaultIconOriginal = 'silver';
+							} else if (channelIcons.default === this.icons.default.bronze) {
+								stateUpdate.selected.defaultIcon = 'bronze';
+								stateUpdate.defaultIconOriginal = 'bronze';
+							} else {
+								stateUpdate.selected.defaultIcon = 'customDefault';
+								stateUpdate.defaultIconOriginal = 'customDefault';
+								stateUpdate.defaultIconPreview = channelIcons.default;	
+							}
 						}
+
+						if(channelIcons.hidden) {
+							if(channelIcons.hidden !== this.icons.hidden) {
+								stateUpdate.selected.hiddenIcon = 'customHidden';
+								stateUpdate.hiddenIconOriginal = 'customHidden';
+								stateUpdate.hiddenIconPreview = channelIcons.hidden;
+							} else {
+								stateUpdate.selected.hiddenIcon = 'default';
+								stateUpdate.hiddenIconOriginal = 'default';
+							}
+						}
+
 					}
 
+					this.setState(stateUpdate);
 				}
-
-				this.setState(stateUpdate);
-			}
-		});
+			});
+		}
 	}
 
 	clearNotice = () => {
@@ -637,9 +692,15 @@ class DashboardPage extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel;
+		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel, isGold;
 
 		if(this.state.channel) {
+
+			if(this.state.isMod) {
+				isGold = this.state.channel.gold
+			} else if(this.props.patreon) {
+				isGold = this.props.patreon.gold || false
+			}
 
 			let {logo, owner} = this.state.channel;
 			let achievements = this.state.achievements;
@@ -651,7 +712,7 @@ class DashboardPage extends React.Component {
 
 			let customDefaultIcon, customHiddenIcon;
 
-			if(this.props.patreon && this.props.patreon.gold) {
+			if(isGold) {
 				if(this.state.defaultIconPreview) {
 					customDefaultIcon = (
 						<div className="customDefaultImg">
@@ -691,7 +752,7 @@ class DashboardPage extends React.Component {
 
 			let defaultBlurb;
 
-			if(this.props.patreon && this.props.patreon.gold) {
+			if(isGold) {
 				defaultBlurb = (<p>Being a patreon supporter, you have the option to upload a custom icon for each achievement when creating one! Also, you can upload a custom image here to use for all achievements by default!</p>);
 			} else {
 				defaultBlurb = (<p>Wan't to provide your own custom icons for your achievements? Consider upgrading to <Link className="gold" to="/gold">StreamAchievement Gold!</Link> You will be able to upload an icon to use for all achievements, or provide a custom icon for each achievement when creating them!</p>);
@@ -723,28 +784,30 @@ class DashboardPage extends React.Component {
 				saveButton = <input className='save-button--inactive' disabled type="submit" value="Save" />
 			}
 
-			generalContent = (
-				<div className="general-configuration">
-					<h4>Basic Info</h4>
-					<span className="subText">This information is managed by Twitch</span>
-					<div className="section-wrapper basic-info">
-						<div className="section-label">
-					        <label htmlFor="name">Twitch Name</label>
-					    </div>
-					    <div className="section-value">
-					        <span name="name">{owner}</span>
-					    </div>
-					</div>
-					<div className="section-wrapper basic-info">
-						<div className="section-label">
-					        <label htmlFor="logo">Channel Logo</label>
-					    </div>
-					    <div className="section-value">
-					        <span name="logo"><img alt="" src={logo} /></span>
-					    </div>
-					</div>
-					<h4>Channel Customization</h4>
-					
+			let priGenContent;
+
+			if(!this.state.isMod) {
+				priGenContent = (
+					<div>
+						<h4>Basic Info</h4>
+						<span className="subText">This information is managed by Twitch</span>
+						<div className="section-wrapper basic-info">
+							<div className="section-label">
+						        <label htmlFor="name">Twitch Name</label>
+						    </div>
+						    <div className="section-value">
+						        <span name="name">{owner}</span>
+						    </div>
+						</div>
+						<div className="section-wrapper basic-info">
+							<div className="section-label">
+						        <label htmlFor="logo">Channel Logo</label>
+						    </div>
+						    <div className="section-value">
+						        <span name="logo"><img alt="" src={logo} /></span>
+						    </div>
+						</div>
+						<h4>Channel Customization</h4>
 						<div className="section-wrapper">
 							<div className="section-label">
 								<label htmlFor="defaultIcon">Default Icon for Achievements</label>
@@ -752,7 +815,7 @@ class DashboardPage extends React.Component {
 								{defaultBlurb}
 							</div>
 							<div className="section-value default-icons">
-								<div className={"formGroup icon-upload" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
+								<div className={"formGroup icon-upload" + ((isGold) ? '' : ' disabled')}>
 									<div
 										className="defaultIcon"
 										onClick={(evt) => this.handleCustomIcon(evt, 'defaultIcon')}
@@ -768,7 +831,7 @@ class DashboardPage extends React.Component {
 		                    			</div>
 			                    	</div>
 			                    </div>
-			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
+			                    <div className={"divider" + ((isGold) ? '' : ' disabled')}>
 			                    	<span>OR</span>
 			                    </div>
 			                    <div className="defaultIcon--defaults">
@@ -805,7 +868,7 @@ class DashboardPage extends React.Component {
 						        <p>This will be the icon used when displaying an achievement that hasn't been earned yet</p>
 						    </div>
 						    <div className="section-value default-icons">
-						    	<div className={"formGroup icon-upload" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
+						    	<div className={"formGroup icon-upload" + ((isGold) ? '' : ' disabled')}>
 									<div
 										className="hiddenIcon"
 										onClick={(evt) => this.handleCustomIcon(evt, 'hiddenIcon')}
@@ -816,7 +879,7 @@ class DashboardPage extends React.Component {
 				                    	<div className="hoverText" ref={hover => (this.hiddenHover = hover)}>{hiddenHoverText}</div>
 			                    	</div>
 			                    </div>
-			                    <div className={"divider" + ((this.props.patreon && this.props.patreon.gold) ? '' : ' disabled')}>
+			                    <div className={"divider" + ((isGold) ? '' : ' disabled')}>
 			                    	<span>OR</span>
 			                    </div>
 						        <img 
@@ -829,6 +892,13 @@ class DashboardPage extends React.Component {
 						        />
 						    </div>
 						</div>
+					</div>
+				);
+			}
+
+			generalContent = (
+				<div className="general-configuration">
+						{priGenContent}
 						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange}/>
 						<div className="section-wrapper--end">
 							 {saveButton}
@@ -912,13 +982,13 @@ class DashboardPage extends React.Component {
 										{achievements.map((achievement, index) => {
 											let className = '';
 
-											if(achievement.code === '4' && !this.props.patreon.gold) {
+											if(achievement.code === '4' && !isGold) {
 												className = 'achievement--disabled';
 											}
 											return (
 												<Achievement 
 													key={'achievement-' + index}
-													unlocked={this.props.patreon && this.props.patreon.gold}
+													unlocked={isGold}
 													className={className}
 													editable={true}
 													achievement={achievement}
@@ -945,7 +1015,7 @@ class DashboardPage extends React.Component {
 				);
 			}
 
-			if(this.state.images.gallery.length > 0) {
+			if(!this.state.isMod && this.state.images.gallery.length > 0) {
 				imageContent = (
 					<div>
 						<div className="imageGallery">
@@ -986,7 +1056,7 @@ class DashboardPage extends React.Component {
 			
 
 			memberContent = (
-				this.state.members.map((member, index) => (
+				!this.state.isMod && this.state.members.map((member, index) => (
 					<div key={'member-' + index} className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}>
 						<div className="member-logo">
 							<img alt="" src={member.logo} />
@@ -1025,53 +1095,102 @@ class DashboardPage extends React.Component {
 			);
 		}
 
-		switch(tab) {
-			case 'moderators':
-				tabIndex = 1;
-				break;
-			case 'achievements':
-				tabIndex = 2;
-				break;
-			case 'images':
-				tabIndex = 3;
-				break;
-			case 'rankings':
-				tabIndex = 4;
-				break;
-			default:
-				break;
+		if(this.state.isMod) {
+			if(tab === 'achievements') {
+				tabIndex = 1
+			}
+		} else {
+
+			switch(tab) {
+				case 'moderators':
+					tabIndex = 1;
+					break;
+				case 'achievements':
+					tabIndex = 2;
+					break;
+				case 'images':
+					tabIndex = 3;
+					break;
+				case 'rankings':
+					tabIndex = 4;
+					break;
+				default:
+					break;
+			}
+		}
+
+		let tabs, tabContent;
+
+		if(this.state.isMod) {
+			tabs = (
+				<React.Fragment>
+					<Tab className="manage-tab">General</Tab>
+					<Tab className="manage-tab">Achievements</Tab>
+				</React.Fragment>
+			);
+
+			tabContent = (
+				<React.Fragment>
+					<TabPanel>
+						{generalContent}
+					</TabPanel>
+					<TabPanel>
+						{achievementTab}
+					</TabPanel>
+				</React.Fragment>
+			)
+		} else {
+			tabs = (
+				<React.Fragment>
+					<Tab className="manage-tab">General</Tab>
+					<Tab className="manage-tab">Moderators</Tab>
+					<Tab className="manage-tab">Achievements</Tab>
+					<Tab className="manage-tab">Images</Tab>
+					<Tab className="manage-tab">Rankings</Tab>
+				</React.Fragment>
+			);
+
+			tabContent = (
+				<React.Fragment>
+					<TabPanel>
+						{generalContent}
+					</TabPanel>
+					<TabPanel>
+						{moderatorContent}
+					</TabPanel>
+					<TabPanel>
+						{achievementTab}
+					</TabPanel>
+					<TabPanel>
+						{imageContent}
+						{confirmPanel}
+					</TabPanel>
+					<TabPanel>
+						<h3>Rankings</h3>
+						{memberContent}
+					</TabPanel>
+				</React.Fragment>
+			)
+		}
+
+		let pageHeader;
+
+		if(this.state.isMod) {
+			pageHeader = (<h2>{this.state.channel.owner}'s Dashboard <span className="gold">[MODERATOR]</span></h2>);
+		} else {
+			pageHeader = (<h2>Your Dashboard</h2>);
 		}
 
 		return (
 			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
-					<h2>Your Dashboard</h2>
+					{pageHeader}
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
 					<Tabs defaultIndex={tabIndex}>
 						<TabList className="manage-tabs">
-							<Tab className="manage-tab">General</Tab>
-							<Tab className="manage-tab">Moderators</Tab>
-							<Tab className="manage-tab">Achievements</Tab>
-							<Tab className="manage-tab">Images</Tab>
-							<Tab className="manage-tab">Rankings</Tab>
+							{tabs}
 						</TabList>
-						<TabPanel>
-							{generalContent}
-						</TabPanel>
-						<TabPanel>
-							{moderatorContent}
-						</TabPanel>
-						<TabPanel>
-							{achievementTab}
-						</TabPanel>
-						<TabPanel>
-							{imageContent}
-							{confirmPanel}
-						</TabPanel>
-						<TabPanel>
-							<h3>Rankings</h3>
-							{memberContent}
-						</TabPanel>
+						{tabContent}
 					</Tabs>
 				</div>
 			</Template>

@@ -12,6 +12,7 @@ import AchievementPage from './routes/achievement-page';
 import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
 import AdminPanelPage from './routes/admin-panel';
+import ModPage from './routes/mod-page';
 import HowTo from './routes/how-to';
 import OverlayPanel from './routes/overlay-panel';
 import TestListeners from './routes/test-listeners';
@@ -35,7 +36,9 @@ let app = (
 	        		<Route path='/admin' component={AdminPanelPage} />
 	        		<Route path='/dashboard/achievement/:achievementid' component={AchievementPage} />
 	        		<Route path='/dashboard/achievement' component={AchievementPage} />
-	        		<Route path='/dashboard/' component={DashboardPage} />
+	        		<Route key='owner-dashboard' path='/dashboard/' component={DashboardPage} />
+	        		<Route key='mod-dashboard' path='/mod/:channelid' component={DashboardPage} />
+	        		<Route path='/mod/' component={ModPage} />
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />

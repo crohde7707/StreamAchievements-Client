@@ -5,6 +5,14 @@
 	padding: 0 15px;
 }
 
+.manage-container h2 {
+	text-transform: capitalize;
+}
+
+.manage-container h2 span {
+	font-size: 14px;
+}
+
 .general-configuration img {
 	width: 100px;
 	height: 100px;
