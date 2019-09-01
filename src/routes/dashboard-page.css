@@ -5,11 +5,11 @@
 	padding: 0 15px;
 }
 
-.manage-container h2 {
+.manage-container h2 .capitalize {
 	text-transform: capitalize;
 }
 
-.manage-container h2 span {
+.manage-container h2 .gold {
 	font-size: 14px;
 }
 

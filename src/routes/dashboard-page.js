@@ -630,12 +630,13 @@ class DashboardPage extends React.Component {
 	}
 
 	toggleReorder = () => {
-
-		this.setState({
-			preorderedAchievements: this.state.achievements.slice(0),
-			reordering: true,
-			showAction: false
-		});	
+		if(!this.state.isMod) {
+			this.setState({
+				preorderedAchievements: this.state.achievements.slice(0),
+				reordering: true,
+				showAction: false
+			});	
+		}
 	}
 
 	onDragEnd = result => {
@@ -700,6 +701,12 @@ class DashboardPage extends React.Component {
 				isGold = this.state.channel.gold
 			} else if(this.props.patreon) {
 				isGold = this.props.patreon.gold || false
+			}
+
+			let achievementRoute = '/dashboard/achievement';
+
+			if(this.state.isMod) {
+				achievementRoute = '/mod/achievement';
 			}
 
 			let {logo, owner} = this.state.channel;
@@ -899,7 +906,7 @@ class DashboardPage extends React.Component {
 			generalContent = (
 				<div className="general-configuration">
 						{priGenContent}
-						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange}/>
+						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod}/>
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>
@@ -919,7 +926,7 @@ class DashboardPage extends React.Component {
 						active={this.state.isModalActive}
 						onClose={this.hideGiftModal}
 						onSubmit={this.hideGiftModal}
-						members={this.state.members}
+						isMod={this.state.isMod}
 					/>
 				);
 			} else {
@@ -930,7 +937,7 @@ class DashboardPage extends React.Component {
 				achievementTab = (
 					<div>
 						<div onClick={() => {
-							this.props.history.push('/dashboard/achievement');
+							this.props.history.push(achievementRoute);
 						}} className="add-achievement">
 							<div>Add your first achievement!</div>
 							<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
@@ -965,7 +972,7 @@ class DashboardPage extends React.Component {
 								<button type="button" className="achievementsHeader--menu" onClick={this.handleAction}>{actionText}</button>
 								<div className={actionClasses}>
 									<ul>
-										<li><Link to={"/dashboard/achievement"}>Create</Link></li>
+										<li><Link to={achievementRoute}>Create</Link></li>
 										<li><a href="javascript:;" onClick={this.toggleReorder}>Reorder</a></li>
 									</ul>
 								</div>
@@ -994,7 +1001,7 @@ class DashboardPage extends React.Component {
 													achievement={achievement}
 													onGift={this.showGiftModal}
 													defaultIcons={this.state.channel.icons}
-													onClick={() => {this.props.history.push('/dashboard/achievement/' + achievement.uid)}}
+													onClick={() => {this.props.history.push(achievementRoute + '/' + achievement.uid)}}
 													draggable={this.state.reordering}
 													index={index}
 												/>
@@ -1176,7 +1183,7 @@ class DashboardPage extends React.Component {
 		let pageHeader;
 
 		if(this.state.isMod) {
-			pageHeader = (<h2>{this.state.channel.owner}'s Dashboard <span className="gold">[MODERATOR]</span></h2>);
+			pageHeader = (<h2><span className="capitalize">{this.state.channel.owner}</span>'s Dashboard <span className="gold">[MODERATOR]</span></h2>);
 		} else {
 			pageHeader = (<h2>Your Dashboard</h2>);
 		}

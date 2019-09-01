@@ -189,14 +189,29 @@ export default class GiftAchievementModal extends React.Component {
 	}
 
 	awardAchievement = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/award', {
-			members: this.state.selectedMembers.map(member => member.name),
-			aid: this.props.aid
-		}, {
-			withCredentials: true
-		}).then(response => {
-			this.props.onSubmit(response.data.members);
-		});
+		let endpoint;
+
+		if(this.props.isMod) {
+			endpoint = axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/mod/award?channel=' + this.props.channel, {
+				members: this.state.selectedMembers.map(member => member.name),
+				aid: this.props.aid
+			}, {
+				withCredentials: true
+			}).then(response => {
+				this.props.onSubmit(response.data.members);
+			});
+		} else {
+			endpoint = axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/award', {
+				members: this.state.selectedMembers.map(member => member.name),
+				aid: this.props.aid
+			}, {
+				withCredentials: true
+			}).then(response => {
+				this.props.onSubmit(response.data.members);
+			});
+		}
+
+		
 	}
 
 	render() {

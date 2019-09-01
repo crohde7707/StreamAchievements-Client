@@ -120,7 +120,7 @@ class Header extends React.Component {
 		return (
 			<div id="page-header">
 				<div className="logo">
-					<Link to="/home"><img src={require('../img/logo.png')} alt="" /></Link>
+					<Link to="/home"><img src="https://res.cloudinary.com/phirehero/image/upload/v1557947921/sa-logo.png" alt="" /></Link>
 				</div>
 				<Notifications profile={this.props.profile} active={this.state.notificationActive} count={count}/>
 				<div className={"menu" + ((this.state.menuActive) ? " menu--active" : "")} onClick={this.toggleMenu}>

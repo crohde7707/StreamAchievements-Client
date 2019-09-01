@@ -719,7 +719,7 @@ class AchievementPage extends React.Component {
 					<img
 						className="delete-achievement-button"
 						onClick={() => {this.setState({showConfirm: true})}}
-						src={require('../img/trash-white.png')}
+						src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png"
 					/>
 				);
 			}

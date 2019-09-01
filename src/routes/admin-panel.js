@@ -60,7 +60,7 @@ class AdminPanel extends React.Component {
 						</div>
 						<div className="member-action">
 							<a className="approve" href="" onClick={(e) => {this.approveMember(e, member.name)}}>
-								<img src={require('../img/check.png')} />
+								<img src="https://res.cloudinary.com/phirehero/image/upload/v1567266850/check.png" />
 							</a>
 							<a className="deny" href="">
 								<img src={require('../img/x.png')} />

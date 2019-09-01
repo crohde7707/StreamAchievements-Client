@@ -101,9 +101,10 @@ export default class AlertConfigurationPanel extends React.Component {
 			chatMessage = undefined;
 		}
 
-		return (
-			<div className="alert-overlay">
-				<h4>Alert Configuration</h4>
+		let overlayURLContent, chatToggleContent;
+
+		if(!this.props.isMod) {
+			overlayURLContent = (
 				<div className="section-wrapper overlay-url-section">
 				    <div className="section-label">
 				        <label htmlFor="message">Overlay URL</label>
@@ -124,6 +125,9 @@ export default class AlertConfigurationPanel extends React.Component {
 				       	<div className="helpText">Place overlay full screen, positioning options coming soon!</div>
 				    </div>
 				</div>
+			);
+
+			chatToggleContent = (
 				<div className="section-group">
 					<div className="section-wrapper section--inline">
 					    <div className="section-label">
@@ -143,6 +147,14 @@ export default class AlertConfigurationPanel extends React.Component {
 					</div>
 					{/*chatMessage*/}
 				</div>
+			);
+		}
+
+		return (
+			<div className="alert-overlay">
+				<h4>Alert Configuration</h4>
+				{overlayURLContent}
+				{chatToggleContent}
 				<div className="section-group">
 					<div className="section-wrapper">
 					    <div className="section-label">

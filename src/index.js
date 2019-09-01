@@ -34,8 +34,10 @@ let app = (
 					<Route path='/profile' component={ProfilePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
 	        		<Route path='/admin' component={AdminPanelPage} />
-	        		<Route path='/dashboard/achievement/:achievementid' component={AchievementPage} />
-	        		<Route path='/dashboard/achievement' component={AchievementPage} />
+	        		<Route key='owner-edit-achievement' path='/dashboard/achievement/:achievementid' component={AchievementPage} />
+	        		<Route key='mod-edit-achievement' path='/mod/achievement/:achievementid' component={AchievementPage} />
+	        		<Route key='owner-achievement' path='/dashboard/achievement' component={AchievementPage} />
+	        		<Route key='mod-achievement' path='/mod/achievement' component={AchievementPage} />
 	        		<Route key='owner-dashboard' path='/dashboard/' component={DashboardPage} />
 	        		<Route key='mod-dashboard' path='/mod/:channelid' component={DashboardPage} />
 	        		<Route path='/mod/' component={ModPage} />
