@@ -68,7 +68,7 @@ class Header extends React.Component {
 	}
 
 	render() {
-		let username, logo, count, channelLink;
+		let username, logo, count, channelLink, adminLink, moderatorLink;
 		
 		if(this.props.profile) {
 			username = this.props.profile.username
@@ -95,10 +95,12 @@ class Header extends React.Component {
 			}
 		}
 
-		let adminLink;
-
 		if(this.props.profile && this.props.profile.type === 'admin') {
 			adminLink = (<li className="admin"><Link to={"/admin"}>Admin Panel</Link></li>);
+		}
+
+		if(this.props.profile && this.props.profile.isMod) {
+			moderatorLink = (<li><Link to={"/mod"}>Mod Dashboard</Link></li>);
 		}
 
 		let menu = (
@@ -109,6 +111,7 @@ class Header extends React.Component {
 						<li><Link to='/profile'>Profile</Link></li>
 						{channelLink}
 						{adminLink}
+						{moderatorLink}
 						<li><Link to='/gold'>Stream Achievements Gold</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>

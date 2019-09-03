@@ -676,7 +676,6 @@ class DashboardPage extends React.Component {
 		},{
 			withCredentials: true
 		}).then((res) => {
-			console.log(res.data);
 			this.setState({
 				loading: false
 			});
@@ -706,7 +705,7 @@ class DashboardPage extends React.Component {
 			let achievementRoute = '/dashboard/achievement';
 
 			if(this.state.isMod) {
-				achievementRoute = '/mod/achievement';
+				achievementRoute = '/mod/' + this.props.match.params.channelid + '/achievement';
 			}
 
 			let {logo, owner} = this.state.channel;
@@ -961,6 +960,12 @@ class DashboardPage extends React.Component {
 					wrapperClass += " achievementTab--reordering"
 				}
 
+				let reorderLink;
+
+				if(!this.state.isMod) {
+					reorderLink = (<li><a href="javascript:;" onClick={this.toggleReorder}>Reorder</a></li>);
+				}
+
 				achievementTab = (
 					<div className={wrapperClass}>
 						<div className="achievementsHeader">
@@ -973,7 +978,7 @@ class DashboardPage extends React.Component {
 								<div className={actionClasses}>
 									<ul>
 										<li><Link to={achievementRoute}>Create</Link></li>
-										<li><a href="javascript:;" onClick={this.toggleReorder}>Reorder</a></li>
+										{reorderLink}
 									</ul>
 								</div>
 							</div>

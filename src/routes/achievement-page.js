@@ -87,8 +87,15 @@ class AchievementPage extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		if(this.props.match.url.indexOf('/mod/') === 0 && this.props.match.params.channelid) {
+			this.setState({
+				isMod: true
+			});
+		}
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
-		//debugger;
 		if(this.state.fetch && !this.props.profile && nextProps.profile) {
 
 			this.fetchData();
@@ -98,40 +105,79 @@ class AchievementPage extends React.Component {
 	}
 
 	fetchData = () => {
-		if(this.props.match.params.achievementid) {
-			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
-				withCredentials: true
-			}).then((res) => {
-				if(res.data.error) {
-					//redirect to home
-				} else {
-					let achievement = {...res.data.achievement};
+		if(this.props.match.url.indexOf('/mod/') === 0 && this.props.match.params.channelid) {
+			if(this.props.match.params.achievementid) {
+				axios.get(`${process.env.REACT_APP_API_DOMAIN}api/achievement/mod/retrieve?aid=${this.props.match.params.achievementid}&channel=${this.props.match.params.channelid}`, {
+					withCredentials: true
+				}).then((res) => {
+					if(res.data.error) {
+						//redirect to home
+					} else {
+						let achievement = {...res.data.achievement};
 
-					if(!achievement.achType) {
-						achievement.achType = "3";
+						if(!achievement.achType) {
+							achievement.achType = "3";
+						}
+
+						this.setState({
+							originalAchievement: res.data.achievement,
+							...achievement,
+							iconPreview: res.data.achievement.icon,
+							icons: res.data.images,
+							defaultIcons: res.data.defaultIcons,
+							fetch: false,
+							edit: true,
+							isMod: true
+						});
 					}
-
+				});
+			} else {
+				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
+					withCredentials: true
+				}).then(res => {
 					this.setState({
-						originalAchievement: res.data.achievement,
-						...achievement,
-						iconPreview: res.data.achievement.icon,
 						icons: res.data.images,
 						defaultIcons: res.data.defaultIcons,
-						fetch: false,
-						edit: true
+						fetch: false
 					});
-				}
-			});
-		} else {
-			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
-				withCredentials: true
-			}).then(res => {
-				this.setState({
-					icons: res.data.images,
-					defaultIcons: res.data.defaultIcons,
-					fetch: false
 				});
-			});
+			}
+		} else {
+			if(this.props.match.params.achievementid) {
+				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
+					withCredentials: true
+				}).then((res) => {
+					if(res.data.error) {
+						//redirect to home
+					} else {
+						let achievement = {...res.data.achievement};
+
+						if(!achievement.achType) {
+							achievement.achType = "3";
+						}
+
+						this.setState({
+							originalAchievement: res.data.achievement,
+							...achievement,
+							iconPreview: res.data.achievement.icon,
+							icons: res.data.images,
+							defaultIcons: res.data.defaultIcons,
+							fetch: false,
+							edit: true
+						});
+					}
+				});
+			} else {
+				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
+					withCredentials: true
+				}).then(res => {
+					this.setState({
+						icons: res.data.images,
+						defaultIcons: res.data.defaultIcons,
+						fetch: false
+					});
+				});
+			}
 		}
 	}
 
@@ -492,7 +538,6 @@ class AchievementPage extends React.Component {
 	}
 
 	isValidQuery = (fieldSet, field) => {
-		debugger;
 		if(!this.isNullorEmpty(fieldSet, field)) {
 			return;
 		} else {
@@ -619,9 +664,11 @@ class AchievementPage extends React.Component {
 	}
 
 	showImagePanel = (event) => {
-		this.setState({
-			showImagePanel: true
-		});
+		if(!this.state.isMod) {
+			this.setState({
+				showImagePanel: true
+			});
+		}
 	}
 
 	showTutorial = () => {
@@ -631,10 +678,12 @@ class AchievementPage extends React.Component {
 	}
 
 	toggleHover = (showHover) => {
-		if(showHover) {
-			this.hover.classList.add('hoverText--active');
-		} else {
-			this.hover.classList.remove('hoverText--active');
+		if(!this.state.isMod) {
+			if(showHover) {
+				this.hover.classList.add('hoverText--active');
+			} else {
+				this.hover.classList.remove('hoverText--active');
+			}
 		}
 	}
 
@@ -663,8 +712,22 @@ class AchievementPage extends React.Component {
 
 	render() {
 
-		let content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
+		let pageHeader, content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
+
+		if(this.state.isMod) {
+			if(this.props.match.params.achievementid) {
+				pageHeader = (<span><span className="capitalize">{`Edit ${this.props.match.params.channelid}`}</span>'s Achievement <span className="gold">[MODERATOR]</span></span> );
+			} else {
+				pageHeader = (<span><span className="capitalize">{`Add ${this.props.match.params.channelid}`}</span>'s Achievement <span className="gold">[MODERATOR]</span></span> );
+			}
+		} else {
+			if(this.props.match.params.achievementid) {
+				pageHeader = "Edit Achievement";
+			} else {
+				pageHeader = "Create Achievement";
+			}
+		}
 
 			let {title, description, earnable, limited, secret} = this.state;
 
@@ -714,7 +777,7 @@ class AchievementPage extends React.Component {
 				tutorialPanel = undefined
 			}
 
-			if(this.state.edit) {
+			if(this.state.edit && !this.state.isMod) {
 				deleteButton = (
 					<img
 						className="delete-achievement-button"
@@ -729,13 +792,21 @@ class AchievementPage extends React.Component {
 			if(this.state.iconPreview) {
 				imgPreviewContent = (<img src={this.state.iconPreview} />);
 			} else {
-				imgPreviewContent = (<div className="currentIcon--placeholder"></div>);
+				imgPreviewContent = (<img src={this.state.defaultIcons.default} />);
 			}
 			
 			if(this.props.patreon && this.props.patreon.gold) {
+				let className = "formGroup icon-upload";
+				let hover = (<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>);
+				
+				if(this.state.isMod) {
+					className += " isMod";
+					hover = undefined;
+				}
+
 				customType = (<option value="4">Custom</option>);
 				iconSection = (
-					<div className="formGroup icon-upload">
+					<div className={className}>
 						<label htmlFor="achievement-icon">Icon</label>
 						<div
 							className="currentIcon"
@@ -744,7 +815,7 @@ class AchievementPage extends React.Component {
 							onMouseLeave={() => {this.toggleHover(false)}}
 						>
 	                    	{imgPreviewContent}
-	                    	<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>
+	            			{hover}        	
                     	</div>
                     </div>
 				)
@@ -755,12 +826,6 @@ class AchievementPage extends React.Component {
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold!</Link> via Patreon!</p> 
 					</div>
 				);
-			}
-
-			let pageHeader = "Create Achievement";
-
-			if(this.props.match.params.achievementid) {
-				pageHeader = "Edit Achievement";
 			}
 
 			let saveButton;
