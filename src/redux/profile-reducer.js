@@ -10,7 +10,8 @@ let initialState = {
 	username: '',
 	logo: '',
 	status: '',
-	type: ''
+	type: '',
+	isMod: false
 }
 
 export default function ProfileReducer(state = initialState, action) {
@@ -26,7 +27,8 @@ export default function ProfileReducer(state = initialState, action) {
 					preferences: action.data.preferences,
 					unreadNotifications: action.data.notificationCount,
 					nid: action.data.uid,
-					socket: action.data.socket
+					socket: action.data.socket,
+					isMod: action.data.isMod
 				},
 				patreon: action.data.patreon
 			}

@@ -130,13 +130,19 @@ class ChannelList extends React.Component {
 						</div>
 					));
 
-					favContent = this.state.favorites.map((channel, index) => (
-						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
-							<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
-							<div className="channel-item--name">{channel.owner}</div>
-							<div className="channel-item--percentage">{channel.percentage + '%'}</div>
-						</div>
-					));
+					if(this.state.favorites.length > 0) {
+						favContent = this.state.favorites.map((channel, index) => (
+							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
+								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+								<div className="channel-item--name">{channel.owner}</div>
+								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+							</div>
+						));
+					} else {
+						favContent = (
+							<h4>No channels have been favorited</h4>
+						)
+					}
 
 					headerJoinButton = (
 						<div onClick={this.showDirectory} className="join-channel-button">

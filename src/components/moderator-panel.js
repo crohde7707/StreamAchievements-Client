@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import AddModeratorModal from './add-moderator-modal';
 
 import './moderator-panel.css';
@@ -47,6 +48,24 @@ export default class Moderators extends React.Component {
 		this.setState(stateUpdate);
 	}
 
+	deleteMod = (moderator) => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/mod/revoke', {
+			mod: moderator.name
+		}, {
+			withCredentials: true
+		}).then(response => {
+
+			let newMods = this.state.moderators;
+			let modIndex = this.state.moderators.findIndex(mod => mod.name === moderator.name);
+
+			newMods.splice(modIndex, 1);
+
+			this.setState({
+				moderators: newMods
+			});
+		});
+	}
+
 	render() {
 
 		let moderatorContent, addModeratorButton, modal;
@@ -78,6 +97,43 @@ export default class Moderators extends React.Component {
 					classes += " stripe";
 				}
 
+				let permissions = (
+					<div className="moderator-permissions">
+						<div className="permission">
+							<div className="permissions--label">
+								<label htmlFor="channel-perm">Channel</label>
+							</div>
+							<div className="permissions--value">
+								<input
+									id="channel-perm"
+									name="channel"
+									className="textInput"
+									type="checkbox"
+									checked={moderator.permissions.channel}
+									value="channel"
+									onChange={this.handleDataChange}
+								/>
+							</div>
+						</div>
+						<div className="permission">
+							<div className="permissions--label">
+								<label htmlFor="chat-perm">Chat</label>
+							</div>
+							<div className="permissions--value">
+								<input
+									id="chat-perm"
+									name="channel"
+									className="textInput"
+									type="checkbox"
+									checked={moderator.permissions.chat}
+									value="chat"
+									onChange={this.handleDataChange}
+								/>
+							</div>
+						</div>
+					</div>
+				)
+
 				return (
 					<div key={'moderator.' + idx} className={classes}>
 						<div className="moderator-logo">
@@ -86,39 +142,9 @@ export default class Moderators extends React.Component {
 						<div className="moderator-name">
 							{moderator.name}
 						</div>
-						<div className="moderator-permissions">
-							<div className="permission">
-								<div className="permissions--label">
-									<label htmlFor="channel-perm">Channel</label>
-								</div>
-								<div className="permissions--value">
-									<input
-										id="channel-perm"
-										name="channel"
-										className="textInput"
-										type="checkbox"
-										checked={moderator.permissions.channel}
-										value="channel"
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
-							<div className="permission">
-								<div className="permissions--label">
-									<label htmlFor="chat-perm">Chat</label>
-								</div>
-								<div className="permissions--value">
-									<input
-										id="chat-perm"
-										name="channel"
-										className="textInput"
-										type="checkbox"
-										checked={moderator.permissions.chat}
-										value="chat"
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
+						{/*permissions*/}
+						<div class="moderator-delete" onClick={() => {this.deleteMod(moderator)}}>
+							<img class="moderator-delete-button" src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png" />
 						</div>
 					</div>
 				);

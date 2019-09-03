@@ -135,3 +135,17 @@
 	border-style: inset;
 	border: 2px solid red;
 }
+
+.icon-upload.isMod .currentIcon {
+	background: none;
+	border: none;
+	cursor: auto;
+}
+
+.achievement-wrapper h2 .capitalize {
+	text-transform: capitalize;
+}
+
+.achievement-wrapper h2 .gold {
+	font-size: 14px;
+}
