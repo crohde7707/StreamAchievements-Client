@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import './gold-page.css'
 
 
-const PATREON_URL = 'https://www.patreon.com/join/Stream Achievements';
+const PATREON_URL = 'https://www.patreon.com/streamachievements';
 
 class GoldPage extends React.Component {
 
