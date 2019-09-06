@@ -299,7 +299,12 @@ class AchievementPage extends React.Component {
 			stateUpdate.touched['query'] = true;
 			stateUpdate.touched['condition'] = true;
 			stateUpdate.query = '';
-			stateUpdate.condition = '';
+			if(value === "0") {
+				stateUpdate.condition = 1000;
+			} else {
+				stateUpdate.condition = '';
+			}
+
 		}
 
 		if(this.state.valid && !this.state.valid[name]) {
@@ -312,12 +317,32 @@ class AchievementPage extends React.Component {
 	}
 
 	getConditionContent = () => {
-		if(this.state.achType !== "" && this.state.achType !== "0") {
+		if(this.state.achType !== "") {
 
 			let conditionContent;
 			let helpText;
 
 			switch(this.state.achType) {
+				case "0":
+					conditionContent = (
+						<div>
+							<div className="formGroup">
+								<label htmlFor="achievement-condition">Tier</label>
+								<select 
+									id="achievement-condition"
+									name="condition"
+									className={"selectInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+									onChange={this.handleDataChange}
+									value={this.state.condition}
+								>
+									<option value={1000}>Tier 1</option>
+									<option value={2000}>Tier 2</option>
+									<option value={3000}>Tier 3</option>
+								</select>
+							</div>
+						</div>
+					)
+					break;
 				case "1":
 					conditionContent = (
 						<div>
@@ -466,21 +491,20 @@ class AchievementPage extends React.Component {
 					iconName: (this.state.file) ? this.state.file.name : '',
 					achType: this.state.achType
 				};
+				
+				achievement.condition = this.state.condition;
 
-				if(this.state.achType !== '0') {
-					achievement.condition = this.state.condition;
-
-					if(this.state.achType === "2") {
-						if(!this.state.condition) {
-							achievement.condition = 1;
-						}
-					}
-
-					if(this.state.achType === "4") {
-						achievement.bot = this.state.bot;
-						achievement.query = this.state.query;
+				if(this.state.achType === "2") {
+					if(!this.state.condition) {
+						achievement.condition = 1;
 					}
 				}
+
+				if(this.state.achType === "4") {
+					achievement.bot = this.state.bot;
+					achievement.query = this.state.query;
+				}
+				
 			}
 
 			achievement.id = this.state._id;
