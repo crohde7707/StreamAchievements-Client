@@ -47,6 +47,15 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	sendTier2 = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [{
+				'channel': 'phirehero',
+				'achievementID': '5d7667959823a97534d3b419',
+				'tier': '3000',
+				'userID': '70967393'
+			}]);
+	}
+
 	sendData = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {
 			channel: this.state.channel,
@@ -105,6 +114,10 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.addNotice} type="button">Add Notice</button>
+					</div>
+					<div>
+						<h2>Test Achievement Types</h2>
+						<button onClick={this.sendTier2} type="button">Send Tier 2</button>
 					</div>
 				</div>
 			</Template>
