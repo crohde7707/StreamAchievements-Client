@@ -107,7 +107,7 @@ class DashboardPage extends React.Component {
 			})
 			
 		} else {
-			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve', {
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/dashboard', {
 				withCredentials: true
 			}).then((res) => {
 				if(res.data.error) {

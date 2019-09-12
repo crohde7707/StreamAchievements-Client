@@ -2,6 +2,7 @@ import React from 'react';
 import connector from '../redux/connector';
 import {setProfile, updateNotifications} from '../redux/profile-reducer';
 import axios from 'axios';
+import axiosInstance from '../utils/axios-instance';
 import {Link} from 'react-router-dom';
 import io from "socket.io-client";
 
@@ -22,9 +23,7 @@ class Header extends React.Component {
 
 	componentDidMount() {
 		if(!this.props.profile) {
-			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/user', {
-				withCredentials: true
-			}).then((res) => {
+			axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/user').then((res) => {
 
 				this.connectSocket(res.data.uid)
 

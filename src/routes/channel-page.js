@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import axiosInstance from '../utils/axios-instance';
 import throttle from 'lodash/throttle';
 import connector from '../redux/connector';
 import {setProfile} from '../redux/profile-reducer';
@@ -36,26 +37,26 @@ class ChannelPage extends React.Component {
 			withCredentials: true
 		});
 
-		authAxios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve?id=' + this.props.match.params.channelid, {
-			withCredentials: true
-		}).then((res) => {
-			this.setState({
-				channel: res.data.channel,
-				achievements: res.data.achievements,
-				joined: res.data.joined,
-				fullAccess: res.data.fullAccess,
-				favorite: res.data.favorited,
-				loading: false
-			}, () => {
-				this.updateChannelHeader();
-				this.updateChannelSize();
+		axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve?channel=' + this.props.match.params.channelid).then((res) => {
+			if(!res.error) {
+				this.setState({
+					channel: res.data.channel,
+					achievements: res.data.achievements,
+					joined: res.data.joined,
+					fullAccess: res.data.fullAccess,
+					favorite: res.data.favorited,
+					loading: false
+				}, () => {
+					this.updateChannelHeader();
+					this.updateChannelSize();
 
-				this._updateChannelHeader = throttle(this.updateChannelHeader, 200);
-				this._updateChannelSize = throttle(this.updateChannelSize, 200);
+					this._updateChannelHeader = throttle(this.updateChannelHeader, 200);
+					this._updateChannelSize = throttle(this.updateChannelSize, 200);
 
-				window.addEventListener('scroll', this._updateChannelHeader);
-				window.addEventListener('resize', this._updateChannelSize);
-			});
+					window.addEventListener('scroll', this._updateChannelHeader);
+					window.addEventListener('resize', this._updateChannelSize);
+				});
+			}
 		});	
 	}
 

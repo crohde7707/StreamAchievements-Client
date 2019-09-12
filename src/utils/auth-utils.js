@@ -11,30 +11,13 @@ let isAuthenticated = () => {
 	return false;
 }
 
-let AxiosInstance = (history, method, endpoint, opts) => {
-	
-	return new Promise((resolve, reject) => {
-		if(opts) {
-			axios[method](endpoint, opts).then(res => {
-				if(res.redirect) {
-					history.push('/');
-				} else {
-					resolve(res);
-				}
-			})
-		} else {
-			axios[method](endpoint).then(res => {
-				if(res.redirect) {
-					history.push('/');
-				} else {
-					resolve(res);
-				}
-			})
-		}
-	});
+let wrappedAxios = (props) => {
+	if(document && document.location) {
+		console.log(document.location.href);
+	}
 }
 
 export {
 	isAuthenticated,
-	AxiosInstance
+	wrappedAxios
 };
