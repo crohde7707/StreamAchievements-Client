@@ -58,7 +58,7 @@ class VerifyPage extends React.Component {
 
 		if(this.state.expired) {
 			content = (
-				<div class='verify-wrapper'>
+				<div className='verify-wrapper'>
 					<h2>Whoops! Looks like your link expired!!</h2>
 					<p>Do not fear, just make your way back over to <Link to='/channel/create'>Start A Channel</Link> that way we can get another invite sent out for you!</p>
 					<p>Just remember, invites expire after 72 hours, so don't forget to check that email!</p>
@@ -66,22 +66,28 @@ class VerifyPage extends React.Component {
 			);
 		} else if(this.state.verified) {
 			content = (
-				<div class='verify-wrapper'>
+				<div className='verify-wrapper'>
 					<h2>You have been verified!</h2>
 					<img className="congrats-icon" src="https://res.cloudinary.com/phirehero/image/upload/v1563800518/congrats.png" />
 					<p>You are now ready to start creating those achievmenets for your community to earn!</p>
-					<p>Let your community know that you now offer achievements! Click the 'Share on Twitter' button below to inform the masses!</p>
+					<p>Let your community know that you now offer achievements! Click the 'Share on Twitter' button below to inform the masses, or just <strong>@streamachieve</strong> with your own custom message!</p>
 					<div className="share">
-					<TwitterShareButton
-					    url={'https://streamachievements.com/'}
-					    options={{
-					    	text: 'I was just verified to start offering achievements for our #Twitch community through #StreamAchievements! @streamachieve',
-					    	size: 'large'
-					    }}
-					  />
-					<p>To start creating achievements, drop into your <Link to='/dashboard'>dashboard</Link>!</p>
-
-				</div>
+						<TwitterShareButton
+						    url={'https://streamachievements.com/'}
+						    options={{
+						    	text: 'I was just verified to start offering achievements for our #Twitch community through #StreamAchievements! @streamachieve',
+						    	size: 'large'
+						    }}
+						  />
+					</div>
+					<p>To help you get started, here is a video explaining out everything you need to know for your dashboard, or if you are more of the "Figured it out as I go" type, drop into your <Link to='/dashboard'>dashboard</Link>!</p>
+					<div className="getting-started">
+						<div className="yt-wrapper">
+							<div className="yt-container">
+								<iframe className="yt-vid" src="https://www.youtube.com/embed/m5BSuKBZsUc" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+							</div>
+						</div>
+					</div>
 				</div>
 			);
 		}
