@@ -56,6 +56,7 @@ class AchievementPage extends React.Component {
 								<li><span>{"{amount}"}</span>: Any numeric amount (think achievements for chat currency, minigame results, counters, etc)</li>
 								<li><span>{"{total}"}</span>: Same as above, in the event there are two numeric values in your message</li>
 								<li><span>{"{time}"}</span>: Useful when getting time from your chatbot!</li>
+								<li><span>{"{ignore}"}</span>: When you want to ignore any section in your bot's message!</li>
 							</ul>
 						</p>
 						<h4>Example</h4>

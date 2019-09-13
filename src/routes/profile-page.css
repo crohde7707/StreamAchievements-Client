@@ -311,6 +311,7 @@ input:checked + .slider:before {
     padding: 0px 12px;
     cursor: pointer;
 	transition: all 0.2s ease;
+	width: 25px;
 }
 
 .notification-delete:hover {

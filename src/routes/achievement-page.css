@@ -149,3 +149,73 @@
 .achievement-wrapper h2 .gold {
 	font-size: 14px;
 }
+
+@media only screen and (max-width: 480px) {
+	.achievement-wrapper h4 {
+		padding-left: 10px;
+	}
+
+	.achievement-wrapper .formGroup {
+		flex-direction: column;
+		margin-bottom: 20px;
+	}
+
+	.achievement-wrapper .formGroup .textInput {
+		padding: 2%;
+	}
+
+	.achievement-wrapper .formGroup select.selectInput {
+		height: 44px;
+		width: 95%;
+	}
+
+	.achievement-wrapper .achievement.achievement--earned .achievement-logo {
+		top: inherit;
+	}
+
+	.achievement-wrapper .achievement.achievement--earned .achievement-logo img {
+		width: 65px;
+		height: 65px;
+	}
+
+	.achievement-wrapper label {
+		justify-content: left;
+		text-align: left;
+		width: 96%;
+		margin: 0 auto;
+	}
+
+	.achievement-wrapper input {
+		justify-content: left;
+		text-align: left;
+		width: 90%;
+		margin: 0 auto;
+	}
+
+	.achievement-wrapper label {
+		margin-bottom: 5px;
+	}
+
+	.achievement-wrapper .icon-upload {
+		flex-direction: row;
+		width: 50%;
+		margin: 0 auto 20px;
+	}
+
+	.currentIcon {
+		width: 75%;
+	}
+
+	.checkboxes {
+		width: 96%;
+		margin: 0 auto;
+	}
+
+	.achievement-wrapper .achievementPage-header h2 {
+		margin-left: 10px;
+	}
+
+	.tutorial-button {
+		margin-right: 10px;
+	}
+}
