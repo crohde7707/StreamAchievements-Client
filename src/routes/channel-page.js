@@ -33,10 +33,6 @@ class ChannelPage extends React.Component {
 	componentDidMount() {
 		//Fetch channel data 
 
-		let authAxios = axios.create({
-			withCredentials: true
-		});
-
 		axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve?channel=' + this.props.match.params.channelid).then((res) => {
 			if(!res.error) {
 				this.setState({

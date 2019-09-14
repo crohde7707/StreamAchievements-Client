@@ -11,13 +11,6 @@ let isAuthenticated = () => {
 	return false;
 }
 
-let wrappedAxios = (props) => {
-	if(document && document.location) {
-		console.log(document.location.href);
-	}
-}
-
 export {
-	isAuthenticated,
-	wrappedAxios
+	isAuthenticated
 };

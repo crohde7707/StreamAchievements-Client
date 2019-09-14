@@ -21,7 +21,7 @@ class GoldPage extends React.Component {
 					<h2 className="gold">Stream Achievements Gold</h2>
 					<div className="section">
 						<h3>What is Stream Achievements Gold?</h3>
-						<p>Stream Achievements Gold is a premium tier system that is offered to members and content creators that choose to support Stream Achievements!</p>
+						<p>Stream Achievements Gold is the premium tier of our system that is offered to members and content creators! Through your support, Stream Achievements is able to continue offering its excitement, and bringing more fun and exciting features to your communities!</p>
 					</div>
 					<div className="section">
 						<h3>Why Should I Upgrade?</h3>
@@ -113,7 +113,7 @@ class GoldPage extends React.Component {
 						<p>The program is currently integrated through Patreon, so all you need to do is followed 2 simple steps:</p>
 						<p>
 							<ol>
-								<li>Head over to your <Link to="/profile">integrations</Link> within your profile, and link up your Patreon account</li>
+								<li>Head over to your <Link to="/profile?tab=integration">integrations</Link> within your profile, and link up your Patreon account</li>
 								<li>Visit the Patreon page for Stream Achievements and <a href={PATREON_URL}>make your pledge</a> for the gold tier!</li>
 								<li>Return to your integrations and hit the sync button, and it will reflect that you are an active patron!</li>
 							</ol>
@@ -122,7 +122,7 @@ class GoldPage extends React.Component {
 					<div className="section">
 						<h3>What happens if I cancel my pledge?</h3>
 						<p>In the event that your are no longer an active patron, the extra features you had unlocked will be disabled!</p>
-						<p>None of the achievements you created will be removed, nor will the images you uploaded! You will just see them greyed out from your channel</p>
+						<p>None of the achievements you created will be removed, nor will the images you uploaded! You will just see them greyed out from your channel!</p>
 						<p>The moment you become an active patron again, all of these features will be re-enabled for you to use and provide!</p>
 					</div>
 					<div className="section">
