@@ -31,7 +31,7 @@ export default class Template extends React.Component {
 			<div className="template">
 				{redirect}
 				<Header />
-				<div className="main">
+				<div id="mainContent" className="main">
 					{this.props.children}
 		            <LoadingSpinner isLoading={isLoading} full={fullscreen} />
 				</div>

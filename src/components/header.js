@@ -52,6 +52,15 @@ class Header extends React.Component {
 
 	toggleMenu = () => {
 		this.positionModal();
+
+		let mainContent = document.getElementById("mainContent");
+
+		if(this.state.menuActive) {
+			mainContent.classList.remove('menu-dropdown--active');
+		} else {
+			mainContent.classList.add('menu-dropdown--active');
+		}
+
 		this.setState({
 			menuActive: !this.state.menuActive,
 			notificationActive: false

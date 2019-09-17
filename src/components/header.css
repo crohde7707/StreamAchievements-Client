@@ -37,6 +37,10 @@
 	transition: all 0.2s ease;
 }
 
+#mainContent.menu-dropdown--active {
+	pointer-events: none;
+}
+
 .header-nav a {
 	background-color: #1c2741;
     align-items: center;
