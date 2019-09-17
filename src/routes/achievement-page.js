@@ -661,8 +661,16 @@ class AchievementPage extends React.Component {
 				delete: this.state._id
 			};
 
-			this.props.history.push('/dashboard/' + this.props.profile.username + '?tab=achievements');
+			this.props.history.push('/dashboard/?tab=achievements');
 		});
+	}
+
+	handleCancel = () => {
+		if(!this.state.isMod) {
+			this.props.history.push('/dashboard/?tab=achievements');					
+		} else {
+			this.props.history.push('/mod/' + this.props.profile.username + '?tab=achievements');
+		}
 	}
 
 	sendData = (achievement) => {
@@ -679,7 +687,12 @@ class AchievementPage extends React.Component {
 			if(res.data.created || res.data.update) {
 				//redirect to manage-channel#achievements
 				this.clearState();
-				this.props.history.push('/dashboard/?tab=achievements');
+				if(!this.state.isMod) {
+					this.props.history.push('/dashboard/?tab=achievements');					
+				} else {
+					this.props.history.push('/mod/' + this.props.profile.username + '?tab=achievements');
+				}
+
 			} else {
 				this.setState({
 					error: res.data.message
@@ -981,7 +994,7 @@ class AchievementPage extends React.Component {
 		                    {saveButton}
 		                    <div className="button-bank">
 			                    <button type="button" className="achievement-button" onClick={() => {this.revert();}}>Reset</button>
-			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={() => {this.props.history.push('/dashboard/' + this.props.profile.username + '?tab=achievements');}}>Cancel</button>
+			                    <button type="button" className="achievement-button cancel-achievement-button" onClick={this.handleCancel}>Cancel</button>
 		                    </div>
 		                    {confirmPanel}
 		                    {imagePanel}
