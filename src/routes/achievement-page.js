@@ -110,36 +110,16 @@ class AchievementPage extends React.Component {
 			if(this.props.match.params.achievementid) {
 				axios.get(`${process.env.REACT_APP_API_DOMAIN}api/achievement/mod/retrieve?aid=${this.props.match.params.achievementid}&channel=${this.props.match.params.channelid}`, {
 					withCredentials: true
-				}).then((res) => {
-					if(res.data.error) {
-						//redirect to home
-					} else {
-						let achievement = {...res.data.achievement};
-
-						if(!achievement.achType) {
-							achievement.achType = "3";
-						}
-
-						this.setState({
-							originalAchievement: res.data.achievement,
-							...achievement,
-							iconPreview: res.data.achievement.icon,
-							icons: res.data.images,
-							defaultIcons: res.data.defaultIcons,
-							fetch: false,
-							edit: true,
-							isMod: true
-						});
-					}
-				});
+				}).then((res) => this.handleFetch(res, true));
 			} else {
-				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
+				axios.get(`${process.env.REACT_APP_API_DOMAIN}api/achievement/mod/icons?channel=${this.props.match.params.channelid}`, {
 					withCredentials: true
 				}).then(res => {
 					this.setState({
 						icons: res.data.images,
 						defaultIcons: res.data.defaultIcons,
-						fetch: false
+						fetch: false,
+						isGoldChannel: res.data.isGoldChannel
 					});
 				});
 			}
@@ -147,27 +127,7 @@ class AchievementPage extends React.Component {
 			if(this.props.match.params.achievementid) {
 				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/retrieve?aid=' + this.props.match.params.achievementid, {
 					withCredentials: true
-				}).then((res) => {
-					if(res.data.error) {
-						//redirect to home
-					} else {
-						let achievement = {...res.data.achievement};
-
-						if(!achievement.achType) {
-							achievement.achType = "3";
-						}
-
-						this.setState({
-							originalAchievement: res.data.achievement,
-							...achievement,
-							iconPreview: res.data.achievement.icon,
-							icons: res.data.images,
-							defaultIcons: res.data.defaultIcons,
-							fetch: false,
-							edit: true
-						});
-					}
-				});
+				}).then((res) => this.handleFetch(res, false));
 			} else {
 				axios.get(process.env.REACT_APP_API_DOMAIN + 'api/achievement/icons', {
 					withCredentials: true
@@ -179,6 +139,30 @@ class AchievementPage extends React.Component {
 					});
 				});
 			}
+		}
+	}
+
+	handleFetch = (res, isMod) => {
+		if(res.data.error) {
+			//redirect to home
+		} else {
+			let achievement = {...res.data.achievement};
+
+			if(!achievement.achType) {
+				achievement.achType = "3";
+			}
+
+			this.setState({
+				originalAchievement: res.data.achievement,
+				...achievement,
+				iconPreview: res.data.achievement.icon,
+				icons: res.data.images,
+				defaultIcons: res.data.defaultIcons,
+				fetch: false,
+				edit: true,
+				isMod,
+				isGoldChannel: res.data.isGoldChannel
+			});
 		}
 	}
 
@@ -391,28 +375,6 @@ class AchievementPage extends React.Component {
 						</div>
 					);
 					break;
-				// case "3":
-				// 	//Manual
-				// 	helpText = "Total raids from the viewer (defaults to 1)";
-				// 	conditionContent = (
-				// 		<div>
-				// 			<div className="formGroup">
-				// 				<label htmlFor="achievement-condition">Condition</label>
-				// 				<input
-				// 					id="achievement-condition"
-				// 					name="condition"
-				// 					className="textInput"
-				// 					type="text"
-				// 					value={this.state.condition}
-				// 					onChange={this.handleDataChange}
-				// 				/>
-				// 			</div>
-				// 			<div className="helpText">
-				// 				{helpText}
-				// 			</div>
-				// 		</div>
-				// 	);
-				// 	break;
 				case "4":
 					//Custom
 					conditionContent = (
@@ -669,15 +631,22 @@ class AchievementPage extends React.Component {
 		if(!this.state.isMod) {
 			this.props.history.push('/dashboard/?tab=achievements');					
 		} else {
-			this.props.history.push('/mod/' + this.props.profile.username + '?tab=achievements');
+			this.props.history.push('/mod/' + this.props.match.params.channelid + '?tab=achievements');
 		}
 	}
 
 	sendData = (achievement) => {
-		let api = process.env.REACT_APP_API_DOMAIN + 'api/achievement/create';
+		let api, mod = "", param = "";
 
+		if(this.state.isMod) {
+			mod = "mod/";
+			param = `?channel=${this.props.match.params.channelid}`;
+		}
+		
 		if(this.state.edit) {
-			api = process.env.REACT_APP_API_DOMAIN + 'api/achievement/update';
+			api = `${process.env.REACT_APP_API_DOMAIN}api/achievement/${mod}update${param}`;
+		} else {
+			api = `${process.env.REACT_APP_API_DOMAIN}api/achievement/${mod}create${param}`;
 		}
 
 		axios.post(api, achievement, {
@@ -690,7 +659,7 @@ class AchievementPage extends React.Component {
 				if(!this.state.isMod) {
 					this.props.history.push('/dashboard/?tab=achievements');					
 				} else {
-					this.props.history.push('/mod/' + this.props.profile.username + '?tab=achievements');
+					this.props.history.push('/mod/' + this.props.match.params.channelid + '?tab=achievements');
 				}
 
 			} else {
@@ -752,6 +721,8 @@ class AchievementPage extends React.Component {
 
 		let pageHeader, content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
+
+		let isGold = (this.props.patreon && this.props.patreon.gold) || (this.state.isMod && this.state.isGoldChannel);
 
 		if(this.state.isMod) {
 			if(this.props.match.params.achievementid) {
@@ -833,7 +804,7 @@ class AchievementPage extends React.Component {
 				imgPreviewContent = (<img src={this.state.defaultIcons.default} />);
 			}
 			
-			if(this.props.patreon && this.props.patreon.gold) {
+			if(isGold) {
 				let className = "formGroup icon-upload";
 				let hover = (<div className="hoverText" ref={hover => (this.hover = hover)}>Click to Edit</div>);
 				
@@ -858,7 +829,7 @@ class AchievementPage extends React.Component {
                     </div>
 				)
 			} else if(!this.state.loading) {
-				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold])</option>);
+				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold]</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold!</Link> via Patreon!</p> 
@@ -892,7 +863,7 @@ class AchievementPage extends React.Component {
 						<div className="achievement-preview">
 							<Achievement
 								earned={true}
-								unlocked={this.props.patreon && this.props.patreon.gold}
+								unlocked={isGold}
 								achievement={this.state}
 								defaultIcons={this.state.defaultIcons}
 							/>
