@@ -36,7 +36,8 @@ class AchievementPage extends React.Component {
 			edit: false,
 			showConfirm: false,
 			showImagePanel: false,
-			defaultIcons: {}
+			defaultIcons: {},
+			customAllowed: true
 		};
 
 		if(props.profile) {
@@ -119,7 +120,8 @@ class AchievementPage extends React.Component {
 						icons: res.data.images,
 						defaultIcons: res.data.defaultIcons,
 						fetch: false,
-						isGoldChannel: res.data.isGoldChannel
+						isGoldChannel: res.data.isGoldChannel,
+						customAllowed: res.data.customAllowed
 					});
 				});
 			}
@@ -135,7 +137,8 @@ class AchievementPage extends React.Component {
 					this.setState({
 						icons: res.data.images,
 						defaultIcons: res.data.defaultIcons,
-						fetch: false
+						fetch: false,
+						customAllowed: res.data.customAllowed
 					});
 				});
 			}
@@ -161,7 +164,8 @@ class AchievementPage extends React.Component {
 				fetch: false,
 				edit: true,
 				isMod,
-				isGoldChannel: res.data.isGoldChannel
+				isGoldChannel: res.data.isGoldChannel,
+				customAllowed: res.data.customAllowed
 			});
 		}
 	}
@@ -377,47 +381,56 @@ class AchievementPage extends React.Component {
 					break;
 				case "4":
 					//Custom
-					conditionContent = (
-						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-bot">Bot Name *</label>
-								<input
-									id="achievement-bot"
-									name="bot"
-									className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
-									type="text"
-									value={this.state.bot}
-									onChange={this.handleDataChange}
-								/>
+					if(this.state.customAllowed) {
+
+						conditionContent = (
+							<div>
+								<div className="formGroup">
+									<label htmlFor="achievement-bot">Bot Name *</label>
+									<input
+										id="achievement-bot"
+										name="bot"
+										className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
+										type="text"
+										value={this.state.bot}
+										onChange={this.handleDataChange}
+									/>
+								</div>
+								<div className="formGroup">
+									<label htmlFor="achievement-query">
+										<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
+									</label>
+									<input
+										id="achievement-query"
+										name="query"
+										className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
+										type="text"
+										value={this.state.query}
+										onChange={this.handleDataChange}
+									/>
+								</div>
+								<div className="formGroup">
+									<label htmlFor="achievement-condition">
+										<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
+									</label>
+									<input
+										id="achievement-condition"
+										name="condition"
+										className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+										type="text"
+										value={this.state.condition}
+										onChange={this.handleDataChange}
+									/>
+								</div>
 							</div>
-							<div className="formGroup">
-								<label htmlFor="achievement-query">
-									<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
-								</label>
-								<input
-									id="achievement-query"
-									name="query"
-									className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
-									type="text"
-									value={this.state.query}
-									onChange={this.handleDataChange}
-								/>
+						);
+					} else {
+						conditionContent = (
+							<div className="formGroup upgradeTier">
+								<p>Create unlimited custom achievements with <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p> 
 							</div>
-							<div className="formGroup">
-								<label htmlFor="achievement-condition">
-									<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
-								</label>
-								<input
-									id="achievement-condition"
-									name="condition"
-									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
-									type="text"
-									value={this.state.condition}
-									onChange={this.handleDataChange}
-								/>
-							</div>
-						</div>
-					);
+						)
+					}
 					break;
 			}
 
@@ -828,11 +841,18 @@ class AchievementPage extends React.Component {
                     	</div>
                     </div>
 				)
-			} else if(!this.state.loading) {
-				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold]</option>);
+			} else if(this.state.customAllowed) {
+				customType = (<option value="4">Custom [1 remaining]</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
-						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold!</Link> via Patreon!</p> 
+						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
+					</div>
+				);
+			} else if(!this.state.loading) {
+				customType = (<option title="Unlocked with Stream Achievements Gold!" value="4">Custom [0 remaining]</option>);
+				iconSection = (
+					<div className="formGroup upgradeTier">
+						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
 					</div>
 				);
 			}
