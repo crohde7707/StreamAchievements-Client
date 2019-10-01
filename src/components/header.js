@@ -120,7 +120,7 @@ class Header extends React.Component {
 						{channelLink}
 						{adminLink}
 						{moderatorLink}
-						<li><Link to='/gold'>Stream Achievements Gold</Link></li>
+						<li><Link className="gold" to='/gold'><span><img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" /></span>Upgrade to Gold!</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>

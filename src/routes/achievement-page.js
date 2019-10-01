@@ -381,7 +381,7 @@ class AchievementPage extends React.Component {
 					break;
 				case "4":
 					//Custom
-					if(this.state.customAllowed) {
+					if(this.state.customAllowed || this.state.edit && this.state.originalAchievement.achType === "4") {
 
 						conditionContent = (
 							<div>
@@ -516,6 +516,7 @@ class AchievementPage extends React.Component {
 				this.isNumber(validUpdate, 'condition');
 				break;
 			case "4":
+				this.isCustomAllowed(validUpdate, 'achType');
 				this.isNullorEmpty(validUpdate, 'bot');
 				this.isValidQuery(validUpdate, 'query');
 				this.isValidCondition(validUpdate, 'condition');
@@ -535,6 +536,15 @@ class AchievementPage extends React.Component {
 		
 		return isValid;
 
+	}
+
+	isCustomAllowed = (fieldSet, field) => {
+		if(this.state.customAllowed || (this.state.edit && this.state.originalAchievement.achType === '4')) {
+			fieldSet[field] = true;
+			return;
+		}
+
+		fieldSet[field] = false;
 	}
 
 	isValidQuery = (fieldSet, field) => {

@@ -185,6 +185,16 @@
     background: #455c96;
 }
 
+.menu-dropdown .gold {
+	display: flex;
+	align-items: center;
+}
+
+.menu-dropdown img {
+	width: 30px;
+	height: 30px;
+}
+
 
 @media only screen and (max-width: 480px) {
 	#page-header {
