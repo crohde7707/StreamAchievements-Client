@@ -23,7 +23,7 @@ export default class AlertConfigurationPanel extends React.Component {
 
 		this.state = {
 			chat: overlay.chat || true,
-			message: overlay.message || "",
+			chatMessage: overlay.chatMessage || "",
 			sfx: sfx,
 			enterEffect: overlay.enterEffect || "easeIn",
 			exitEffect: overlay.exitEffect || "easeOut",
@@ -82,18 +82,19 @@ export default class AlertConfigurationPanel extends React.Component {
 			chatMessage = (
 				<div className="section-wrapper">
 				    <div className="section-label">
-				        <label htmlFor="message">Chat Message</label>
+				        <label htmlFor="chatMessage">Custom Chat Message</label>
 				    </div>
-				    <div className="section-value">
+				    <div className="section-value chatMessage">
 				       <input
 							id="alert-message"
-							name="message"
+							name="chatMessage"
 							className="textInput"
 							type="text"
-							value={this.state.message}
+							value={this.state.chatMessage}
 							placeholder="{user} just earned the {achievement} achievement! PogChamp"
 							onChange={this.handleDataChange}
 						/>
+						<div className="helpText">Don't forget your identifiers! ({" {user}, {achievement} "})</div>
 				    </div>
 				</div>
 			)
@@ -122,7 +123,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
 				       	</div>
 				       	<div className="helpText">This URL is unique to you! Don't share it with anyone!</div>
-				       	<div className="helpText">Place overlay full screen, positioning options coming soon!</div>
+				       	<div className="helpText">Set resolution to match your screen, then resize how you would like!</div>
 				    </div>
 				</div>
 			);
@@ -145,7 +146,7 @@ export default class AlertConfigurationPanel extends React.Component {
 							/>
 					    </div>
 					</div>
-					{/*chatMessage*/}
+					{chatMessage}
 				</div>
 			);
 		}

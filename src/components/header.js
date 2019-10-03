@@ -76,7 +76,7 @@ class Header extends React.Component {
 	}
 
 	render() {
-		let username, logo, count, channelLink, adminLink, moderatorLink;
+		let username, logo, count, channelLink, adminLink, moderatorLink, goldLinkText;
 		
 		if(this.props.profile) {
 			username = this.props.profile.username
@@ -111,6 +111,12 @@ class Header extends React.Component {
 			moderatorLink = (<li><Link to={"/mod"}>Mod Dashboard</Link></li>);
 		}
 
+		if(this.props.patreon && this.props.patreon.gold) {
+			goldLinkText = "Gold Benefits!";
+		} else {
+			goldLinkText = "Upgrade to Gold!";
+		}
+
 		let menu = (
 			<div className={"menu-dropdown--wrapper" + ((this.state.menuActive) ? " menu-dropdown--active" : "")}>
 				<div className="menu-dropdown">
@@ -120,7 +126,7 @@ class Header extends React.Component {
 						{channelLink}
 						{adminLink}
 						{moderatorLink}
-						<li><Link className="gold" to='/gold'><span><img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" /></span>Upgrade to Gold!</Link></li>
+						<li><Link className="gold" to='/gold'><span><img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" /></span>{goldLinkText}</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>
@@ -148,7 +154,8 @@ class Header extends React.Component {
 
 function headerMapStateToProps(state) {
 	return {
-		profile: state.profile
+		profile: state.profile,
+		patreon: state.patreon
 	};
 }
 

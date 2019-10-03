@@ -50,8 +50,8 @@ export default class TestListeners extends React.Component {
 	sendTier2 = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [{
 				'channel': 'phirehero',
-				'achievementID': '5d7667959823a97534d3b419',
-				'tier': '3000',
+				'achievementID': '5d1a2db92e1b3061e1c873f2',
+				'tier': '2000',
 				'userID': '70967393'
 			}]);
 	}
@@ -64,6 +64,12 @@ export default class TestListeners extends React.Component {
 			user: 'phirehero' 
 		}]);
 
+	}
+
+	dedupMembers = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/dedupMembers', {}, {
+			withCredentials: true
+		});
 	}
 
 	sendData = () => {
@@ -124,6 +130,9 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.addNotice} type="button">Add Notice</button>
+					</div>
+					<div>
+						<button onClick={this.dedupMembers} type="button">Dedup Members</button>
 					</div>
 					<div>
 						<h2>Test Achievement Types</h2>

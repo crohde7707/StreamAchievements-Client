@@ -14,6 +14,7 @@ import ModeratorPanel from '../components/moderator-panel';
 import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
+import MembersPanel from '../components/members-panel';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
@@ -121,6 +122,7 @@ class DashboardPage extends React.Component {
 						images: res.data.images,
 						members: res.data.members,
 						overlay: res.data.channel.overlay,
+						membersOffset: res.data.membersOffset,
 						loading: false,
 						selected: {}
 					};
@@ -1067,18 +1069,8 @@ class DashboardPage extends React.Component {
 
 			
 
-			memberContent = (
-				!this.state.isMod && this.state.members.map((member, index) => (
-					<div key={'member-' + index} className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}>
-						<div className="member-logo">
-							<img alt="" src={member.logo} />
-						</div>
-						<div className="member-info">
-							{member.name}
-						</div>
-					</div>
-				))
-			);
+			memberContent = <MembersPanel isMod={this.state.isMod} members={this.state.members} offset={this.state.membersOffset} />
+
 		} else {
 			generalContent = (<LoadingSpinner />);
 			moderatorContent = (<LoadingSpinner />);
@@ -1158,7 +1150,7 @@ class DashboardPage extends React.Component {
 					<Tab className="manage-tab">Moderators</Tab>
 					<Tab className="manage-tab">Achievements</Tab>
 					<Tab className="manage-tab">Images</Tab>
-					<Tab className="manage-tab">Rankings</Tab>
+					<Tab className="manage-tab">Members</Tab>
 				</React.Fragment>
 			);
 
@@ -1178,7 +1170,6 @@ class DashboardPage extends React.Component {
 						{confirmPanel}
 					</TabPanel>
 					<TabPanel>
-						<h3>Rankings</h3>
 						{memberContent}
 					</TabPanel>
 				</React.Fragment>

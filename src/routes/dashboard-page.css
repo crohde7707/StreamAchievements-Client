@@ -106,6 +106,18 @@
 
 .channelMember img {
 	width: 50px;
+	height: 50px;
+	display: block;
+}
+
+.channelMember img:before {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	display: block;
+	content: ' ';
+	background-image: url('https://res.cloudinary.com/phirehero/image/upload/v1558811887/hidden-icon.png');
+	background-size: 50px 50px;
 }
 
 .channelMember .member-info {

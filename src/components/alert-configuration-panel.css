@@ -58,6 +58,11 @@
   cursor: pointer;
 }
 
+.alert-overlay .chatMessage {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
 /* The slider itself */
 .sliderInput {
   -webkit-appearance: none;  /* Override default CSS styles */
