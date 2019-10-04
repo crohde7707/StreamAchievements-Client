@@ -851,7 +851,7 @@ class AchievementPage extends React.Component {
                     	</div>
                     </div>
 				)
-			} else if(this.state.customAllowed) {
+			/* else if(this.state.customAllowed) {
 				customType = (<option value="4">Custom [1 remaining]</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
@@ -865,7 +865,16 @@ class AchievementPage extends React.Component {
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
 					</div>
 				);
+			} */
+			} else if(!this.state.loading) {
+				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold]</option>);
+				iconSection = (
+					<div className="formGroup upgradeTier">
+						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
+					</div>
+				);
 			}
+
 
 			let saveButton;
 
