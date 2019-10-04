@@ -321,7 +321,6 @@ input:checked + .slider:before {
 
 .notification-delete img {
 	width: 25px;
-    flex: 0;
     height: 25px;
     margin-left: 0;
     display: block;

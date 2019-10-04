@@ -65,34 +65,6 @@ class ChannelDirectoryPage extends React.Component {
 		this._socket.close();
 	}
 
-	// componentDidMount() {
-	// 	this.getChannels();
-	// }
-
-	// getChannels = () => {
-	// 	axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/list', {
-	// 			withCredentials: true
-	// 		}).then((res) => {
-	// 		this.setState({
-	// 			channels: res.data
-	// 		});
-	// 	});
-	// }
-
-	// filterList = (event) => {
-	//     var updatedList = this.state.channels;
-
-	//     if(event.target.value === '') {
-	//     	//nothing in text box
-	//     	this.setState({filteredChannels: false});
-	//     } else {
-	//     	updatedList = updatedList.filter(function(channel){
-	// 	      return (channel.owner).toLowerCase().search(
-	// 	        event.target.value.toLowerCase()) !== -1;
-	// 	    });
-	// 	    this.setState({filteredChannels: updatedList});
-	//     }	    
- //  	}
 
   	loadChannel = (channel) => {
   		this._socket.close();
@@ -109,12 +81,6 @@ class ChannelDirectoryPage extends React.Component {
 			let Redirect = require('react-router-dom').Redirect;
 
 			return (<Redirect to='/' />);
-		}
-
-		if(Array.isArray(this.state.filteredChannels)) {
-
-			//resultsTip = this.state.filteredChannels.length;
-			channels = this.state.filteredChannels;
 		}
 
 		let notFound = (

@@ -26,18 +26,18 @@ export default class Notice extends React.Component {
 				
 			});
 
-			// setTimeout(() => {
+			setTimeout(() => {
 
-			// 	if(this.notice) {
-			// 		this.notice.classList.remove('notice--visible');
-			// 	}
-			// 	setTimeout(() => {
-			// 		this.setState({
-			// 			message: ''
-			// 		});
-			// 		this.props.onClear();
-			// 	}, 2500);
-			// }, 3500);
+				if(this.notice) {
+					this.notice.classList.remove('notice--visible');
+				}
+				setTimeout(() => {
+					this.setState({
+						message: ''
+					});
+					this.props.onClear();
+				}, 2500);
+			}, 3500);
 		}
 	}
 

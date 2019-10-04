@@ -1,8 +1,11 @@
 import React from 'react';
 import axios from 'axios';
-import throttle from 'lodash/throttle';
+import io from "socket.io-client";
 
-// import './members-panel.css';
+import LoadingSpinner from './loading-spinner';
+import AchievementTrakerPanel from './achievement-tracker-panel';
+
+import './members-panel.css';
 
 export default class MembersPanel extends React.Component {
 
@@ -10,94 +13,169 @@ export default class MembersPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			members: props.members,
-			offset: props.offset,
-			fetching: false
+			members: "",
+			searching: false,
+			selectedMember: undefined,
+			loading: false
 		};
-
-		if(props.offset !== -1) {
-			this._checkToLoad = throttle(this.checkToLoad, 200);
-			window.addEventListener('scroll', this._checkToLoad);
-		}
 	}
 
+	componentDidMount() {
+		this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
+    		reconnection: true
+    	});
 
-
-	checkToLoad = () => {
-		let height = document.documentElement.scrollHeight;
-		let top = document.documentElement.scrollTop;
-		let bodyTop = document.body.scrollTop;
-
-		this._loadMore = this._loadMore || document.getElementById('load-more-channels');
-
-		let loadTop = this._loadMore.getBoundingClientRect().top + window.pageYOffset;
-		let windowHeight = window.innerHeight + window.scrollY;
-		console.log(loadTop);
-		console.log(windowHeight);
-		if(loadTop - windowHeight <= 50) {
-			
-			if(!this.state.fetching) {
-				this.retrieveMoreMembers(this.state.offset);
-			}
-		}
+    	this._socket.on('member-results', (members) => {
+    		this.setState({
+    			members
+    		});
+    	});
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('scroll', this._checkToLoad);
+		this._socket.close();
 	}
 
-	retrieveMoreMembers = (offset) => {
-		
-		if(offset !== -1 & !this.state.fetching) {
-			this.setState({
-				fetching: true
-			});
-			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/member/retrieve', {
-				params: {
-					offset: this.state.offset
-				},
-				withCredentials: true
-			}).then(res => {
-				console.log(res.data);
-				let updateMemberArray = this.state.members.concat(res.data.members);
+	filterList = (event) => {
+		this.setState({
+			searching: true
+		});
 
-				if(res.data.offset === -1) {
-					//no more to retrieve, remove functionality
-					window.removeEventListener('scroll', this._checkToLoad);
-				}
-
-				this.setState({
-					members: updateMemberArray,
-					offset: res.data.offset,
-					fetching: false
-				});
-			})
+		if(this._searchTimeout !== null) {
+			clearTimeout(this._searchTimeout);
 		}
+
+		this._searchTimeout = setTimeout(() => {
+			if(this._search.value.length > 0) {
+				this._socket.emit('search-members', {
+					value: this._search.value,
+					owner: this.props.channel.owner
+				});
+				this._searchTimeout = null;
+				this.setState({
+					searching: false
+				});
+			} else {
+				this.setState({
+					members: "",
+					searching: false
+				});
+			}
+		}, 400);
+	}
+
+	showPanel = (member) => {
+		this.setState({
+			loading: true
+		});
+
+		setTimeout(() => {
+			this.setState({
+				loading: false,
+				members: "",
+				selectedMember: member
+			});
+		}, 500);
+	}
+
+	hidePanel = () => {
+		this.setState({
+			loading: true
+		});
+
+		setTimeout(() => {
+			this.setState({
+				loading: false,
+				selectedMember: false
+			});
+		}, 500);
 	}
 
 	render() {
+		let searchContent, content, loadingContent, panelContent;
+		let members = this.state.members;
 
-		let loadMore;
+		let notFound = (
+			<div className="directory--no-results">
+				<h3>Looks like who you are looking for hasn't joined your channel yet!</h3>
+			</div>
+		);
 
-		if(this.state.offset !== -1) {
-			loadMore = (<div id="load-more-channels"></div>);
+		if(Array.isArray(members)) {
+			if(members.length > 0) {
+				content = (
+					<div>
+						{members.map((member, index) => (
+							<div key={"member." + index} className="channel-item" onClick={() => {this.showPanel(member)}}>
+								<div className="channel-item--logo"><img src={member.logo} /></div>
+								<div className="channel-item--name">{member.name}</div>
+							</div>
+						))}
+					</div>
+				);
+			} else {
+				content = notFound
+			}	
+		} else {
+			content = (
+				<div className="directory--no-results">
+					<h3>Start typing above to search for a member!</h3>
+				</div>
+			)
+		}
+
+		if(this.state.loading) {
+			loadingContent = (
+				<div className="noMask">
+					<LoadingSpinner isLoading={this.state.loading} />
+				</div>
+			);
+		}
+
+		let fadeClass = ((this.state.loading) ? ' fading' : '');
+
+		if(!this.state.selectedMember) {
+			searchContent = (
+				<div className={"channel-directory main-content" + fadeClass}>
+					<div className="directory-search">
+						<input type="text" onChange={this.filterList} placeholder="Search members..." ref={(el) => {this._search = el}} />
+						<LoadingSpinner isLoading={this.state.searching} />
+					</div>
+					<div className="directory-results">
+						<div className="members">
+							{content}
+						</div>
+					</div>
+				</div>
+			);
+		} else {
+			panelContent = (
+				<div className={("member-details") + fadeClass}>
+					<button className="back-button" type="button" onClick={this.hidePanel}>Back to Search</button>
+					<div className="channel-item">
+						<div className="channel-item--logo"><img src={this.state.selectedMember.logo} /></div>
+						<div className="channel-item--name">{this.state.selectedMember.name}</div>
+					</div>
+					<AchievementTrakerPanel
+									member={this.state.selectedMember}
+									achievements={this.props.achievements}
+									defaultIcon={this.props.channel.icons.default}
+								/>
+				</div>
+			);
 		}
 
 		return (
 			<div className="members-panel">
-				{!this.props.isMod && this.state.members.map((member, index) => (
-					<div key={'member-' + index} className={"channelMember" + ((index % 2 === 1) ? " channelMember--stripe" : "")}>
-						<div className="member-logo">
-							<img alt="" src={member.logo} />
-						</div>
-						<div className="member-info">
-							{member.name}
-						</div>
-					</div>
-				))}
-				{loadMore}
+				{searchContent}
+				{loadingContent}
+				{panelContent}
 			</div>
 		)
 	}
 
 }
+
+/*
+	
+*/

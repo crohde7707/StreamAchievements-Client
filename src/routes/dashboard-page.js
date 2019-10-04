@@ -1069,7 +1069,13 @@ class DashboardPage extends React.Component {
 
 			
 
-			memberContent = <MembersPanel isMod={this.state.isMod} members={this.state.members} offset={this.state.membersOffset} />
+			memberContent = <MembersPanel 
+								isMod={this.state.isMod}
+								members={this.state.members}
+								achievements={this.state.achievements}
+								offset={this.state.membersOffset}
+								channel={this.state.channel}
+							/>
 
 		} else {
 			generalContent = (<LoadingSpinner />);

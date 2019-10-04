@@ -1,0 +1,46 @@
+.achievement-tracker--wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	border-top: 1px solid #455c96;
+	background: #00000033;
+	padding: 10px 2%;
+	
+}
+
+.achievementTracker {
+	width: 33%;
+	display: flex;
+	align-items: center;
+	padding: 5px 0px;
+	opacity: 0.5
+}
+
+.achievementTracker.achievementTracker--earned {
+	opacity: 1;
+}
+
+.achievementTracker .achievement-icon {
+	position: relative;
+	left: 0;
+	top: 0;
+}
+
+.achievementTracker img {
+	width: 40px;
+	margin-right: 5px;
+}
+
+.achievementTracker .achievement-title {
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.achievementTracker.achievementTracker--earned .achievement-title {
+	font-weight: bold;
+}
+
+@media only screen and (max-width: 480px) {
+	.achievementTracker {
+		width: 49%;
+	}
+}

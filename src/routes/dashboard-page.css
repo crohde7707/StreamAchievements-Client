@@ -508,6 +508,10 @@
 		display: flex;
 	}
 
+#load-more-members .loading-spinner--wrapper {
+	margin: 0;
+}
+
 @media only screen and (max-width: 480px) {
 	.manage-container .manage-tabs {
 		overflow-x: scroll;
@@ -631,5 +635,9 @@
 	.imageGallery .image--wrapper img {
 		width: 110px;
 		height: 110px;
+	}
+
+	.image--label {
+		width: 110px;
 	}
 }

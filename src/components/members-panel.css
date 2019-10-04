@@ -1,0 +1,45 @@
+.members-panel .noMask .loading-spinner {
+	position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    margin-top: 80px;
+}
+
+.members-panel .fading {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.members-panel .channel-item {
+	color: black;
+	height: 75px;
+}
+
+.members-panel .channel-item--logo,
+.members-panel .channel-item--logo img {
+	width: 75px;
+	height: 75px;
+}
+
+.members-panel .member-details .channel-item {
+	margin-bottom: 0;
+}
+
+.members-panel .member-details .channel-item:hover {
+	background: #DDD;
+}
+
+.member-details {
+	display: flex;
+	flex-direction: column;
+}
+
+.member-details .back-button {
+	margin: 15px auto;
+	padding: 10px;
+	background: #425583;
+	border: none;
+	color: white;
+	cursor: pointer;
+}
