@@ -11,11 +11,6 @@
 	transition: opacity 0.3s ease;
 }
 
-.members-panel .channel-item {
-	color: black;
-	height: 75px;
-}
-
 .members-panel .channel-item--logo,
 .members-panel .channel-item--logo img {
 	width: 75px;
@@ -23,7 +18,7 @@
 }
 
 .members-panel .member-details .channel-item {
-	margin-bottom: 0;
+	
 }
 
 .members-panel .member-details .channel-item:hover {
@@ -42,4 +37,116 @@
 	border: none;
 	color: white;
 	cursor: pointer;
+}
+
+.member-item {
+	background: #DDD;
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    border: 1px solid #AAA;
+    box-shadow: 0px 2px 3px #111;
+    padding-right: 5px;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    color: black;
+	height: 75px;
+	cursor: pointer;
+}
+
+.member-details .member-item {
+    margin-bottom: 0;
+    cursor: unset;
+}
+
+.member-item--logo {
+	width: 75px;
+    height: 75px;
+    margin-right: 20px;
+}
+
+.member-item--logo img {
+	width: 75px;
+	height: 75px;
+}
+
+.member-item--name {
+	flex-grow: 2;
+    font-size: 18px;
+}
+
+.member-item--buttons {
+	display: flex;
+	align-items: center;
+}
+
+.member-item--buttons button {
+	background: #425583;
+	border: none;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	margin: 0 5px;
+}
+
+.member-item--button {
+	width: 40px;
+	cursor: pointer;
+}
+
+.member-item--button img {
+	width: 30px;
+	height: 30px;
+}
+
+.member-item--dangerButtons {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.member-item--dangerButtons button {
+	width: 50%;
+    margin: 5px;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.member-item--dangerButtons .ban {
+	background: red;
+	color: white;
+	font-weight: bold;
+}
+
+.member-item--managing .saveReorder--wrapper {
+	-webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    right: 0;
+}
+
+.members-panel .modal .user-action {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.members-panel .modal input {
+	width: 24px;
+}
+
+@media only screen and (max-width: 480px) {
+	.saveReorder--button img {
+		width: 40px;
+		height: 40px;
+	}
+
+	.member-item--managing .saveReorder--wrapper {
+		-webkit-transition: all 0.2s ease;
+	    transition: all 0.2s ease;
+	    right: -30px;
+	}
 }

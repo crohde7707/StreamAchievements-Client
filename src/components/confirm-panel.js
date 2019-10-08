@@ -9,7 +9,8 @@ export default class ConfirmPanel extends React.Component {
 	}
 
 	componentDidMount() {
-		this.positionModal();
+		document.body.classList.add('scroll-lock');
+		//this.positionModal();
 	}
 
 	positionModal = () => {
@@ -19,7 +20,12 @@ export default class ConfirmPanel extends React.Component {
 		let scrollTop = document.documentElement.scrollTop;
 
 		this.confirmModal.style.top = (winHeight/2) - (this.confirmModal.offsetHeight) + scrollTop + 'px';
-		this.confirmModal.style.left = (winWidth / 2) - (this.confirmModal.offsetWidth / 2) + 'px';	
+	}
+
+	componentWillUnmount() {
+		if(document && document.body) {
+			document.body.classList.remove('scroll-lock');
+		}
 	}
 
 	render() {

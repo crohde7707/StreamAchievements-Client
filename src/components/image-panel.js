@@ -10,20 +10,6 @@ export default class ImagePanel extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.positionModal();
-	}
-
-	positionModal = () => {
-			let winWidth = window.innerWidth;
-			let winHeight = window.innerHeight;
-
-			let scrollTop = document.documentElement.scrollTop;
-
-			this.imageModal.style.top = (winHeight/2) - (this.imageModal.offsetHeight) + scrollTop + 'px';
-			this.imageModal.style.left = (winWidth / 2) - (this.imageModal.offsetWidth / 2) + 'px';	
-	}
-
 	onChange = (event) => {
 		this.props.onChange(event).then(res => {
 			if(res.error) {

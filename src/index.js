@@ -49,6 +49,7 @@ let app = (
 	        		<Route path="/test" component={TestListeners} />
 	        		<Route path="/overlay/:uid" component={OverlayPanel} />
 	        		<Route path="/overlay" component={OverlayPanel} />
+	        		<Route component={LandingPage} />
 	    		</Switch>
 			</App>
 		</Provider>

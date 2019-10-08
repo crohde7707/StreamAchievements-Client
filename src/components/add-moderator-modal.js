@@ -21,7 +21,6 @@ export default class AddModeratorModal extends React.Component {
 	}
 
 	componentDidMount() {
-		this.positionModal();
 
 		this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
 			reconnection: true
@@ -32,16 +31,6 @@ export default class AddModeratorModal extends React.Component {
 				members
 			});
 		});
-	}
-
-	positionModal = () => {
-		let winWidth = window.innerWidth;
-		let winHeight = window.innerHeight;
-
-		let scrollTop = document.documentElement.scrollTop;
-
-		this.addModeratorModal.style.top = (winHeight/2) - (this.addModeratorModal.offsetHeight) + scrollTop + 'px';
-		this.addModeratorModal.style.left = (winWidth / 2) - (this.addModeratorModal.offsetWidth / 2) + 'px';
 	}
 
 	filterList = (event) => {

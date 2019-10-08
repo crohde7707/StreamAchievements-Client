@@ -26,7 +26,8 @@ class ChannelPage extends React.Component {
 			progress: false,
 			condensedHeader: false,
 			favorite: false,
-			joining: false
+			joining: false,
+			banned: false
 		}
 	}
 
@@ -41,7 +42,8 @@ class ChannelPage extends React.Component {
 					joined: res.data.joined,
 					fullAccess: res.data.fullAccess,
 					favorite: res.data.favorited,
-					loading: false
+					loading: false,
+					banned: res.data.banned
 				}, () => {
 					this.updateChannelHeader();
 					this.updateChannelSize();
@@ -179,7 +181,19 @@ class ChannelPage extends React.Component {
 			let {owner, logo} = this.state.channel;
 			let achievements = this.state.achievements;
 
-			let membershipContent, achievementProgress, achievementsContent, favorite;
+			let membershipContent, achievementProgress, achievementsContent, favorite, bannedOverlay;
+
+			if(this.state.banned) {
+				bannedOverlay = (
+					<div className="channel-page--bannedOverlay">
+						<div className="bannedContent">
+							<h3>You are currently banned from earning achievements in this channel.</h3>
+						</div>
+					</div>
+				)
+
+				document.body.classList.add('scroll-lock');
+			}
 
 			if(this.state.joined) {
 				// membershipContent = <a href="javascript:;" onClick={this.leaveChannel} className="leave">Leave Channel</a>
@@ -242,7 +256,7 @@ class ChannelPage extends React.Component {
 
 							return (<Achievement key={'achievement-' + index} unlocked={this.state.fullAccess} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
 						})}
-						
+						{bannedOverlay}
 					</div>
 				);
 
@@ -259,6 +273,10 @@ class ChannelPage extends React.Component {
 
 					if(this.state.condensedHeader) {
 						progressClasses += ' channel-progress--condensed';
+					}
+
+					if(percentage === 100) {
+						progressClasses += ' channel-progress--completed';
 					}
 
 					achievementProgress = (
@@ -288,6 +306,18 @@ class ChannelPage extends React.Component {
 
 			if(this.state.small) {
 				wrapperClasses += ' channel-page--sm';
+			}
+
+			if(this.state.banned) {
+				wrapperClasses += ' channel-page--banned';
+
+				bannedOverlay = (
+					<div className="channel-page--bannedOverlay">
+						<div className="bannedContent">
+							<h3>You are currently banned from earning achievements in this channel.`}</h3>
+						</div>
+					</div>
+				)
 			}
 
 			let channelHeaderStub;

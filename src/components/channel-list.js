@@ -12,7 +12,8 @@ class ChannelList extends React.Component {
 
 		this.state = {
 			channels: false,
-			fetching: false
+			fetching: false,
+			favorites: false
 		};
 	}
 
@@ -34,6 +35,8 @@ class ChannelList extends React.Component {
 					otherChannels.push(channel);
 				}
 			});
+
+			console.log(res.data);
 
 			this.setState({
 				channels: otherChannels,
@@ -117,18 +120,35 @@ class ChannelList extends React.Component {
 		if(!this.state.channels) {
 			content = null;
 		} else {
-			let channels = this.state.channels;
+			let {channels, favorites} = this.state;
 
 			if(Array.isArray(channels)) {
-				if(channels.length > 0) {
+				if(channels.length > 0 || favorites.length > 0) {
 					//we have some channels!
-					content = channels.map((channel, index) => (
-						<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
-							<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
-							<div className="channel-item--name">{channel.owner}</div>
-							<div className="channel-item--percentage">{channel.percentage + '%'}</div>
-						</div>
-					));
+					
+					if(channels.length > 0) {
+						content = channels.map((channel, index) => (
+							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
+								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+								<div className="channel-item--name">{channel.owner}</div>
+								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+							</div>
+						));
+
+						headerJoinButton = (
+							<div onClick={this.showDirectory} className="join-channel-button">
+								<img alt="plus icon" src={require('../img/plus.png')} />
+								<span>Join a channel</span>
+							</div>
+						);
+					} else {
+						joinFirstChannel = (
+							<div onClick={this.showDirectory} className="add-channel">
+								<div>Join more channels!</div>
+								<div><img alt="plus icon" src={require('../img/plus.png')} /></div>
+							</div>
+						);
+					}
 
 					if(this.state.favorites.length > 0) {
 						favContent = this.state.favorites.map((channel, index) => (
@@ -138,18 +158,12 @@ class ChannelList extends React.Component {
 								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
 							</div>
 						));
+
 					} else {
 						favContent = (
 							<h4>No channels have been favorited</h4>
 						)
 					}
-
-					headerJoinButton = (
-						<div onClick={this.showDirectory} className="join-channel-button">
-							<img alt="plus icon" src={require('../img/plus.png')} />
-							<span>Join a channel</span>
-						</div>
-					);
 
 					if(this.state.offset !== -1) {
 						loadMore = (<div id="load-more-channels"></div>);
@@ -165,25 +179,45 @@ class ChannelList extends React.Component {
 			}
 		}
 
-		return (
-			<div>
-				<div className="channel-header">
-					<h3>Favorites</h3>
-					{headerJoinButton}
+		let channelListContent;
+
+		if(this.state.favorites.length > 0) {
+			channelListContent = (
+				<div>
+					<div className="channel-header">
+						<h3>Favorites</h3>
+						{headerJoinButton}
+					</div>
+					<div className="channel-list">
+						{favContent}
+					</div>
+					<div className="channel-header">
+						<h3>Joined Channels</h3>
+					</div>
+					<div className="channel-list">
+						{content}
+						{joinFirstChannel}
+					</div>
+					{loadMore}
 				</div>
-				<div className="channel-list">
-					{favContent}
+			)
+		} else {
+			channelListContent = (
+				<div>
+					<div className="channel-header">
+						<h3>Joined Channels</h3>
+						{headerJoinButton}
+					</div>
+					<div className="channel-list">
+						{content}
+						{joinFirstChannel}
+					</div>
+					{loadMore}
 				</div>
-				<div className="channel-header">
-					<h3>Joined Channels</h3>
-				</div>
-				<div className="channel-list">
-					{content}
-					{joinFirstChannel}
-				</div>
-				{loadMore}
-			</div>
-		)
+			);
+		}
+
+		return channelListContent;
 	}
 }
 

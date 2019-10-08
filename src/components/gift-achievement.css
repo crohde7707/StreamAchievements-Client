@@ -55,8 +55,24 @@
     transition: all 0.2s ease;
 }
 
+.selected-members .channelMember.channelMember--nonMember {
+	background: #b9a939;
+}
+
+.selected-members .channelMember.channelMember--nonMember:hover {
+	background: #b9a939CC;
+}
+
 .member-list .channelMember.channelMember--earned img {
 	opacity: 0.5;
+}
+
+.member-list--info {
+	text-align: center;
+}
+
+.member-list--info span {
+	font-weight: bold;
 }
 
 .member-list .channelMember.channelMember--earned {
@@ -106,10 +122,44 @@
 	color: white;
 	font-size: 17px;
 	cursor: pointer;
+	transition: all 0.2s ease;
 }
 
 .chooseMember--award {
 	background-color: #2f4882;
+}
+
+.chooseMember--award:disabled {
+	background-color: #BBB;
+	color: #666;
+	transition: all 0.2s ease;
+	cursor: unset;
+}
+
+.award-non-member {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.award-non-member input {
+	width: 24px;
+}
+
+.gift-modal .helpText {
+	font-style: italic;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.award-non-member button {
+	border: none;
+    background: #455c96;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 480px) {

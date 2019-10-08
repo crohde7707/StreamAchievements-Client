@@ -150,6 +150,10 @@
 	margin: 15px auto 0;
 }
 
+.channel-page--banned .achievements-container .achievement {
+	filter: blur(6px);
+}
+
 .progress-bar-wrapper {
   width: 85%;
   background-color: #FFF;
@@ -169,6 +173,10 @@
   border-radius: 6px
 }
 
+.channel-page--banned .progress-bar {
+	background-color: grey;
+}
+
 .no-achievements {
 	font-size: 24px;
     color: white;
@@ -180,6 +188,11 @@
 .channel-progress {
 	flex: 1;
 	transition: all 0.2s ease;
+}
+
+.channel-progress--completed .progress-bar {
+	background-color: #ecdc19;
+	border-radius: 7px;
 }
 
 .channel-page--sm .channel-progress {
@@ -224,42 +237,70 @@
 }
 
 .join-channel.joining {
-		padding: 3px 49px;
-	}
+	padding: 3px 49px;
+}
 
-	.join-channel.joined {
-		background: green;
-		border-color: #BBB;
-		transition: all 0.2s ease;
-		text-align: center;
-		opacity: 1;
-	}
+.join-channel.joined {
+	background: green;
+	border-color: #BBB;
+	transition: all 0.2s ease;
+	text-align: center;
+	opacity: 1;
+}
 
-	.join-channel.joined.fade {
-		opacity: 0;
-	}
+.join-channel.joined.fade {
+	opacity: 0;
+}
 
-	.join-channel.joined img {
-		width: 26px;
-		height: 26px;
-	}
+.join-channel.joined img {
+	width: 26px;
+	height: 26px;
+}
 
-	.join-channel.joining .loading-spinner--wrapper {
-		margin-top: 0px;
-	}
+.join-channel.joining .loading-spinner--wrapper {
+	margin-top: 0px;
+}
 
-	.join-channel.joining .lds-ellipsis {
-		left: -14px;
-		top: -8px;
-		width: 30px;
-		height: 30px;
-	}
+.join-channel.joining .lds-ellipsis {
+	left: -14px;
+	top: -8px;
+	width: 30px;
+	height: 30px;
+}
 
-	.join-channel.joining .lds-ellipsis div {
-		width: 8px;
-		height: 8px;
-		top: 20px;
-	}
+.join-channel.joining .lds-ellipsis div {
+	width: 8px;
+	height: 8px;
+	top: 20px;
+}
+
+.channel-page--bannedOverlay {
+	width: 100%;
+    height: 100%;
+    display: block;
+    top: 0;
+    position: absolute;
+    left: 0;
+    background: #00000099;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    text-align: center;
+}
+
+.channel-page--bannedOverlay .bannedContent {
+    padding-top: 175px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.channel-page--bannedOverlay h3 {
+	font-size: 26px;
+	margin: 0 25px;
+	text-shadow: 2px 2px 3px black;
+	color: white;
+}
 
 @media only screen and (max-width: 480px) {
 	#channel-header {

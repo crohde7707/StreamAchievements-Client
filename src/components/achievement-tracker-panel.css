@@ -4,25 +4,39 @@
 	border-top: 1px solid #455c96;
 	background: #00000033;
 	padding: 10px 2%;
-	
+	position: relative;
 }
 
 .achievementTracker {
-	width: 33%;
+	flex: 33%;
 	display: flex;
 	align-items: center;
 	padding: 5px 0px;
-	opacity: 0.5
 }
 
-.achievementTracker.achievementTracker--earned {
+.achievement-tracker--managing {
+	border: 1px dashed white;
+}
+
+.achievement-tracker--banned .achievementTracker {
+	filter: blur(6px);
+}
+
+.achievementTracker.achievementTracker--earned div,
+.achievementTracker.achievementTracker--pendingEarned div {
 	opacity: 1;
+}
+
+.achievementTracker div,
+.achievementTracker.achievementTracker--pendingUnearned div {
+	opacity: 0.5
 }
 
 .achievementTracker .achievement-icon {
 	position: relative;
 	left: 0;
 	top: 0;
+	margin-left: 5px;
 }
 
 .achievementTracker img {
@@ -39,8 +53,76 @@
 	font-weight: bold;
 }
 
+.achievementTracker.achievementTracker--pendingUnearned .achievement-title {
+	font-weight: normal;
+}
+
+.achievement-tracker--managing .achievementTracker {
+	cursor: pointer;
+	user-select: none;
+}
+
+.achievementTracker--pending {
+	background: #425583;
+	color: white
+}
+
+.achievement-tracker--managing .achievementTracker:hover {
+	background: #00000033;
+}
+
+.achievement-tracker--managing .achievementTracker.achievementTracker--placeholder:hover {
+	background: none;
+	cursor: unset;
+}
+
+.achievement-tracker--managing .achievementTracker--pendingEarned:hover,
+.achievement-tracker--managing .achievementTracker--pendingUnearned:hover {
+	background: #425583BB;
+}
+
+.achievement-tracker--bannedOverlay {
+	width: 100%;
+    height: 100%;
+    display: block;
+    top: 0;
+    position: absolute;
+    left: 0;
+    background: #00000099;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    text-align: center;
+}
+
+.achievement-tracker--bannedOverlay .bannedContent {
+    padding-top: 75px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.achievement-tracker--bannedOverlay h3 {
+	font-size: 26px;
+	margin: 0 25px;
+	text-shadow: 2px 2px 3px black;
+}
+
+.achievement-tracker--bannedOverlay button {
+	padding: 20px;
+	border: none;
+	color: white;
+	background: #425583;
+	margin: 5% 10%;
+	cursor: pointer;
+}
+
+.achievement-tracker--bannedOverlay button:hover {
+	background: #425583BB;
+}
+
 @media only screen and (max-width: 480px) {
 	.achievementTracker {
-		width: 49%;
+		flex: 49%;
 	}
 }

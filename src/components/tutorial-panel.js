@@ -9,20 +9,6 @@ export default class InfoPanel extends React.Component {
 		super();
 	}
 
-	componentDidMount() {
-		this.positionModal();
-	}
-
-	positionModal = () => {
-		let winWidth = window.innerWidth;
-		let winHeight = window.innerHeight;
-
-		let scrollTop = document.documentElement.scrollTop;
-
-		this.infoModal.style.top = (winHeight/2) - (this.infoModal.offsetHeight) + scrollTop + 'px';
-		this.infoModal.style.left = (winWidth / 2) - (this.infoModal.offsetWidth / 2) + 'px';	
-	}
-
 	render() {
 
 		return (
