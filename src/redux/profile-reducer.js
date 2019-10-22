@@ -5,6 +5,9 @@ const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
 const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
+const UPDATE_NEW_STATUS = 'UPDATE_NEW_STATUS';
+
+const axios = require('axios');
 
 let initialState = {
 	username: '',
@@ -28,7 +31,8 @@ export default function ProfileReducer(state = initialState, action) {
 					unreadNotifications: action.data.notificationCount,
 					nid: action.data.uid,
 					socket: action.data.socket,
-					isMod: action.data.isMod
+					isMod: action.data.isMod,
+					isNew: action.data.new
 				},
 				patreon: action.data.patreon
 			}
@@ -73,6 +77,7 @@ export default function ProfileReducer(state = initialState, action) {
 					preferences: action.data.preferences
 				}
 			}
+			break;
 		case UPDATE_NOTIFICATIONS:
 			let countUpdate;
 
@@ -88,6 +93,16 @@ export default function ProfileReducer(state = initialState, action) {
 					unreadNotifications: countUpdate
 				}
 			}
+			break;
+		case UPDATE_NEW_STATUS:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					isNew: action.data.new
+				}
+			}
+			break;
 		default:
 			return {
 				...state
@@ -141,6 +156,13 @@ export function updateNotifications(data) {
 	console.log(data);
 	return {
 		type: UPDATE_NOTIFICATIONS,
+		data
+	}
+}
+
+export function updateNewStatus(data) {
+	return {
+		type: UPDATE_NEW_STATUS,
 		data
 	}
 }

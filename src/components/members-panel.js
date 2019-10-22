@@ -75,11 +75,15 @@ export default class MembersPanel extends React.Component {
 		});
 
 		setTimeout(() => {
-			this.setState({
-				loading: false,
-				members: "",
-				selectedMember: member
-			});
+			axios.get(`${process.env.REACT_APP_API_DOMAIN}api/channel/member/select?uid=${member.name}&owner=${this.props.channel.owner}`, {
+				withCredentials: true
+			}).then(res => {
+				this.setState({
+					loading: false,
+					members: "",
+					selectedMember: res.data
+				});
+			})
 		}, 500);
 	}
 
@@ -121,19 +125,21 @@ export default class MembersPanel extends React.Component {
 	}
 
 	handleSelect = (uid) => {
-		let selectedAchievements = this.state.selectedAchievements;
+		if(this.state.manage) {
+			let selectedAchievements = this.state.selectedAchievements;
 
-		let idx = selectedAchievements.indexOf(uid);
+			let idx = selectedAchievements.indexOf(uid);
 
-		if(idx >= 0) {
-			selectedAchievements.splice(idx, 1);
-		} else {
-			selectedAchievements.push(uid);
+			if(idx >= 0) {
+				selectedAchievements.splice(idx, 1);
+			} else {
+				selectedAchievements.push(uid);
+			}
+
+			this.setState({
+				selectedAchievements
+			});
 		}
-
-		this.setState({
-			selectedAchievements
-		});
 	}
 
 	handleConfirmChange = (event) => {
@@ -155,7 +161,12 @@ export default class MembersPanel extends React.Component {
 			this.setState({
 				action,
 				promptActive:true,
-				promptText: "Are you sure you want to reset " + this.state.selectedMember.name + '\'s achievements? This action can\'t be undone!'
+				promptText: (
+					<div>
+						<p>{`Are you sure you want to reset ${this.state.selectedMember.name}'s achievements?`}</p>
+						<p><strong>{`This action cant be undone!`}</strong></p>
+					</div>
+				)
 			});
 		} else if(action === 'ban') {
 			this.setState({

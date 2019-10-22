@@ -47,6 +47,12 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	testTable = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/testTable', {}, {
+			withCredentials: true
+		});
+	}
+
 	sendTier2 = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [{
 				'channel': 'phirehero',
@@ -59,7 +65,7 @@ export default class TestListeners extends React.Component {
 	sendTier3 = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/listeners', [{
 			channel: 'phirehero',
-			achievementID: '5d7667959823a97534d3b419',
+			achievementID: '5d1a2deb2e1b3061e1c873f4',
 			tier: "3000",
 			user: 'phirehero' 
 		}]);
@@ -98,6 +104,12 @@ export default class TestListeners extends React.Component {
 		this.setState(stateUpdate);
 	}
 
+	migrate = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/migrate', {}, {
+			withCredentials: true
+		});
+	}
+
 	render() {
 
 		return (
@@ -133,6 +145,12 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.dedupMembers} type="button">Dedup Members</button>
+					</div>
+					<div>
+						<button onClick={this.testTable} type="button">Test New Table</button>
+					</div>
+					<div>
+						<button onClick={this.migrate} type="button">Migrate</button>
 					</div>
 					<div>
 						<h2>Test Achievement Types</h2>

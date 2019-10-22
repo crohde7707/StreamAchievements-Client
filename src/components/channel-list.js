@@ -127,7 +127,28 @@ class ChannelList extends React.Component {
 					//we have some channels!
 					
 					if(channels.length > 0) {
+
+						if(this.props.inject) {
+							console.log('foo');
+							channels = [...channels, ...this.props.inject];
+						}
+
 						content = channels.map((channel, index) => (
+							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
+								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+								<div className="channel-item--name">{channel.owner}</div>
+								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+							</div>
+						));
+
+						headerJoinButton = (
+							<div onClick={this.showDirectory} className="join-channel-button">
+								<img alt="plus icon" src={require('../img/plus.png')} />
+								<span>Join a channel</span>
+							</div>
+						);
+					} else if(this.props.inject.length > 0) {
+						content = this.props.inject.map((channel, index) => (
 							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
 								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
 								<div className="channel-item--name">{channel.owner}</div>
