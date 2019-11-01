@@ -66,12 +66,10 @@ class OverlayPanel extends React.Component {
 		}
 
 		this.showAlert = () => {
-			console.log('showAlert');
+
 			setTimeout(() => {
 				if(this._queue.length > 0) {
-					console.log('alert found');
 					let alert = this._queue.shift();
-					console.log(alert);
 
 					let achievement = {
 						title: alert.title,
@@ -97,7 +95,6 @@ class OverlayPanel extends React.Component {
 								alert: undefined
 							}, () => {
 								if(this._queue.length > 0) {
-									console.log('alert in queue');
 									this.showAlert();
 								}
 							});
@@ -110,7 +107,6 @@ class OverlayPanel extends React.Component {
 
 	queueAlert = (alert) => {
 		this._queue.push(alert);
-		console.log('alert added to queue: ' + this._queue.length);
 	}
 
 	componentWillUnmount() {

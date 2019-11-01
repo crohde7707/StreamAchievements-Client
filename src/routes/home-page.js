@@ -27,7 +27,6 @@ class HomePage extends React.Component {
 	}
 
 	handleClose = () => {
-		console.log('close');
 		this.props.dispatch(updateNewStatus({new: false}));
 	}
 

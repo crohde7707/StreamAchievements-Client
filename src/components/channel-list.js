@@ -36,8 +36,6 @@ class ChannelList extends React.Component {
 				}
 			});
 
-			console.log(res.data);
-
 			this.setState({
 				channels: otherChannels,
 				favorites: favChannels,
@@ -129,7 +127,6 @@ class ChannelList extends React.Component {
 					if(channels.length > 0) {
 
 						if(this.props.inject) {
-							console.log('foo');
 							channels = [...channels, ...this.props.inject];
 						}
 

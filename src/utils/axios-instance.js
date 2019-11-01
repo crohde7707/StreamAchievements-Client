@@ -29,7 +29,6 @@ let call = (method, endpoint, parameters, body) => {
 
 	switch(method) {
 		case 'get':
-			console.log('get');
 			calledInstance = authAxios[method](endpoint, parameters);
 			break;
 		case 'put':

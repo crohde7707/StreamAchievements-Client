@@ -153,7 +153,6 @@ export function updatePreferences(data) {
 }
 
 export function updateNotifications(data) {
-	console.log(data);
 	return {
 		type: UPDATE_NOTIFICATIONS,
 		data
