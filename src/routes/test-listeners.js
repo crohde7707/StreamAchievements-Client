@@ -79,11 +79,7 @@ export default class TestListeners extends React.Component {
 	}
 
 	sendData = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {
-			channel: this.state.channel,
-			message: this.state.message,
-			username: this.state.username
-		}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/test', {}, {
 			withCredentials: true
 		}).then(res => {
 			this.setState({

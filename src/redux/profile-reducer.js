@@ -1,6 +1,7 @@
 const SET_PROFILE = 'SET_PROFILE';
 const SYNC_TWITCH = 'SYNC_TWITCH';
 const SYNC_PATREON = 'SYNC_PATREON';
+const SYNC_STREAMLABS = 'SYNC_STREAMLABS';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
@@ -34,7 +35,8 @@ export default function ProfileReducer(state = initialState, action) {
 					isMod: action.data.isMod,
 					isNew: action.data.new
 				},
-				patreon: action.data.patreon
+				patreon: action.data.patreon,
+				streamlabs: action.data.streamlabs
 			}
 			break;
 		case SYNC_TWITCH:
@@ -52,6 +54,11 @@ export default function ProfileReducer(state = initialState, action) {
 				patreon: action.data
 			}
 			break;
+		case SYNC_STREAMLABS:
+			return {
+				...state,
+				streamlabs: action.data
+			}
 		case UNLINK_SERVICE:
 			let newState = {...state};
 			newState[action.data] = false;
@@ -129,6 +136,13 @@ export function syncPatreon(data) {
 		type: SYNC_PATREON,
 		data
 	};
+}
+
+export function syncStreamlabs(data) {
+	return {
+		type: SYNC_STREAMLABS,
+		data
+	}
 }
 
 export function unlinkService(data) {

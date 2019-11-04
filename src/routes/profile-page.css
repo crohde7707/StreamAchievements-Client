@@ -80,25 +80,6 @@
 	color: black;
 }
 
-.patreonLink {
-	display: flex;
-	text-decoration: none;
-    margin: 0 auto;
-    width: fit-content;
-}
-
-.patreonLink span {
-	background: rgb(249, 104, 84);
-    padding: 10px;
-    font-size: 14px;
-    text-transform: uppercase;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
 .profile--channels .channel-item {
 	color: black;
 	cursor: auto;

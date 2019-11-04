@@ -150,12 +150,12 @@ class AchievementPage extends React.Component {
 			//redirect to home
 		} else {
 			let achievement = {...res.data.achievement};
-
+			
 			if(!achievement.achType) {
 				achievement.achType = "3";
 			}
 
-			this.setState({
+			let stateUpdate = {
 				originalAchievement: res.data.achievement,
 				...achievement,
 				iconPreview: res.data.achievement.icon,
@@ -166,7 +166,13 @@ class AchievementPage extends React.Component {
 				isMod,
 				isGoldChannel: res.data.isGoldChannel,
 				customAllowed: res.data.customAllowed
-			});
+			};
+
+			if(!this.props.streamlabs && (achievement.achType === "5" || achievement.achType === "6")) {
+				stateUpdate.error = (<div>This achievement only works when you are <a href="/profile?tab=integration">integrated</a> with Streamlabs!</div>);
+			}
+
+			this.setState(stateUpdate);
 		}
 	}
 
@@ -740,6 +746,17 @@ class AchievementPage extends React.Component {
 		});
 	}
 
+	getBotOptions = () => {
+		if(this.props.streamlabs) {
+			return (
+				<React.Fragment>
+					<option value="5">New Follow</option>
+					<option value="6">New Donation</option>
+				</React.Fragment>
+			)
+		}
+	}
+
 	render() {
 
 		let pageHeader, content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
@@ -991,6 +1008,7 @@ class AchievementPage extends React.Component {
 									value={this.state.achType}
 								>
 									<option value=""></option>
+									{this.getBotOptions()}
 									<option value="0">New Sub</option>
 									<option value="1">Resub</option>
 									<option value="2">Gifted Sub</option>
@@ -1022,7 +1040,8 @@ class AchievementPage extends React.Component {
 function headerMapStateToProps(state) {
 	return {
 		profile: state.profile,
-		patreon: state.patreon
+		patreon: state.patreon,
+		streamlabs: state.streamlabs
 	};
 }
 

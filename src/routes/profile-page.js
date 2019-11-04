@@ -9,6 +9,7 @@ import connector from '../redux/connector';
 import Notice from '../components/notice';
 import Template from '../components/template';
 import PatreonPanel from '../components/patreon-panel';
+import StreamlabsPanel from '../components/streamlabs-panel';
 import LoadingSpinner from '../components/loading-spinner';
 
 import './profile-page.css';
@@ -291,7 +292,7 @@ class ProfilePage extends React.Component {
 								<a title="Opens Twitch settings in new tab" href={'https://twitch.tv/' + username + '/settings'} target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
 							</div>
 							<div className="integration-sync" ref={(el) => {this._sync = el}}>
-								<a href="javascript:;" onClick={this.handleTwitchSync}><img alt="" src={require('../img/sync-white.png')} /></a>
+								<a href="javascript:;" onClick={this.handleTwitchSync}><img alt="" src='https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png' /></a>
 							</div>
 						</div>
 						<div className="integration-content">
@@ -305,6 +306,7 @@ class ProfilePage extends React.Component {
 						</div>
 					</div>
 					<PatreonPanel />
+					<StreamlabsPanel />
 				</div>
 			);
 

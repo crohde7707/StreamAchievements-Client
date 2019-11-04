@@ -219,11 +219,16 @@ class PatreonPanel extends React.Component {
 					<div className="integration-header">
 						<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1567266756/patreon-icon.png" />
 						<h3>Patreon</h3>
+						<div className="integration-unlink">
+							<a title="Unlink Patreon" href="javascript:;" onClick={this.showUnlink}>
+								<img alt="Unlink" src="https://res.cloudinary.com/phirehero/image/upload/v1572732837/unlink.png" />
+							</a>
+						</div>
 						<div className="integration-settings">
 							<a title="Opens Patreon profile in new tab" href="https://www.patreon.com/user/creators" target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
 						</div>
 						<div className="integration-sync" ref={(el) => {this._sync = el}}>
-							<a title="Sync with Patreon" href="javascript:;" onClick={this.handleSync}><img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1567266776/sync-white.png" /></a>
+							<a title="Sync with Patreon" href="javascript:;" onClick={this.handleSync}><img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png" /></a>
 						</div>
 					</div>
 					<div className="integration-content">
@@ -232,9 +237,6 @@ class PatreonPanel extends React.Component {
 								<img alt="Patreon User Thumbnail" src={thumb_url} />
 							</div>
 							{vanityContent}
-							<div className="patreon--unlink">
-								<a href="javascript:;" onClick={this.showUnlink}>Unlink</a>
-							</div>
 						</div>
 						<div className="patreon--right">
 							{/*banner*/}

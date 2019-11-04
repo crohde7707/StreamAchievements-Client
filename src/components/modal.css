@@ -76,12 +76,20 @@
 
 .modal-error {
     text-align: center;
-    color: red;
+    color: #111;
     margin-bottom: 20px;
-    border-top: 1px solid;
-    border-bottom: 1px solid red;
-    padding: 5px 0px;
+    padding: 10px 5px;
+    background: #ece197;
+    font-weight: bold;
+    font-size: 15px;
     display: none;
+}
+
+.modal-error a,
+.modal-error a:visited,
+.modal-error a:hover {
+    color: #425483;
+    text-decoration: none;
 }
 
 .modal-error.modal-error--active {
