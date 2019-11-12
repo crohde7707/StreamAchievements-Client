@@ -20,24 +20,25 @@ class AchievementPage extends React.Component {
 		super(props);
 
 		this.state = {
-			fetch: true,
-			title: "",
-			description: "",
-			icon: "",
 			achType: "",
-			query: "",
+			alert: true,
 			bot: "",
 			condition: "",
+			customAllowed: true,
+			defaultIcons: {},
+			description: "",
 			earnable: true,
-			limited: false,
-			secret: false,
+			edit: false,
+			fetch: true,
+			icon: "",
 			iconPreview: '',
 			id: '',
-			edit: false,
+			limited: false,
+			query: "",
+			secret: false,
 			showConfirm: false,
 			showImagePanel: false,
-			defaultIcons: {},
-			customAllowed: true
+			title: ""
 		};
 
 		if(props.profile) {
@@ -192,21 +193,22 @@ class AchievementPage extends React.Component {
 			this.setState(stateUpdate);	
 		} else {
 			this.setState({
-				title: "",
-				description: "",
-				icon: "",
 				achType: "",
-				query: "",
+				alert: true,
 				bot: "",
 				condition: "",
+				description: "",
 				earnable: true,
-				limited: false,
-				secret: false,
+				edit: false,
+				icon: "",
 				iconPreview: '',
 				id: '',
-				edit: false,
+				limited: false,
+				query: "",
+				secret: false,
 				showConfirm: false,
 				showImagePanel: false,
+				title: "",
 				touched: undefined
 			});
 		}
@@ -468,6 +470,7 @@ class AchievementPage extends React.Component {
 					title: this.state.title,
 					description: this.state.description,
 					earnable: this.state.earnable,
+					alert: this.state.alert,
 					limited: this.state.limited,
 					secret: this.state.secret,
 					iconName: (this.state.file) ? this.state.file.name : '',
@@ -734,6 +737,7 @@ class AchievementPage extends React.Component {
 			bot: "",
 			condition: "",
 			earnable: true,
+			alert: true,
 			limited: false,
 			secret: false,
 			iconPreview: '',
@@ -777,8 +781,6 @@ class AchievementPage extends React.Component {
 				pageHeader = "Create Achievement";
 			}
 		}
-
-			let {title, description, earnable, limited, secret} = this.state;
 
 			if(this.state.showConfirm) {
 				confirmPanel = (
@@ -952,48 +954,64 @@ class AchievementPage extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
+							<h4>Configuration</h4>
 							<div className="formGroup checkboxes">
-								<label>Configuration</label>
-								<div className="checkboxes">
-									<div className="checkbox">
-										<label htmlFor="achievement-earnable" title="This achievement can currently be earned">Earnable</label>
-										<div>
-											<input 
-												id="achievement-earnable"
-												name="earnable"
-												type="checkbox"
-												title="This achievement can currently be earned"
-												checked={this.state.earnable}
-												onChange={this.handleDataChange}
-											/>
-										</div>
-									</div>
-									<div className="checkbox">
-										<label htmlFor="achievement-limited" title="This achievement can only be earned for a limited time" >Limited Time</label>
-										<div>
-											<input
-												id="achievement-limited"
-												name="limited"
-												type="checkbox"
-												title="This achievement can only be earned for a limited time"
-												checked={this.state.limited}
-												onChange={this.handleDataChange}
-											/>
-										</div>
-									</div>
-									<div className="checkbox">
-										<label htmlFor="achievement-secret" title="This achievement will be a secret in your list until someone earns it!">Secret</label>
-										<div>
-											<input
-												id="achievement-secret"
-												name="secret"
-												type="checkbox"
-												title="This achievement will be a secret in your list until someone earns it!"
-												checked={this.state.secret}
-												onChange={this.handleDataChange}
-											/>
-										</div>
-									</div>
+								<div className="checkbox">
+									<div className="checkbox-label">Earnable</div>
+									<label className="switch" htmlFor="achievement-earnable" title="Toggle if the achievement can be earned">
+									  	<input 
+									  		id="achievement-earnable"
+											name="earnable"
+											type="checkbox"
+											title="This achievement can currently be earned"
+											checked={this.state.earnable}
+											onChange={this.handleDataChange}
+										/>
+									  	<span className="slider round"></span>
+									</label>
+								</div>
+								<div className="checkbox">
+									<div className="checkbox-label">Alert</div>
+									<label className="switch" htmlFor="achievement-alert" title="Toggle if the achievement will trigger an overlay in stream">
+									  	<input 
+									  		id="achievement-alert"
+											name="alert"
+											type="checkbox"
+											title="This achievement can currently be earned"
+											checked={this.state.alert}
+											onChange={this.handleDataChange}
+										/>
+									  	<span className="slider round"></span>
+									</label>
+								</div>
+								<div className="checkbox">
+									<div className="checkbox-label">Limited Time</div>
+									<label className="switch" htmlFor="achievement-limited" title="Toggle if the achievement can only be earned for a limited time" >
+										<input
+											id="achievement-limited"
+											name="limited"
+											type="checkbox"
+											title="This achievement can only be earned for a limited time"
+											checked={this.state.limited}
+											onChange={this.handleDataChange}
+										/>
+									  	<span className="slider round"></span>
+									</label>
+								</div>
+								<div className="checkbox">
+									<div className="checkbox-label">Secret</div>
+									<label className="switch" htmlFor="achievement-secret" title="Toggle if the achievement will be a secret">
+										<input
+											id="achievement-secret"
+											name="secret"
+											type="checkbox"
+											title="This achievement will be a secret in your list until someone earns it!"
+											checked={this.state.secret}
+											onChange={this.handleDataChange}
+										/>
+
+										<span className="slider round"></span>
+									</label>
 								</div>
 							</div>
 							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>

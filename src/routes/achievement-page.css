@@ -77,7 +77,7 @@
 
 .checkboxes {
 	display: flex;
-	width: 103%;
+	width: 100%;
 }
 
 .achievement-button.submit-achievement {
@@ -151,6 +151,15 @@
 	font-size: 14px;
 }
 
+.achievement-wrapper .checkbox-label {
+	font-weight: bold;
+}
+
+.achievement-wrapper .formGroup .checkbox label {
+	width: 60px;
+	margin-top: 5px;
+}
+
 @media only screen and (max-width: 480px) {
 	.achievement-wrapper h4 {
 		padding-left: 10px;
@@ -161,13 +170,23 @@
 		margin-bottom: 20px;
 	}
 
+	.achievement-wrapper .formGroup.checkboxes {
+		flex-direction: row;
+	}
+
 	.achievement-wrapper .formGroup .textInput {
 		padding: 2%;
+		width: 90%;
+		margin: 0 auto;
 	}
 
 	.achievement-wrapper .formGroup select.selectInput {
 		height: 44px;
 		width: 95%;
+	}
+
+	.achievement-wrapper .achievement.achievement--earned {
+		width: 90%;
 	}
 
 	.achievement-wrapper .achievement.achievement--earned .achievement-logo {
