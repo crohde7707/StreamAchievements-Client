@@ -86,7 +86,9 @@ class SetupModal extends React.Component {
   				channels
   			});
 
-  			this.props.onInject(response.data);
+  			if(this.props.onInject) {
+  				this.props.onInject(response.data);
+  			}
   		});
   	}
 
