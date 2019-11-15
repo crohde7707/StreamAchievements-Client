@@ -15,20 +15,29 @@ class CreateChannelPage extends React.Component {
 
 		this.state = {
 			validated: false,
-			received: false
+			received: false,
+			referralCode: ""
 		};
 	}
 
 	handleUpdate = (evt) => {
 		let field = evt.target;
 
-		this.setState({
-			validated: (field.value === 'ACHIEVEMENT')
-		});
+		if(field.name === "referral") {
+			this.setState({
+				referralCode: field.value
+			});
+		} else if(field.name="confirm") {
+			this.setState({
+				validated: (field.value === 'ACHIEVEMENT')
+			});
+		}
 	}
 
 	onSubmit = (event) => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {
+			referral: this.state.referralCode
+		}, {
 			withCredentials: true
 		}).then(res => {
 			if(res.data.error) {
@@ -44,17 +53,32 @@ class CreateChannelPage extends React.Component {
 
 	render() {
 
-		let content;
+		let content, referral;
 
 		if(this.props.profile) {
 
-			if(this.props.profile.status === 'verified') {
-				return (<Redirect to='/dashboard/' />);
-			}
+			// if(this.props.profile.status === 'verified') {
+			// 	return (<Redirect to='/dashboard/' />);
+			// }
 
 			let user = this.props.profile.username;
 
 			let form;
+
+			if(this.state.referral) {
+				referral = (
+					<div className="referralContent">
+						<label htmlFor="referral">Referral Code</label>
+						<input name="referral" type="text" onChange={this.handleUpdate} />
+					</div>
+				)
+			} else {
+				referral = (
+					<div className="referralContent">
+						<button type="button" onClick={() => {this.setState({referral: true})}}>Have a referral code?</button>
+					</div>
+				);
+			}
 
 			if(this.state.received) {
 				form = (
@@ -67,6 +91,7 @@ class CreateChannelPage extends React.Component {
 				form = (
 					<form className="confirmForm" onSubmit={this.onSubmit}>
 						<input type="text" name="confirm" onChange={this.handleUpdate} />
+						{referral}
 						<button type="button" onClick={this.onSubmit} disabled={(!this.state.validated) ? 'disabled' : ''}>Send</button>
 					</form>
 				);

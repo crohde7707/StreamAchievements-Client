@@ -15,6 +15,7 @@ import AlertConfig from '../components/alert-configuration-panel';
 import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 import MembersPanel from '../components/members-panel';
+import InfoPanel from '../components/info-panel';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
@@ -40,7 +41,8 @@ class DashboardPage extends React.Component {
 				hiddenIcon: ''
 			},
 			reordering: false,
-			isMod: false
+			isMod: false,
+			showInfoPanel: false
 		};
 
 		this.icons = {
@@ -51,6 +53,17 @@ class DashboardPage extends React.Component {
 			},
 			hidden: "https://res.cloudinary.com/phirehero/image/upload/v1558811887/hidden-icon.png"
 		};
+
+		this._info = {
+			title: 'Referral Code',
+			content: (
+				<div>
+					<p>When someone uses this referral code to sign up for their channel, you will be granted the ability to create your very own Custom Achievement that your community will be able to earn!</p>
+					<p>These Custom Achievements are where you can really bring the uniquenss of your channel out, and let everyone enjoy earning an achievement for that quirky minigame of yours, or that overly used command!</p>
+					<p>Find a friend, give them your code, and get that custom capability unlocked!!</p>
+				</div>
+			)
+		}
 	}
 
 	componentDidMount() {
@@ -684,8 +697,14 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	showPopup = (key) => {
+		this.setState({
+			showInfoPanel: true
+		});
+	}
+
 	updateModerators = (moderators) => {
-		
+		//TODO
 	}
 
 	render() {
@@ -694,7 +713,7 @@ class DashboardPage extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel, isGold;
+		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel, infoPanel, isGold;
 
 		if(this.state.channel) {
 
@@ -710,7 +729,7 @@ class DashboardPage extends React.Component {
 				achievementRoute = '/mod/' + this.props.match.params.channelid + '/achievement';
 			}
 
-			let {logo, owner} = this.state.channel;
+			let {logo, owner, referral} = this.state.channel;
 			let achievements = this.state.achievements;
 
 			if(Array.isArray(this.state.filteredAchievements)) {
@@ -814,6 +833,16 @@ class DashboardPage extends React.Component {
 						    <div className="section-value">
 						        <span name="logo"><img alt="" src={logo} /></span>
 						    </div>
+						</div>
+						<div className="section-wrapper basic-info">
+							<div className="section-label">
+								<label htmlFor="referral">
+									<a href="javascript:;" onClick={() => {this.showPopup()}} className="gold">Referral Code</a>
+								</label>
+							</div>
+							<div className="section-value">
+								<span name="referral">{referral.code}</span>
+							</div>
 						</div>
 						<h4>Channel Customization</h4>
 						<div className="section-wrapper">
@@ -1190,6 +1219,19 @@ class DashboardPage extends React.Component {
 			pageHeader = (<h2>Your Dashboard</h2>);
 		}
 
+		if(this.state.showInfoPanel) {
+			infoPanel = (
+				<InfoPanel 
+					title={this._info.title}
+					onClose={() => {this.setState({showInfoPanel: false})}}
+				>
+					{this._info.content}
+				</InfoPanel>
+			);
+		} else {
+			infoPanel = undefined;
+		}
+
 		return (
 			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
@@ -1202,6 +1244,7 @@ class DashboardPage extends React.Component {
 						{tabContent}
 					</Tabs>
 				</div>
+            	{infoPanel}
 			</Template>
 		);
 	}

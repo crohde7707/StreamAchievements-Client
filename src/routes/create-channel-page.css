@@ -15,7 +15,7 @@
 
 .confirmForm input {
 	margin-top: 20px;
-	padding: 10px 20px;
+	padding: 5px 10px;
 	font-size: 18px;
 	text-align: center;
 }
@@ -63,4 +63,13 @@
     background: #2f4882;
     font-weight: bold;
     text-decoration: none;
+}
+
+.createChannel--wrapper .referralContent label {
+	margin-right: 10px;
+}
+
+.createChannel--wrapper .referralContent button {
+	background: #425583;
+	margin-top: 20px;
 }
