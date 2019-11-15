@@ -4,6 +4,7 @@ import io from "socket.io-client";
 
 import LoadingSpinner from '../components/loading-spinner';
 import SetupChannelList from '../components/setup-channel-list';
+import TermsContent from '../components/terms-content';
 import {updatePreferences} from '../redux/profile-reducer';
 import connector from '../redux/connector';
 
@@ -23,12 +24,14 @@ class SetupModal extends React.Component {
 
 	componentDidMount() {
 
+		document.body.classList.add('no-scroll');
 		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/user/catch', {
 			withCredentials: true
 		}).then(response => {
 			this.setState({
 				catch: response.data.catch,
-				channels: response.data.channels
+				channels: response.data.channels,
+				terms: response.data.termsNeeded
 			});
 		});
 	}
@@ -36,38 +39,67 @@ class SetupModal extends React.Component {
   	nextPage = () => {
   		switch(this.state.currentPage) {
   			case 0:
-  				if(this.state.catch && this.state.channels.length > 0) {
+  				if(this.state.terms) {
 	  				this.setState({
 	  					currentPage: 1
 	  				});
-	  			} else {
+	  			} else if(this.state.catch && this.state.channels.length > 0) {
 	  				this.setState({
 	  					currentPage: 2
 	  				});
+	  			} else if(this.props.profile && this.props.profile.isNew) {
+	  				this.setState({
+	  					currentPage: 3
+	  				});
+	  			} else {
+					this.completeCatch();
 	  			}
 	  			break;
   			case 1:
-  				this.setState({
-  					currentPage: 2
-  				});
+  				if(this.state.catch && this.state.channels.length > 0) {
+	  				this.setState({
+	  					currentPage: 2
+	  				});
+  				} else if(this.props.profile && this.props.profile.isNew) {
+	  				this.setState({
+	  					currentPage: 3
+	  				});
+	  			} else {
+					this.completeCatch();
+	  			}
   				break;
 			case 2:
-				axios.post(process.env.REACT_APP_API_DOMAIN + 'api/user/catch', {
-					new: false,
-					autojoin: this.state.autojoin
-				}, {
-					withCredentials: true
-				}).then(() => {
-					this.props.dispatch(updatePreferences({
-						preferences: {
-							...this.props.preferences,
-							autojoin: this.state.autojoin
-						}
-					}));
-					this.props.onClose();
-				});
+				if(this.props.profile && this.props.profile.isNew) {
+	  				this.setState({
+	  					currentPage: 3
+	  				});
+	  			} else {
+					this.completeCatch();
+	  			}
+				break;
+			case 3:
+				this.completeCatch();
 				break;
   		}
+  	}
+
+  	completeCatch = () => {
+  		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/user/catch', {
+			new: false,
+			autojoin: this.state.autojoin,
+			terms: false
+		}, {
+			withCredentials: true
+		}).then(() => {
+			this.props.dispatch(updatePreferences({
+				preferences: {
+					...this.props.preferences,
+					autojoin: this.state.autojoin
+				}
+			}));
+			document.body.classList.remove('no-scroll');
+			this.props.onClose();
+		});
   	}
 
   	handleJoin = (channel) => {
@@ -86,7 +118,9 @@ class SetupModal extends React.Component {
   				channels
   			});
 
-  			this.props.onInject(response.data);
+  			if(this.props.onInject) {
+  				this.props.onInject(response.data);
+  			}
   		});
   	}
 
@@ -123,6 +157,25 @@ class SetupModal extends React.Component {
 				modalContent = (
 					<div className="modal">
 						<div className="modal-header">
+							<h1>Terms and Conditions</h1>
+						</div>
+						<div className="modal-content terms">
+							<p>By clicking 'I Accept the Terms', you agree to the Stream Achievements <a target="blank" href="/legal/terms-of-use">Terms of Service</a> and <a target="blank" href="/legal/privacy-policy">Privacy Policy</a>.</p>
+						</div>
+						<button className="primary" type="button" onClick={() => this.nextPage()}>I Accept the Terms</button>
+					</div>
+				);
+				break;
+			case 2:
+				let buttonText = "Finished";
+
+				if(this.props.profile && this.props.profile.isNew) {
+					buttonText = "Next";
+				}
+
+				modalContent = (
+					<div className="modal">
+						<div className="modal-header">
 							<h1>You've been busy!</h1>
 						</div>
 						<div className="modal-content chooseMember--wrapper">
@@ -131,11 +184,11 @@ class SetupModal extends React.Component {
 							<p>Don't worry, if you don't join the channel right now, you won't lose any achievements that you have earned!</p>
 							<SetupChannelList channels={this.state.channels} onJoin={this.handleJoin}/>
 						</div>
-						<button className="setupModal--getStarted primary" type="button" onClick={() => this.nextPage()}>Next</button>
+						<button className="setupModal--getStarted primary" type="button" onClick={() => this.nextPage()}>{buttonText}</button>
 					</div>
 				);
 				break;
-			case 2:
+			case 3:
 				modalContent = (
 					<div className="modal">
 						<div className="modal-header">
@@ -143,8 +196,8 @@ class SetupModal extends React.Component {
 						</div>
 						<div className="modal-content">
 							<p>By default, you will automatically join a channel when you earn your first achievement for that channel, to make it easier for you to find that streamer!</p>
-							<p>Would you like to keep this option enabled?</p>
-							<p>You can always change this later in your preferences!</p>
+							<p className="center">Would you like to keep this option enabled?</p>
+							<p className="center strong">You can always change this later in your preferences!</p>
 							<div className="setup-modal--form">
 								<div className="section-label">
 							        <label htmlFor="name">Auto-Join Channel</label>
@@ -166,6 +219,9 @@ class SetupModal extends React.Component {
 						<button className="primary" type="button" onClick={() => this.nextPage()}>Finished</button>
 					</div>
 				);
+				break;
+			default:
+				break;
 		}
 
 		return (

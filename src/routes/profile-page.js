@@ -142,6 +142,8 @@ class ProfilePage extends React.Component {
 			case 'profile':
 				this.props.history.push('/profile?tab=integration');
 				break;
+			case 'dashboard':
+				this.props.history.push('/dashboard');
 			default:
 				break;
 		}

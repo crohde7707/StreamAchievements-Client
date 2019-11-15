@@ -870,14 +870,14 @@ class AchievementPage extends React.Component {
                     	</div>
                     </div>
 				)
-			/* else if(this.state.customAllowed) {
-				customType = (<option value="4">Custom [1 remaining]</option>);
+			} else if(typeof this.state.customAllowed !== 'boolean') {
+				customType = (<option value="4">{`Custom [${this.state.customAllowed} remaining]`}</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
 					</div>
 				);
-			} else if(!this.state.loading) {
+			/* } else if(!this.state.loading) {
 				customType = (<option title="Unlocked with Stream Achievements Gold!" value="4">Custom [0 remaining]</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
@@ -909,7 +909,7 @@ class AchievementPage extends React.Component {
 						<div className="achievementPage-header">
 							<h2>{pageHeader}</h2>
 							<span className="delete-achievement-button">{deleteButton}</span>
-							<button type="button" class="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
+							<button type="button" className="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
 						</div>
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}

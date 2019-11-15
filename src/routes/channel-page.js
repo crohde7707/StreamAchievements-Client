@@ -101,39 +101,64 @@ class ChannelPage extends React.Component {
 		}
 	}
 
-	joinChannel = () => {
+	handleInject = () => {
 		this.setState({
 			joining: true
 		});
-		let minimumReached = new Promise((resolve, reject) => {
+
+		setTimeout(() => {
+			this.setState({
+				joined: true
+			});
+
 			setTimeout(() => {
-				resolve();
-			}, 2000);
-		});
-		
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
-			channel: this.state.channel.owner
-		}, {
-			withCredentials: true
-		})
-		.then((res) => {
+				this._joinButton.classList.add('fade');
+			}, 1000);
 
-			minimumReached.then(() => {
+			setTimeout(() => {
 				this.setState({
-					joined: true
+					joining: false
 				});
+			}, 1200);
+		}, 2000);
+	}
 
-				setTimeout(() => {
-					this._joinButton.classList.add('fade');
-				}, 1000);
+	joinChannel = () => {
+		if(!this.state.joining && !this.state.joined) {
+			this.setState({
+				joining: true
+			});
 
+			let minimumReached = new Promise((resolve, reject) => {
 				setTimeout(() => {
+					resolve();
+				}, 2000);
+			});
+			
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
+				channel: this.state.channel.owner
+			}, {
+				withCredentials: true
+			})
+			.then((res) => {
+
+				minimumReached.then(() => {
 					this.setState({
-						joining: false
+						joined: true
 					});
-				}, 1200);
-			});	
-		});
+
+					setTimeout(() => {
+						this._joinButton.classList.add('fade');
+					}, 1000);
+
+					setTimeout(() => {
+						this.setState({
+							joining: false
+						});
+					}, 1200);
+				});	
+			});
+		}
 	}
 
 	leaveChannel = () => {
@@ -343,7 +368,7 @@ class ChannelPage extends React.Component {
 			}
 
 			content = (
-				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
+				<Template onInject={this.handleInject} className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
 						<Notice message={this.state.notice} onClear={this.clearNotice} />
 						<div

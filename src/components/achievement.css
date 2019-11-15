@@ -192,3 +192,9 @@
     filter: blur(7px);
     transition: all 0.2s ease;
 }
+
+@media only screen and (max-width: 480px) {
+    .achievement--earnDate {
+        display: none;
+    }
+}

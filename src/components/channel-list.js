@@ -121,7 +121,7 @@ class ChannelList extends React.Component {
 			let {channels, favorites} = this.state;
 
 			if(Array.isArray(channels)) {
-				if(channels.length > 0 || favorites.length > 0) {
+				if(channels.length > 0 || favorites.length > 0 || (this.props.inject && this.props.inject.length > 0)) {
 					//we have some channels!
 					
 					if(channels.length > 0) {

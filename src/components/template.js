@@ -1,18 +1,28 @@
 import React from 'react';
 
+import {updateSetupStatus} from '../redux/profile-reducer';
+import connector from '../redux/connector';
+
 import Header from './header';
 import Footer from './footer';
 import {isAuthenticated} from '../utils/auth-utils';
-
 import LoadingSpinner from './loading-spinner';
+import SetupModal from '../components/setup-modal';
 
 import './template.css';
 
-export default class Template extends React.Component {
+class Template extends React.Component {
+
+	handleClose = () => {
+		this.props.dispatch(updateSetupStatus({
+			new: false,
+			terms: false
+		}));
+	}
 
 	render() {
 
-		let redirect;
+		let redirect, isLoading, fullscreen, setupModal;
 
 		if(!isAuthenticated()) {
 			let Redirect = require('react-router-dom').Redirect;
@@ -20,7 +30,9 @@ export default class Template extends React.Component {
 			return(<Redirect to='/' />);
 		}
 
-		let isLoading, fullscreen;
+		if(this.props.profile && (this.props.profile.isNew || this.props.profile.terms)) {
+			setupModal = <SetupModal onClose={this.handleClose} onInject={this.props.onInject} />
+		}
 
 		if(this.props.spinner) {
 			isLoading = this.props.spinner.isLoading;
@@ -33,11 +45,19 @@ export default class Template extends React.Component {
 				<Header />
 				<div id="mainContent" className="main">
 					{this.props.children}
+					{setupModal}
 		            <LoadingSpinner isLoading={isLoading} full={fullscreen} />
 				</div>
 				<Footer />
 			</div>
 		)
 	}
-
 }
+
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default connector(headerMapStateToProps)(Template);
