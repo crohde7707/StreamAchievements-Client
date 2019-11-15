@@ -101,10 +101,33 @@ class ChannelPage extends React.Component {
 		}
 	}
 
+	handleInject = () => {
+		this.setState({
+			joining: true
+		});
+
+		setTimeout(() => {
+			this.setState({
+				joined: true
+			});
+
+			setTimeout(() => {
+				this._joinButton.classList.add('fade');
+			}, 1000);
+
+			setTimeout(() => {
+				this.setState({
+					joining: false
+				});
+			}, 1200);
+		}, 2000);
+	}
+
 	joinChannel = () => {
 		this.setState({
 			joining: true
 		});
+
 		let minimumReached = new Promise((resolve, reject) => {
 			setTimeout(() => {
 				resolve();
@@ -343,7 +366,7 @@ class ChannelPage extends React.Component {
 			}
 
 			content = (
-				<Template className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
+				<Template onInject={this.handleInject} className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
 						<Notice message={this.state.notice} onClear={this.clearNotice} />
 						<div
