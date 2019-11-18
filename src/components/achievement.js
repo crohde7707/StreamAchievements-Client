@@ -23,9 +23,9 @@ class Achievement extends React.Component {
 	}
 
 	render() {
-		let keyProp, editIcon, giftIcon, title, description, earnDate, menu;
+		let keyProp, editIcon, giftIcon, title, description, date, menu;
 		let {earned, className, defaultIcons, unlocked} = this.props;
-		let {secret, limited} = this.props.achievement;
+		let {secret, limited, earnedDate} = this.props.achievement;
 
 		title = this.props.achievement.title;
 		description = this.props.achievement.description;
@@ -97,8 +97,8 @@ class Achievement extends React.Component {
 			);
 		}
 
-		if(earned && earned !== true) {
-			earnDate = (<div className="achievement--earnDate">{new Date(earned).toLocaleDateString()}</div>);
+		if(earned && earnedDate) {
+			date = (<div className="achievement--earnDate">{new Date(earnedDate).toLocaleDateString()}</div>);
 		}
 
 		let content;
@@ -115,7 +115,7 @@ class Achievement extends React.Component {
 						{limitedContent}
 						{menu}
 					</div>
-					{earnDate}
+					{date}
 				</div>
 			)
 		} else {
@@ -138,7 +138,7 @@ class Achievement extends React.Component {
 									{giftIcon}
 									{editIcon}
 								</div>
-								{earnDate}
+								{date}
 							</div>
 					)}
 				</Draggable>
