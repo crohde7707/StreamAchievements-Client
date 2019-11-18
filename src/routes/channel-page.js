@@ -124,39 +124,41 @@ class ChannelPage extends React.Component {
 	}
 
 	joinChannel = () => {
-		this.setState({
-			joining: true
-		});
+		if(!this.state.joining && !this.state.joined) {
+			this.setState({
+				joining: true
+			});
 
-		let minimumReached = new Promise((resolve, reject) => {
-			setTimeout(() => {
-				resolve();
-			}, 2000);
-		});
-		
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
-			channel: this.state.channel.owner
-		}, {
-			withCredentials: true
-		})
-		.then((res) => {
-
-			minimumReached.then(() => {
-				this.setState({
-					joined: true
-				});
-
+			let minimumReached = new Promise((resolve, reject) => {
 				setTimeout(() => {
-					this._joinButton.classList.add('fade');
-				}, 1000);
+					resolve();
+				}, 2000);
+			});
+			
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
+				channel: this.state.channel.owner
+			}, {
+				withCredentials: true
+			})
+			.then((res) => {
 
-				setTimeout(() => {
+				minimumReached.then(() => {
 					this.setState({
-						joining: false
+						joined: true
 					});
-				}, 1200);
-			});	
-		});
+
+					setTimeout(() => {
+						this._joinButton.classList.add('fade');
+					}, 1000);
+
+					setTimeout(() => {
+						this.setState({
+							joining: false
+						});
+					}, 1200);
+				});	
+			});
+		}
 	}
 
 	leaveChannel = () => {

@@ -58,7 +58,7 @@ class DashboardPage extends React.Component {
 			title: 'Referral Code',
 			content: (
 				<div>
-					<p>When someone uses this referral code to sign up for their channel, you will be granted the ability to create your very own Custom Achievement that your community will be able to earn!</p>
+					<p>When someone uses this referral code to sign up for their channel, you will be granted the ability to <strong>create your very own Custom Achievement</strong> that your community will be able to earn!</p>
 					<p>These Custom Achievements are where you can really bring the uniquenss of your channel out, and let everyone enjoy earning an achievement for that quirky minigame of yours, or that overly used command!</p>
 					<p>Find a friend, give them your code, and get that custom capability unlocked!!</p>
 				</div>

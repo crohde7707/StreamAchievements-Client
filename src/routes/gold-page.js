@@ -52,56 +52,80 @@ class GoldPage extends React.Component {
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
 							<div className="row row-stripe">
+								<div className="iconLabel">
+									<span>New Follow Achievements</span>
+									<img src="https://res.cloudinary.com/phirehero/image/upload/v1574020961/DkF7COjV4AAkWht.png" alt="Streamlabs Chatbot" title="Streamlabs Chatbot" />
+								</div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+							</div>
+							<div className="row">
+								<div className="iconLabel">
+									<span>New Donation Achievements</span>
+									<img src="https://res.cloudinary.com/phirehero/image/upload/v1574020961/DkF7COjV4AAkWht.png" alt="Streamlabs Chatbot" title="Streamlabs Chatbot" />
+								</div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+							</div>
+							<div className="row row-stripe">
+								<div className="iconLabel">
+									<span>New Bits Achievements</span>
+									<img src="https://res.cloudinary.com/phirehero/image/upload/v1574020961/DkF7COjV4AAkWht.png" alt="Streamlabs Chatbot" title="Streamlabs Chatbot" />
+								</div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
+							</div>
+							<div className="row">
 								<div>New Sub Achievements</div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row">
+							<div className="row row-stripe">
 								<div>Resub Achievements</div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row row-stripe">
+							<div className="row">
 								<div>Gifted Sub Achievements</div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row">
+							<div className="row row-stripe">
 								<div>Manual Achievements</div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row row-stripe">
+							<div className="row">
 								<div>Custom Chat-based Achievements</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row">
+							<div className="row row-stripe">
 								<div>Custom Default & Hidden Achievement Icons</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row row-stripe">
+							<div className="row">
 								<div>Custom Icons for Each Achievement</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row">
+							<div className="row row-stripe">
 								<div>Channel Themes (Coming Soon!)</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row row-stripe">
+							<div className="row">
 								<div>Icon Gallery (Coming Soon!)</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row">
+							<div className="row row-stripe">
 								<div>Sneak Peaks For New Features</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
 							</div>
-							<div className="row row-stripe">
+							<div className="row">
 								<div>Votes for Next Added Feature</div>
 								<div className="supported"></div>
 								<div className="supported"><img src="https://res.cloudinary.com/phirehero/image/upload/v1562860834/checked.png" /></div>
