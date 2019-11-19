@@ -1,0 +1,98 @@
+.legal-page .header {
+	padding: 20px;
+	background: #1c2741;
+    box-shadow: 0px -1px 5px #000
+}
+
+.legal-page .header a {
+	display: flex;
+	justify-content: center;
+}
+
+.legal-page .section-wrapper {
+	flex-direction: column;
+}
+
+.legal-page .section-content {
+	flex-direction: column;
+	color: white;
+}
+
+.legal-page .content .section-content {
+	max-width: 800px;
+}
+
+.legal-page .section-content.title h1 {
+	margin-bottom: 0px;
+}
+
+.legal-page .section-content.title h4 {
+	margin-bottom: 40px;
+}
+
+.legal-page .section-content.bubble {
+	align-items: flex-start;
+	padding: 20px;
+	background: rgba(0,0,0,0.5);
+	border-radius: 6px;
+}
+
+.legal-page .section-content.bubble a,
+.legal-page .section-content.bubble a:visited,
+.legal-page .section-content.bubble a:hover {
+	color: #7694de;
+}
+
+.legal-page .logo {
+	width: 40%;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.legal-page .content {
+	padding-bottom: 35px;
+}
+
+.legal-page .footer {
+	margin-top: 0;
+}
+
+.legal-page .indent {
+	margin-left: 25px;
+}
+
+@media only screen and (max-width: 480px) {
+	.main-content {
+		margin-top: 0px;
+	}
+
+	.add-channel {
+		margin: 0 10px;
+		padding: 5px 10px;
+	}
+
+	.channel-item {
+		height: 75px;
+	}
+
+	.channel-item--logo {
+		height: 75px;
+	}
+
+	.channel-item--logo img {
+		width: 75px;
+		height: 75px;
+	}
+
+	.channel-item--name {
+		font: 18px;
+	}
+
+	.legal-page .logo {
+		width: 90%;
+	}
+
+	.legal-page .section-wrapper {
+		padding: 20px 5px;
+	}
+}

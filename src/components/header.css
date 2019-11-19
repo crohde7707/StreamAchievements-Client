@@ -239,4 +239,8 @@
 		width: 100%;
 		top: 65px;
 	}
+
+	.menu--icon {
+		padding-bottom: 16px;
+	}
 }

@@ -13,7 +13,9 @@ import ChannelDirectoryPage from './routes/channel-directory-page';
 import CreateChannelPage from './routes/create-channel-page';
 import AdminPanelPage from './routes/admin-panel';
 import ModPage from './routes/mod-page';
-import HowTo from './routes/how-to';
+import LegalTermsPage from './routes/terms-of-use-page';
+import LegalPrivacyPage from './routes/privacy-policy-page';
+import LegalCookiePage from './routes/cookie-policy-page';
 import OverlayPanel from './routes/overlay-panel';
 import TestListeners from './routes/test-listeners';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -45,10 +47,12 @@ let app = (
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/gold" component={GoldPage} />
-	        		<Route path="/howto" component={HowTo} />
 	        		<Route path="/test" component={TestListeners} />
 	        		<Route path="/overlay/:uid" component={OverlayPanel} />
 	        		<Route path="/overlay" component={OverlayPanel} />
+	        		<Route path="/legal/terms-of-use" component={LegalTermsPage} />
+	        		<Route path="/legal/privacy-policy" component={LegalPrivacyPage} />
+	        		<Route path="/legal/cookie-policy" component={LegalCookiePage} />
 	        		<Route component={LandingPage} />
 	    		</Switch>
 			</App>
