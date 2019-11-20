@@ -117,7 +117,7 @@ class StreamlabsPanel extends React.Component {
 										</a>
 									</div>
 									<div className="integration-settings">
-										<a title="Opens Twitch settings in new tab" href='https://streamlabs.com/dashboard#/settings/api-settings' target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
+										<a title="Opens Twitch settings in new tab" href='https://streamlabs.com/dashboard#/settings/api-settings' target="blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
 									</div>
 									{/*<div className="integration-sync" ref={(el) => {this._sync = el}}>
 										<a href="javascript:;" onClick={this.handleSync}><img alt="" src='https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png' /></a>

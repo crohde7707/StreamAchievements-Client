@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {updateNewStatus} from '../redux/profile-reducer';
+import {updateSetupStatus} from '../redux/profile-reducer';
 import connector from '../redux/connector';
 
 import Header from './header';
@@ -14,7 +14,10 @@ import './template.css';
 class Template extends React.Component {
 
 	handleClose = () => {
-		this.props.dispatch(updateNewStatus({new: false}));
+		this.props.dispatch(updateSetupStatus({
+			new: false,
+			terms: false
+		}));
 	}
 
 	render() {
@@ -27,7 +30,7 @@ class Template extends React.Component {
 			return(<Redirect to='/' />);
 		}
 
-		if(this.props.profile && this.props.profile.isNew) {
+		if(this.props.profile && (this.props.profile.isNew || this.props.profile.terms)) {
 			setupModal = <SetupModal onClose={this.handleClose} onInject={this.props.onInject} />
 		}
 

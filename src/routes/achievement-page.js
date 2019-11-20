@@ -909,7 +909,7 @@ class AchievementPage extends React.Component {
 						<div className="achievementPage-header">
 							<h2>{pageHeader}</h2>
 							<span className="delete-achievement-button">{deleteButton}</span>
-							<button type="button" class="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
+							<button type="button" className="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
 						</div>
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}

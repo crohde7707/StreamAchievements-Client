@@ -135,13 +135,11 @@ class GoldPage extends React.Component {
 					<div className="section">
 						<h3>Cool! How do I join Stream Achievements Gold?</h3>
 						<p>The program is currently integrated through Patreon, so all you need to do is followed 2 simple steps:</p>
-						<p>
-							<ol>
-								<li>Head over to your <Link to="/profile?tab=integration">integrations</Link> within your profile, and link up your Patreon account</li>
-								<li>Visit the Patreon page for Stream Achievements and <a href={PATREON_URL}>make your pledge</a> for the gold tier!</li>
-								<li>Return to your integrations and hit the sync button, and it will reflect that you are an active patron!</li>
-							</ol>
-						</p>
+						<ol>
+							<li>Head over to your <Link to="/profile?tab=integration">integrations</Link> within your profile, and link up your Patreon account</li>
+							<li>Visit the Patreon page for Stream Achievements and <a href={PATREON_URL}>make your pledge</a> for the gold tier!</li>
+							<li>Return to your integrations and hit the sync button, and it will reflect that you are an active patron!</li>
+						</ol>
 					</div>
 					<div className="section">
 						<h3>What happens if I cancel my pledge?</h3>

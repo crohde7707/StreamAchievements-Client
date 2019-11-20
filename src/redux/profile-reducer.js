@@ -6,7 +6,7 @@ const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
 const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
-const UPDATE_NEW_STATUS = 'UPDATE_NEW_STATUS';
+const UPDATE_SETUP_STATUS = 'UPDATE_SETUP_STATUS';
 
 const axios = require('axios');
 
@@ -33,7 +33,8 @@ export default function ProfileReducer(state = initialState, action) {
 					nid: action.data.uid,
 					socket: action.data.socket,
 					isMod: action.data.isMod,
-					isNew: action.data.new
+					isNew: action.data.new,
+					terms: action.data.terms
 				},
 				patreon: action.data.patreon,
 				streamlabs: action.data.streamlabs
@@ -101,12 +102,13 @@ export default function ProfileReducer(state = initialState, action) {
 				}
 			}
 			break;
-		case UPDATE_NEW_STATUS:
+		case UPDATE_SETUP_STATUS:
 			return {
 				...state,
 				profile: {
 					...state.profile,
-					isNew: action.data.new
+					isNew: action.data.new,
+					terms: action.data.terms
 				}
 			}
 			break;
@@ -173,9 +175,9 @@ export function updateNotifications(data) {
 	}
 }
 
-export function updateNewStatus(data) {
+export function updateSetupStatus(data) {
 	return {
-		type: UPDATE_NEW_STATUS,
+		type: UPDATE_SETUP_STATUS,
 		data
 	}
 }

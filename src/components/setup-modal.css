@@ -124,6 +124,26 @@
 	background-color: #2f4882;
 }
 
+.setup-modal .modal-content.terms {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 0 20px;
+	text-align: center;
+}
+
+.setup-modal .modal-content.terms a {
+	position: inherit;
+	width: inherit;
+	height: inherit;
+	right: inherit;
+}
+
+.setup-modal .modal-content.terms a,
+.setup-modal .modal-content.terms a:visited,
+.setup-modal .modal-content.terms a:hover {
+	color: #425583;
+}
+
 @media only screen and (max-width: 480px) {
     .setup-modal .modal {
     	width: 80%;
