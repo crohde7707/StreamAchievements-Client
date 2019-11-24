@@ -756,6 +756,7 @@ class AchievementPage extends React.Component {
 				<React.Fragment>
 					<option value="5">New Follow</option>
 					<option value="6">New Donation</option>
+					<option value="7">New Bit Donation</option>
 				</React.Fragment>
 			)
 		}
