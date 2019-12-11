@@ -63,6 +63,14 @@
     margin-top: 0px;
 }
 
+.achievement-description {
+    display: block;
+}
+
+.achievement-shortDescription {
+    display: none;
+}
+
 .achievement--icons {
     position: absolute;
     top: 0;
@@ -191,6 +199,16 @@
 .achievement-blurred {
     filter: blur(7px);
     transition: all 0.2s ease;
+}
+
+@media only screen and (max-width: 600px) {
+    .achievement-description {
+        display: none;
+    }
+
+    .achievement-shortDescription {
+        display: block;
+    }
 }
 
 @media only screen and (max-width: 480px) {

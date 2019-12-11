@@ -27,6 +27,7 @@ class AchievementPage extends React.Component {
 			customAllowed: true,
 			defaultIcons: {},
 			description: "",
+			shortDescription: "",
 			earnable: true,
 			edit: false,
 			fetch: true,
@@ -198,6 +199,7 @@ class AchievementPage extends React.Component {
 				bot: "",
 				condition: "",
 				description: "",
+				shortDescription: "",
 				earnable: true,
 				edit: false,
 				icon: "",
@@ -469,6 +471,7 @@ class AchievementPage extends React.Component {
 				achievement = {
 					title: this.state.title,
 					description: this.state.description,
+					shortDescription: this.state.shortDescription,
 					earnable: this.state.earnable,
 					alert: this.state.alert,
 					limited: this.state.limited,
@@ -731,6 +734,7 @@ class AchievementPage extends React.Component {
 			fetched: false,
 			title: "",
 			description: "",
+			shortDescription: "",
 			icon: "",
 			achType: "",
 			query: "",
@@ -955,6 +959,18 @@ class AchievementPage extends React.Component {
 									onChange={this.handleDataChange}
 								/>
 							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-short-description">Short Description</label>
+								<input
+									id="achievement-short-description"
+									name="shortDescription"
+									className="textInput"
+									type="text"
+									value={this.state.shortDescription}
+									onChange={this.handleDataChange}
+								/>
+							</div>
+							<div className="helpText">If provided, the short description will be used on mobile sizes and the extensions</div>
 							<h4>Configuration</h4>
 							<div className="formGroup checkboxes">
 								<div className="checkbox">

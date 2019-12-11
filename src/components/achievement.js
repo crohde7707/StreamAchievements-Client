@@ -23,12 +23,13 @@ class Achievement extends React.Component {
 	}
 
 	render() {
-		let keyProp, editIcon, giftIcon, title, description, date, menu;
+		let keyProp, editIcon, giftIcon, title, description, shortDescription, date, menu;
 		let {earned, className, defaultIcons, unlocked} = this.props;
 		let {secret, limited, earnedDate} = this.props.achievement;
 
 		title = this.props.achievement.title;
 		description = this.props.achievement.description;
+		shortDescription = this.props.achievement.shortDescription || description;
 
 		let achievementClass = "achievement";
 		let icon = this.props.achievement.icon || defaultIcons.default || '';
@@ -45,6 +46,7 @@ class Achievement extends React.Component {
 		} else if(secret) {
 			title = "????";
 			description = "????????????";
+			shortDescription = "????????????";
 			icon = defaultIcons.hidden || ''
 		}
 
@@ -110,6 +112,7 @@ class Achievement extends React.Component {
 					<div className="achievement-info">
 						<div className="achievement-title">{title}</div>
 						<div className="achievement-description">{description}</div>
+						<div className="achievement-shortDescription">{shortDescription}</div>
 					</div>
 					<div className="achievement--icons">
 						{limitedContent}
@@ -132,6 +135,7 @@ class Achievement extends React.Component {
 								<div className="achievement-info">
 									<div className="achievement-title">{title}</div>
 									<div className="achievement-description">{description}</div>
+									<div className="achievement-shortDescription">{shortDescription}</div>
 								</div>
 								<div className="achievement--icons">
 									{limitedContent}
