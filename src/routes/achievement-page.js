@@ -13,6 +13,7 @@ import LoadingSpinner from '../components/loading-spinner';
 import {Link} from 'react-router-dom';
 
 import './achievement-page.css';
+import '../components/achievement-extension.css';
 
 class AchievementPage extends React.Component {
 
@@ -27,6 +28,7 @@ class AchievementPage extends React.Component {
 			customAllowed: true,
 			defaultIcons: {},
 			description: "",
+			extensionPreview: false,
 			shortDescription: "",
 			earnable: true,
 			edit: false,
@@ -199,6 +201,7 @@ class AchievementPage extends React.Component {
 				bot: "",
 				condition: "",
 				description: "",
+				extensionPreview: false,
 				shortDescription: "",
 				earnable: true,
 				edit: false,
@@ -766,6 +769,12 @@ class AchievementPage extends React.Component {
 		}
 	}
 
+	togglePreview = () => {
+		this.setState({
+			extensionPreview: !this.state.extensionPreview
+		});
+	}
+
 	render() {
 
 		let pageHeader, content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
@@ -900,12 +909,21 @@ class AchievementPage extends React.Component {
 			}
 
 
-			let saveButton;
+			let saveButton, toggleText, achievementPreviewClasses;
 
 			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
 				saveButton = <input className='achievement-button submit-achievement submit-achievement--active' type="submit" value="Save" />
 			} else {
 				saveButton = <input className='achievement-button submit-achievement' disabled type="submit" value="Save" />
+			}
+
+			achievementPreviewClasses = "achievement-preview";
+
+			if(this.state.extensionPreview) {
+				toggleText = "Show Normal View";
+				achievementPreviewClasses += " achievement-preview--extension";
+			} else {
+				toggleText = "Show Extension View";
 			}
 
 			content = (
@@ -923,13 +941,17 @@ class AchievementPage extends React.Component {
 							Achievement Preview
 							<span className="help" title="This is what your achievement looks like, based on the information below!"></span>
 						</h4>
-						<div className="achievement-preview">
+						<div className={achievementPreviewClasses}>
 							<Achievement
 								earned={true}
 								unlocked={isGold}
 								achievement={this.state}
 								defaultIcons={this.state.defaultIcons}
 							/>
+
+							<div className="toggleView">
+								<button type="button" onClick={this.togglePreview}>{toggleText}</button>
+							</div>
 						</div>
 						<h4>
 							Achievement Info

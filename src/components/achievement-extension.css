@@ -1,0 +1,241 @@
+.achievement-preview--extension {
+    width: 283px;
+    margin: 0 auto;
+}
+
+.achievement-preview--extension .achievement-icon {
+    position: absolute;
+    left: -40px;
+    top: -45px;
+}
+
+.achievement-preview--extension .achievement-icon img {
+    width: 75px;
+}
+
+.achievement-preview--extension .achievement {
+    background: #555;
+    box-shadow: 0px 1px 2px black;
+    width: 95%;
+    position: relative;
+    height: 1em;
+    margin-bottom: 25px;
+    display: block;
+    color: white;
+    text-shadow: 1px 1px black;
+    display: flex;
+    align-items: center;
+    margin: 0 auto 25px;
+    transition: 
+}
+
+.achievement-preview--extension .achievement.achievement--disabled {
+    opacity: 0.5;
+}
+
+.achievement-preview--extension .achievement.achievement--earned {
+    background: #DDD;
+    color: black;
+    text-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement.achievement--earned .achievement-logo {
+    opacity: 1;
+}
+
+.achievement-preview--extension .achievement-logo {
+    position: absolute;
+    left: -1px;
+    top: 0px;
+    opacity: 0.5;
+}
+
+.achievement-preview--extension .achievement-logo img {
+    width: 40px;
+    height: 40px;
+}
+
+.achievement-preview--extension .achievement-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.achievement-preview--extension .achievement-title {
+    margin-top: -10px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.achievement-preview--extension .achievement--icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: flex-end;
+    flex: 1 1;
+    height: 100%;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement--limited {
+    margin-right: 5px;
+}
+
+.achievement-preview--extension .achievement-menu {
+    height: 100%;
+    margin: 0;
+    width: 32px;
+    display: flex;
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement-menu.visible {
+    width:150px;
+}
+
+.achievement-preview--extension .achievement-menu--button {
+    height: 100%;
+    width: 32px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement-menu--button:hover {
+    background: #425583;
+}
+
+.achievement-preview--extension .achievement-menu.visible .achievement-menu--button,
+.achievement-preview--extension .achievement-menu.visible .achievement-menu--drawer {
+    background: #425583;
+}
+
+.achievement-preview--extension .achievement-menu.visible .achievement-menu--button img,
+.achievement-preview--extension .achievement-menu.visible .achievement-menu--drawer img {
+    filter: invert(1);
+}
+
+.achievement-preview--extension .achievement-menu--button img {
+    width: 24px;
+    filter: invert(0);
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement-menu--button:hover img {
+    filter: invert(1);
+}
+
+.achievement-preview--extension .achievement-menu--drawer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 118px;
+    justify-content: space-evenly;
+}
+
+.achievement-preview--extension .achievement-menu--drawer div {
+    height: 100%;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.achievement-preview--extension .achievement-menu--drawer div:hover {
+    background: #425583;
+}
+
+.achievement-preview--extension .achievement-menu--drawer div img {
+    filter: invert(0);
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement-menu--drawer div:hover img {
+    filter: invert(.95);
+}
+
+.achievement-preview--extension .achievement--gift {
+    height: 32px;
+}
+
+.achievement-preview--extension .achievement--edit {
+    cursor: pointer;
+}
+
+.achievement-preview--extension .achievement--earnDate {
+    position: absolute;
+    right: 10px;
+}
+
+.achievement-preview--extension .achievement--gift {
+    cursor: pointer;
+}
+
+.achievement-preview--extension .achievement--limited img,
+.achievement-preview--extension .achievement--gift img {
+    width:32px;
+}
+
+.achievement-preview--extension .achievement-cap {
+    position: absolute;
+    right: -20px;
+    top: -10px;
+}
+
+.achievement-preview--extension .achievement-cap img {
+    width: 55px;
+}
+
+.achievement-preview--extension .achievement-blurred {
+    filter: blur(7px);
+    transition: all 0.2s ease;
+}
+
+.achievement-preview--extension .achievement-description {
+    display: none;
+}
+
+.achievement-preview--extension .achievement-shortDescription {
+    display: block;
+}
+
+@media only screen and (max-width: 480px) {
+    .achievement-preview--extension .achievement--earnDate {
+        display: none;
+    }
+
+    .achievement-preview--extension .achievement-logo {
+        position: absolute;
+        left: -1px;
+        top: 0px;
+        opacity: 0.5;
+    }
+
+    .achievement-preview--extension .achievement-logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .achievement-preview--extension .achievement {
+        padding: 15px 0px;
+        height: 40px;
+    }
+
+    .achievement-preview--extension .achievement-description {
+        display: none;
+    }
+
+    .achievement-preview--extension .achievement-shortDescription {
+        display: block;
+    }
+}

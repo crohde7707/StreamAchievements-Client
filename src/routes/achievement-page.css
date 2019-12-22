@@ -160,6 +160,23 @@
 	margin-top: 5px;
 }
 
+.toggleView {
+	display: flex;
+	justify-content: center;
+}
+
+.toggleView button {
+	padding: 10px 20px;
+    height: 36px;
+    display: block;
+    margin: 0;
+    border: 0;
+    background: #425583;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 480px) {
 	.achievement-wrapper h4 {
 		padding-left: 10px;
