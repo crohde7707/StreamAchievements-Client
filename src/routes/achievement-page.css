@@ -1,3 +1,23 @@
+.achievement-page--inactiveWarning {
+	padding: 10px 15px;
+    background-color: #fffc8c;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.achievement-page--inactiveWarning .info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex: 1;
+	font-size: 14px;
+}
+
+.achievement-page--inactiveWarning .info span {
+	margin: 1px 0;
+}
+
 .achievement-wrapper {
 	margin: 15px auto;
 	color: white;
@@ -37,7 +57,8 @@
     transition: all 0.2s ease;
 }
 
-.tutorial-button {
+.tutorial-button,
+.enableButton {
 	padding: 10px 20px;
     height: 36px;
     display: block;

@@ -41,7 +41,9 @@ class AchievementPage extends React.Component {
 			secret: false,
 			showConfirm: false,
 			showImagePanel: false,
-			title: ""
+			title: "",
+			unlocked: false,
+			referred: false
 		};
 
 		if(props.profile) {
@@ -56,7 +58,7 @@ class AchievementPage extends React.Component {
 						<p>The Stream Achievements bot listens to the chat for a specific message you provide! You will need to tell the bot which data you are looking for!</p>
 						<p>You have the following variables to use when writing out your message:
 							<ul>
-								<li><span>{"{user}"}</span>: The person that will be recieveing the acheivement'</li>
+								<li><span>{"{user}"}</span>: The person that will be receiving the acheivement</li>
 								<li><span>{"{target}"}</span>: The intended target (usually another viewer in chat)</li>
 								<li><span>{"{amount}"}</span>: Any numeric amount (think achievements for chat currency, minigame results, counters, etc)</li>
 								<li><span>{"{total}"}</span>: Same as above, in the event there are two numeric values in your message</li>
@@ -87,6 +89,24 @@ class AchievementPage extends React.Component {
 								<li><span>{"Greater Than or Equal (>=)"}</span>: Value is greater than or exactly what you specify {"(amount>=400)"}</li>
 							</ul>
 						</p>
+					</div>
+				)
+			},
+			followageMessage: {
+				title: 'Followage',
+				content: (
+					<div>
+						<p>In order for a member of your community to earn the Follow achievement when they have already been following for some time, you will need to let our system know about your followage command!</p>
+						<p>There are 2 variables you will need to use in this message for us to determine if the achievement should be awarded or not:</p>
+						<ul>
+							<li><span>{"{user}"}</span>: The person that will be receiving the achievement</li>
+							<li><span>{"{followage}"}</span>: The part of the message that details how long someone has been following</li>
+						</ul>
+						<h4>Example</h4>
+						<img src="https://res.cloudinary.com/phirehero/image/upload/v1577803231/followage.png" />
+						<p>With this above, an achievement will occur for these messages, and so on, in chat:</p>
+						<p><strong>phiretest, you followed phirehero 1 day ago. Remember that?</strong></p>
+						<span><strong>phiretest, you followed phirehero 2 years, 3 months ago. Remember that?</strong></span>
 					</div>
 				)
 			}
@@ -169,7 +189,9 @@ class AchievementPage extends React.Component {
 				edit: true,
 				isMod,
 				isGoldChannel: res.data.isGoldChannel,
-				customAllowed: res.data.customAllowed
+				customAllowed: res.data.customAllowed,
+				unlocked: res.data.achievement.unlocked,
+				referred: res.data.referred
 			};
 
 			if(!this.props.streamlabs && (achievement.achType === "5" || achievement.achType === "6")) {
@@ -214,7 +236,8 @@ class AchievementPage extends React.Component {
 				showConfirm: false,
 				showImagePanel: false,
 				title: "",
-				touched: undefined
+				touched: undefined,
+				unlocked: false
 			});
 		}
 		
@@ -445,6 +468,39 @@ class AchievementPage extends React.Component {
 						)
 					}
 					break;
+				case "5":
+					//Follow (Streamlabs)
+					conditionContent = (
+						<div>
+							<div className="formGroup">
+								<label htmlFor="achievement-bot">Bot Name *</label>
+								<input
+									id="achievement-bot"
+									name="bot"
+									className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
+									type="text"
+									value={this.state.bot}
+									onChange={this.handleDataChange}
+									placeholder="The bot that has your followage command"
+								/>
+							</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-query">
+									<a href="javascript:;" onClick={() => {this.showPopup('followageMessage')}} className="gold">Followage Message</a> *
+								</label>
+								<input
+									id="achievement-query"
+									name="query"
+									className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
+									type="text"
+									value={this.state.query}
+									onChange={this.handleDataChange}
+									placeholder="The message you bot puts in the chat ({user} is required)"
+								/>
+							</div>
+						</div>
+					);
+					break;
 			}
 
 			return conditionContent;
@@ -491,7 +547,7 @@ class AchievementPage extends React.Component {
 					}
 				}
 
-				if(this.state.achType === "4") {
+				if(this.state.achType === "4" || this.state.achType === "5") {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
 				}
@@ -535,6 +591,11 @@ class AchievementPage extends React.Component {
 				this.isNullorEmpty(validUpdate, 'bot');
 				this.isValidQuery(validUpdate, 'query');
 				this.isValidCondition(validUpdate, 'condition');
+				break;
+			case "5":
+				this.isNullorEmpty(validUpdate, 'bot');
+				this.isValidFollowage(validUpdate, 'query');
+				break;
 			default:
 				break;
 		}
@@ -566,9 +627,25 @@ class AchievementPage extends React.Component {
 		if(!this.isNullorEmpty(fieldSet, field)) {
 			return;
 		} else {
+			console.log(this.state[field]);
 			let userFound = this.state[field].indexOf('{user}') >= 0;
 
 			if(!userFound) {
+				fieldSet[field] = false;
+			} else {
+				fieldSet[field] = true;
+			}
+		}
+	}
+
+	isValidFollowage = (fieldSet, field) => {
+		if(!this.isNullorEmpty(fieldSet, field)) {
+			return;
+		} else {
+			let userFound = this.state[field].indexOf('{user}') >= 0;
+			let followageFound = this.state[field].indexOf('{followage}') >= 0;
+
+			if(!userFound || !followageFound) {
 				fieldSet[field] = false;
 			} else {
 				fieldSet[field] = true;
@@ -775,21 +852,38 @@ class AchievementPage extends React.Component {
 		});
 	}
 
+	enableCustomAchievement = () => {
+		this.setState({
+			fetch: true
+		});
+		axios.post(`${process.env.REACT_APP_API_DOMAIN}api/achievement/enable`, {
+			aid: this.props.match.params.achievementid
+		}, {
+			withCredentials: true
+		}).then(res => {
+			this.setState({
+				fetch: false,
+				unlocked: res.data.unlocked
+			});
+		});
+	}
+
 	render() {
 
 		let pageHeader, content, iconGallery, confirmPanel, imagePanel, infoPanel, tutorialPanel, imgPreviewContent, iconSection;
 		let deleteButton = null;
 
 		let isGold = (this.props.patreon && this.props.patreon.gold) || (this.state.isMod && this.state.isGoldChannel);
+		
 
 		if(this.state.isMod) {
-			if(this.props.match.params.achievementid) {
+			if(this.state.edit) {
 				pageHeader = (<span><span className="capitalize">{`Edit ${this.props.match.params.channelid}`}</span>'s Achievement <span className="gold">[MODERATOR]</span></span> );
 			} else {
 				pageHeader = (<span><span className="capitalize">{`Add ${this.props.match.params.channelid}`}</span>'s Achievement <span className="gold">[MODERATOR]</span></span> );
 			}
 		} else {
-			if(this.props.match.params.achievementid) {
+			if(this.state.edit) {
 				pageHeader = "Edit Achievement";
 			} else {
 				pageHeader = "Create Achievement";
@@ -909,7 +1003,7 @@ class AchievementPage extends React.Component {
 			}
 
 
-			let saveButton, toggleText, achievementPreviewClasses;
+			let saveButton, toggleText, achievementPreviewClasses, warning;
 
 			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
 				saveButton = <input className='achievement-button submit-achievement submit-achievement--active' type="submit" value="Save" />
@@ -926,6 +1020,24 @@ class AchievementPage extends React.Component {
 				toggleText = "Show Extension View";
 			}
 
+			if(this.state.edit && this.state.achType === "4" && !this.state.unlocked) {
+				let enableText = "";
+
+				if(this.state.referred) {
+					enableText = " Would you like to enable this achievement for your referral bonus?";
+				}
+
+				warning = (
+					<div className="achievement-page--inactiveWarning">
+						<div className="info">
+							<span>This achievement is currently disabled, and can not be earned by your community.</span>
+							<span>{enableText}</span>
+						</div>
+						<button onClick={this.enableCustomAchievement} className="enableButton">Enable</button>
+					</div>
+				)
+			}
+
 			content = (
 				<Template spinner={{isLoading: this.state.fetch, fullscreen: true}}>
 					<div className="achievement-wrapper">
@@ -934,6 +1046,7 @@ class AchievementPage extends React.Component {
 							<span className="delete-achievement-button">{deleteButton}</span>
 							<button type="button" className="tutorial-button" onClick={this.showTutorial}><span>Tutorials</span></button>
 						</div>
+						{warning}
 						<div className={"modal-error" + ((this.state.error) ? " modal-error--active" : "")}>
 							{this.state.error}
 						</div>

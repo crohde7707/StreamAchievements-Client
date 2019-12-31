@@ -1025,13 +1025,13 @@ class DashboardPage extends React.Component {
 										{achievements.map((achievement, index) => {
 											let className = '';
 
-											if(achievement.code === '4' && !isGold) {
+											if(achievement.achType === '4' && !isGold && !achievement.unlocked) {
 												className = 'achievement--disabled';
 											}
 											return (
 												<Achievement 
 													key={'achievement-' + index}
-													unlocked={isGold}
+													unlocked={isGold || achievement.unlocked}
 													className={className}
 													editable={true}
 													achievement={achievement}

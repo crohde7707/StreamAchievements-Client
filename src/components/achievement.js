@@ -139,8 +139,7 @@ class Achievement extends React.Component {
 								</div>
 								<div className="achievement--icons">
 									{limitedContent}
-									{giftIcon}
-									{editIcon}
+									{menu}
 								</div>
 								{date}
 							</div>
