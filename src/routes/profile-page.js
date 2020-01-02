@@ -144,6 +144,29 @@ class ProfilePage extends React.Component {
 				break;
 			case 'dashboard':
 				this.props.history.push('/dashboard');
+				break;
+			case 'token':
+				this.setState({
+					loading: true
+				}, () => {
+					axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/token/generate', {}, {
+						withCredentials: true
+					}).then(res => {
+						let stateUpdate = {
+							loading: false
+						};
+
+						if(res.data.token) {
+							//successful generation, delete this notice
+							this._socket.emit('delete-notification', notification);
+							this.props.dispatch(updateNotifications({count: this.props.profile.unreadNotifications - 1}));
+						} else {
+							stateUpdate.notice = "An error occured while generating your token! Let us know on Discord! (link in the footer)";
+						}
+
+						this.setState(stateUpdate);
+					});
+				})
 			default:
 				break;
 		}
