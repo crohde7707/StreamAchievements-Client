@@ -1020,20 +1020,24 @@ class AchievementPage extends React.Component {
 				toggleText = "Show Extension View";
 			}
 
-			if(this.state.edit && this.state.achType === "4" && !this.state.unlocked) {
+			if(this.state.edit && this.state.achType === "4" && !isGold && !this.state.unlocked) {
 				let enableText = "";
+				let enableButton;
 
 				if(this.state.referred) {
 					enableText = " Would you like to enable this achievement for your referral bonus?";
+					enableButton = (<button onClick={this.enableCustomAchievement} className="enableButton">Enable</button>);
+				} else {
+					enableText = (<span>To re enable, become a <a href="/gold" className="gold-white">Gold</a> member once again!"</span>);
 				}
 
 				warning = (
 					<div className="achievement-page--inactiveWarning">
 						<div className="info">
-							<span>This achievement is currently disabled, and can not be earned by your community.</span>
+							<span>This custom achievement is currently disabled, and can not be earned by your community.</span>
 							<span>{enableText}</span>
 						</div>
-						<button onClick={this.enableCustomAchievement} className="enableButton">Enable</button>
+						{enableButton}
 					</div>
 				)
 			}

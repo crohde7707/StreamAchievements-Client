@@ -1,3 +1,8 @@
+.gold-white,
+.gold-white:visited,
+.gold-white:active {
+	color: #425583;
+}
 .achievement-page--inactiveWarning {
 	padding: 10px 15px;
     background-color: #fffc8c;
