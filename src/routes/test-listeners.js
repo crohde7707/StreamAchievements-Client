@@ -106,6 +106,12 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	rank = () => {
+		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/admin/rank?channel=phirehero', {
+			withCredentials: true
+		});
+	}
+
 	render() {
 
 		return (
@@ -147,6 +153,9 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.migrate} type="button">Migrate</button>
+					</div>
+					<div>
+						<button onClick={this.rank} type="button">Rank</button>
 					</div>
 					<div>
 						<h2>Test Achievement Types</h2>

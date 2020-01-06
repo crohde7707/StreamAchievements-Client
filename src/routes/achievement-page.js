@@ -43,7 +43,8 @@ class AchievementPage extends React.Component {
 			showImagePanel: false,
 			title: "",
 			unlocked: false,
-			referred: false
+			referred: false,
+			rank: ""
 		};
 
 		if(props.profile) {
@@ -237,7 +238,8 @@ class AchievementPage extends React.Component {
 				showImagePanel: false,
 				title: "",
 				touched: undefined,
-				unlocked: false
+				unlocked: false,
+				rank: ""
 			});
 		}
 		
@@ -536,7 +538,8 @@ class AchievementPage extends React.Component {
 					limited: this.state.limited,
 					secret: this.state.secret,
 					iconName: (this.state.file) ? this.state.file.name : '',
-					achType: this.state.achType
+					achType: this.state.achType,
+					rank: this.state.rank
 				};
 				
 				achievement.condition = this.state.condition;
@@ -578,6 +581,7 @@ class AchievementPage extends React.Component {
 
 		this.isNullorEmpty(validUpdate, 'title');
 		this.isNullorEmpty(validUpdate, 'achType');
+		this.isNullorEmpty(validUpdate, 'rank')
 
 		switch(this.state.achType) {
 			case "1":
@@ -817,6 +821,7 @@ class AchievementPage extends React.Component {
 			shortDescription: "",
 			icon: "",
 			achType: "",
+			rank: "",
 			query: "",
 			bot: "",
 			condition: "",
@@ -1110,6 +1115,24 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="helpText">If provided, the short description will be used on mobile sizes and the extensions</div>
+							<div className="formGroup">
+								<label htmlFor="achievement-rank">Rank *</label>
+								<select 
+									id="achievement-rank"
+									name="rank"
+									className={"selectInput" + ((this.isInvalid("rank")) ? " invalid" : "")}
+									title="The achievement's rank"
+									onChange={this.handleDataChange}
+									value={this.state.rank}
+								>
+									<option value=""></option>
+									<option value="0">Bronze</option>
+									<option value="1">Silver</option>
+									<option value="2">Gold</option>
+									<option value="3">Platinum</option>
+									<option value="4">Feat (Unranked)</option>
+								</select>
+							</div>
 							<h4>Configuration</h4>
 							<div className="formGroup checkboxes">
 								<div className="checkbox">
