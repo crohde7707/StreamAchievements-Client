@@ -1,3 +1,69 @@
+.general-configuration .delete-channel {
+	flex-direction: column;
+	flex: 1;
+}
+
+.delete-channel .section-label {
+	width: auto;
+}
+
+.delete-channel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 0 !important;
+}
+
+.delete-channel .section-value {
+	flex: 1;
+	margin: 0;
+	width: 50%;
+	padding: 0;
+}
+
+.delete-channel label {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.delete-channel label span {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.delete-channel input {
+	width: 100%;
+	line-height: 28px;
+	text-align: center;
+}
+
+.delete-channel .delete-channel--button {
+	margin-bottom: 40px;
+}
+
+.delete-channel .delete-channel--button,
+.general-configuration .delete-channel--button {
+	width: 200px;
+	height: 40px;
+	font-size: 17px;
+	transition: all .2s ease;
+}
+
+.delete-channel .delete-channel--button.active,
+.general-configuration .delete-channel--button {
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all .2s ease;
+	background: red;
+	border: none;
+}
+
+.general-configuration .delete-channel--button {
+	margin-bottom: 0;
+}
+
 .manage-container {
 	max-width: 800px;
 	margin: 0 auto;

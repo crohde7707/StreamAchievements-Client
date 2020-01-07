@@ -10,6 +10,7 @@
     background: rgba(0,0,0,0.5);
     height: 100%;
     padding-bottom: 15px;
+    z-index: 2050;
 }
 
 .loading-spinner.loading-spinner--active {
@@ -20,6 +21,11 @@
     display: flex;
     justify-content: center;
     margin-top: 6em;
+}
+
+.loading-spinner--full .loading-spinner--wrapper {
+    position: fixed;
+    width: 100%;
 }
 
 .lds-ellipsis {

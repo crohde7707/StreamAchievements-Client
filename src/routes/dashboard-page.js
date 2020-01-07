@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Redirect} from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import connector from '../redux/connector';
+import {updateStatus} from '../redux/profile-reducer';
 import {Link} from 'react-router-dom';
 
 import Notice from '../components/notice';
@@ -42,7 +43,8 @@ class DashboardPage extends React.Component {
 			},
 			reordering: false,
 			isMod: false,
-			showInfoPanel: false
+			showInfoPanel: false,
+			showDeletePopup: false
 		};
 
 		this.icons = {
@@ -180,9 +182,9 @@ class DashboardPage extends React.Component {
 	}
 
 	clearNotice = () => {
-		this.setState({
-			notice: ''
-		});
+		// this.setState({
+		// 	notice: ''
+		// });
 	}
 
 	filterList = (event) => {
@@ -703,8 +705,48 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	showDeletePopup = () => {
+		this.setState({
+			showDeletePopup: true
+		});
+	}
+
 	updateModerators = (moderators) => {
 		//TODO
+	}
+
+	handleDeleteText = (evt) => {
+		let field = evt.target;
+
+		if(field.name="delete") {
+			this.setState({
+				deleteVerify: (field.value === this.state.channel.owner.toUpperCase())
+			});
+		}
+	}
+
+	handleDeleteChannel = () => {
+		this.setState({
+			loading: true
+		}, () => {
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/delete', {
+				channel: this.state.channel.owner
+			}, {
+				withCredentials: true
+			}).then(res => {
+				if(res.data.delete) {
+					this.props.dispatch(updateStatus({status: "viewer"}));
+					//redirect to home page
+					this.props.history.push('/home');
+				} else {
+					//prompt error
+					this.setState({
+						loading: false,
+						notice: "An error occured while deleting your channel! Try again later, or contact us via Discord!"
+					});
+				}
+			})
+		})
 	}
 
 	render() {
@@ -933,10 +975,17 @@ class DashboardPage extends React.Component {
 				);
 			}
 
+			let deleteButtonClasses = "delete-channel--button";
+
 			generalContent = (
 				<div className="general-configuration">
 						{priGenContent}
 						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod}/>
+						<h4>Delete Channel</h4>
+						<div className="section-wrapper delete-channel">
+							{/* Make promptDelete take param to reuse for delete */}
+							<button className="delete-channel--button" onClick={this.showDeletePopup}>Delete Channel</button>
+						</div>
 						<div className="section-wrapper--end">
 							 {saveButton}
 						</div>
@@ -1211,7 +1260,7 @@ class DashboardPage extends React.Component {
 			)
 		}
 
-		let pageHeader;
+		let pageHeader, deletePopup;
 
 		if(this.state.isMod) {
 			pageHeader = (<h2><span className="capitalize">{this.state.channel.owner}</span>'s Dashboard <span className="gold">[MODERATOR]</span></h2>);
@@ -1232,6 +1281,45 @@ class DashboardPage extends React.Component {
 			infoPanel = undefined;
 		}
 
+		if(this.state.showDeletePopup) {
+			let deleteButtonClasses = "delete-channel--button";
+
+			if(this.state.deleteVerify) {
+				deleteButtonClasses += " active";
+			}
+
+			deletePopup = (
+				<InfoPanel
+					title="Confirm Delete Channel"
+					onClose={() => {this.setState({
+						showDeletePopup: false,
+						deleteVerify: false
+					})}}
+				>
+					<div className="delete-channel">
+						<div className="section-label">
+					        <label htmlFor="delete">
+					        	<span>By deleting your channel, all achievements created by you and earned for your channel will be deleted!</span>
+					        	<span>THIS IS IRREVERSABLE!</span>
+					        	<span>To delete your channel, type your channel's name in all caps in the box below</span>
+				        	</label>
+					    </div>
+					    <div className="section-value">
+					        <input 
+					        	id="delete-channel"
+					        	name="delete"
+					        	onChange={this.handleDeleteText}
+					        />
+					    </div>
+					</div>
+					<div className="delete-channel">
+						{/* Make promptDelete take param to reuse for delete */}
+						<button className={deleteButtonClasses} disabled={!this.state.deleteVerify} onClick={this.handleDeleteChannel}>Delete Channel</button>
+					</div>
+				</InfoPanel>
+			)
+		}
+
 		return (
 			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				<div className="manage-container">
@@ -1245,6 +1333,7 @@ class DashboardPage extends React.Component {
 					</Tabs>
 				</div>
             	{infoPanel}
+            	{deletePopup}
 			</Template>
 		);
 	}
