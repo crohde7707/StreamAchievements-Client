@@ -845,12 +845,10 @@ class DashboardPage extends React.Component {
 			let defaultHoverText = (this.state.defaultIconPreview) ? ((this.state.selected.defaultIcon === 'customDefault') ? 'Edit' : 'Select') : 'Upload';
 			let hiddenHoverText = (this.state.hiddenIconPreview) ? ((this.state.selected.hiddenIcon === 'customHidden') ? 'Edit' : 'Select') : 'Upload';
 
-			let saveButton;
+			let generalWrapperClasses = "general-configuration";
 
 			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
-				saveButton = <input className='save-button--active' type="submit" value="Save" onClick={this.handleSave} />
-			} else {
-				saveButton = <input className='save-button--inactive' disabled type="submit" value="Save" />
+				generalWrapperClasses += " generalTab--update"
 			}
 
 			let priGenContent;
@@ -978,7 +976,7 @@ class DashboardPage extends React.Component {
 			let deleteButtonClasses = "delete-channel--button";
 
 			generalContent = (
-				<div className="general-configuration">
+				<div className={generalWrapperClasses}>
 						{priGenContent}
 						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod}/>
 						<h4>Delete Channel</h4>
@@ -986,10 +984,12 @@ class DashboardPage extends React.Component {
 							{/* Make promptDelete take param to reuse for delete */}
 							<button className="delete-channel--button" onClick={this.showDeletePopup}>Delete Channel</button>
 						</div>
-						<div className="section-wrapper--end">
-							 {saveButton}
-						</div>
 						{imagePanel}
+						<div className="saveReorder--wrapper">
+							<button className="saveReorder--button" type="button" onClick={this.handleSave}>
+								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+							</button>
+						</div>
 				</div>
 			);
 

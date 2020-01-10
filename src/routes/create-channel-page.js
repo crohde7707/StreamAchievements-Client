@@ -13,11 +13,23 @@ class CreateChannelPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
+		let defaultState = {
 			validated: false,
 			received: false,
 			referralCode: ""
 		};
+
+		const params = new URLSearchParams(this.props.location.search);
+		const referral = params.get('referral');
+
+		if(referral) {
+			let referralCode = referral.replace(/[^\w\s]/gi, '').toUpperCase();
+
+			defaultState.referral = true;
+			defaultState.referralCode = referralCode;
+		}
+
+		this.state = defaultState;
 	}
 
 	handleUpdate = (evt) => {
@@ -69,7 +81,7 @@ class CreateChannelPage extends React.Component {
 				referral = (
 					<div className="referralContent">
 						<label htmlFor="referral">Referral Code</label>
-						<input name="referral" type="text" onChange={this.handleUpdate} />
+						<input name="referral" type="text" onChange={this.handleUpdate} value={this.state.referralCode} />
 					</div>
 				)
 			} else {

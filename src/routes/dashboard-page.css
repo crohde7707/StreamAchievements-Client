@@ -536,7 +536,8 @@
     transition: all 0.2s ease;
 }
 
-.achievementTab--reordering .saveReorder--wrapper {
+.achievementTab--reordering .saveReorder--wrapper,
+.generalTab--update .saveReorder--wrapper {
 	transition: all 0.2s ease;
 	right: 0;
 }
