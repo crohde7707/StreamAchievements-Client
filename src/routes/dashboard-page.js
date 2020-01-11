@@ -44,7 +44,8 @@ class DashboardPage extends React.Component {
 			reordering: false,
 			isMod: false,
 			showInfoPanel: false,
-			showDeletePopup: false
+			showDeletePopup: false,
+			copytext: false
 		};
 
 		this.icons = {
@@ -181,10 +182,16 @@ class DashboardPage extends React.Component {
 		}
 	}
 
+	setNotice = (notice) => {
+		this.setState({
+			notice
+		});
+	}
+
 	clearNotice = () => {
-		// this.setState({
-		// 	notice: ''
-		// });
+		this.setState({
+			notice: ''
+		});
 	}
 
 	filterList = (event) => {
@@ -646,6 +653,21 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	copyReferralLink = () => {
+		this.setState({
+			copytext: true
+		});
+		this._referral.select();
+		document.execCommand("copy");
+		document.getSelection().removeAllRanges();
+		this._copyReferral.focus();
+		setTimeout(() => {
+			this.setState({
+				copytext: false
+			});
+		}, 1000);
+	}
+
 	toggleReorder = () => {
 		if(!this.state.isMod) {
 			this.setState({
@@ -852,6 +874,13 @@ class DashboardPage extends React.Component {
 			}
 
 			let priGenContent;
+			let tooltipClasses = "tooltip";
+			let copyText = "Copy to clipboard";
+
+			if(this.state.copytext) {
+				copyText = "Copied!";
+				tooltipClasses += " copied";
+			}
 
 			if(!this.state.isMod) {
 				priGenContent = (
@@ -874,7 +903,7 @@ class DashboardPage extends React.Component {
 						        <span name="logo"><img alt="" src={logo} /></span>
 						    </div>
 						</div>
-						<div className="section-wrapper basic-info">
+						<div className="section-wrapper basic-info referral">
 							<div className="section-label">
 								<label htmlFor="referral">
 									<a href="javascript:;" onClick={() => {this.showPopup()}} className="gold">Referral Code</a>
@@ -882,6 +911,13 @@ class DashboardPage extends React.Component {
 							</div>
 							<div className="section-value">
 								<span name="referral">{referral.code}</span>
+								<div className={tooltipClasses}>
+									<a href="javascript:;" onClick={this.copyReferralLink} ref={(el) => this._copyReferral = el}>
+										<span class="tooltiptext" id="myTooltip">{copyText}</span>
+										<img alt="Copy Referral Link" src="https://res.cloudinary.com/phirehero/image/upload/v1578686410/link.png" />
+									</a>
+								</div>
+								<input style={{opacity: 0}} value={`https://streamachievements.com/channel/create?referral=${referral.code}`} ref={(el) => this._referral = el}/>
 							</div>
 						</div>
 						<h4>Channel Customization</h4>
@@ -978,7 +1014,7 @@ class DashboardPage extends React.Component {
 			generalContent = (
 				<div className={generalWrapperClasses}>
 						{priGenContent}
-						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod}/>
+						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod} setNotice={this.setNotice}/>
 						<h4>Delete Channel</h4>
 						<div className="section-wrapper delete-channel">
 							{/* Make promptDelete take param to reuse for delete */}

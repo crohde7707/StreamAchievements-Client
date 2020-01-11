@@ -1,24 +1,32 @@
-.notice {
-	position: fixed;
+.notice--wrapper {
+    position: fixed;
+    width: 100%;
     z-index: 2000;
+    bottom: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-left: -15px;
+}
+.notice {
     max-width: 800px;
     padding: 10px;
-    background: #e8f391;
+    background: #faf78b;
     color: black;
     box-shadow: 2px 2px 4px #000;
     text-align: center;
     font-size: 18px;
     font-family: sans-serif;
-    opacity: 0;
-    -webkit-transition: opacity 0.2s ease;
-    transition: opacity 0.2s ease;
     width: 60%;
     text-align: center;
-    margin: 0 5% 0 35%;
-    bottom: 60px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
-.notice--visible {
+.notice--visible,
+.notice--visible .notice {
 	opacity: 1;
 	transition: opacity 0.2s ease;
 }

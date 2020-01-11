@@ -30,6 +30,8 @@ class CreateChannelPage extends React.Component {
 		}
 
 		this.state = defaultState;
+
+		console.log(props);
 	}
 
 	handleUpdate = (evt) => {
@@ -69,9 +71,9 @@ class CreateChannelPage extends React.Component {
 
 		if(this.props.profile) {
 
-			// if(this.props.profile.status === 'verified') {
-			// 	return (<Redirect to='/dashboard/' />);
-			// }
+			if(this.props.profile.status === 'verified') {
+				return (<Redirect to='/dashboard/' />);
+			}
 
 			let user = this.props.profile.username;
 

@@ -29,7 +29,8 @@ export default class AlertConfigurationPanel extends React.Component {
 			exitEffect: overlay.exitEffect || "easeOut",
 			volume: overlay.volume || 100,
 			duration: overlay.duration || 1,
-			delay: overlay.delay || 2
+			delay: overlay.delay || 2,
+			copyurl: false
 		};
 	}
 
@@ -59,16 +60,25 @@ export default class AlertConfigurationPanel extends React.Component {
 	}
 
 	copyOverlayURL = () => {
+		this.setState({
+			copyurl: true
+		});
 		this._overlayURL.select();
 		document.execCommand("copy");
 		document.getSelection().removeAllRanges();
+		this._copyURL.focus();
+		setTimeout(() => {
+			this.setState({
+				copyurl: false
+			});
+		}, 1000);
 	}
 
 	testAlert = () => {
 		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/testOverlay', {
 			withCredentials: true
 		}).then((res) => {
-			//popup message
+			this.props.setNotice("Test Alert Sent!");
 		});
 	}
 
@@ -77,6 +87,14 @@ export default class AlertConfigurationPanel extends React.Component {
 		let audioVolume = parseFloat(this.state.volume) / 100;
 
 		let chatMessage;
+
+		let tooltipClasses = "tooltip";
+		let copyText = "Copy to clipboard";
+
+		if(this.state.copyurl) {
+			copyText = "Copied!";
+			tooltipClasses += " copied";
+		}
 
 		if(this.state.chat) {
 			chatMessage = (
@@ -120,7 +138,10 @@ export default class AlertConfigurationPanel extends React.Component {
 				       			value={`https://streamachievements.com/overlay/${this.props.oid}`}
 								onChange={this.handleDataChange}
 				       		/>
-				       		<button type="button" onClick={this.copyOverlayURL}>Copy</button>
+				       		<div className={tooltipClasses}>
+				       			<span class="tooltiptext" id="myTooltip">{copyText}</span>
+								<button type="button" onClick={this.copyOverlayURL} ref={el => {this._copyURL = el}}>Copy</button>
+			       			</div>
 				       	</div>
 				       	<div className="helpText">This URL is unique to you! Don't share it with anyone!</div>
 				       	<div className="helpText">Set resolution to match your screen, then resize how you would like!</div>

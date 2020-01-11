@@ -139,11 +139,6 @@
 }
 
 @media only screen and (max-width: 480px) {
-	.saveReorder--button img {
-		width: 40px;
-		height: 40px;
-	}
-
 	.member-item--managing .saveReorder--wrapper {
 		-webkit-transition: all 0.2s ease;
 	    transition: all 0.2s ease;

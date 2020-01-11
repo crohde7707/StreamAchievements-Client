@@ -44,10 +44,12 @@ export default class Notice extends React.Component {
 	render() {
 		return (
 			<div
-				className="notice"
+				className="notice--wrapper"
 				ref={notice => (this.notice = notice)}
 			>
-				{this.state.message}
+				<div className="notice">
+					{this.state.message}
+				</div>
 			</div>
 		)
 	}
