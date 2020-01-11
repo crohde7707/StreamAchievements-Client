@@ -27,7 +27,7 @@ export default class InfoPanel extends React.Component {
 								<TabPanel>
 									<div className="video-content">
 										<div className="video-section">
-											<iframe width="480" height="270" src="https://www.youtube.com/embed/4JULGfd9LOs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+											<iframe width="480" height="270" src="https://www.youtube.com/embed/4JULGfd9LOs" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
 										</div>
 									</div>
 								</TabPanel>

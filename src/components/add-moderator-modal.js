@@ -14,7 +14,8 @@ export default class AddModeratorModal extends React.Component {
 		this.state = {
 			members: "",
 			searching: false,
-			selectedMembers: []
+			selectedMembers: [],
+			loading: false
 		}
 
 		this._search = {};
@@ -177,13 +178,20 @@ export default class AddModeratorModal extends React.Component {
 	}
 
 	grantMod = () => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/mod', {
-			mods: this.state.selectedMembers.map(member => member.name)
-		}, {
-			withCredentials: true
-		}).then(response => {
-			this.props.onSubmit(response.data.moderators);
-		});
+		this.setState({
+			loading: true
+		}, () => {
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/mod', {
+				mods: this.state.selectedMembers.map(member => member.name)
+			}, {
+				withCredentials: true
+			}).then(response => {
+				this.setState({
+					loading: false
+				})
+				this.props.onSubmit(response.data.moderators);
+			});
+		})
 	}
 
 	render() {
@@ -215,6 +223,7 @@ export default class AddModeratorModal extends React.Component {
 						<button className="chooseMember--cancel" type="button" onClick={() => this.props.onClose()}>Cancel</button>
 					</div>
 				</div>
+				<LoadingSpinner isLoading={this.state.loading} full={true} />
 			</div>
 		)
 

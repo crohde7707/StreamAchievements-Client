@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import LoadingSpinner from './loading-spinner';
 
 import './alert-configuration-panel.css';
 
@@ -30,7 +31,8 @@ export default class AlertConfigurationPanel extends React.Component {
 			volume: overlay.volume || 100,
 			duration: overlay.duration || 1,
 			delay: overlay.delay || 2,
-			copyurl: false
+			copyurl: false,
+			loading: false
 		};
 	}
 
@@ -75,11 +77,20 @@ export default class AlertConfigurationPanel extends React.Component {
 	}
 
 	testAlert = () => {
-		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/testOverlay', {
-			withCredentials: true
-		}).then((res) => {
-			this.props.setNotice("Test Alert Sent!");
-		});
+		this.setState({
+			loading: true
+		}, () => {
+			axios.get(process.env.REACT_APP_API_DOMAIN + 'api/channel/testOverlay', {
+				withCredentials: true
+			}).then((res) => {
+				setTimeout(() => {
+					this.setState({
+						loading: false
+					});
+					this.props.setNotice("Test Alert Sent!");
+				}, 300)
+			});
+		})
 	}
 
 	render() {
@@ -139,7 +150,7 @@ export default class AlertConfigurationPanel extends React.Component {
 								onChange={this.handleDataChange}
 				       		/>
 				       		<div className={tooltipClasses}>
-				       			<span class="tooltiptext" id="myTooltip">{copyText}</span>
+				       			<span className="tooltiptext" id="myTooltip">{copyText}</span>
 								<button type="button" onClick={this.copyOverlayURL} ref={el => {this._copyURL = el}}>Copy</button>
 			       			</div>
 				       	</div>
@@ -369,6 +380,7 @@ export default class AlertConfigurationPanel extends React.Component {
 				         <button type="button" onClick={this.testAlert}>Send Test Alert</button>
 				    </div>
 				</div>
+				<LoadingSpinner isLoading={this.state.loading} full={true} />
 			</div>
 		)
 	}

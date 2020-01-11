@@ -581,7 +581,7 @@ class AchievementPage extends React.Component {
 
 		this.isNullorEmpty(validUpdate, 'title');
 		this.isNullorEmpty(validUpdate, 'achType');
-		this.isNullorEmpty(validUpdate, 'rank')
+		//this.isNullorEmpty(validUpdate, 'rank')
 
 		switch(this.state.achType) {
 			case "1":
@@ -1115,7 +1115,7 @@ class AchievementPage extends React.Component {
 								/>
 							</div>
 							<div className="helpText">If provided, the short description will be used on mobile sizes and the extensions</div>
-							<div className="formGroup">
+							{/*<div className="formGroup">
 								<label htmlFor="achievement-rank">Rank *</label>
 								<select 
 									id="achievement-rank"
@@ -1132,7 +1132,7 @@ class AchievementPage extends React.Component {
 									<option value="3">Platinum</option>
 									<option value="4">Feat (Unranked)</option>
 								</select>
-							</div>
+							</div>*/}
 							<h4>Configuration</h4>
 							<div className="formGroup checkboxes">
 								<div className="checkbox">

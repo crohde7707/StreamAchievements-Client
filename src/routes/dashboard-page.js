@@ -323,6 +323,12 @@ class DashboardPage extends React.Component {
 		}
 	}
 
+	handleActionBlur = () => {
+		this.setState({
+			showAction: false
+		})
+	}
+
 	promptDelete = (image) => {
 		this.setState({
 			showConfirm: true,
@@ -913,11 +919,16 @@ class DashboardPage extends React.Component {
 								<span name="referral">{referral.code}</span>
 								<div className={tooltipClasses}>
 									<a href="javascript:;" onClick={this.copyReferralLink} ref={(el) => this._copyReferral = el}>
-										<span class="tooltiptext" id="myTooltip">{copyText}</span>
+										<span className="tooltiptext" id="myTooltip">{copyText}</span>
 										<img alt="Copy Referral Link" src="https://res.cloudinary.com/phirehero/image/upload/v1578686410/link.png" />
 									</a>
 								</div>
-								<input style={{opacity: 0}} value={`https://streamachievements.com/channel/create?referral=${referral.code}`} ref={(el) => this._referral = el}/>
+								<input 
+									style={{opacity: 0}} 
+									value={`https://streamachievements.com/channel/create?referral=${referral.code}`} 
+									ref={(el) => this._referral = el}
+									onChange={() => {}}
+								/>
 							</div>
 						</div>
 						<h4>Channel Customization</h4>
@@ -1090,7 +1101,14 @@ class DashboardPage extends React.Component {
 								<input placeholder="Search for achievement..." type="text" onChange={this.filterList} />
 							</div>
 							<div className="achievementsHeader--actionMenu">
-								<button type="button" className="achievementsHeader--menu" onClick={this.handleAction}>{actionText}</button>
+								<button 
+									type="button" 
+									className="achievementsHeader--menu" 
+									onClick={this.handleAction}
+									onBlur={this.handleActionBlur}
+								>
+									{actionText}
+								</button>
 								<div className={actionClasses}>
 									<ul>
 										<li><Link to={achievementRoute}>Create</Link></li>

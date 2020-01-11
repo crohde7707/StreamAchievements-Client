@@ -143,8 +143,8 @@ export default class Moderators extends React.Component {
 							{moderator.name}
 						</div>
 						{/*permissions*/}
-						<div class="moderator-delete" onClick={() => {this.deleteMod(moderator)}}>
-							<img class="moderator-delete-button" src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png" />
+						<div className="moderator-delete" onClick={() => {this.deleteMod(moderator)}}>
+							<img className="moderator-delete-button" src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png" />
 						</div>
 					</div>
 				);
