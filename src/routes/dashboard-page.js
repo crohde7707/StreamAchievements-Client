@@ -17,6 +17,8 @@ import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 import MembersPanel from '../components/members-panel';
 import InfoPanel from '../components/info-panel';
+import StreamlabsPanel from '../components/streamlabs-panel';
+import TooltipWrapper from '../components/tooltip-wrapper';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
@@ -696,18 +698,9 @@ class DashboardPage extends React.Component {
 	}
 
 	copyReferralLink = () => {
-		this.setState({
-			copytext: true
-		});
 		this._referral.select();
 		document.execCommand("copy");
 		document.getSelection().removeAllRanges();
-		this._copyReferral.focus();
-		setTimeout(() => {
-			this.setState({
-				copytext: false
-			});
-		}, 1000);
 	}
 
 	toggleReorder = () => {
@@ -916,13 +909,6 @@ class DashboardPage extends React.Component {
 			}
 
 			let priGenContent;
-			let tooltipClasses = "tooltip";
-			let copyText = "Copy to clipboard";
-
-			if(this.state.copytext) {
-				copyText = "Copied!";
-				tooltipClasses += " copied";
-			}
 
 			if(!this.state.isMod) {
 				priGenContent = (
@@ -953,12 +939,13 @@ class DashboardPage extends React.Component {
 							</div>
 							<div className="section-value">
 								<span name="referral">{referral.code}</span>
-								<div className={tooltipClasses}>
-									<a href="javascript:;" onClick={this.copyReferralLink} ref={(el) => this._copyReferral = el}>
-										<span className="tooltiptext" id="myTooltip">{copyText}</span>
-										<img alt="Copy Referral Link" src="https://res.cloudinary.com/phirehero/image/upload/v1578686410/link.png" />
-									</a>
-								</div>
+								<TooltipWrapper
+									hoverText="Copy to clipboard"
+									actionText="Copied!"
+									onClick={this.copyReferralLink}
+								>
+									<img alt="Copy Referral Link" src="https://res.cloudinary.com/phirehero/image/upload/v1578686410/link.png" />
+								</TooltipWrapper>
 								<input 
 									style={{opacity: 0}} 
 									value={`https://streamachievements.com/channel/create?referral=${referral.code}`} 
@@ -1362,10 +1349,11 @@ class DashboardPage extends React.Component {
 				<React.Fragment>
 					<Tab className="manage-tab">General</Tab>
 					<Tab className="manage-tab">Events</Tab>
-					<Tab className="manage-tab">Moderators</Tab>
+					<Tab className="manage-tab">Integrations</Tab>
 					<Tab className="manage-tab">Achievements</Tab>
-					<Tab className="manage-tab">Images</Tab>
 					<Tab className="manage-tab">Members</Tab>
+					<Tab className="manage-tab">Moderators</Tab>
+					<Tab className="manage-tab">Images</Tab>
 				</React.Fragment>
 			);
 
@@ -1378,17 +1366,20 @@ class DashboardPage extends React.Component {
 						{eventContent}
 					</TabPanel>
 					<TabPanel>
-						{moderatorContent}
+						<StreamlabsPanel />
 					</TabPanel>
 					<TabPanel>
 						{achievementTab}
 					</TabPanel>
 					<TabPanel>
-						{imageContent}
-						{confirmPanel}
+						{memberContent}
 					</TabPanel>
 					<TabPanel>
-						{memberContent}
+						{moderatorContent}
+					</TabPanel>
+					<TabPanel>
+						{imageContent}
+						{confirmPanel}
 					</TabPanel>
 				</React.Fragment>
 			)

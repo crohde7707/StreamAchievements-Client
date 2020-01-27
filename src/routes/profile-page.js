@@ -9,7 +9,6 @@ import connector from '../redux/connector';
 import Notice from '../components/notice';
 import Template from '../components/template';
 import PatreonPanel from '../components/patreon-panel';
-import StreamlabsPanel from '../components/streamlabs-panel';
 import LoadingSpinner from '../components/loading-spinner';
 
 import './profile-page.css';
@@ -331,7 +330,6 @@ class ProfilePage extends React.Component {
 						</div>
 					</div>
 					<PatreonPanel />
-					<StreamlabsPanel />
 				</div>
 			);
 
