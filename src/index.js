@@ -1,6 +1,8 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import App from './app';
+//Routes
 import HomePage from './routes/home-page';
 import ProfilePage from './routes/profile-page';
 import LandingPage from './routes/landing-page';
@@ -18,7 +20,7 @@ import LegalPrivacyPage from './routes/privacy-policy-page';
 import LegalCookiePage from './routes/cookie-policy-page';
 import OverlayPanel from './routes/overlay-panel';
 import TestListeners from './routes/test-listeners';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import SubscriptionPage from './routes/subscription-page';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -46,6 +48,7 @@ let app = (
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
+	        		<Route path="/gold/subscription" component={SubscriptionPage} />
 	        		<Route path="/gold" component={GoldPage} />
 	        		<Route path="/test" component={TestListeners} />
 	        		<Route path="/overlay/:uid" component={OverlayPanel} />

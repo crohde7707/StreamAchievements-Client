@@ -1,0 +1,45 @@
+.verify-wrapper {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    align-items: center;
+    padding: 0px 20px;
+
+}
+
+.verify-wrapper p {
+	font-size: 18px;
+}
+
+.verify-wrapper h2 {
+    font-size: 36px;
+}
+
+.verify-wrapper a {
+	color: #ecdc19;
+}
+
+.verify-wrapper .congrats-icon {
+	max-width: 300px;
+}
+
+.verify-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.main .section-content .yt-wrapper {
+    max-width: 48%;
+    margin: 0 auto;
+}
+
+.getting-started {
+    width: 100%
+}
+
+@media only screen and (min-width: 768px) {
+    .getting-started {
+        width: 70%;
+    }
+}
