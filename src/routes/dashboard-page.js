@@ -45,7 +45,8 @@ class DashboardPage extends React.Component {
 			isMod: false,
 			showInfoPanel: false,
 			showDeletePopup: false,
-			copytext: false
+			copytext: false,
+			eventTabActive: false
 		};
 
 		this.icons = {
@@ -81,6 +82,7 @@ class DashboardPage extends React.Component {
 						channel: res.data.channel,
 						achievements: res.data.achievements,
 						overlay: res.data.channel.overlay,
+						events: res.data.events,
 						loading: false,
 						selected: {},
 						isMod: true
@@ -136,6 +138,7 @@ class DashboardPage extends React.Component {
 						moderators: res.data.moderators,
 						achievements: res.data.achievements,
 						images: res.data.images,
+						events: res.data.events,
 						members: res.data.members,
 						overlay: res.data.channel.overlay,
 						membersOffset: res.data.membersOffset,
@@ -179,6 +182,25 @@ class DashboardPage extends React.Component {
 					this.setState(stateUpdate);
 				}
 			});
+		}
+
+		window.addEventListener('focus', (ev) => {
+			//if current tab is 'Events', fetch latest events
+			this.checkForNewEvents();
+		});
+	}
+
+	checkForNewEvents = () => {
+		if(this.state.eventTabActive) {
+			this.setState({
+				loading: true
+			});
+
+			setTimeout(() => {
+				this.setState({
+					loading: false
+				});
+			}, 2000);
 		}
 	}
 
@@ -567,6 +589,20 @@ class DashboardPage extends React.Component {
 		this.setState(stateUpdate);
 	}
 
+	handleTabSelect = (idx, lastIdx, evt) => {
+		if(!this.state.isMod) {
+			if(idx === 1 && !this.state.eventTabActive) {
+				this.setState({
+					eventTabActive: true
+				});
+			} else if(idx !== 1 && this.state.eventTabActive) {
+				this.setState({
+					eventTabActive: false
+				});
+			}
+		}
+	}
+
 	handleSave = () => {
 		this.setState({
 			loading: true
@@ -783,7 +819,7 @@ class DashboardPage extends React.Component {
 			return (<Redirect to='/home' />);
 		}
 
-		let generalContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel, infoPanel, isGold;
+		let generalContent, eventContent, moderatorContent, achievementTab, imageContent, memberContent, imagePanel, infoPanel, isGold;
 
 		if(this.state.channel) {
 
@@ -1040,6 +1076,38 @@ class DashboardPage extends React.Component {
 				</div>
 			);
 
+			if(this.state.events.length > 0) {
+				eventContent = (
+					<div className="events-wrapper">
+						{this.state.events.map((event, idx) => {
+							let classes = "event";
+
+							if(idx % 2 === 0) {
+								classes += " stripe";
+							}
+							
+							return (
+								<div key={"event." + idx} className={classes}>
+									<div className="event-title">
+										<span className="event-member">{event.member}</span>
+										<span> earned the </span>
+										<span className="event-achievement">{event.achievement}</span>
+										<span> achievement</span>
+									</div>
+									<span className="event-date">{new Date(event.date).toLocaleDateString()}</span>
+								</div>
+							)
+						})}
+					</div>
+				);
+			} else {
+				eventContent = (
+					<div className="events-wrapper">
+						<h3>No achievements have been logged yet!</h3>
+					</div>
+				)
+			}
+
 			moderatorContent = (<ModeratorPanel channel={this.state.channel.owner} moderators={this.state.moderators} onUpdate={this.updateModerators} />);
 
 			let modal;
@@ -1244,17 +1312,25 @@ class DashboardPage extends React.Component {
 		} else {
 
 			switch(tab) {
-				case 'moderators':
+				case 'events':
 					tabIndex = 1;
+					if(!this.state.eventTabActive && this.state.loading) {
+						this.setState({
+							eventTabActive: true
+						});
+					}
 					break;
-				case 'achievements':
+				case 'moderators':
 					tabIndex = 2;
 					break;
-				case 'images':
+				case 'achievements':
 					tabIndex = 3;
 					break;
-				case 'rankings':
+				case 'images':
 					tabIndex = 4;
+					break;
+				case 'rankings':
+					tabIndex = 5;
 					break;
 				default:
 					break;
@@ -1285,6 +1361,7 @@ class DashboardPage extends React.Component {
 			tabs = (
 				<React.Fragment>
 					<Tab className="manage-tab">General</Tab>
+					<Tab className="manage-tab">Events</Tab>
 					<Tab className="manage-tab">Moderators</Tab>
 					<Tab className="manage-tab">Achievements</Tab>
 					<Tab className="manage-tab">Images</Tab>
@@ -1296,6 +1373,9 @@ class DashboardPage extends React.Component {
 				<React.Fragment>
 					<TabPanel>
 						{generalContent}
+					</TabPanel>
+					<TabPanel>
+						{eventContent}
 					</TabPanel>
 					<TabPanel>
 						{moderatorContent}
@@ -1379,7 +1459,7 @@ class DashboardPage extends React.Component {
 				<div className="manage-container">
 					{pageHeader}
 					<Notice message={this.state.notice} onClear={this.clearNotice} />
-					<Tabs defaultIndex={tabIndex}>
+					<Tabs defaultIndex={tabIndex} onSelect={this.handleTabSelect}>
 						<TabList className="manage-tabs">
 							{tabs}
 						</TabList>
