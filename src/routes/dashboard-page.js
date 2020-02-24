@@ -185,25 +185,6 @@ class DashboardPage extends React.Component {
 				}
 			});
 		}
-
-		window.addEventListener('focus', (ev) => {
-			//if current tab is 'Events', fetch latest events
-			this.checkForNewEvents();
-		});
-	}
-
-	checkForNewEvents = () => {
-		if(this.state.eventTabActive) {
-			this.setState({
-				loading: true
-			});
-
-			setTimeout(() => {
-				this.setState({
-					loading: false
-				});
-			}, 2000);
-		}
 	}
 
 	setNotice = (notice) => {
@@ -1069,7 +1050,7 @@ class DashboardPage extends React.Component {
 						{this.state.events.map((event, idx) => {
 							let classes = "event";
 
-							if(idx % 2 === 0) {
+							if(idx % 2 !== 0) {
 								classes += " stripe";
 							}
 							
