@@ -5,10 +5,6 @@ import './tutorial-panel.css';
 
 export default class InfoPanel extends React.Component {
 
-	constructor() {
-		super();
-	}
-
 	render() {
 
 		return (
@@ -27,7 +23,7 @@ export default class InfoPanel extends React.Component {
 								<TabPanel>
 									<div className="video-content">
 										<div className="video-section">
-											<iframe width="480" height="270" src="https://www.youtube.com/embed/4JULGfd9LOs" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+											<iframe title="Custom Achievements" width="480" height="270" src="https://www.youtube.com/embed/4JULGfd9LOs" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
 										</div>
 									</div>
 								</TabPanel>

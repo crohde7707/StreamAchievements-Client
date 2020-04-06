@@ -132,7 +132,7 @@ class DashboardPage extends React.Component {
 				withCredentials: true
 			}).then((res) => {
 				if(res.data.error) {
-					//redirect to home
+					this.props.history.replace('/');
 				} else {
 
 					let stateUpdate = {
@@ -284,35 +284,6 @@ class DashboardPage extends React.Component {
 		}
 	}
 
-	handleIconChange = (event) => {
-		let touched = this.state.touched || {};
-		let name = event.target.name;
-		touched[name] = true;
-
-		if(event.target.files[0]) {
-
-			let stateUpdate = {
-				file: event.target.files[0],
-				touched: touched
-			};
-
-			stateUpdate[name + 'Preview'] = URL.createObjectURL(event.target.files[0]);
-			
-			this.setState(stateUpdate);	
-		} else {
-
-			let stateUpdate = {
-				file: '',
-				touched
-			};
-
-			stateUpdate[name + 'Preview'] = '';
-
-			this.setState(stateUpdate);
-		}
-		
-	}
-
 	handleAction = () => {
 		if(this.state.reordering) {
 			this.setState({
@@ -392,9 +363,13 @@ class DashboardPage extends React.Component {
 		}
 	}
 
-	handleIconChange = (event) => {
+	handleIconChange = (event, id, max) => {
 
 		return new Promise((resolve, reject) => {
+			
+			let maxSize = max || 300;
+			let name = id || this.state.iconName;
+
 			if(event.target.files[0]) {
 				let file = event.target.files[0];
 				let preview = URL.createObjectURL(file);
@@ -405,12 +380,14 @@ class DashboardPage extends React.Component {
 		        img.onload = () => {
 		            var width = img.naturalWidth, height = img.naturalHeight;
 		            window.URL.revokeObjectURL( img.src );
-		            if( width <= 300 && height <= 300 ) {
+		            
+		            if( width <= maxSize && height <= maxSize ) {
+
 		            	let touched = this.state.touched || {};
-						touched[this.state.iconName] = true;
-						touched[this.state.iconName + 'File'] = true;
-						touched[this.state.iconName + 'Name'] = true;
-						touched[this.state.iconName + 'Preview'] = true;
+						touched[name] = true;
+						touched[name + 'File'] = true;
+						touched[name + 'Name'] = true;
+						touched[name + 'Preview'] = true;
 
 						let newPreview = URL.createObjectURL(file);
 
@@ -418,9 +395,9 @@ class DashboardPage extends React.Component {
 							touched
 						};
 
-						stateUpdate[this.state.iconName + 'File'] = file;
-						stateUpdate[this.state.iconName + 'Name'] = file.name;
-						stateUpdate[this.state.iconName + 'Preview'] = newPreview;
+						stateUpdate[name + 'File'] = file;
+						stateUpdate[name + 'Name'] = file.name;
+						stateUpdate[name + 'Preview'] = newPreview;
 
 						this.setState(stateUpdate);
 
@@ -434,15 +411,15 @@ class DashboardPage extends React.Component {
 		        };
 			} else {
 				let touched = this.state.touched || {};
-				touched[this.state.iconName] = true;
+				touched[name] = true;
 				
 				let stateUpdate = {
 					touched
 				};
 
-				stateUpdate[this.state.iconName + 'File'] = '';
-				stateUpdate[this.state.iconName + 'Name'] = '';
-				stateUpdate[this.state.iconName + 'Preview'] = '';
+				stateUpdate[name + 'File'] = '';
+				stateUpdate[name + 'Name'] = '';
+				stateUpdate[name + 'Preview'] = '';
 
 				this.setState(stateUpdate);
 
@@ -591,7 +568,7 @@ class DashboardPage extends React.Component {
 			loading: true
 		});
 
-		let defaultPromise, hiddenPromise;
+		let defaultPromise, hiddenPromise, graphicPromise;
 		let payload = {};
 
 		let {
@@ -601,6 +578,9 @@ class DashboardPage extends React.Component {
 			hiddenIcon,
 			hiddenIconFile,
 			hiddenIconSelected,
+			graphic,
+			graphicFile,
+			graphicSelected,
 			...other
 		} = this.state.touched;
 		
@@ -647,10 +627,27 @@ class DashboardPage extends React.Component {
 			hiddenPromise = Promise.resolve();
 		}
 
-		Promise.all([defaultPromise, hiddenPromise]).then(results => {
+		if(graphic) {
+			if(graphicFile) {
+				graphicPromise = new Promise((resolve, reject) => {
+					var graphicReader = new FileReader();
+					graphicReader.addEventListener("load", () => {
+						payload.overlay = payload.overlay || {};
+						payload.overlay.graphic = graphicReader.result;
+						payload.overlay.graphicName = this.state.graphicFile.name;
+						resolve();
+					});
+					graphicReader.readAsDataURL(this.state.graphicFile);
+				});
+			}
+		} else {
+			graphicPromise = Promise.resolve();
+		}
+
+		Promise.all([defaultPromise, hiddenPromise, graphicPromise]).then(results => {
 			if(other) {
 				let otherKeys = Object.keys(other);
-				payload.overlay = {};
+				payload.overlay = payload.overlay || {};
 				otherKeys.forEach(key => {
 					payload.overlay[key] = this.state[key];
 				});
@@ -1026,10 +1023,27 @@ class DashboardPage extends React.Component {
 
 			let deleteButtonClasses = "delete-channel--button";
 
+			let graphic;
+
+			if(this.state.graphic) {
+				graphic = this.state.graphic
+			} else if(this.state.graphicPreview) {
+				graphic = this.state.graphicPreview
+			}
+
 			generalContent = (
 				<div className={generalWrapperClasses}>
 						{priGenContent}
-						<AlertConfig oid={this.state.channel.oid} overlay={this.state.overlay} onChange={this.handleOverlayChange} isMod={this.state.isMod} setNotice={this.setNotice}/>
+						<AlertConfig 
+							oid={this.state.channel.oid}
+							overlay={this.state.overlay}
+							onChange={this.handleOverlayChange}
+							onGraphicChange={this.handleIconChange}
+							isMod={this.state.isMod}
+							setNotice={this.setNotice}
+							isGold={isGold}
+							graphic={graphic}
+						/>
 						<h4>Delete Channel</h4>
 						<div className="section-wrapper delete-channel">
 							{/* Make promptDelete take param to reuse for delete */}

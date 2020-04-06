@@ -35,7 +35,25 @@
 }
 
 .getting-started {
-    width: 100%
+    width: 100%;
+    display: flex;
+}
+
+.getting-started--choice {
+    border-radius: 5px;
+    border: 1px solid #111;
+    margin: 10px;
+    flex: 1;
+    padding: 15px;
+    box-shadow: 3px 3px 2px #111;
+    background: #425583;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.getting-started--choice:hover {
+    background: #394562;
+    transition: all 0.3s ease;
 }
 
 @media only screen and (min-width: 768px) {

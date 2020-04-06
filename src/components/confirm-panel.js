@@ -4,17 +4,11 @@ import './confirm-panel.css';
 
 export default class ConfirmPanel extends React.Component {
 
-	constructor() {
-		super();
-	}
-
 	componentDidMount() {
 		document.body.classList.add('scroll-lock');
-		//this.positionModal();
 	}
 
 	positionModal = () => {
-		let winWidth = window.innerWidth;
 		let winHeight = window.innerHeight;
 
 		let scrollTop = document.documentElement.scrollTop;

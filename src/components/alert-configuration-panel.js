@@ -4,6 +4,8 @@ import LoadingSpinner from './loading-spinner';
 
 import './alert-configuration-panel.css';
 
+const ICON_SELECTED = 'icon--selected';
+
 export default class AlertConfigurationPanel extends React.Component {
 
 	constructor(props) {
@@ -22,6 +24,12 @@ export default class AlertConfigurationPanel extends React.Component {
 			}
 		}
 
+		this.icons = {
+			layout1: "https://res.cloudinary.com/phirehero/image/upload/v1586198072/layout-1.png",
+			layout2: "https://res.cloudinary.com/phirehero/image/upload/v1586198072/layout-2.png",
+			layout3: "https://res.cloudinary.com/phirehero/image/upload/v1586198072/layout-3.png"
+		}
+
 		this.state = {
 			chat: overlay.chat || true,
 			chatMessage: overlay.chatMessage || "",
@@ -31,9 +39,31 @@ export default class AlertConfigurationPanel extends React.Component {
 			volume: overlay.volume || 100,
 			duration: overlay.duration || 1,
 			delay: overlay.delay || 2,
+			custom: overlay.custom || false,
+			graphic: overlay.graphic || undefined,
+			layout: overlay.layout || 1,
+			textColor: overlay.textColor || "rgb(0,0,0)",
+			titleFontSize: overlay.titleFontSize || 64,
+			showDescription: overlay.showDescription || true,
+			descFontSize: overlay.descFontSize || 40,
 			copyurl: false,
 			loading: false
 		};
+	}
+
+	handleLayoutChange = (name, value) => {
+		let stateUpdate = {
+			[name]: value
+		};
+
+		this.setState(stateUpdate);
+
+		this.props.onChange({
+			target: {
+				name,
+				value
+			}
+		});
 	}
 
 	handleDataChange = (evt) => {
@@ -93,11 +123,27 @@ export default class AlertConfigurationPanel extends React.Component {
 		})
 	}
 
+	onChange = (event) => {
+		this.props.onChange(event).then(res => {
+			if(res.error) {
+				console.log(res.error);
+			}
+		});
+	}
+
+	toggleHover = (showHover, node) => {
+		if(showHover) {
+			node.classList.add('hoverText--active');
+		} else {
+			node.classList.remove('hoverText--active');
+		}
+	}
+
 	render() {
 		let audioSrc = `/sounds/achievement.${this.state.sfx}.mp3`;
 		let audioVolume = parseFloat(this.state.volume) / 100;
 
-		let chatMessage;
+		let chatMessage, customSection;
 
 		let tooltipClasses = "tooltip";
 		let copyText = "Copy to clipboard";
@@ -167,15 +213,20 @@ export default class AlertConfigurationPanel extends React.Component {
 					        <label htmlFor="chat">Alert in Chat?</label>
 					    </div>
 					    <div className="section-value">
-					       <input
-								id="alert-chat"
-								name="chat"
-								className="textInput"
-								type="checkbox"
-								checked={this.state.chat}
-								value="chat"
-								onChange={this.handleDataChange}
-							/>
+					       <div className="checkbox">
+							<label className="switch" htmlFor="alert-chat" title="Toggle if the achievement will alert in chat">
+							  	<input 
+							  		id="alert-chat"
+									name="chat"
+									type="checkbox"
+									className="textInput"
+									checked={this.state.chat}
+									value="chat"
+									onChange={this.handleDataChange}
+								/>
+							  	<span className="slider round"></span>
+							</label>
+						</div>
 					    </div>
 					</div>
 					{chatMessage}
@@ -183,9 +234,212 @@ export default class AlertConfigurationPanel extends React.Component {
 			);
 		}
 
+		if(this.props.isGold) {
+			let previewImage, customContent, descriptionSection;
+
+			let defaultHoverText;
+
+			if(this.state.graphic) {
+				previewImage = this.state.graphic
+				defaultHoverText = "Edit"
+			} else {
+				previewImage = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png' //update with empty image
+				defaultHoverText = "Upload"
+			}
+
+			if(this.state.showDescription) {
+				descriptionSection = (
+					<div className="section-wrapper">
+						<div className="section-label">
+							<label htmlFor="layout">Member Font Size</label>
+						</div>
+						<div className="section-value">
+							<input 
+								id="alert-descFontSize"
+								name="descFontSize"
+								className="sliderInput"
+								title="Description Font Size"
+								onChange={this.handleDataChange}
+								type="range"
+								min={12}
+								max={72}
+								step={2}
+								value={this.state.descFontSize}
+							/>
+							<span>{this.state.descFontSize}px</span>
+						</div>
+					</div>
+				)
+			}
+
+			customContent = (
+				<React.Fragment>
+					<div className="section-wrapper">
+						<div className="section-label">
+							<label htmlFor="graphic">Alert Graphic</label>
+							<p><i>Max Size: 1000px x 1000px</i></p>
+						</div>
+						<div className="section-value alert-graphic">
+							<input
+						        type="file"
+						        id="graphic"
+						        accept="image/png"
+						        ref={fileInputEl =>
+						            (this.fileInputEl = fileInputEl)
+						        }
+						        onChange={(evt) => this.props.onGraphicChange(evt, "graphic", 5000)}
+						    />
+							<div className="formGroup icon-upload">
+								<div
+									className="defaultIcon"
+									onClick={(evt) => this.fileInputEl.click()}
+									onMouseEnter={() => {this.toggleHover(true, this.defaultHover)}}
+									onMouseLeave={() => {this.toggleHover(false, this.defaultHover)}}
+								>
+			                    	<img src={previewImage} />
+			                    	<div 
+			                    		className="hoverText" 
+			                    		ref={hover => (this.defaultHover = hover)}
+		                    		>
+		                    			{defaultHoverText}
+	                    			</div>
+		                    	</div>
+		                    </div>
+						</div>
+					</div>
+					<div className="section-wrapper">
+						<div className="section-label">
+							<label htmlFor="layout">Alert Layout</label>
+						</div>
+						<div className="section-value">
+							<img 
+		                    	alt="" 
+		                    	name="layout-1"
+		                    	className={"icon--stock" + ((this.state.layout === 1) ? ' ' + ICON_SELECTED : '')}
+		                    	src={this.icons.layout1}
+		                    	onClick={(evt) => {
+		                    		this.handleLayoutChange("layout", 1)}}
+		                    	ref={el => (this.layout1 = el)}
+	                    	/>
+	                    	<img 
+		                    	alt="" 
+		                    	name="layout-2"
+		                    	className={"icon--stock" + ((this.state.layout === 2) ? ' ' + ICON_SELECTED : '')}
+		                    	onClick={(evt) => {
+		                    		this.handleLayoutChange("layout", 2)}}
+		                    	src={this.icons.layout2}
+		                    	ref={el => (this.layout2 = el)}
+	                    	/>
+	                    	<img 
+		                    	alt="" 
+		                    	name="layout-3"
+		                    	className={"icon--stock" + ((this.state.layout === 3) ? ' ' + ICON_SELECTED : '')}
+		                    	onClick={(evt) => {
+		                    		this.handleLayoutChange("layout", 3)}}
+		                    	src={this.icons.layout3}
+		                    	ref={el => (this.layout3 = el)}
+	                    	/>
+						</div>
+					</div>
+					<div className="section-wrapper">
+						<div className="section-label">
+							<label htmlFor="layout">Text Color</label>
+						</div>
+						<div className="section-value">
+							<input
+								id="alert-textColor"
+								name="textColor"
+								className="textInput"
+								type="color"
+								value={this.state.textColor}
+								onChange={this.handleDataChange}
+							/>
+						</div>
+					</div>
+					<div className="section-wrapper">
+						<div className="section-label">
+							<label htmlFor="layout">Title Font Size</label>
+						</div>
+						<div className="section-value">
+							<input 
+								id="alert-titleFontSize"
+								name="titleFontSize"
+								className="sliderInput"
+								title="Title Font Size"
+								onChange={this.handleDataChange}
+								type="range"
+								min={12}
+								max={90}
+								step={2}
+								value={this.state.titleFontSize}
+							/>
+							<span>{this.state.titleFontSize}px</span>
+						</div>
+					</div>
+					<div className="section-wrapper section--inline">
+					    <div className="section-label">
+					        <label htmlFor="custom">Display Member?</label>
+					    </div>
+					    <div className="section-value">
+					    	<div className="checkbox">
+								<label className="switch" htmlFor="alert-showDescription" title="Toggle if the achievement shows the member">
+								  	<input 
+								  		id="alert-showDescription"
+										name="showDescription"
+										type="checkbox"
+										className="textInput"
+										checked={this.state.showDescription}
+										value="showDescription"
+										onChange={this.handleDataChange}
+									/>
+								  	<span className="slider round"></span>
+								</label>
+							</div>
+					    </div>
+					</div>
+					{(this.state.showDescription) ? descriptionSection : undefined}
+				</React.Fragment>
+			)
+			
+			customSection = (
+				<React.Fragment>
+					<div className="section-group--header">
+						<h5>Custom Configuration</h5>
+					</div>
+					<div className="section-group">
+						<div className="section-wrapper section--inline">
+						    <div className="section-label">
+						        <label htmlFor="custom">Customize Overlay?</label>
+						    </div>
+						    <div className="section-value">
+						    	<div className="checkbox">
+									<label className="switch" htmlFor="alert-custom" title="Toggle if the achievement can be earned">
+									  	<input 
+									  		id="alert-custom"
+											name="custom"
+											type="checkbox"
+											className="textInput"
+											checked={this.state.custom}
+											value="chat"
+											onChange={this.handleDataChange}
+										/>
+									  	<span className="slider round"></span>
+									</label>
+								</div>
+						    </div>
+						</div>
+						{(this.state.custom) ? customContent : undefined}
+					</div>
+				</React.Fragment>
+			)
+		}
+
 		return (
 			<div className="alert-overlay">
 				<h4>Alert Configuration</h4>
+				<div className="section-group--header">
+					<h5>General Configuration</h5>
+				</div>
 				{overlayURLContent}
 				{chatToggleContent}
 				<div className="section-group">
@@ -281,6 +535,10 @@ export default class AlertConfigurationPanel extends React.Component {
 							</select>
 					    </div>
 					</div>
+				</div>
+				{customSection}
+				<div className="section-group--header">
+					<h5>Sound Configuration</h5>
 				</div>
 				<div className="section-wrapper">
 				    <div className="section-label">

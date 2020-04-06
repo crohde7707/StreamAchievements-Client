@@ -21,6 +21,7 @@ let initialState = {
 export default function ProfileReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_PROFILE: 
+			console.log('set profile')
 			return {
 				...state,
 				profile: {
@@ -49,6 +50,7 @@ export default function ProfileReducer(state = initialState, action) {
 					logo: action.data.logo
 				}
 			}
+			break;
 		case SYNC_PATREON:
 			return {
 				...state,
@@ -60,6 +62,7 @@ export default function ProfileReducer(state = initialState, action) {
 				...state,
 				streamlabs: action.data
 			}
+			break;
 		case UNLINK_SERVICE:
 			let newState = {...state};
 			newState[action.data] = false;
@@ -69,6 +72,7 @@ export default function ProfileReducer(state = initialState, action) {
 			}
 			break;
 		case UPDATE_STATUS:
+			console.log(action.data);
 			return {
 				...state,
 				profile: {

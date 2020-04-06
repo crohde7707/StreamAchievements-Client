@@ -3,8 +3,6 @@ import axios from 'axios';
 import axiosInstance from '../utils/axios-instance';
 import throttle from 'lodash/throttle';
 import connector from '../redux/connector';
-import {setProfile} from '../redux/profile-reducer';
-import {Link} from 'react-router-dom';
 
 import Template from '../components/template';
 import Achievement from '../components/achievement';
@@ -228,13 +226,13 @@ class ChannelPage extends React.Component {
 				if(this.state.favorite) {
 					favorite = (
 						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "remove")}>
-							<img src={require('../img/star-favorited.png')} />
+							<img alt="Favorite Channel" src={require('../img/star-favorited.png')} />
 						</div>
 					);	
 				} else {
 					favorite = (
 						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "add")}>
-							<img src={require('../img/star-not-favorited.png')} />
+							<img alt="Non-favorite Channel" src={require('../img/star-not-favorited.png')} />
 						</div>
 					);
 				}
@@ -259,7 +257,7 @@ class ChannelPage extends React.Component {
 			} else if(this.state.joined && this.state.joining) {
 				membershipContent = (
 					<div className="join-channel joining joined" ref={(el) => this._joinButton = el}>
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" />
+						<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" />
 					</div>
 				);
 			}
@@ -407,7 +405,7 @@ class ChannelPage extends React.Component {
 				</Template>
 			);
 		} else {
-			content = (<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>Loading channel information...</Template>);
+			content = (<Template spinner={{isLoading: this.state.loading, fullscreen: true}}></Template>);
 		}
 
 		return content;

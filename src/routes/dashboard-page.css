@@ -111,6 +111,15 @@
     justify-content: flex-start;
 }
 
+.section-group--header {
+	background: rgba(13,13,13,0.5);
+    padding: 1.67em;
+}
+
+.section-group--header h5 {
+	margin: 0;
+}
+
 .section-label {
     padding: 5px 10px;
     text-align: right;

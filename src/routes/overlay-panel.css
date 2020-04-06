@@ -28,6 +28,17 @@
 	background: transparent;
 }
 
+.overlay-container .overlay--content {
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.overlay--content .background {
+	position: absolute;
+}
+
 .overlay-container.image-top .achievement {
 	margin: 0 auto;
 	display: flex;

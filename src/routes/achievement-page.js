@@ -3,13 +3,11 @@ import axios from 'axios';
 
 import Template from '../components/template';
 import Achievement from '../components/achievement';
-import Notice from '../components/notice';
 import ConfirmPanel from '../components/confirm-panel';
 import ImagePanel from '../components/image-panel';
 import InfoPanel from '../components/info-panel';
 import TutorialPanel from '../components/tutorial-panel';
 import connector from '../redux/connector';
-import LoadingSpinner from '../components/loading-spinner';
 import {Link} from 'react-router-dom';
 
 import './achievement-page.css';
@@ -68,7 +66,7 @@ class AchievementPage extends React.Component {
 							</ul>
 						</p>
 						<h4>Example</h4>
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563304527/custom_message_example.png" />
+						<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1563304527/custom_message_example.png" />
 						<p>With this message above, an achievement will occur for this message in chat:</p>
 						<span>phirehero has 3485 Tacos in their taco wallet!</span>
 					</div>
@@ -104,7 +102,7 @@ class AchievementPage extends React.Component {
 							<li><span>{"{followage}"}</span>: The part of the message that details how long someone has been following</li>
 						</ul>
 						<h4>Example</h4>
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1577803231/followage.png" />
+						<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1577803231/followage.png" />
 						<p>With this above, an achievement will occur for these messages, and so on, in chat:</p>
 						<p><strong>phiretest, you followed phirehero 1 day ago. Remember that?</strong></p>
 						<span><strong>phiretest, you followed phirehero 2 years, 3 months ago. Remember that?</strong></span>
@@ -118,6 +116,26 @@ class AchievementPage extends React.Component {
 		if(this.props.match.url.indexOf('/mod/') === 0 && this.props.match.params.channelid) {
 			this.setState({
 				isMod: true
+			});
+		}
+
+		if(this.props.location.search.length > 0) {
+			let params = this.props.location.search.substr(1);
+			params = params.split('&');
+
+			params.findIndex((param) => {
+				let keyValue = param.split('=');
+
+				if(keyValue[0] === 'tutorial' && keyValue[1] === 'true') {
+					this.setState({
+						tutorial: true,
+						step: 0
+					});
+
+					return true;
+				}
+
+				return false;
 			});
 		}
 	}
@@ -419,7 +437,7 @@ class AchievementPage extends React.Component {
 					break;
 				case "4":
 					//Custom
-					if(this.state.customAllowed || this.state.edit && this.state.originalAchievement.achType === "4") {
+					if(this.state.customAllowed || (this.state.edit && this.state.originalAchievement.achType === "4")) {
 
 						conditionContent = (
 							<div>
@@ -502,6 +520,8 @@ class AchievementPage extends React.Component {
 							</div>
 						</div>
 					);
+					break;
+				default:
 					break;
 			}
 
@@ -631,7 +651,6 @@ class AchievementPage extends React.Component {
 		if(!this.isNullorEmpty(fieldSet, field)) {
 			return;
 		} else {
-			console.log(this.state[field]);
 			let userFound = this.state[field].indexOf('{user}') >= 0;
 
 			if(!userFound) {
@@ -871,6 +890,25 @@ class AchievementPage extends React.Component {
 				unlocked: res.data.unlocked
 			});
 		});
+	}
+
+	getInteractiveTutorial = (step) => {
+		let content;
+
+		switch(step) {
+			case 0:
+				content = (
+					<InfoPanel buttonText="Get Started" onClose={() => this.setState({step: 1})}>
+						<h3>My First Achievement</h3>
+						<p>Let's get started with creating your first achievement!</p>
+					</InfoPanel>
+				)
+				break;
+			default:
+				break;
+		}
+
+		return content;
 	}
 
 	render() {
@@ -1225,6 +1263,7 @@ class AchievementPage extends React.Component {
 		                    {imagePanel}
 		                    {infoPanel}
 		                    {tutorialPanel}
+		                    {this.getInteractiveTutorial(this.state.step)}
 						</form>
 					</div>
 				</Template>		

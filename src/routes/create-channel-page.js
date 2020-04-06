@@ -16,7 +16,8 @@ class CreateChannelPage extends React.Component {
 		let defaultState = {
 			validated: false,
 			received: false,
-			referralCode: ""
+			referralCode: "",
+			loading: false
 		};
 
 		const params = new URLSearchParams(this.props.location.search);
@@ -49,20 +50,28 @@ class CreateChannelPage extends React.Component {
 	}
 
 	onSubmit = (event) => {
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {
-			referral: this.state.referralCode
-		}, {
-			withCredentials: true
-		}).then(res => {
-			if(res.data.error) {
+		event.preventDefault();
+		if(!this.state.loading) {
+			this.setState({
+				loading: true
+			}, () => {
+				axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/signup', {
+					referral: this.state.referralCode
+				}, {
+					withCredentials: true
+				}).then(res => {
+					if(res.data.error) {
 
-			} else {
-				this.props.dispatch(updateStatus({status: 'review'}));
-				this.setState({
-					received: true
-				});	
-			}
-		});
+					} else {
+						this.props.dispatch(updateStatus({status: 'review'}));
+						this.setState({
+							received: true,
+							loading: false
+						});	
+					}
+				});
+			})
+		}
 	}
 
 	render() {
@@ -103,7 +112,7 @@ class CreateChannelPage extends React.Component {
 				);
 			} else {
 				form = (
-					<form className="confirmForm" onSubmit={this.onSubmit}>
+					<form type="form" className="confirmForm" onSubmit={this.onSubmit}>
 						<input type="text" name="confirm" onChange={this.handleUpdate} />
 						{referral}
 						<button type="button" onClick={this.onSubmit} disabled={(!this.state.validated) ? 'disabled' : ''}>Send</button>
@@ -123,7 +132,7 @@ class CreateChannelPage extends React.Component {
 		}
 		
 		return (
-			<Template>
+			<Template spinner={{isLoading: this.state.loading, fullscreen: true}}>
 				{content}
 			</Template>
 		);

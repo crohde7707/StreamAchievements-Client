@@ -4,7 +4,6 @@ import io from "socket.io-client";
 
 import './modal.css';
 import './gift-achievement.css';
-import LoadingSpinner from '../components/loading-spinner';
 
 export default class GiftAchievementModal extends React.Component {
 
@@ -141,13 +140,13 @@ export default class GiftAchievementModal extends React.Component {
 							if(selected) {
 								memberLogo = (
 									<div className="clear-member">
-										<img src="https://res.cloudinary.com/phirehero/image/upload/v1566235862/x.png" />
+										<img alt="Clear Member Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1566235862/x.png" />
 									</div>
 								);
 							} else {
 								memberLogo = (
 									<div className="member-logo">
-										<img src={member.logo} />
+										<img alt="Member Logo" src={member.logo} />
 									</div>
 								);
 							}

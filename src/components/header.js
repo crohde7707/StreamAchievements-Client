@@ -1,7 +1,6 @@
 import React from 'react';
 import connector from '../redux/connector';
 import {setProfile, updateNotifications} from '../redux/profile-reducer';
-import axios from 'axios';
 import axiosInstance from '../utils/axios-instance';
 import {Link} from 'react-router-dom';
 import io from "socket.io-client";
@@ -126,7 +125,7 @@ class Header extends React.Component {
 						{channelLink}
 						{adminLink}
 						{moderatorLink}
-						<li><Link className="gold" to='/gold'><span><img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" /></span>{goldLinkText}</Link></li>
+						<li><Link className="gold" to='/gold'><span><img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" /></span>{goldLinkText}</Link></li>
 						<li className="logout"><a href={process.env.REACT_APP_API_DOMAIN + "auth/logout"}>Log Out</a></li>
 					</ul>
 				</div>

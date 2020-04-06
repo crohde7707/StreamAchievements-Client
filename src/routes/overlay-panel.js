@@ -117,7 +117,23 @@ class OverlayPanel extends React.Component {
 
 	render() {
 
-		let alertContent, audioVolume;
+		let alertContent, audioVolume, backgroundImage, styleSettings;
+
+		if(this.state.settings.custom) {
+			if(this.state.settings.graphic) {
+				backgroundImage = (<img className="background" alt="" src={this.state.settings.graphic} />);
+			}
+
+			let {layout, textColor, titleFontSize, showDescription, descFontSize} = this.state.settings;
+
+			styleSettings = {
+				layout,
+				textColor,
+				titleFontSize,
+				showDescription,
+				descFontSize
+			};
+		}
 
 		if(this.state.alert) {
 			alertContent = (
@@ -131,7 +147,18 @@ class OverlayPanel extends React.Component {
 							className="alert-overlay"
 							animateOnMount={true}
 						>
-							<Achievement achievement={this.state.alert} defaultIcons={this.state.icons} unlocked={this.state.alert.unlocked} earned={true} noDrag={true}/>
+							<div className="overlay--content" style={styleSettings}>
+								{backgroundImage}
+								<Achievement 
+									achievement={this.state.alert}
+									defaultIcons={this.state.icons}
+									unlocked={this.state.alert.unlocked}
+									earned={true}
+									noDrag={true}
+									noBackground={this.state.settings.custom && this.state.settings.graphic}
+									styles={styleSettings}
+								/>
+							</div>
 						</Animated>
 				</div>
 			)

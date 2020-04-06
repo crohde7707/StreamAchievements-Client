@@ -54,7 +54,6 @@ class ChannelList extends React.Component {
 	}
 
 	checkToLoad = () => {
-		let height = document.documentElement.scrollHeight;
 		let top = document.documentElement.scrollTop;
 		let bodyTop = document.body.scrollTop;
 

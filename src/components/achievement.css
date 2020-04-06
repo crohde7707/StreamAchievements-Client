@@ -37,11 +37,43 @@
     opacity: 1;
 }
 
+.achievement.achievement--noBackground {
+    background: none;
+    box-shadow: none;
+}
+
 .achievement-logo {
     position: absolute;
     left: -1px;
     top: -10px;
     opacity: 0.5;
+}
+
+.overlay-container .achievement.custom-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay-container .achievement.custom-layout--2 {
+    flex-direction: column-reverse;
+}
+
+.overlay-container .achievement.custom-layout--3 {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.overlay-container .custom-layout .achievement-logo {
+    position: static !important;
+}
+
+.overlay-container .achievement.custom-layout--3 .achievement-logo {
+    margin: 0;
+}
+
+.overlay-container .achievement.custom-layout--3 .achievement-info {
+    flex: unset;
+    text-align: center;
 }
 
 .achievement-logo img {

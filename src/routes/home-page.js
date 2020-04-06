@@ -2,7 +2,6 @@ import React from 'react';
 
 import Template from '../components/template';
 import ChannelList from '../components/channel-list';
-import SetupModal from '../components/setup-modal';
 
 import './home-page.css';
 

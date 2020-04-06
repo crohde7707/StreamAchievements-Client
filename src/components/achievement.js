@@ -4,7 +4,6 @@ import {Draggable} from 'react-beautiful-dnd';
 import './achievement.css';
 
 const LIMITED = "https://res.cloudinary.com/phirehero/image/upload/v1562639754/limited.png";
-const LIMITED_EARNED = "https://res.cloudinary.com/phirehero/image/upload/v1562639754/limited-earned.png";
 
 class Achievement extends React.Component {
 
@@ -23,8 +22,8 @@ class Achievement extends React.Component {
 	}
 
 	render() {
-		let keyProp, editIcon, giftIcon, title, description, shortDescription, date, menu;
-		let {earned, className, defaultIcons, unlocked} = this.props;
+		let title, description, shortDescription, date, menu;
+		let {earned, className, defaultIcons, unlocked, noBackground, styles} = this.props;
 		let {secret, limited, earnedDate} = this.props.achievement;
 
 		title = this.props.achievement.title;
@@ -42,7 +41,6 @@ class Achievement extends React.Component {
 
 		if(earned || this.props.editable) {
 			achievementClass += " achievement--earned";
-
 		} else if(secret) {
 			title = "????";
 			description = "????????????";
@@ -50,10 +48,14 @@ class Achievement extends React.Component {
 			icon = defaultIcons.hidden || ''
 		}
 
+		if(noBackground) {
+			achievementClass += " achievement--noBackground";
+		}
+
 		if(limited && (!earned && !this.props.editable)) {
 			limitedContent = (
 				<div className="achievement--limited">
-					<img src={LIMITED} />
+					<img alt="Limited Time Achievement" src={LIMITED} />
 				</div>
 			)
 		}
@@ -63,27 +65,16 @@ class Achievement extends React.Component {
 			menu = (
 				<div className={("achievement-menu") + ((this.state.menuVisible) ? " visible" : "")}>
 					<button className="achievement-menu--button" onClick={this.toggleMenu}>
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1565714661/856781-200.png" />
+						<img alt="Achievement Menu Toggle" src="https://res.cloudinary.com/phirehero/image/upload/v1565714661/856781-200.png" />
 					</button>
 					<div className="achievement-menu--drawer">
 						<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
-							<img src={require('../img/gift.png')} />
+							<img alt="Gift Achievement Icon" src={require('../img/gift.png')} />
 						</div>
 						<div className="achievement--edit" onClick={() => {this.props.onClick(this.props.achievement)}}>
-							<img src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
+							<img alt="Edit Achievement Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
 						</div>
 					</div>
-				</div>
-			)
-
-			giftIcon = (
-				<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
-					<img src={require('../img/gift.png')} />
-				</div>
-			);
-			editIcon = (
-				<div className="achievement--edit" onClick={() => {this.props.onClick(this.props.achievement)}}>
-					<img src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
 				</div>
 			);
 		}
@@ -95,7 +86,7 @@ class Achievement extends React.Component {
 		let logo;
 		if(icon) {
 			logo = (
-				<div className="achievement-logo"><img src={icon} /></div>
+				<div className="achievement-logo"><img alt="Achievement Logo" src={icon} /></div>
 			);
 		}
 
@@ -106,21 +97,52 @@ class Achievement extends React.Component {
 		let content;
 
 		if(!this.props.draggable) {
-			content = (
-				<div className={achievementClass}>
-					{logo}
-					<div className="achievement-info">
-						<div className="achievement-title">{title}</div>
-						<div className="achievement-description">{description}</div>
-						<div className="achievement-shortDescription">{shortDescription}</div>
+			if(styles) {
+				let layoutClass = ' custom-layout custom-layout--' + styles.layout;
+
+				content = (
+					<div className={achievementClass + "" + layoutClass} style={{color: styles.textColor}}>
+						<div className="achievement-logo">
+							<img alt="Achievement Logo" src={icon} />
+						</div>
+						<div className="achievement-info">
+							<div className="achievement-title" style={{
+								fontSize: styles.titleFontSize,
+								textShadow: "0px 0px 24px black",
+								WebkitTextStroke: "3px #111",
+								fontWeight: "bold"
+							}}>
+								{title}
+							</div>
+							<div className="achievement-description" style={{
+								fontSize: styles.descFontSize,
+								textShadow: "0px 0px 24px black",
+								WebkitTextStroke: "2px #111",
+								fontWeight: "bold"
+							}}>
+								{(styles.showDescription) ? description : undefined}
+							</div>
+						</div>
 					</div>
-					<div className="achievement--icons">
-						{limitedContent}
-						{menu}
+				)
+				
+			} else {
+				content = (
+					<div className={achievementClass}>
+						{logo}
+						<div className="achievement-info">
+							<div className="achievement-title">{title}</div>
+							<div className="achievement-description">{description}</div>
+							<div className="achievement-shortDescription">{shortDescription}</div>
+						</div>
+						<div className="achievement--icons">
+							{limitedContent}
+							{menu}
+						</div>
+						{date}
 					</div>
-					{date}
-				</div>
-			)
+				)
+			}
 		} else {
 			content = (
 				<Draggable draggableId={this.props.achievement.uid} index={this.props.index} isDragDisabled={!this.props.draggable}>

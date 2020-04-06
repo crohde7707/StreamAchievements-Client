@@ -4,10 +4,6 @@ import './loading-spinner.css';
 
 export default class LoadingSpinner extends React.Component {
 
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		let classes = 'loading-spinner';
 

@@ -17,8 +17,8 @@ class VerifyPage extends React.Component {
 
 		this.state = {
 			expired: false,
-			verified: false,
-			fetch: true
+			verified: true,
+			fetch: false
 		}
 	}
 
@@ -36,7 +36,10 @@ class VerifyPage extends React.Component {
 						fetch: false
 					});
 				} else if(res.data.verified) {
-					this.props.dispatch(updateStatus({status: "verified"}));
+					if(this.props.profile) {
+						this.props.dispatch(updateStatus({status: "verified"}));
+					}
+					
 					this.setState({
 						verified: true,
 						expired: false,
@@ -50,6 +53,14 @@ class VerifyPage extends React.Component {
 			})
 		} else {
 			this.props.history.push('/home');
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(!prevProps.profile && this.props.profile) {
+			if(this.state.verified) {
+				this.props.dispatch(updateStatus({status: "verified"}));
+			}
 		}
 	}
 
@@ -80,12 +91,16 @@ class VerifyPage extends React.Component {
 						    }}
 						  />
 					</div>
-					<p>To help you get started, here is a video explaining out everything you need to know for your dashboard, or if you are more of the "Figured it out as I go" type, drop into your <Link to='/dashboard'>dashboard</Link>!</p>
+					
 					<div className="getting-started">
-						<div className="yt-wrapper">
-							<div className="yt-container">
-								<iframe className="yt-vid" src="https://www.youtube.com/embed/m5BSuKBZsUc" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-							</div>
+						{/*<div className="getting-started--choice" onClick={() => this.props.history.push('/dashboard/achievement?tutorial=true')}>
+							<h3>Create my First Achievement</h3>
+							<h4>Tutorial</h4>
+							<p>A step by step process for creating your very first achievement!</p>
+						</div>*/}
+						<div className="getting-started--choice" onClick={() => this.props.history.replace('/dashboard')}>
+							<h3>Take me to my Dashboard</h3>
+							{/*<p>Navigates straight to your dashboard, fit for those "Figure it out as I go" types!</p>*/}
 						</div>
 					</div>
 				</div>

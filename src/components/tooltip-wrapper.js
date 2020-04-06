@@ -40,10 +40,10 @@ export default class TooltipWrapper extends React.Component {
 
 		return (
 			<div className={tooltipClasses}>
-				<a href="javascript:;" onClick={this.tooltipClicked} ref={(el) => this._tooltip = el}>
+				<span href="javascript:;" onClick={this.tooltipClicked} ref={(el) => this._tooltip = el}>
 					<span className="tooltiptext">{tooltipText}</span>
 					{this.props.children}
-				</a>
+				</span>
 			</div>
 		)
 	}
