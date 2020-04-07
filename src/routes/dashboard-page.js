@@ -639,6 +639,10 @@ class DashboardPage extends React.Component {
 					});
 					graphicReader.readAsDataURL(this.state.graphicFile);
 				});
+			} else {
+				payload.overlay = payload.overlay || {};
+				payload.overlay.graphic = ""
+				graphicPromise = Promise.resolve();
 			}
 		} else {
 			graphicPromise = Promise.resolve();

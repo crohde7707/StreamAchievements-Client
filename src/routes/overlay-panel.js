@@ -155,7 +155,7 @@ class OverlayPanel extends React.Component {
 									unlocked={this.state.alert.unlocked}
 									earned={true}
 									noDrag={true}
-									noBackground={this.state.settings.custom && this.state.settings.graphic}
+									noBackground={this.state.settings.custom}
 									styles={styleSettings}
 								/>
 							</div>

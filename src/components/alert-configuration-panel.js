@@ -51,6 +51,14 @@ export default class AlertConfigurationPanel extends React.Component {
 		};
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.graphic !== this.props.graphic && this.state.graphic !== this.props.graphic) {
+			this.setState({
+				graphic: this.props.graphic
+			})
+		}
+	}
+
 	handleLayoutChange = (name, value) => {
 		let stateUpdate = {
 			[name]: value
@@ -64,6 +72,23 @@ export default class AlertConfigurationPanel extends React.Component {
 				value
 			}
 		});
+	}
+
+	removeGraphic = (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		this.setState({
+			graphic: ''
+		})
+
+		this.props.onChange({
+			target: {
+				name: 'graphic',
+				value: ''
+			}
+		});
+		
 	}
 
 	handleDataChange = (evt) => {
@@ -238,12 +263,14 @@ export default class AlertConfigurationPanel extends React.Component {
 			let previewImage, customContent, descriptionSection;
 
 			let defaultHoverText;
+			let graphicClasses = "defaultIcon";
 
 			if(this.state.graphic) {
 				previewImage = this.state.graphic
 				defaultHoverText = "Edit"
 			} else {
-				previewImage = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png' //update with empty image
+				graphicClasses += " graphic--blank";
+				previewImage = 'https://res.cloudinary.com/phirehero/image/upload/v1558809631/upload.png' //update with empty image
 				defaultHoverText = "Upload"
 			}
 
@@ -291,11 +318,12 @@ export default class AlertConfigurationPanel extends React.Component {
 						    />
 							<div className="formGroup icon-upload">
 								<div
-									className="defaultIcon"
+									className={graphicClasses}
 									onClick={(evt) => this.fileInputEl.click()}
 									onMouseEnter={() => {this.toggleHover(true, this.defaultHover)}}
 									onMouseLeave={() => {this.toggleHover(false, this.defaultHover)}}
 								>
+									<div className="deleteImg" onClick={this.removeGraphic}><div className="icon"></div></div>
 			                    	<img src={previewImage} />
 			                    	<div 
 			                    		className="hoverText" 
