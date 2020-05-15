@@ -16,12 +16,25 @@
     height: 22px;
 }
 
+.mixer-login-button {
+    padding: 10px 20px;
+    background: #1fbaed;
+    color: white;
+    font-size: 18px;
+    border-width: 0px;
+    cursor: pointer;
+    text-decoration: none;
+    height: 22px;
+}
+
 .button-container {
 	margin-top: 30px;
 }
 
 .login-button {
 	position: relative;
+    min-width: 225px;
+    margin: 5px 0;
 }
 
 .login-button-icon img {

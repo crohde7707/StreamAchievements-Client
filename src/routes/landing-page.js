@@ -63,7 +63,13 @@ export default class LandingPage extends React.Component {
 								<img alt="" src={require('../img/twitch-glitch.png')} />
 							</span>
 							<span className="login-button-text">Login using Twitch</span>
-						</a>					
+						</a>
+						<a href={process.env.REACT_APP_API_DOMAIN + "auth/mixer"} className="login-button mixer-login-button">
+							<span className="login-button-icon">
+								<img alt="" src={require('../img/mixer-merge.png')} />
+							</span>
+							<span className="login-button-text">Login using Mixer</span>
+						</a>
 					</div>
 				</div>
 				<div className="section-wrapper section-wrapper--full">
@@ -125,6 +131,12 @@ export default class LandingPage extends React.Component {
 								<img alt="" src={require('../img/twitch-glitch.png')} />
 							</span>
 							<span className="login-button-text">Login using Twitch</span>
+						</a>
+						<a href={process.env.REACT_APP_API_DOMAIN + "auth/mixer"} className="login-button mixer-login-button">
+							<span className="login-button-icon">
+								<img alt="" src={require('../img/mixer-merge.png')} />
+							</span>
+							<span className="login-button-text">Login using Mixer</span>
 						</a>
 					</div>
 				</div>
