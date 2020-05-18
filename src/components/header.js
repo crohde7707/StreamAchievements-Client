@@ -21,20 +21,22 @@ class Header extends React.Component {
 	}
 
 	componentDidMount() {
-		if(!this.props.profile) {
-			axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/user').then((res) => {
+		if(!this.props.blank) {
+			if(!this.props.profile) {
+				axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/user').then((res) => {
 
-				this.connectSocket(res.data.uid)
+					this.connectSocket(res.data.uid)
 
-				let profileData = {
-					...res.data,
-					socket: this._socket
-				}
+					let profileData = {
+						...res.data,
+						socket: this._socket
+					}
 
-				this.props.dispatch(setProfile(profileData));
-			});
-		} else {
-			this._socket = this.props.profile.socket;
+					this.props.dispatch(setProfile(profileData));
+				});
+			} else {
+				this._socket = this.props.profile.socket;
+			}
 		}
 	}
 

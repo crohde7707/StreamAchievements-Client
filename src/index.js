@@ -6,6 +6,7 @@ import App from './app';
 import HomePage from './routes/home-page';
 import ProfilePage from './routes/profile-page';
 import LandingPage from './routes/landing-page';
+import LinkPage from './routes/link-page';
 import ChannelPage from './routes/channel-page';
 import VerifyPage from './routes/verify-page';
 import GoldPage from './routes/gold-page';
@@ -38,6 +39,7 @@ let app = (
 					<Route path='/profile' component={ProfilePage} />
 	        		<Route path='/directory' component={ChannelDirectoryPage} />
 	        		<Route path='/admin' component={AdminPanelPage} />
+	        		<Route path='/link' component={LinkPage} />
 	        		<Route key='owner-edit-achievement' path='/dashboard/achievement/:achievementid' component={AchievementPage} />
 	        		<Route key='mod-edit-achievement' path='/mod/:channelid/achievement/:achievementid' component={AchievementPage} />
 	        		<Route key='owner-achievement' path='/dashboard/achievement' component={AchievementPage} />

@@ -24,13 +24,15 @@ export default class ConfirmPanel extends React.Component {
 
 	render() {
 
+		let header = this.props.header || "Confirm";
+
 		return (
 			<div className="confirm-panel">
 				<div className="modal-mask"></div>
 				<div className="modal-container">
 					<div className="modal" ref={confirmModal => (this.confirmModal = confirmModal)}>
 						<div className="modal-header">
-							<h3>Confirm</h3>
+							<h3>{header}</h3>
 						</div>
 						<div className="modal-content">
 							{this.props.children}

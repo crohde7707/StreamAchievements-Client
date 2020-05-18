@@ -5,7 +5,7 @@
 }
 
 .integration {
-	border-radius: 6px;
+	border-radius: 8px;
     box-shadow: 1px 1px 2px black;
     margin-bottom: 20px;
     color: black;
@@ -19,6 +19,10 @@
 }
 
 .integration--twitch {
+	background: #DDD;
+}
+
+.integration--mixer {
 	background: #DDD;
 }
 
@@ -39,6 +43,10 @@
 
 .integration--twitch .integration-header {
 	background: #6441a4;
+}
+
+.integration--mixer .integration-header {
+	background: #002050;
 }
 
 .integration--patreon .integration-header {
@@ -78,6 +86,37 @@
 
 .integration--patreon .integration-content {
 	color: black;
+}
+
+.integration--additional-platforms {
+	margin-bottom: 15px;
+}
+
+.integration--additional-platforms .platform-list--wrapper {
+	display: flex;
+	align-content: center;
+	margin-top: 10px;
+}
+
+.platformLink {
+	padding: 10px;
+	display: flex;
+	width: fit-content;
+	border-radius: 8px;
+	margin-right: 10px;
+	box-shadow: 1px 1px 2px #000;
+}
+
+.platformLink.twitch {
+	background: #9146ff;
+}
+
+.platformLink.mixer {
+	background: #002050;
+}
+
+.platformLink img {
+	max-width: 40px;
 }
 
 .profile--channels .channel-item {

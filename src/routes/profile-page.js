@@ -8,6 +8,8 @@ import connector from '../redux/connector';
 
 import Notice from '../components/notice';
 import Template from '../components/template';
+import PlatformIntegrationPanel from '../components/platform-integration-panel';
+import AdditionalPlatformsPanel from '../components/additional-platforms-panel';
 import PatreonPanel from '../components/patreon-panel';
 import LoadingSpinner from '../components/loading-spinner';
 
@@ -306,29 +308,24 @@ class ProfilePage extends React.Component {
 				</div>
 			)
 
+			let integrationPanels = [];
+
+			if(this.props.profile.currentPlatform === 'mixer') {
+				integrationPanels = [
+					(<PlatformIntegrationPanel key="integration-panels--1" platform="Mixer" />),
+					(<PlatformIntegrationPanel key="integration-panels--2" platform="Twitch" />)
+				];
+			} else if(this.props.profile.currentPlatform === 'twitch') {
+				integrationPanels = [
+					(<PlatformIntegrationPanel key="integration-panels--1" platform="Twitch" />),
+					(<PlatformIntegrationPanel key="integration-panels--2" platform="Mixer" />)					
+				];
+			}
+
 			integrationContent = (
 				<div>
-					<div className="integration integration--twitch">
-						<div className="integration-header">
-							<img alt="" src={require('../img/twitch-glitch.png')} />
-							<h3>Twitch</h3>
-							<div className="integration-settings">
-								<a title="Opens Twitch settings in new tab" href={'https://twitch.tv/' + username + '/settings'} target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
-							</div>
-							<div className="integration-sync" ref={(el) => {this._sync = el}}>
-								<a href="javascript:;" onClick={this.handleTwitchSync}><img alt="" src='https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png' /></a>
-							</div>
-						</div>
-						<div className="integration-content">
-							<div className="channelInfo--logo">
-								<img alt="" src={logo} />
-							</div>
-							<div className="channelInfo--data">
-								<div className="channelInfo--name">{username}</div>
-								<div className="channelInfo--link">{'twitch.tv/' + username}</div>
-							</div>
-						</div>
-					</div>
+					{integrationPanels}
+					<AdditionalPlatformsPanel />
 					<PatreonPanel />
 				</div>
 			);

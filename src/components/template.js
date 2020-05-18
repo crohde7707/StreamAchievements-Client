@@ -24,7 +24,7 @@ class Template extends React.Component {
 
 		let redirect, isLoading, fullscreen, setupModal;
 
-		if(!isAuthenticated()) {
+		if(!isAuthenticated() && !this.props.link ) {
 			let Redirect = require('react-router-dom').Redirect;
 
 			return(<Redirect to='/' />);
@@ -42,7 +42,7 @@ class Template extends React.Component {
 		return (
 			<div className="template">
 				{redirect}
-				<Header />
+				<Header blank={this.props.link}/>
 				<div id="mainContent" className="main">
 					{this.props.children}
 					{setupModal}

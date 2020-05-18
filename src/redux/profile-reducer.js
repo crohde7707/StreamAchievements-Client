@@ -1,5 +1,6 @@
 const SET_PROFILE = 'SET_PROFILE';
 const SYNC_TWITCH = 'SYNC_TWITCH';
+const SYNC_MIXER = 'SYNC_MIXER';
 const SYNC_PATREON = 'SYNC_PATREON';
 const SYNC_STREAMLABS = 'SYNC_STREAMLABS';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
@@ -21,10 +22,20 @@ let initialState = {
 export default function ProfileReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_PROFILE: 
-			console.log('set profile')
+			let platforms = {};
+
+			if(action.data.platforms.twitch) {
+				platforms.twitch = {...action.data.platforms.twitch}
+			}
+
+			if(action.data.platforms.mixer) {
+				platforms.mixer = {...action.data.platforms.mixer}
+			}
 			return {
 				...state,
 				profile: {
+					platforms: platforms,
+					currentPlatform: action.data.currentPlatform,
 					username: action.data.username,
 					logo: action.data.logo,
 					status: action.data.status,
@@ -51,6 +62,21 @@ export default function ProfileReducer(state = initialState, action) {
 				}
 			}
 			break;
+		case SYNC_MIXER:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					platforms: {
+						...state.profile.platforms,
+						mixer: {
+							...state.profile.platforms.mixer,
+							username: action.data.username,
+							logo: action.data.logo
+						}
+					}
+				}
+			}
 		case SYNC_PATREON:
 			return {
 				...state,
@@ -135,6 +161,27 @@ export function syncTwitch(data) {
 		type: SYNC_TWITCH,
 		data
 	};
+}
+
+export function syncPlatform(data, platform) {
+	switch(platform) {
+		case 'twitch':
+			return {
+				type: SYNC_TWITCH,
+				data
+			}
+			break;
+		case 'mixer':
+			return {
+				type: SYNC_MIXER,
+				data
+			}
+			break;
+		default:
+			return {
+				type: ''
+			}
+	}
 }
 
 export function syncPatreon(data) {

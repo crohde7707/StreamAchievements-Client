@@ -765,7 +765,7 @@ class DashboardPage extends React.Component {
 
 		if(field.name="delete") {
 			this.setState({
-				deleteVerify: (field.value === this.state.channel.owner.toUpperCase())
+				deleteVerify: (field.value === this.props.profile.username.toUpperCase())
 			});
 		}
 	}
@@ -774,9 +774,7 @@ class DashboardPage extends React.Component {
 		this.setState({
 			loading: true
 		}, () => {
-			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/delete', {
-				channel: this.state.channel.owner
-			}, {
+			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/delete', {}, {
 				withCredentials: true
 			}).then(res => {
 				if(res.data.delete) {

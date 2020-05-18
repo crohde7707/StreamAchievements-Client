@@ -1,0 +1,43 @@
+.link-profile-wrapper {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+.link-profile-wrapper img {
+	max-width: 100px;
+	margin-right: 10px;
+}
+
+.link-content .confirm-panel h3 {
+	color: #111;
+}
+
+@media only screen and (max-width: 480px) {
+	.main-content {
+		margin-top: 0px;
+	}
+
+	.add-channel {
+		margin: 0 10px;
+		padding: 5px 10px;
+	}
+
+	.channel-item {
+		height: 75px;
+	}
+
+	.channel-item--logo {
+		height: 75px;
+	}
+
+	.channel-item--logo img {
+		width: 75px;
+		height: 75px;
+	}
+
+	.channel-item--name {
+		font: 18px;
+	}
+}
