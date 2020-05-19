@@ -244,6 +244,12 @@ class DashboardPage extends React.Component {
 		});
 	}
 
+	updateChannel = (channel) => {
+		this.setState({
+			channel
+		});
+	}
+
 	updateAchievements = (data) => {
 		if(data.notice) {
 			this.setState({
@@ -1369,7 +1375,7 @@ class DashboardPage extends React.Component {
 						{eventContent}
 					</TabPanel>
 					<TabPanel>
-						<ChannelIntegrationsPanel channel={this.state.channel} />
+						<ChannelIntegrationsPanel channel={this.state.channel} updateChannel={this.updateChannel} />
 					</TabPanel>
 					<TabPanel>
 						{achievementTab}

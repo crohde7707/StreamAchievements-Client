@@ -9,8 +9,6 @@ const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
 const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
 const UPDATE_SETUP_STATUS = 'UPDATE_SETUP_STATUS';
 
-const axios = require('axios');
-
 let initialState = {
 	username: '',
 	logo: '',

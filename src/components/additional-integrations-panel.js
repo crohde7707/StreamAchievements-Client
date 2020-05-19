@@ -35,7 +35,7 @@ class AdditionalIntegrationsPanel extends React.Component {
 
 		let integrations = this.props.channel.integrations;
 
-		if(!integrations.streamlabs) {
+		if(integrations.streamlabs) {
 			additionalPlatforms.push(
 				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamlabs" href={process.env.REACT_APP_API_DOMAIN + "auth/streamlabs"}>
 					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589835373/streamlabs-icon.png" />
@@ -51,10 +51,18 @@ class AdditionalIntegrationsPanel extends React.Component {
 			)
 		}
 
+		if(!integrations.firebot && this.props.channel.platforms.mixer) {
+			additionalPlatforms.push(
+				<a key={`additional-integrations--${additionalPlatforms.length + 1}`} className="platformLink firebot" href={process.env.REACT_APP_API_DOMAIN + "auth/firebot"}>
+					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589905439/firebot-logo.png" />
+				</a>
+			)
+		}
+
 		if(additionalPlatforms.length > 0) {
 			content = (
-				<div className="integration--additional-platforms">
-					<h4>Additional integrations:</h4>
+				<div className="integration--available-integrations">
+					<h4>Available Integrations:</h4>
 					<div className="platform-list--wrapper">
 						{additionalPlatforms}
 					</div>
