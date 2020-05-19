@@ -17,7 +17,7 @@ import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 import MembersPanel from '../components/members-panel';
 import InfoPanel from '../components/info-panel';
-import StreamlabsPanel from '../components/streamlabs-panel';
+import ChannelIntegrationsPanel from '../components/channel-integrations-panel';
 import TooltipWrapper from '../components/tooltip-wrapper';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
@@ -1369,7 +1369,7 @@ class DashboardPage extends React.Component {
 						{eventContent}
 					</TabPanel>
 					<TabPanel>
-						<StreamlabsPanel />
+						<ChannelIntegrationsPanel channel={this.state.channel} />
 					</TabPanel>
 					<TabPanel>
 						{achievementTab}

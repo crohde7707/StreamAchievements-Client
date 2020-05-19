@@ -1,0 +1,16 @@
+.platformLink.streamlabs {
+	background: #17242d;
+}
+
+.platformLink.streamelements {
+	background: #020923;
+}
+
+.platformLink.platform--disabled {
+	-webkit-filter: grayscale(100%);
+       -moz-filter: grayscale(100%);
+         -o-filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
+            filter: grayscale(100%);
+    cursor: not-allowed;
+}
