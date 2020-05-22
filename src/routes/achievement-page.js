@@ -43,7 +43,10 @@ class AchievementPage extends React.Component {
 			title: "",
 			unlocked: false,
 			referred: false,
-			rank: ""
+			rank: "",
+			//platforms
+			twitch: true,
+			mixer: true
 		};
 
 		if(props.profile) {
@@ -220,8 +223,13 @@ class AchievementPage extends React.Component {
 
 			console.log(achievement.platforms);
 
-			if(this.state.channel && !this.state.channel.integrations.streamlabs && (achievement.achType === "5" || achievement.achType === "6")) {
-				stateUpdate.error = (<div>This achievement only works when you are <a href="/profile?tab=integration">integrated</a> with Streamlabs!</div>);
+			if(this.state.channel) {
+				
+				let streamlabs = this.state.channel.integrations.includes('streamlabs');
+
+				if(!streamlabs && (achievement.achType === "5" || achievement.achType === "6")) {
+					stateUpdate.error = (<div>This achievement only works when you are <a href="/profile?tab=integration">integrated</a> with Streamlabs!</div>);
+				}
 			}
 
 			this.setState(stateUpdate);
@@ -264,7 +272,10 @@ class AchievementPage extends React.Component {
 				title: "",
 				touched: undefined,
 				unlocked: false,
-				rank: ""
+				rank: "",
+				//platforms
+				twitch: true,
+				mixer: true
 			});
 		}
 		
@@ -584,6 +595,16 @@ class AchievementPage extends React.Component {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
 				}
+
+				let channelPlatforms = Object.keys(this.state.channel.platforms);
+
+				channelPlatforms.forEach(platform => {
+					achievement[platform] = this.state[platform]
+				});
+
+				//TODO: Add platforms
+				achievement.twitch = this.state.twitch;
+				achievement.mixer = this.state.mixer;
 				
 			}
 
@@ -762,7 +783,7 @@ class AchievementPage extends React.Component {
 		});
 		
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/delete', {
-			achievementID: this.state._id
+			achievementID: this.state.aid
 		}, {
 			withCredentials: true
 		}).then(response => {
@@ -869,7 +890,7 @@ class AchievementPage extends React.Component {
 	}
 
 	getBotOptions = () => {
-		if(this.state.channel && this.state.channel.integrations.streamlabs) {
+		if(this.state.channel && this.state.channel.integrations.includes('streamlabs')) {
 			return (
 				<React.Fragment>
 					<option value="5">New Follow</option>
@@ -921,36 +942,21 @@ class AchievementPage extends React.Component {
 		return content;
 	}
 
-	handlePlatformChange = (event) => {
-		const target = event.target;
-		const value = target.type === 'checkbox' ? target.checked : target.value;
-		const name = target.name;
+	handlePlatformChange = (platform) => {
 
-		debugger;
+		// debugger;
 
 		let touched = this.state.touched || {};
-		touched[name] = true;
+		touched[platform] = true;
 
 		let stateUpdate = {
-			[name]: value,
+			[platform]: !this.state[platform],
 			touched
 		};
 
-		if(name === "achType") {
-			stateUpdate.touched['query'] = true;
-			stateUpdate.touched['condition'] = true;
-			stateUpdate.query = '';
-			if(value === "0") {
-				stateUpdate.condition = 1000;
-			} else {
-				stateUpdate.condition = '';
-			}
-
-		}
-
-		if(this.state.valid && !this.state.valid[name]) {
+		if(this.state.valid && !this.state.valid[platform]) {
 			stateUpdate.valid = {
-				[name]: true
+				[platform]: true
 			};
 		}
 
@@ -1135,14 +1141,16 @@ class AchievementPage extends React.Component {
 
 			if(this.state.channel) {
 				channelPlatforms = Object.keys(this.state.channel.platforms);
-
-				console.log(channelPlatforms);
+				
 				if(channelPlatforms.length > 1) {
 					//show platform picker
 					platformContent = (
 						<div>
 							<h4>Platforms</h4>
 							<div className="formGroup">
+								<div className="achievement-platform--info">
+									<label>Choose which platforms this achievement can be earned on</label>
+								</div>
 								<div className="achievement-platforms">
 									<label htmlFor="achievement-twitch">
 										<input 
@@ -1150,11 +1158,10 @@ class AchievementPage extends React.Component {
 											name="twitch"
 											type="checkbox"
 											title="This achievement can currently be earned"
-											checked={this.state.platforms}
-											onChange={this.handlePlatformChange}
+											checked={this.state.twitch}
 										/>
-										<div className="platformLink twitch">
-											<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589664671/twitch-glitch-white.png" />
+										<div className={"platformLink twitch" + ((!this.state.twitch) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('twitch')}>
+											<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589664671/twitch-glitch-white.png"/>
 										</div>
 									</label>
 									<label htmlFor="achievement-mixer">
@@ -1163,10 +1170,9 @@ class AchievementPage extends React.Component {
 											name="mixer"
 											type="checkbox"
 											title="This achievement can currently be earned"
-											checked={this.state.platforms}
-											onChange={this.handlePlatformChange}
+											checked={this.state.mixer}
 										/>
-										<div className="platformLink mixer">
+										<div className={"platformLink mixer" + ((!this.state.mixer) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('mixer')}>
 											<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589665074/mixer-icon-dark.png" />
 										</div>
 									</label>

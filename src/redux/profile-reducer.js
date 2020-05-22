@@ -4,6 +4,7 @@ const SYNC_MIXER = 'SYNC_MIXER';
 const SYNC_PATREON = 'SYNC_PATREON';
 const SYNC_STREAMLABS = 'SYNC_STREAMLABS';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
+const UNLINK_PLATFORM = 'UNLINK_PLATFORM';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
 const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
@@ -201,6 +202,13 @@ export function unlinkService(data) {
 		type: UNLINK_SERVICE,
 		data
 	};
+}
+
+export function unlinkPlatform(data) {
+	return {
+		type: UNLINK_PLATFORM,
+		data
+	}
 }
 
 export function updateStatus(data) {

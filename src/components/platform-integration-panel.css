@@ -1,0 +1,9 @@
+.integration-unlink {
+	flex: 1;
+	text-align: right;
+	margin-right: 10px;
+}
+
+.integration-unlink + .integration-settings {
+	flex: 0 0;
+}

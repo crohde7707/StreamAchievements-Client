@@ -226,6 +226,27 @@
 	cursor: pointer;
 }
 
+.achievement-platforms .platformLink.disabled {
+	display: flex;
+	-webkit-filter: grayscale(100%);
+       -moz-filter: grayscale(100%);
+         -o-filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
+            filter: grayscale(100%);
+	cursor: pointer;
+	pointer-events: inherit;
+}
+
+.achievement-platform--info {
+	width: 40%;
+	text-align: right;
+	align-self: center;
+}
+
+.achievement-platform--info label {
+	margin-right: 0;
+}
+
 @media only screen and (max-width: 480px) {
 	.achievement-wrapper h4 {
 		padding-left: 10px;
@@ -303,5 +324,19 @@
 
 	.tutorial-button {
 		margin-right: 10px;
+	}
+
+	.achievement-platform--info {
+		width: 100%;
+		text-align: center;
+		margin-bottom: 15px
+	}
+
+	.achievement-platforms label {
+		justify-content: center;
+	}
+
+	.platformLink {
+		margin-right: 0;
 	}
 }
