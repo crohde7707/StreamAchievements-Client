@@ -1,3 +1,17 @@
+.basic-info img {
+	width: 100px;
+	height: 100px;
+}
+
+.basic-info .section-value {
+	display: flex;
+	align-content: center;
+}
+
+.basic-info .section-value span {
+	align-self: center;
+}
+
 .manage-container {
 	max-width: 800px;
 	margin: 0 auto;

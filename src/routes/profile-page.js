@@ -41,7 +41,8 @@ class ProfilePage extends React.Component {
 				channels: res.data.channels,
 				notifications: res.data.notifications,
 				next: res.data.next,
-				fetching: false
+				fetching: false,
+				platform: this.camelize(res.data.platform)
 			});
 
 			this._socket = io.connect(process.env.REACT_APP_SOCKET_DOMAIN, {
@@ -88,6 +89,11 @@ class ProfilePage extends React.Component {
 				showMore: true
 			});
 		}
+	}
+
+	camelize = (text) => {
+	    let upperText = text.toUpperCase();
+	    return upperText.substr(0, 1) + text.substr(1);
 	}
 
 	retrieveMoreNotifications = (force) => {
@@ -284,9 +290,19 @@ class ProfilePage extends React.Component {
 
 			preferencesContent = (
 				<div>
+					<h4>Basic Info</h4>
+					<span className="subtext">{`This information is managed by ${this.state.platform}`}</span>
+					<div className="section-wrapper basic-info">
+						<div className="section-label">
+					        <label htmlFor="logo">Profile</label>
+					    </div>
+					    <div className="section-value">
+					        <span name="logo"><img alt="" src={logo} /></span> <span name="name">{username}</span>
+					    </div>
+					</div>
 					<div className="section-wrapper">
 						<div className="section-label">
-					        <label htmlFor="name">Auto-Join Channel</label>
+					        <label htmlFor="preferences-autojoin">Auto-Join Channel</label>
 					        <p>When turned on, you will automatically join a channel that you receive an achievement in!</p>
 					    </div>
 					    <div className="section-value">

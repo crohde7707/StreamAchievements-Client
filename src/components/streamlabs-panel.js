@@ -102,14 +102,6 @@ export default class StreamlabsPanel extends React.Component {
 									<a href="javascript:;" onClick={this.handleSync}><img alt="" src='https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png' /></a>
 								</div>*/}
 						</div>
-						<div className="integration-content">
-							<div className="channelInfo--logo">
-								<img alt="" src={logo} />
-							</div>
-							<div className="channelInfo--data">
-								<div className="channelInfo--name">phirehero</div>
-							</div>
-						</div>
 						{confirmPanel}
 					</div>
 			);

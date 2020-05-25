@@ -203,6 +203,10 @@ class AchievementPage extends React.Component {
 				achievement.achType = "3";
 			}
 
+			let platforms = achievement.platforms;
+
+			delete achievement.platforms;
+
 			let stateUpdate = {
 				originalAchievement: res.data.achievement,
 				...achievement,
@@ -216,12 +220,9 @@ class AchievementPage extends React.Component {
 				isGoldChannel: res.data.isGoldChannel,
 				customAllowed: res.data.customAllowed,
 				unlocked: res.data.achievement.unlocked,
-				referred: res.data.referred
+				referred: res.data.referred,
+				...platforms
 			};
-
-			console.log(res.data.channel.platforms);
-
-			console.log(achievement.platforms);
 
 			if(this.state.channel) {
 				
@@ -370,10 +371,19 @@ class AchievementPage extends React.Component {
 				stateUpdate.condition = '';
 			}
 
+			if(value !== "3" && (this.state.achType === "3" || this.state.achType === "")) {
+
+				this.state.channel.platforms.forEach(platform => {
+					stateUpdate.touched[platform] = true;
+					stateUpdate[platform] = true
+				});
+			}
+
 		}
 
 		if(this.state.valid && !this.state.valid[name]) {
 			stateUpdate.valid = {
+				...this.state.valid,
 				[name]: true
 			};
 		}
@@ -633,6 +643,7 @@ class AchievementPage extends React.Component {
 		this.isNullorEmpty(validUpdate, 'title');
 		this.isNullorEmpty(validUpdate, 'achType');
 		//this.isNullorEmpty(validUpdate, 'rank')
+		this.isValidPlatform(validUpdate, 'platform');
 
 		switch(this.state.achType) {
 			case "1":
@@ -704,6 +715,14 @@ class AchievementPage extends React.Component {
 			} else {
 				fieldSet[field] = true;
 			}
+		}
+	}
+
+	isValidPlatform = (fieldSet, field) => {
+		if(!this.state.twitch && !this.state.mixer) {
+			fieldSet[field] = false;
+		} else {
+			fieldSet[field] = true
 		}
 	}
 
@@ -783,7 +802,7 @@ class AchievementPage extends React.Component {
 		});
 		
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/achievement/delete', {
-			achievementID: this.state.aid
+			achievementID: this.props.match.params.achievementid
 		}, {
 			withCredentials: true
 		}).then(response => {
@@ -889,15 +908,19 @@ class AchievementPage extends React.Component {
 		});
 	}
 
-	getBotOptions = () => {
-		if(this.state.channel && this.state.channel.integrations.includes('streamlabs')) {
-			return (
-				<React.Fragment>
-					<option value="5">New Follow</option>
-					<option value="6">New Donation</option>
-					<option value="7">New Bit Donation</option>
-				</React.Fragment>
-			)
+	getBotOptions = (bot) => {
+		if(this.state.channel) {
+			let integrations = this.state.channel.integrations;
+
+			if(integrations.includes('streamlabs')) {
+				return (
+					<React.Fragment>
+						<option value="5">New Follow</option>
+						<option value="6">New Donation</option>
+						<option value="7">New Bit Donation</option>
+					</React.Fragment>
+				)
+			}
 		}
 	}
 
@@ -954,9 +977,10 @@ class AchievementPage extends React.Component {
 			touched
 		};
 
-		if(this.state.valid && !this.state.valid[platform]) {
+		if(this.state.valid && !this.state.valid.platform) {
 			stateUpdate.valid = {
-				[platform]: true
+				...this.state.valid,
+				platform: true
 			};
 		}
 
@@ -1137,49 +1161,57 @@ class AchievementPage extends React.Component {
 			}
 
 			//platform section
-			let channelPlatforms;
+			let channelPlatforms, platformError;
 
 			if(this.state.channel) {
 				channelPlatforms = Object.keys(this.state.channel.platforms);
 				
 				if(channelPlatforms.length > 1) {
 					//show platform picker
-					platformContent = (
-						<div>
-							<h4>Platforms</h4>
-							<div className="formGroup">
-								<div className="achievement-platform--info">
-									<label>Choose which platforms this achievement can be earned on</label>
-								</div>
-								<div className="achievement-platforms">
-									<label htmlFor="achievement-twitch">
-										<input 
-									  		id="achievement-twitch"
-											name="twitch"
-											type="checkbox"
-											title="This achievement can currently be earned"
-											checked={this.state.twitch}
-										/>
-										<div className={"platformLink twitch" + ((!this.state.twitch) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('twitch')}>
-											<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589664671/twitch-glitch-white.png"/>
-										</div>
-									</label>
-									<label htmlFor="achievement-mixer">
-										<input 
-									  		id="achievement-mixer"
-											name="mixer"
-											type="checkbox"
-											title="This achievement can currently be earned"
-											checked={this.state.mixer}
-										/>
-										<div className={"platformLink mixer" + ((!this.state.mixer) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('mixer')}>
-											<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589665074/mixer-icon-dark.png" />
-										</div>
-									</label>
+					if(this.state.achType !== "" && this.state.achType !== "3") {
+						if(this.isInvalid("platform")) {
+							platformError = (
+								<span className="error">You must have at least <strong>1 platform</strong> chosen!</span>
+							)
+						}
+
+						platformContent = (
+							<div>
+								<h4>Platforms {platformError}</h4>
+								<div className="formGroup">
+									<div className="achievement-platform--info">
+										<label>Choose which platforms this achievement can be earned on</label>
+									</div>
+									<div className="achievement-platforms">
+										<label htmlFor="achievement-twitch">
+											<input 
+										  		id="achievement-twitch"
+												name="twitch"
+												type="checkbox"
+												title="This achievement can currently be earned"
+												checked={this.state.twitch}
+											/>
+											<div className={"platformLink twitch" + ((!this.state.twitch) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('twitch')}>
+												<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589664671/twitch-glitch-white.png"/>
+											</div>
+										</label>
+										<label htmlFor="achievement-mixer">
+											<input 
+										  		id="achievement-mixer"
+												name="mixer"
+												type="checkbox"
+												title="This achievement can currently be earned"
+												checked={this.state.mixer}
+											/>
+											<div className={"platformLink mixer" + ((!this.state.mixer) ? " disabled" : "")}  onClick={() => this.handlePlatformChange('mixer')}>
+												<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589665074/mixer-icon-dark.png" />
+											</div>
+										</label>
+									</div>
 								</div>
 							</div>
-						</div>
-					)
+						)
+					}
 				}
 			}
 
@@ -1269,7 +1301,6 @@ class AchievementPage extends React.Component {
 									<option value="4">Feat (Unranked)</option>
 								</select>
 							</div>*/}
-							{platformContent}
 							<h4>Configuration</h4>
 							<div className="formGroup checkboxes">
 								<div className="checkbox">
@@ -1341,8 +1372,8 @@ class AchievementPage extends React.Component {
 									onChange={this.handleDataChange}
 									value={this.state.achType}
 								>
-									<option value=""></option>
-									{this.getBotOptions()}
+									<option value="" disabled></option>
+									{this.getBotOptions('streamlabs')}
 									<option value="0">New Sub</option>
 									<option value="1">Resub</option>
 									<option value="2">Gifted Sub</option>
@@ -1351,6 +1382,7 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							{this.getConditionContent()}
+							{platformContent}
 							<h4 className="noMargin">Icon<span className="help" title="Upload an icon specific for your achievement! Leaving this blank will fall back on the one provided in your general settings!"></span></h4>
 							{iconSection}
 		                    {saveButton}

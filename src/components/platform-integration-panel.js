@@ -3,6 +3,7 @@ import connector from '../redux/connector';
 import {unlinkPlatform, syncPlatform} from '../redux/profile-reducer';
 import axios from 'axios';
 import ConfirmPanel from '../components/confirm-panel';
+import LogoffPanel from '../components/logoff-panel';
 
 import './platform-integration-panel.css';
 
@@ -12,7 +13,8 @@ class PlatformIntegrationPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			loading: (this.props.profile === undefined) ? true : false
+			loading: (this.props.profile === undefined) ? true : false,
+			showLogoff: false
 		}
 	}
 
@@ -43,9 +45,9 @@ class PlatformIntegrationPanel extends React.Component {
 	}
 
 	handleUnlink = () => {
-		this.setState({
+		let stateUpdate = {
 			showConfirm: false
-		});
+		}
 
 		let platform = this.props.platform.toLowerCase();
 
@@ -53,6 +55,12 @@ class PlatformIntegrationPanel extends React.Component {
 			withCredentials: true
 		}).then(res => {
 			if(res.data.success) {
+				if(res.data.logoff) {
+					stateUpdate.showLogoff = true;
+				}
+
+				this.setState(stateUpdate);
+				
 				this.props.dispatch(unlinkPlatform(res.data.platform));
 			} else {
 				//handle error
@@ -72,7 +80,7 @@ class PlatformIntegrationPanel extends React.Component {
 		if(this.state.showConfirm) {
 			confirmPanel = (
 				<ConfirmPanel
-					onConfirm={this.handleUnlink}
+					onConfirm={() => this.handleUnlink(this.props.platform)}
 					onCancel={() => {this.setState({showConfirm: false})}}
 				>
 					<div>{`Are you sure you want to unlink your ${this.props.platform} account?`}</div>
@@ -85,7 +93,7 @@ class PlatformIntegrationPanel extends React.Component {
 
 		let showUnlink = Object.keys(this.props.profile.platforms).length > 1;
 
-		let platformLink, platformIcon, platformSettings, unlink;
+		let platformLink, platformIcon, platformSettings, unlink, logoffPanel;
 
 		if(platformData) {
 			if(platform === 'twitch') {
@@ -105,6 +113,14 @@ class PlatformIntegrationPanel extends React.Component {
 							<img alt="Unlink" src="https://res.cloudinary.com/phirehero/image/upload/v1572732837/unlink.png" />
 						</a>
 					</div>
+				)
+			}
+
+			if(this.state.showLogoff) {
+				logoffPanel = (
+					<LogoffPanel>
+						<p>Feel free to log back in with the platform of your choosing!</p>
+					</LogoffPanel>
 				)
 			}
 
@@ -133,6 +149,7 @@ class PlatformIntegrationPanel extends React.Component {
 						</div>
 					</div>
 					{confirmPanel}
+					{logoffPanel}
 				</div>
 			);
 		}

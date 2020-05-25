@@ -29,6 +29,11 @@
 	max-width: 800px;
 }
 
+.achievement-wrapper .error {
+	color: red;
+	font-size: 15px
+}
+
 .achievement-wrapper h4 {
 	font-size: 18px;
     border-bottom: 1px solid #666;

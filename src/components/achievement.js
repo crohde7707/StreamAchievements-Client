@@ -68,11 +68,14 @@ class Achievement extends React.Component {
 						<img alt="Achievement Menu Toggle" src="https://res.cloudinary.com/phirehero/image/upload/v1565714661/856781-200.png" />
 					</button>
 					<div className="achievement-menu--drawer">
-						<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift(this.props.achievement.uid)}}>
+						<div title="Awarding achievement manually!" className="achievement--gift" onClick={() => {this.props.onGift && this.props.onGift(this.props.achievement.uid)}}>
 							<img alt="Gift Achievement Icon" src={require('../img/gift.png')} />
 						</div>
-						<div className="achievement--edit" onClick={() => {this.props.onClick(this.props.achievement)}}>
+						<div className="achievement--edit" onClick={() => {this.props.onClick && this.props.onClick(this.props.achievement)}}>
 							<img alt="Edit Achievement Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
+						</div>
+						<div className="achievement--test" onClick={() => {this.props.onTest && this.props.onTest(this.props.achievement.uid)}}>
+							<img alt="Test Achievement Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1590407786/play-icon-png-24.png" />
 						</div>
 					</div>
 				</div>

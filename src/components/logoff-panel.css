@@ -1,0 +1,15 @@
+.logoff-panel {
+	text-align: center;
+}
+
+.logoff-panel .modal {
+	min-height: auto;
+}
+
+.logoff-panel .lds-ellipsis {
+	height: 30px;
+}
+
+.logoff-panel .lds-ellipsis div {
+	background: #000;
+}

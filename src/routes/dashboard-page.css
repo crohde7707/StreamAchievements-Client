@@ -1,3 +1,7 @@
+.achievementTab--reordering .achievement-menu {
+    display: none;
+}
+
 .referral .section-value {
 	display: flex;
 	align-items: center;
@@ -19,6 +23,8 @@
 	width: 20px;
 	height: 20px;
 	padding: 5px;
+	margin-left: 5px;
+	cursor: pointer;
 }
 
 .general-configuration .delete-channel {

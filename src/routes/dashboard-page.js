@@ -215,6 +215,23 @@ class DashboardPage extends React.Component {
 	    }	    
   	}
 
+  	handleTestAchievement = (aid) => {
+  		this.setState({
+			loading: true
+		}, () => {
+			axios.get(`${process.env.REACT_APP_API_DOMAIN}api/channel/testOverlay?aid=${aid}`, {
+				withCredentials: true
+			}).then((res) => {
+				setTimeout(() => {
+					this.setState({
+						loading: false
+					});
+					this.setNotice("Test Alert Sent!");
+				}, 300)
+			});
+		})
+  	}
+
   	showGiftModal = (aid) => {
 
   		this.setState({
@@ -905,24 +922,8 @@ class DashboardPage extends React.Component {
 			if(!this.state.isMod) {
 				priGenContent = (
 					<div>
-						<h4>Basic Info</h4>
-						<span className="subText">This information is managed by Twitch</span>
-						<div className="section-wrapper basic-info">
-							<div className="section-label">
-						        <label htmlFor="name">Twitch Name</label>
-						    </div>
-						    <div className="section-value">
-						        <span name="name">{owner}</span>
-						    </div>
-						</div>
-						<div className="section-wrapper basic-info">
-							<div className="section-label">
-						        <label htmlFor="logo">Channel Logo</label>
-						    </div>
-						    <div className="section-value">
-						        <span name="logo"><img alt="" src={logo} /></span>
-						    </div>
-						</div>
+						<h4>Referral</h4>
+						<span className="subText">Provide this code to someone creating their channel to unlock 1 Custom Achievement for you to create!</span>
 						<div className="section-wrapper basic-info referral">
 							<div className="section-label">
 								<label htmlFor="referral">
@@ -1205,6 +1206,7 @@ class DashboardPage extends React.Component {
 													onGift={this.showGiftModal}
 													defaultIcons={this.state.channel.icons}
 													onClick={() => {this.props.history.push(achievementRoute + '/' + achievement.uid)}}
+													onTest={this.handleTestAchievement}
 													draggable={this.state.reordering}
 													index={index}
 												/>
