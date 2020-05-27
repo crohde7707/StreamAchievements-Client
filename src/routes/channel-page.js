@@ -11,6 +11,9 @@ import LoadingSpinner from '../components/loading-spinner.js';
 
 import './channel-page.css';
 
+const TWITCH_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1564853282/twitch-icon.png";
+const MIXER_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1589634307/mixer-icon.png";
+
 class ChannelPage extends React.Component {
 	constructor(props) {
 		super(props);
@@ -201,7 +204,7 @@ class ChannelPage extends React.Component {
 
 		if(this.state.channel) {
 
-			let {owner, logo} = this.state.channel;
+			let {logo, platforms} = this.state.channel;
 			let achievements = this.state.achievements;
 
 			let membershipContent, achievementProgress, achievementsContent, favorite, bannedOverlay;
@@ -223,7 +226,7 @@ class ChannelPage extends React.Component {
 				membershipContent = null;
 				document.body.classList.remove('no-scroll');
 
-				if(this.state.favorite) {
+				if(this.state.favorited) {
 					favorite = (
 						<div className="channel-fav" onClick={(evt) => this.favoriteChannel(evt, "remove")}>
 							<img alt="Favorite Channel" src={require('../img/star-favorited.png')} />
@@ -319,7 +322,7 @@ class ChannelPage extends React.Component {
 			} else {
 				achievementsContent = (
 					<div className="no-achievements">
-						<p>{owner} has yet to make any achievements available!</p>
+						<p>{/*owner*/} has yet to make any achievements available!</p>
 						<p>Check back soon!</p>
 					</div>
 				)
@@ -365,6 +368,41 @@ class ChannelPage extends React.Component {
 				headerClasses += " not-joined";
 			}
 
+			let platformsIcons = [], name = [];
+
+			let channelPlatforms = Object.keys(platforms);
+
+			let currentPlatform = this.props.profile.currentPlatform;
+			
+			if(this.state.channel.platforms[currentPlatform]) {
+				logo = this.state.channel.platforms[currentPlatform].logo;
+			}
+
+			channelPlatforms.forEach(channelPlatform => {
+				let icon;
+
+				switch(channelPlatform) {
+					case 'twitch':
+						icon=TWITCH_ICON;
+						break;
+					case 'mixer':
+						icon=MIXER_ICON;
+						break;
+					default:
+						break;
+				}
+
+				let channelName = this.state.channel.platforms[channelPlatform].name;
+
+				name.push((
+					<div className="channel-item--identifier">
+						<a title={'Go to ' + channelName + '\'s channel on Twitch!'} href={"https://twitch.tv/" + channelName} target="_blank">
+							<img src={icon} /> 
+						</a> <span className="name">{channelName}</span>
+					</div>
+				));
+			});
+
 			content = (
 				<Template onInject={this.handleInject} className="no-scroll" spinner={{isLoading: this.state.loading, fullscreen: true}}>
 					<div className={wrapperClasses}>
@@ -380,17 +418,12 @@ class ChannelPage extends React.Component {
 								<img src={logo} />
 							</div>
 							<div className="channel-info">
-								<div className="channel-name">
-									<span>{owner}</span>
-									{badges}
+								<div className="channel-item--name">
+									{name}
+									{/*badges*/}
 									{/*<Link to={"/channel/" + owner + "/rankings"} title={'View rankings for ' + owner + '\'s channel'}>
 										<img className="ranking" src="https://res.cloudinary.com/phirehero/image/upload/v1559928373/ranking-icon.png" />
 									</Link>*/}
-								</div>
-								<div className="channel-links">
-									<a title={'Go to ' + owner + '\'s channel on Twitch!'} href={"https://twitch.tv/" + owner} target="_blank">
-										<img src="https://res.cloudinary.com/phirehero/image/upload/v1564853282/twitch-icon.png" />
-									</a>
 								</div>
 							</div>
 							{((this.state.small) ? null : achievementProgress)}

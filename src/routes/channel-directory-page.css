@@ -60,6 +60,26 @@
 	background: #555;
 }
 
+.directory-results .channel-item--identifier {
+	display: flex;
+	align-content: center;
+	margin: 2px
+}
+
+.directory-results .platform-icon {
+	margin-left: 5px;
+}
+
+.directory-results .platform-icon img,
+.directory-results .channel-item--identifier img {
+	width: 24px;
+	height: 24px;
+}
+
+.directory-results .channel-item--identifier img {
+	margin-right: 5px;
+}
+
 @media only screen and (max-width: 480px) {
 	.channel-directory {
 		margin-top: 20px;

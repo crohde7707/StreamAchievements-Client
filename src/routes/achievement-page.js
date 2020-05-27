@@ -362,9 +362,12 @@ class AchievementPage extends React.Component {
 		};
 
 		if(name === "achType") {
-			stateUpdate.touched['query'] = true;
 			stateUpdate.touched['condition'] = true;
-			stateUpdate.query = '';
+			if(value === "4" || value === "5") {
+				stateUpdate.touched['query'] = true;
+				stateUpdate.query = '';
+			}
+			
 			if(value === "0") {
 				stateUpdate.condition = 1000;
 			} else {
@@ -854,6 +857,8 @@ class AchievementPage extends React.Component {
 				this.setState({
 					error: res.data.message
 				});
+
+				window.scrollTo(0,0);
 			}
 		});
 	}

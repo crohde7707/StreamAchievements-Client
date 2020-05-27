@@ -1,3 +1,24 @@
+.channel-item--name {
+	display: flex;
+	flex-direction: column;
+}
+
+.channel-item--name .channel-item--identifier {
+	display: flex;
+	align-items: center;
+	margin: 2px
+}
+
+.channel-item--name .channel-item--identifier a {
+	display: flex;
+	margin-right: 5px;
+}
+
+.channel-item--name .channel-item--identifier a img{
+	width: 24px;
+	height: 24px;
+}
+
 #channel-header {
 	min-height: 100px;
     background: #DDD;

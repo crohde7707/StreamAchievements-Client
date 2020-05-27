@@ -3,12 +3,16 @@ import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { TwitterShareButton } from 'react-twitter-embed';
 import io from "socket.io-client";
+import connector from '../redux/connector';
 
 import './channel-directory-page.css';
 
 import Template from '../components/template';
 import {isAuthenticated} from '../utils/auth-utils';
 import LoadingSpinner from '../components/loading-spinner';
+
+const TWITCH_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1564853282/twitch-icon.png";
+const MIXER_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1589634307/mixer-icon.png";
 
 class ChannelDirectoryPage extends React.Component {
 
@@ -103,12 +107,46 @@ class ChannelDirectoryPage extends React.Component {
 			if(channels.length > 0) {
 				content = (
 					<div>
-						{channels.map((channel, index) => (
-							<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
-								<div className="channel-item--logo"><img src={channel.logo} /></div>
-								<div className="channel-item--name">{channel.owner}</div>
-							</div>
-						))}
+						{channels.map((channel, index) => {
+
+							let logo, platforms = [], name = [];
+
+							let channelPlatforms = Object.keys(channel.platforms);
+
+							let currentPlatform = this.props.profile.currentPlatform;
+							
+							if(channel.platforms[currentPlatform]) {
+								logo = channel.platforms[currentPlatform].logo;
+							}
+
+							channelPlatforms.forEach(channelPlatform => {
+								let icon;
+
+								switch(channelPlatform) {
+									case 'twitch':
+										icon=TWITCH_ICON;
+										break;
+									case 'mixer':
+										icon=MIXER_ICON;
+										break;
+									default:
+										break;
+								}
+
+								name.push((
+									<div className="channel-item--identifier">
+										<img src={icon} /> <span className="name">{channel.platforms[channelPlatform].name}</span>
+									</div>
+								));
+							});
+
+							return (
+								<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
+									<div className="channel-item--logo"><img src={logo} /></div>
+									<div className="channel-item--name">{name}</div>
+								</div>
+							)
+						})}
 						{notFound}
 					</div>
 				);
@@ -143,4 +181,10 @@ class ChannelDirectoryPage extends React.Component {
 	}
 }
 
-export default withRouter(ChannelDirectoryPage);
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default withRouter(connector(headerMapStateToProps)(ChannelDirectoryPage));
