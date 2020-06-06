@@ -26,7 +26,7 @@ class ChannelPage extends React.Component {
 			small: false,
 			progress: false,
 			condensedHeader: false,
-			favorite: false,
+			favorited: false,
 			joining: false,
 			banned: false
 		}
@@ -35,14 +35,18 @@ class ChannelPage extends React.Component {
 	componentDidMount() {
 		//Fetch channel data 
 
-		axiosInstance.call('get', process.env.REACT_APP_API_DOMAIN + 'api/channel/retrieve?channel=' + this.props.match.params.channelid).then((res) => {
+		let {channelid, platform} = this.props.match.params;
+
+		axiosInstance.call('get', `${process.env.REACT_APP_API_DOMAIN}api/channel/retrieve?channel=${channelid}&platform=${platform}`).then((res) => {
 			if(!res.error) {
 				this.setState({
+					channelName: channelid,
+					platform,
 					channel: res.data.channel,
 					achievements: res.data.achievements,
 					joined: res.data.joined,
 					fullAccess: res.data.fullAccess,
-					favorite: res.data.favorited,
+					favorited: res.data.favorited,
 					loading: false,
 					banned: res.data.banned
 				}, () => {
@@ -137,7 +141,8 @@ class ChannelPage extends React.Component {
 			});
 			
 			axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/join', {
-				channel: this.state.channel.owner
+				channel: this.state.channelName,
+				platform: this.state.platform
 			}, {
 				withCredentials: true
 			})
@@ -164,7 +169,8 @@ class ChannelPage extends React.Component {
 
 	leaveChannel = () => {
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/leave', {
-			channel: this.state.channel.owner
+			channel: this.state.channelName,
+			platform: this.state.platform
 		}, {
 			withCredentials: true
 		})
@@ -186,14 +192,15 @@ class ChannelPage extends React.Component {
 	favoriteChannel = (evt, task) => {
 		evt.stopPropagation();
 		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/channel/favorite', {
-			channel: this.state.channel.owner,
+			channel: this.state.channelName,
+			platform: this.state.platform,
 			task
 		}, {
 			withCredentials: true
 		}).then(res => {
 			//update in redux?
 			this.setState({
-				favorite: res.data.favorited
+				favorited: res.data.favorited
 			});
 		});
 	}
@@ -322,7 +329,7 @@ class ChannelPage extends React.Component {
 			} else {
 				achievementsContent = (
 					<div className="no-achievements">
-						<p>{/*owner*/} has yet to make any achievements available!</p>
+						<p>{`${this.state.channelName} has yet to make any achievements available!`}</p>
 						<p>Check back soon!</p>
 					</div>
 				)
@@ -379,24 +386,27 @@ class ChannelPage extends React.Component {
 			}
 
 			channelPlatforms.forEach(channelPlatform => {
-				let icon;
+				let icon, link, platform;
+				let channelName = this.state.channel.platforms[channelPlatform].name;
 
 				switch(channelPlatform) {
 					case 'twitch':
 						icon=TWITCH_ICON;
+						link = `https://twitch.tv/${channelName}`;
+						platform = "Twitch";
 						break;
 					case 'mixer':
 						icon=MIXER_ICON;
+						link = `https://mixer.com/${channelName}`;
+						platform = "Mixer";
 						break;
 					default:
 						break;
 				}
 
-				let channelName = this.state.channel.platforms[channelPlatform].name;
-
 				name.push((
 					<div className="channel-item--identifier">
-						<a title={'Go to ' + channelName + '\'s channel on Twitch!'} href={"https://twitch.tv/" + channelName} target="_blank">
+						<a title={`Go to ${channelName}'s channel on ${platform}!`} href={link} target="_blank">
 							<img src={icon} /> 
 						</a> <span className="name">{channelName}</span>
 					</div>

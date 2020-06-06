@@ -72,7 +72,14 @@ class ChannelDirectoryPage extends React.Component {
 
   	loadChannel = (channel) => {
   		this._socket.close();
-  		this.props.history.push('/channel/' + channel.owner);
+  		let currentPlatform = this.props.profile.currentPlatform;
+
+  		if(channel.platforms[currentPlatform]) {
+  			this.props.history.push('/channel/' + currentPlatform + '/' + channel.platforms[currentPlatform].name);
+  		} else {
+  			let platforms = Object.keys(channel.platforms);
+  			this.props.history.push('/channel/' + platforms[0] + '/' + channel.platforms[platforms[0]].name);
+  		}
   	}
 
 	render() {

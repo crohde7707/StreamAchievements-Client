@@ -2,8 +2,12 @@ import React from 'react';
 import axios from 'axios';
 import throttle from 'lodash/throttle';
 import { withRouter } from 'react-router-dom';
+import connector from '../redux/connector';
 
 import './channel-list.css';
+
+const TWITCH_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1564853282/twitch-icon.png";
+const MIXER_ICON = "https://res.cloudinary.com/phirehero/image/upload/v1589634307/mixer-icon.png";
 
 class ChannelList extends React.Component {
 
@@ -103,7 +107,14 @@ class ChannelList extends React.Component {
 	}
 
 	goToChannel = (channel) => {
-		this.props.history.push('/channel/' + channel);
+		let currentPlatform = this.props.profile.currentPlatform;
+
+  		if(channel.platforms[currentPlatform]) {
+  			this.props.history.push('/channel/' + currentPlatform + '/' + channel.platforms[currentPlatform].name);
+  		} else {
+  			let platforms = Object.keys(channel.platforms);
+  			this.props.history.push('/channel/' + platforms[0] + '/' + channel.platforms[platforms[0]].name);
+  		}
 	}
 
 	componentWillUnmount() {
@@ -129,13 +140,43 @@ class ChannelList extends React.Component {
 							channels = [...channels, ...this.props.inject];
 						}
 
-						content = channels.map((channel, index) => (
-							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
-								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
-								<div className="channel-item--name">{channel.owner}</div>
-								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
-							</div>
-						));
+						content = channels.map((channel, index) => {
+							let name = [];
+
+							let channelPlatforms = Object.keys(channel.platforms);
+							
+							channelPlatforms.forEach(platform => {
+
+								let icon;
+
+								switch(platform) {
+									case 'twitch':
+										icon = TWITCH_ICON;
+										break;
+									case 'mixer':
+										icon=MIXER_ICON;
+										break;
+									default:
+										break;
+								}
+								
+								name.push(
+									<div className="channel-item--identifier">
+											<img src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
+									</div>
+								)
+							});
+
+							return (
+								<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel)}}>
+									<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+									<div className="channel-item--name">
+										{name}
+									</div>
+									<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+								</div>
+							)
+						});
 
 						headerJoinButton = (
 							<div onClick={this.showDirectory} className="join-channel-button">
@@ -168,13 +209,44 @@ class ChannelList extends React.Component {
 					}
 
 					if(this.state.favorites.length > 0) {
-						favContent = this.state.favorites.map((channel, index) => (
-							<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel.owner)}}>
-								<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
-								<div className="channel-item--name">{channel.owner}</div>
-								<div className="channel-item--percentage">{channel.percentage + '%'}</div>
-							</div>
-						));
+						favContent = this.state.favorites.map((channel, index) => {
+
+							let name = [];
+
+							let channelPlatforms = Object.keys(channel.platforms);
+							
+							channelPlatforms.forEach(platform => {
+
+								let icon;
+
+								switch(platform) {
+									case 'twitch':
+										icon = TWITCH_ICON;
+										break;
+									case 'mixer':
+										icon=MIXER_ICON;
+										break;
+									default:
+										break;
+								}
+								
+								name.push(
+									<div className="channel-item--identifier">
+											<img src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
+									</div>
+								)
+							});
+
+							return (
+								<div key={"channel." + index} className="channel-item" onClick={() => { this.goToChannel(channel)}}>
+									<div className="channel-item--logo"><img alt="Channel Logo" src={channel.logo} /></div>
+									<div className="channel-item--name">
+										{name}
+									</div>
+									<div className="channel-item--percentage">{channel.percentage + '%'}</div>
+								</div>
+							)
+						});
 
 					} else {
 						favContent = (
@@ -238,4 +310,10 @@ class ChannelList extends React.Component {
 	}
 }
 
-export default withRouter(ChannelList);
+function headerMapStateToProps(state) {
+	return {
+		profile: state.profile
+	};
+}
+
+export default withRouter(connector(headerMapStateToProps)(ChannelList));

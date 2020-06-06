@@ -21,7 +21,6 @@ class ProfilePage extends React.Component {
 		super(props);
 
 		this.state = {
-			channel: '',
 			achievements: '',
 			notice: '',
 			fetching: true,
@@ -38,7 +37,6 @@ class ProfilePage extends React.Component {
 			withCredentials: true
 		}).then((res) => {
 			this.setState({
-				channels: res.data.channels,
 				notifications: res.data.notifications,
 				next: res.data.next,
 				fetching: false,
@@ -191,22 +189,6 @@ class ProfilePage extends React.Component {
 		});
 	}
 
-	filterList = (event) => {
-	    var updatedList = this.state.channels;
-
-	    if(event.target.value === '') {
-	    	//nothing in text box
-	    	this.setState({filteredChannels: false});
-	    } else {
-	    	updatedList = updatedList.filter(function(channel){
-		      return (channel.owner).toLowerCase().search(
-		        event.target.value.toLowerCase()) !== -1;
-		    });
-		    
-		    this.setState({filteredChannels: updatedList});
-	    }	    
-  	}
-
   	handleDataChange = (event) => {
   		const target = event.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -268,18 +250,12 @@ class ProfilePage extends React.Component {
 
 	render() {
 
-		let preferencesContent, integrationContent, notificationContent, channelContent, patreonContent, showMoreButton;
+		let preferencesContent, integrationContent, notificationContent, patreonContent, showMoreButton;
 
-		if(this.state.channels && this.props.profile) {
+		if(!this.state.fetching && this.props.profile) {
 
 			let {logo, username} = this.props.profile;
-			let channels = this.state.channels;
-
-			if(Array.isArray(this.state.filteredChannels)) {
-
-				channels = this.state.filteredChannels;
-			}
-
+			
 			let saveButton;
 
 			if(this.state.touched && Object.keys(this.state.touched).length > 0) {
@@ -415,23 +391,6 @@ class ProfilePage extends React.Component {
 				</div>
 			)
 
-			channelContent = (
-				<div className="profile--channels">
-					<div className="achievementsHeader">
-						<h3>Showing {channels.length} Channels</h3>
-						<div className="achievement-search">
-							<input placeholder="Search for channel..." type="text" onChange={this.filterList} />
-						</div>
-					</div>
-					{channels.map((channel, index) => (
-						<div key={"channel." + index} className="channel-item">
-							<div className="channel-item--logo"><img alt="" src={channel.logo} /></div>
-							<div className="channel-item--name">{channel.owner}</div>
-						</div>
-					))}
-				</div>
-			);
-
 		}
 
 		const params = new URLSearchParams(this.props.location.search);
@@ -462,7 +421,6 @@ class ProfilePage extends React.Component {
 							<Tab className="manage-tab">Preferences</Tab>
 							<Tab className="manage-tab">Integration</Tab>
 							<Tab className="manage-tab">Notifications</Tab>
-							<Tab className="manage-tab">Channels</Tab>
 						</TabList>
 						<TabPanel>
 							{preferencesContent}
@@ -472,9 +430,6 @@ class ProfilePage extends React.Component {
 						</TabPanel>
 						<TabPanel>
 							{notificationContent}
-						</TabPanel>
-						<TabPanel>
-							{channelContent}
 						</TabPanel>
 					</Tabs>
 				</div>

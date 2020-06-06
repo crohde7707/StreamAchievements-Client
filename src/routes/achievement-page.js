@@ -1384,6 +1384,9 @@ class AchievementPage extends React.Component {
 									<option value="2">Gifted Sub</option>
 									<option value="3">Manual</option>
 									{customType}
+									<optgroup label="Mixer">
+										<option value="8">New Follow</option>
+									</optgroup>
 								</select>
 							</div>
 							{this.getConditionContent()}

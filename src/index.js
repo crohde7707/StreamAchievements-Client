@@ -49,6 +49,7 @@ let app = (
 	        		<Route path='/mod/' component={ModPage} />
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
+	        		<Route path='/channel/:platform/:channelid' component={ChannelPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/gold/subscription" component={SubscriptionPage} />
 	        		<Route path="/gold" component={GoldPage} />
