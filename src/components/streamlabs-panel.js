@@ -106,6 +106,7 @@ class StreamlabsPanel extends React.Component {
 			} else {
 
 				let logo = (this.props.profile && this.props.profile.logo) || '';
+				let name = (this.props.profile && this.props.profile.username) || '';
 
 				streamlabsContent = (
 					<div className="integration integration--streamlabs">
@@ -135,7 +136,7 @@ class StreamlabsPanel extends React.Component {
 									<img alt="" src={logo} />
 								</div>
 								<div className="channelInfo--data">
-									<div className="channelInfo--name">phirehero</div>
+									<div className="channelInfo--name">{name}</div>
 								</div>
 							</div>
 							{confirmPanel}
