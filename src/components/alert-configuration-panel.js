@@ -31,7 +31,7 @@ export default class AlertConfigurationPanel extends React.Component {
 		}
 
 		this.state = {
-			chat: overlay.chat || true,
+			chat: (overlay.chat !== undefined) ? overlay.chat : true,
 			chatMessage: overlay.chatMessage || "",
 			sfx: sfx,
 			enterEffect: overlay.enterEffect || "easeIn",
