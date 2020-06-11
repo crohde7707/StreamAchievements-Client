@@ -19,6 +19,8 @@ class AdditionalPlatformPanel extends React.Component {
 				loading: false
 			});
 		}
+
+		console.log(this.props.profile.platforms);
 		
 		return true;
 	}

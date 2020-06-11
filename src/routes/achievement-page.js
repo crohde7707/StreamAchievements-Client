@@ -1366,6 +1366,7 @@ class AchievementPage extends React.Component {
 									</label>
 								</div>
 							</div>
+							{platformContent}
 							<h4>Condition<span className="help" title="Sets what will trigger a community member to earn the achievement!"></span></h4>
 							<div className="formGroup">
 								<label htmlFor="achievement-achType">Type of Achievement *</label>
@@ -1390,7 +1391,6 @@ class AchievementPage extends React.Component {
 								</select>
 							</div>
 							{this.getConditionContent()}
-							{platformContent}
 							<h4 className="noMargin">Icon<span className="help" title="Upload an icon specific for your achievement! Leaving this blank will fall back on the one provided in your general settings!"></span></h4>
 							{iconSection}
 		                    {saveButton}

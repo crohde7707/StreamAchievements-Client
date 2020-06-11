@@ -90,6 +90,9 @@ class PlatformIntegrationPanel extends React.Component {
 
 		let platform = this.props.platform.toLowerCase();
 		let platformData = this.props.profile.platforms[platform];
+		console.log(platform);
+		console.log(this.props.profile);
+		console.log(this.props.profile.platforms);
 
 		let showUnlink = Object.keys(this.props.profile.platforms).length > 1;
 

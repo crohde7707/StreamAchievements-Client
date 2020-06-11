@@ -19,6 +19,8 @@ let initialState = {
 }
 
 export default function ProfileReducer(state = initialState, action) {
+	let newState;
+
 	switch (action.type) {
 		case SET_PROFILE: 
 			let platforms = {};
@@ -89,15 +91,27 @@ export default function ProfileReducer(state = initialState, action) {
 			}
 			break;
 		case UNLINK_SERVICE:
-			let newState = {...state};
+			newState = {...state};
 			newState[action.data] = false;
 
 			return {
 				...newState
 			}
 			break;
+		case UNLINK_PLATFORM:
+
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					platforms: {
+						...state.profile.platforms,
+						[action.data]: undefined
+					}
+				}
+			}
+			break;
 		case UPDATE_STATUS:
-			console.log(action.data);
 			return {
 				...state,
 				profile: {
