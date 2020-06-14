@@ -281,6 +281,7 @@ class AchievementPage extends React.Component {
 						touched['icon'] = true;
 						touched['file'] = true;
 						touched['iconName'] = true;
+						touched['iconType'] = true;
 						touched['iconPreview'] = true;
 
 						let newPreview = URL.createObjectURL(file);
@@ -289,6 +290,7 @@ class AchievementPage extends React.Component {
 		                	icon: newPreview,
 		                	iconPreview: newPreview,
 							iconName: file.name,
+							iconType: file.type,
 		                	file: file,
 		                	touched: touched
 		                });
@@ -558,6 +560,7 @@ class AchievementPage extends React.Component {
 					limited: this.state.limited,
 					secret: this.state.secret,
 					iconName: (this.state.file) ? this.state.file.name : '',
+					iconType: (this.state.file) ? this.state.file.type : '',
 					achType: this.state.achType,
 					rank: this.state.rank
 				};

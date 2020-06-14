@@ -85,7 +85,7 @@ export default class ImagePanel extends React.Component {
 								<input
 							        type="file"
 							        id="achievement-icon"
-							        accept="image/jpeg, image/png"
+							        accept="image/jpeg, image/png, image/gif"
 							        ref={fileInputEl =>
 							            (this.fileInputEl = fileInputEl)
 							        }

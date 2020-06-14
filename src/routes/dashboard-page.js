@@ -388,6 +388,7 @@ class DashboardPage extends React.Component {
 						touched[name + 'File'] = true;
 						touched[name + 'Name'] = true;
 						touched[name + 'Preview'] = true;
+						touched[name + 'Type'] = true;
 
 						let newPreview = URL.createObjectURL(file);
 
@@ -398,6 +399,7 @@ class DashboardPage extends React.Component {
 						stateUpdate[name + 'File'] = file;
 						stateUpdate[name + 'Name'] = file.name;
 						stateUpdate[name + 'Preview'] = newPreview;
+						stateUpdate[name + 'Type'] = file.type;
 
 						this.setState(stateUpdate);
 
@@ -496,11 +498,13 @@ class DashboardPage extends React.Component {
 				stateUpdate.selected[iconName] = identifier;
 				this[iconName + 'Selected'] = this[iconName + 'Preview'];
 				stateUpdate[iconName + 'Selected'] = this.state[iconName + 'Preview'];
+				stateUpdate[iconName + 'Type'] = this.state[iconName + 'File'].type;
 
 				let touched = this.state.touched || {};
 
 				touched[iconName] = true;
 				touched[iconName + 'File'] = true;
+				touched[iconName + 'Type'] = true;
 
 				stateUpdate.touched = touched;
 
@@ -594,6 +598,7 @@ class DashboardPage extends React.Component {
 					defaultReader.addEventListener("load", () => {
 						payload.defaultIcon = defaultReader.result;
 						payload.defaultIconName = this.state.defaultIconFile.name;
+						payload.defaultIconType = this.state.defaultIconType;
 						resolve();
 					});
 					defaultReader.readAsDataURL(this.state.defaultIconFile);
@@ -615,6 +620,7 @@ class DashboardPage extends React.Component {
 					hiddenReader.addEventListener("load", () => {
 						payload.hiddenIcon = hiddenReader.result;
 						payload.hiddenIconName = this.state.hiddenIconFile.name;
+						payload.hiddenIconType = this.state.hiddenIconType;
 						resolve();
 					});
 					hiddenReader.readAsDataURL(this.state.hiddenIconFile);
