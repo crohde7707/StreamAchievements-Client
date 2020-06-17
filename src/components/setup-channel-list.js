@@ -1,7 +1,4 @@
 import React from 'react';
-import axios from 'axios';
-import throttle from 'lodash/throttle';
-import { withRouter } from 'react-router-dom';
 
 import './setup-channel-list.css';
 
@@ -41,7 +38,7 @@ export default class SetupChannelList extends React.Component {
 
 							if(channel.joined) {
 								classes += " setup-channel-item--joined"
-								joinButton = (<div className="setup-channel-item--join"><img src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" /></div>);
+								joinButton = (<div className="setup-channel-item--join"><img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1566873563/checked-white.png" /></div>);
 							} else {
 								joinButton = (<button type="button" className="setup-channel-item--join" onClick={() => {this.props.onJoin(channel)}}>Join</button>);
 							}

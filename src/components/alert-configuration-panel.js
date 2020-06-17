@@ -9,7 +9,6 @@ const ICON_SELECTED = 'icon--selected';
 export default class AlertConfigurationPanel extends React.Component {
 
 	constructor(props) {
-		console.log(props.overlay.chat);
 		super(props);
 
 		let overlay = props.overlay || {};

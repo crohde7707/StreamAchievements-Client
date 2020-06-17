@@ -12,7 +12,7 @@ export default class LegalCookiePage extends React.Component {
 			<div className="legal-page">
 				<div className="section-wrapper header">
 					<div className="section-content">
-						<Link to="/home"><img className="logo" src={require('../img/logo.png')} /></Link>
+						<Link to="/home"><img alt="StreamAchievements Logo" className="logo" src={require('../img/logo.png')} /></Link>
 					</div>
 				</div>
 				<div className="section-wrapper content">

@@ -137,14 +137,14 @@ export default class Moderators extends React.Component {
 				return (
 					<div key={'moderator.' + idx} className={classes}>
 						<div className="moderator-logo">
-							<img src={moderator.logo} />
+							<img alt="" src={moderator.logo} />
 						</div>
 						<div className="moderator-name">
 							{moderator.name}
 						</div>
 						{/*permissions*/}
 						<div className="moderator-delete" onClick={() => {this.deleteMod(moderator)}}>
-							<img className="moderator-delete-button" src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png" />
+							<img alt="Trash Icon" className="moderator-delete-button" src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png" />
 						</div>
 					</div>
 				);

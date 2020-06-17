@@ -119,13 +119,13 @@ export default class AddModeratorModal extends React.Component {
 						if(selected) {
 							memberLogo = (
 								<div className="clear-member">
-									<img src="https://res.cloudinary.com/phirehero/image/upload/v1566235862/x.png" />
+									<img alt="Clear Member" src="https://res.cloudinary.com/phirehero/image/upload/v1566235862/x.png" />
 								</div>
 							);
 						} else {
 							memberLogo = (
 								<div className="member-logo">
-									<img src={member.logo} />
+									<img alt="Member Logo" src={member.logo} />
 								</div>
 							);
 						}
@@ -143,7 +143,7 @@ export default class AddModeratorModal extends React.Component {
 						if(member.isMod) {
 							className += " channelMember--mod";
 
-							isMod = (<img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />);
+							isMod = (<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />);
 						}
 
 						return (

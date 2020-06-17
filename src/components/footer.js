@@ -9,13 +9,13 @@ export default class Footer extends React.Component {
 			<div className="footer">
 				<div className="footer-content social">
 					<a target="blank" href="https://twitter.com/streamachieve">
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/twitter-icon.png" />
+						<img alt="Twitter" src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/twitter-icon.png" />
 					</a>
 					<a target="blank" href="https://discord.gg/xkF35Qj">
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/discord-icon.png" />
+						<img alt="Discord" src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/discord-icon.png" />
 					</a>
 					<a target="blank" href="https://www.youtube.com/channel/UC06LsnP9p8woHBqwjN_jJtw">
-						<img src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/yt-icon.png" />
+						<img alt="YouTube" src="https://res.cloudinary.com/phirehero/image/upload/v1563915371/yt-icon.png" />
 					</a>
 				</div>
 				<div className="footer-content copyright">

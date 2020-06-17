@@ -254,7 +254,7 @@ export default class MembersPanel extends React.Component {
 					<div>
 						{members.map((member, index) => (
 							<div key={"member." + index} className="member-item" onClick={() => {this.showPanel(member)}}>
-								<div className="member-item--logo"><img src={member.logo} /></div>
+								<div className="member-item--logo"><img alt="" src={member.logo} /></div>
 								<div className="member-item--name">{member.name}</div>
 							</div>
 						))}
@@ -341,7 +341,7 @@ export default class MembersPanel extends React.Component {
 				<div className={("member-details") + fadeClass + classNames}>
 					<button className="back-button" type="button" onClick={this.hidePanel}>Back to Search</button>
 					<div className="member-item">
-						<div className="member-item--logo"><img src={this.state.selectedMember.logo} /></div>
+						<div className="member-item--logo"><img alt="" src={this.state.selectedMember.logo} /></div>
 						<div className="member-item--name">{this.state.selectedMember.name}</div>
 						{buttonPanel}
 					</div>
@@ -358,7 +358,7 @@ export default class MembersPanel extends React.Component {
 					{confirmPanel}
 					<div className="saveReorder--wrapper">
 							<button className="saveReorder--button" type="button" onClick={this.handleSave}>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+								<img alt="Save Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
 							</button>
 						</div>
 				</div>

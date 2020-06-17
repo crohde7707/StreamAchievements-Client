@@ -1,13 +1,10 @@
 import React from 'react';
-import connector from '../redux/connector';
 import {syncStreamlabs, unlinkService} from '../redux/profile-reducer';
 import axios from 'axios';
 import ConfirmPanel from '../components/confirm-panel';
 import TooltipWrapper from './tooltip-wrapper';
 
 import './streamlabs-panel.css';
-
-const STREAMLABS_URL = 'https://www.streamlabs.com/join/streamachievements';
 
 export default class StreamlabsPanel extends React.Component {
 
@@ -76,8 +73,6 @@ export default class StreamlabsPanel extends React.Component {
 					</ConfirmPanel>
 				);
 			}
-
-			let logo = (this.props.profile && this.props.profile.logo) || '';
 
 			streamlabsContent = (
 				<div className="integration integration--streamlabs">

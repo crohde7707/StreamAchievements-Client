@@ -19,7 +19,7 @@ import MembersPanel from '../components/members-panel';
 import InfoPanel from '../components/info-panel';
 import ChannelIntegrationsPanel from '../components/channel-integrations-panel';
 import TooltipWrapper from '../components/tooltip-wrapper';
-import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 
 import './dashboard-page.css';
 
@@ -480,7 +480,7 @@ class DashboardPage extends React.Component {
 		let name = evt.target.name;
 		let prevIconName = this.state.selected[iconName];
 
-		if(prevIconName != name) {
+		if(prevIconName !== name) {
 			let stateUpdate = {
 				selected: this.state.selected
 			};
@@ -786,7 +786,7 @@ class DashboardPage extends React.Component {
 	handleDeleteText = (evt) => {
 		let field = evt.target;
 
-		if(field.name="delete") {
+		if(field.name === "delete") {
 			this.setState({
 				deleteVerify: (field.value === this.props.profile.username.toUpperCase())
 			});
@@ -837,7 +837,7 @@ class DashboardPage extends React.Component {
 				achievementRoute = '/mod/' + this.props.match.params.channelid + '/achievement';
 			}
 
-			let {logo, owner, referral} = this.state.channel;
+			let {referral} = this.state.channel;
 			let achievements = this.state.achievements;
 
 			if(Array.isArray(this.state.filteredAchievements)) {
@@ -1036,8 +1036,6 @@ class DashboardPage extends React.Component {
 				);
 			}
 
-			let deleteButtonClasses = "delete-channel--button";
-
 			let graphic;
 
 			if(this.state.graphic) {
@@ -1067,7 +1065,7 @@ class DashboardPage extends React.Component {
 						{imagePanel}
 						<div className="saveReorder--wrapper">
 							<button className="saveReorder--button" type="button" onClick={this.handleSave}>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+								<img alt="Save Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
 							</button>
 						</div>
 				</div>
@@ -1220,7 +1218,7 @@ class DashboardPage extends React.Component {
 						{modal}
 						<div className="saveReorder--wrapper">
 							<button className="saveReorder--button" type="button" onClick={saveAction}>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
+								<img alt="Save Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1564251099/save-icon-shadow.png" />
 							</button>
 						</div>
 					</div>
@@ -1364,7 +1362,7 @@ class DashboardPage extends React.Component {
 					<Tab className="manage-tab">Achievements</Tab>
 					<Tab className="manage-tab">Members</Tab>
 					<Tab className="manage-tab">Moderators</Tab>
-					<Tab className="manage-tab">Images</Tab>
+					{this.state.channel.gold && <Tab className="manage-tab">Images</Tab>}
 				</React.Fragment>
 			);
 
@@ -1388,10 +1386,10 @@ class DashboardPage extends React.Component {
 					<TabPanel>
 						{moderatorContent}
 					</TabPanel>
-					<TabPanel>
+					{this.state.channel.gold && <TabPanel>
 						{imageContent}
 						{confirmPanel}
-					</TabPanel>
+					</TabPanel>}
 				</React.Fragment>
 			)
 		}
@@ -1472,17 +1470,6 @@ class DashboardPage extends React.Component {
             	{deletePopup}
 			</Template>
 		);
-	}
-}
-
-class AchievementList extends React.Component {
-
-	render() {
-		return (
-			<div>
-				{this.props.children}
-			</div>
-		)
 	}
 }
 

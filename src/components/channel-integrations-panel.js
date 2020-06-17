@@ -19,11 +19,11 @@ class ChannelIntegrationsPanel extends React.Component {
 
 	render() {
 		let integrations = this.props.channel.integrations;
-		let connectedContent = [<h4 className="my-integrations-header">My Integrations</h4>];
+		let connectedContent = [<h4 key="integration-header" className="my-integrations-header">My Integrations</h4>];
 		
 		if(!integrations || Object.keys(integrations).length === 0) {
 			connectedContent.push([
-				<p>No integrations have been connected</p>
+				<p key="integration-notice">No integrations have been connected</p>
 			])
 		}
 

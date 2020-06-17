@@ -274,8 +274,6 @@ class ChannelPage extends React.Component {
 
 
 			if(achievements.length > 0) {
-				let userAchievements = this.state.achievements.earned;
-
 				achievementsContent = (
 					<div className="achievements-container">
 						{achievements.map((achievement, index) => {
@@ -375,7 +373,7 @@ class ChannelPage extends React.Component {
 				headerClasses += " not-joined";
 			}
 
-			let platformsIcons = [], name = [];
+			let name = [];
 
 			let channelPlatforms = Object.keys(platforms);
 
@@ -405,9 +403,9 @@ class ChannelPage extends React.Component {
 				}
 
 				name.push((
-					<div className="channel-item--identifier">
-						<a title={`Go to ${channelName}'s channel on ${platform}!`} href={link} target="_blank">
-							<img src={icon} /> 
+					<div key={`${platform}-channel-identifier`} className="channel-item--identifier">
+						<a title={`Go to ${channelName}'s channel on ${platform}!`} href={link} target="_blank" rel="noopener noreferrer">
+							<img alt="" src={icon} /> 
 						</a> <span className="name">{channelName}</span>
 					</div>
 				));
@@ -425,7 +423,7 @@ class ChannelPage extends React.Component {
 						>
 							{favorite}
 							<div className="channel-logo">
-								<img src={logo} />
+								<img alt="" src={logo} />
 							</div>
 							<div className="channel-info">
 								<div className="channel-item--name">

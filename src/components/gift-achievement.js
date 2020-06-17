@@ -164,7 +164,7 @@ export default class GiftAchievementModal extends React.Component {
 							if(member.earned) {
 								className += " channelMember--earned";
 
-								earned = (<img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />);
+								earned = (<img alt="Default icon" src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />);
 							}
 
 							if(member.nonMember) {

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { TwitterShareButton } from 'react-twitter-embed';
 import io from "socket.io-client";
@@ -116,7 +115,7 @@ class ChannelDirectoryPage extends React.Component {
 					<div>
 						{channels.map((channel, index) => {
 
-							let logo, platforms = [], name = [];
+							let logo, name = [];
 
 							let channelPlatforms = Object.keys(channel.platforms);
 
@@ -126,10 +125,10 @@ class ChannelDirectoryPage extends React.Component {
 								logo = channel.platforms[currentPlatform].logo;
 							}
 
-							channelPlatforms.forEach(channelPlatform => {
+							channelPlatforms.forEach(platform => {
 								let icon;
 
-								switch(channelPlatform) {
+								switch(platform) {
 									case 'twitch':
 										icon=TWITCH_ICON;
 										break;
@@ -141,15 +140,15 @@ class ChannelDirectoryPage extends React.Component {
 								}
 
 								name.push((
-									<div className="channel-item--identifier">
-										<img src={icon} /> <span className="name">{channel.platforms[channelPlatform].name}</span>
+									<div key={`${platform}-channel-identifier`} className="channel-item--identifier">
+										<img alt="" src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
 									</div>
 								));
 							});
 
 							return (
 								<div key={"channel." + index} className="channel-item" onClick={() => {this.loadChannel(channel)}}>
-									<div className="channel-item--logo"><img src={logo} /></div>
+									<div className="channel-item--logo"><img alt="" src={logo} /></div>
 									<div className="channel-item--name">{name}</div>
 								</div>
 							)

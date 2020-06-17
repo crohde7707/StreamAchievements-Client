@@ -26,7 +26,7 @@ class ProfilePage extends React.Component {
 			fetching: true,
 			loading: true,
 			retrieving: false,
-			preferences: (this.props.profile) ? this.props.profile.preferences : {},
+			preferences: (this.props.profile) ? this.props.profile.preferences : {autojoin: true},
 			showMore: false
 		};
 	}
@@ -171,7 +171,8 @@ class ProfilePage extends React.Component {
 
 						this.setState(stateUpdate);
 					});
-				})
+				});
+				break;
 			default:
 				break;
 		}
@@ -250,7 +251,7 @@ class ProfilePage extends React.Component {
 
 	render() {
 
-		let preferencesContent, integrationContent, notificationContent, patreonContent, showMoreButton;
+		let preferencesContent, integrationContent, notificationContent, showMoreButton;
 
 		if(!this.state.fetching && this.props.profile) {
 
@@ -379,6 +380,7 @@ class ProfilePage extends React.Component {
 								<div className="notification-date">{new Date(notification.date).toLocaleDateString()}</div>
 								<div className="notification-delete" onClick={(evt) => {this.deleteNotification(evt, notification)}}>
 									<img
+										alt="Delete Notification Icon"
 										className="delete-notification-button"
 										src="https://res.cloudinary.com/phirehero/image/upload/v1556641782/trash-white.png"
 									/>

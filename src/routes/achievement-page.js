@@ -395,113 +395,50 @@ class AchievementPage extends React.Component {
 	}
 
 	getConditionContent = () => {
-		if(this.state.achType !== "") {
+		if(this.state.channel) {
 
-			let conditionContent;
-			let helpText;
+			let platforms = this.state.channel.platforms;
+			let platform;
 
-			switch(this.state.achType) {
-				case "0":
-					conditionContent = (
-						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-condition">Tier</label>
-								<select 
-									id="achievement-condition"
-									name="condition"
-									className={"selectInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
-									onChange={this.handleDataChange}
-									value={this.state.condition}
-								>
-									<option value={1000}>Tier 1</option>
-									<option value={2000}>Tier 2</option>
-									<option value={3000}>Tier 3</option>
-								</select>
-							</div>
-						</div>
-					)
-					break;
-				case "1":
-					conditionContent = (
-						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-condition">Months *</label>
-								<input
-									id="achievement-condition"
-									name="condition"
-									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
-									type="text"
-									value={this.state.condition}
-									onChange={this.handleDataChange}
-								/>
-							</div>
-							<div className="helpText">Number of months a viewer has subbed altogether</div>
-						</div>
-					);
-					break;
-				case "2":
-					//Gifted Sub
-					helpText = "Total number of gifted subs (defaults to 1)";
-					conditionContent = (
-						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-condition"># of Gifted Subs *</label>
-								<input
-									id="achievement-condition"
-									name="condition"
-									className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
-									type="text"
-									value={this.state.condition}
-									onChange={this.handleDataChange}
-								/>
-							</div>
-							<div className="helpText">
-								{helpText}
-							</div>
-						</div>
-					);
-					break;
-				case "3":
-					conditionContent = (
-						<div>
-							<div className="achievementTypeInfo">For manual achievements, they can only be obtained by you gifting them out to your community!</div>
-						</div>
-					);
-					break;
-				case "4":
-					//Custom
-					if(this.state.customAllowed || (this.state.edit && this.state.originalAchievement.achType === "4")) {
+			if(platforms.length === 1) {
+				platform = platforms[0];
+			} else {
+				platform = "multiple";
+			}
 
+			if(this.state.achType !== "") {
+
+				let conditionContent;
+				let helpText;
+
+				switch(this.state.achType) {
+					case "0":
+						if(platform === 'twitch') {
+							conditionContent = (
+								<div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition">Tier</label>
+										<select 
+											id="achievement-condition"
+											name="condition"
+											className={"selectInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											onChange={this.handleDataChange}
+											value={this.state.condition}
+										>
+											<option value={1000}>Tier 1</option>
+											<option value={2000}>Tier 2</option>
+											<option value={3000}>Tier 3</option>
+										</select>
+									</div>
+								</div>
+							)
+						}
+						break;
+					case "1":
 						conditionContent = (
 							<div>
 								<div className="formGroup">
-									<label htmlFor="achievement-bot">Bot Name *</label>
-									<input
-										id="achievement-bot"
-										name="bot"
-										className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
-										type="text"
-										value={this.state.bot}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-								<div className="formGroup">
-									<label htmlFor="achievement-query">
-										<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
-									</label>
-									<input
-										id="achievement-query"
-										name="query"
-										className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
-										type="text"
-										value={this.state.query}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-								<div className="formGroup">
-									<label htmlFor="achievement-condition">
-										<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
-									</label>
+									<label htmlFor="achievement-condition">Months *</label>
 									<input
 										id="achievement-condition"
 										name="condition"
@@ -511,54 +448,184 @@ class AchievementPage extends React.Component {
 										onChange={this.handleDataChange}
 									/>
 								</div>
+								<div className="helpText">Number of months a viewer has subbed altogether</div>
 							</div>
 						);
-					} else {
+						break;
+					case "2":
+						//Gifted Sub
+						if(platform === 'twitch') {
+							helpText = "Total number of gifted subs (defaults to 1)";
+							conditionContent = (
+								<div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition"># of Gifted Subs *</label>
+										<input
+											id="achievement-condition"
+											name="condition"
+											className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											type="text"
+											value={this.state.condition}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+									<div className="helpText">
+										{helpText}
+									</div>
+								</div>
+							);
+						}
+						break;
+					case "3":
 						conditionContent = (
-							<div className="formGroup upgradeTier">
-								<p>Create unlimited custom achievements with <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p> 
+							<div>
+								<div className="achievementTypeInfo">For manual achievements, they can only be obtained by you gifting them out to your community!</div>
 							</div>
-						)
-					}
-					break;
-				case "5":
-					//Follow (Streamlabs)
-					conditionContent = (
-						<div>
-							<div className="formGroup">
-								<label htmlFor="achievement-bot">Bot Name *</label>
-								<input
-									id="achievement-bot"
-									name="bot"
-									className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
-									type="text"
-									value={this.state.bot}
-									onChange={this.handleDataChange}
-									placeholder="The bot that has your followage command"
-								/>
-							</div>
-							<div className="formGroup">
-								<label htmlFor="achievement-query">
-									<a href="javascript:;" onClick={() => {this.showPopup('followageMessage')}} className="gold">Followage Message</a> *
-								</label>
-								<input
-									id="achievement-query"
-									name="query"
-									className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
-									type="text"
-									value={this.state.query}
-									onChange={this.handleDataChange}
-									placeholder="The message you bot puts in the chat ({user} is required)"
-								/>
-							</div>
-						</div>
-					);
-					break;
-				default:
-					break;
-			}
+						);
+						break;
+					case "4":
+						//Custom
+						if(this.state.customAllowed || (this.state.edit && this.state.originalAchievement.achType === "4")) {
 
-			return conditionContent;
+							conditionContent = (
+								<div>
+									<div className="formGroup">
+										<label htmlFor="achievement-bot">Bot Name *</label>
+										<input
+											id="achievement-bot"
+											name="bot"
+											className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
+											type="text"
+											value={this.state.bot}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+									<div className="formGroup">
+										<label htmlFor="achievement-query">
+											<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
+										</label>
+										<input
+											id="achievement-query"
+											name="query"
+											className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
+											type="text"
+											value={this.state.query}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition">
+											<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
+										</label>
+										<input
+											id="achievement-condition"
+											name="condition"
+											className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											type="text"
+											value={this.state.condition}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+							);
+						} else {
+							conditionContent = (
+								<div className="formGroup upgradeTier">
+									<p>Create unlimited custom achievements with <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p> 
+								</div>
+							)
+						}
+						break;
+					case "5":
+						//Follow (Streamlabs)
+						conditionContent = (
+							<div
+>								<div className="infoHelpText">In order for existing followers to earn the achievement, provide a !followage command from your favorite bot!</div>
+								<div className="formGroup">
+									<label htmlFor="achievement-bot">Bot Name *</label>
+									<input
+										id="achievement-bot"
+										name="bot"
+										className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
+										type="text"
+										value={this.state.bot}
+										onChange={this.handleDataChange}
+										placeholder="The bot that has your followage command"
+									/>
+								</div>
+								<div className="formGroup">
+									<label htmlFor="achievement-query">
+										<a href="javascript:;" onClick={() => {this.showPopup('followageMessage')}} className="gold">Followage Message</a> *
+									</label>
+									<input
+										id="achievement-query"
+										name="query"
+										className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
+										type="text"
+										value={this.state.query}
+										onChange={this.handleDataChange}
+										placeholder="The message you bot puts in the chat ({user} is required)"
+									/>
+								</div>
+							</div>
+						);
+						break;
+					case "9":
+						//Mixer: Level Up
+						if(platform === 'mixer') {
+							conditionContent = (
+								<div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition">Level Reached *</label>
+										<input
+											id="achievement-condition"
+											name="condition"
+											className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											type="text"
+											value={this.state.condition}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+							);
+						}
+						break;
+					case "10":
+						if(platform === 'mixer') {
+							conditionContent = (
+								<div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition">Level Reached *</label>
+										<input
+											id="achievement-condition"
+											name="condition"
+											className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											type="text"
+											value={this.state.condition}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+									<div className="formGroup">
+										<label htmlFor="achievement-condition">Level Reached *</label>
+										<input
+											id="achievement-condition"
+											name="condition"
+											className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
+											type="text"
+											value={this.state.condition}
+											onChange={this.handleDataChange}
+										/>
+									</div>
+								</div>
+							);	
+						}
+						break;
+					default:
+						break;
+				}
+
+				return conditionContent;
+			}
 		}
 
 		return null;
@@ -913,20 +980,29 @@ class AchievementPage extends React.Component {
 		});
 	}
 
-	getBotOptions = (bot) => {
-		if(this.state.channel) {
-			let integrations = this.state.channel.integrations;
+	getBotOptions = (platform) => {
 
-			if(integrations.includes('streamlabs')) {
+		let integrations = this.state.channel.integrations;
+
+		if(integrations.includes('streamlabs')) {
+			if(platform === 'twitch') {
 				return (
 					<React.Fragment>
-						<option value="5">New Follow</option>
-						<option value="6">New Donation</option>
-						<option value="7">New Bit Donation</option>
+						<option value="5">Follow</option>
+						<option value="6">Donation</option>
+						<option value="7">Bit Donation</option>
+					</React.Fragment>
+				)
+			} else if(platform === 'mixer') {
+				return (
+					<React.Fragment>
+						<option value="6">Donation</option>
 					</React.Fragment>
 				)
 			}
 		}
+
+		return null;
 	}
 
 	togglePreview = () => {
@@ -990,6 +1066,62 @@ class AchievementPage extends React.Component {
 		}
 
 		this.setState(stateUpdate);
+	}
+
+	buildAchievementOptions = () => {
+
+		let isGold = (this.props.patreon && this.props.patreon.gold) || (this.state.isMod && this.state.isGoldChannel);
+		let customType;
+
+		if(isGold) {
+			customType = (<option value="4">Custom</option>);
+		} else if(typeof this.state.customAllowed !== 'boolean') {
+			customType = (<option value="4">{`Custom [${this.state.customAllowed} remaining]`}</option>);
+		} else if(!this.state.loading) {
+			customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold]</option>);
+		}
+
+		let platforms = this.state.channel.platforms;
+
+		if(platforms.length === 1) {
+			//set up achievements specific to platform
+			let platform = this.state.channel.platforms[0];
+
+			if(platform === 'twitch') {
+
+			} else if(platform === 'mixer') {
+				return (
+					<React.Fragment>
+						<option value="" disabled></option>
+						<option value="5">Follow</option>
+						<option value="8">Host</option>
+						<option value="0">New Sub</option>
+						<option value="1">Resub</option>
+						<option value="2">Gifted Sub</option>
+						<option value="9">Level Up</option>
+						<option value="10">Sticker</option>
+						<option value="11">Skill</option>
+						{this.getBotOptions(platform)}
+						<option value="3">Manual</option>
+					</React.Fragment>
+				);
+			}
+			
+		} else {
+			//combine achievements together
+		}
+
+		return (
+			<React.Fragment>
+				<option value="" disabled></option>
+				{this.getBotOptions()}
+				<option value="0">New Sub</option>
+				<option value="1">Resub</option>
+				<option value="2">Gifted Sub</option>
+				<option value="3">Manual</option>
+				{customType}
+			</React.Fragment>
+		);
 	}
 
 	render() {
@@ -1069,8 +1201,6 @@ class AchievementPage extends React.Component {
 				);
 			}
 
-			let customType;
-
 			if(this.state.iconPreview) {
 				imgPreviewContent = (<img src={this.state.iconPreview} />);
 			} else {
@@ -1086,7 +1216,6 @@ class AchievementPage extends React.Component {
 					hover = undefined;
 				}
 
-				customType = (<option value="4">Custom</option>);
 				iconSection = (
 					<div className={className}>
 						<label htmlFor="achievement-icon">Icon</label>
@@ -1102,7 +1231,6 @@ class AchievementPage extends React.Component {
                     </div>
 				)
 			} else if(typeof this.state.customAllowed !== 'boolean') {
-				customType = (<option value="4">{`Custom [${this.state.customAllowed} remaining]`}</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
@@ -1117,7 +1245,6 @@ class AchievementPage extends React.Component {
 				);
 			} */
 			} else if(!this.state.loading) {
-				customType = (<option disabled title="Unlocked with Stream Achievements Gold!" value="4">Custom [Gold]</option>);
 				iconSection = (
 					<div className="formGroup upgradeTier">
 						<p>Upload custom images for each of your achievements by upgrading to <Link className="gold" to="/gold">Stream Achievements Gold</Link>!</p>
@@ -1151,13 +1278,13 @@ class AchievementPage extends React.Component {
 					enableText = " Would you like to enable this achievement for your referral bonus?";
 					enableButton = (<button onClick={this.enableCustomAchievement} className="enableButton">Enable</button>);
 				} else {
-					enableText = (<span>To re enable, become a <a href="/gold" className="gold-white">Gold</a> member once again!"</span>);
+					enableText = (<span>To re-enable this achievement, become a <a href="/gold" className="gold-white">Gold</a> member once again!</span>);
 				}
 
 				warning = (
 					<div className="achievement-page--inactiveWarning">
 						<div className="info">
-							<span>This custom achievement is currently disabled, and can not be earned by your community.</span>
+							<span>This custom achievement is currently disabled, and is currently unavailable to your community!</span>
 							<span>{enableText}</span>
 						</div>
 						{enableButton}
@@ -1378,16 +1505,7 @@ class AchievementPage extends React.Component {
 									onChange={this.handleDataChange}
 									value={this.state.achType}
 								>
-									<option value="" disabled></option>
-									{this.getBotOptions('streamlabs')}
-									<option value="0">New Sub</option>
-									<option value="1">Resub</option>
-									<option value="2">Gifted Sub</option>
-									<option value="3">Manual</option>
-									{customType}
-									<optgroup label="Mixer">
-										<option value="8">New Follow</option>
-									</optgroup>
+									{this.state.channel && this.buildAchievementOptions()}
 								</select>
 							</div>
 							{this.getConditionContent()}

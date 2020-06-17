@@ -160,12 +160,12 @@ class PatreonPanel extends React.Component {
 						<div className="patreon--content">
 							<div className="support">
 								<div>Love having achievements from your favorite streamers and want to help support keeping this service running? Consider becoming a Patron!</div>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png" />
+								<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1558834120/default-icon-silver.png" />
 								<button onClick={this.goToPatreon} type="button">Become a Supporter</button>
 							</div>
 							<div className="upgrade">
 								<div>Are you enjoying offering achievements to your community, and want to extend the capibilities even further? Enable all of the features by becoming a <span className="gold">Gold Achievement</span>!</div>
-								<img src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />
+								<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1558811694/default-icon.png" />
 								<button onClick={this.goToPatreon} type="button">Upgrade to Gold</button>
 							</div>
 						</div>
@@ -225,10 +225,14 @@ class PatreonPanel extends React.Component {
 							</a>
 						</div>
 						<div className="integration-settings">
-							<a title="Opens Patreon profile in new tab" href="https://www.patreon.com/user/creators" target="_blank"><img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" /></a>
+							<a title="Opens Patreon profile in new tab" href="https://www.patreon.com/user/creators" target="_blank" rel="noopener noreferrer">
+								<img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" />
+							</a>
 						</div>
 						<div className="integration-sync" ref={(el) => {this._sync = el}}>
-							<a title="Sync with Patreon" href="javascript:;" onClick={this.handleSync}><img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png" /></a>
+							<a title="Sync with Patreon" href="javascript:;" onClick={this.handleSync}>
+								<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1572808522/sync-white.png" />
+							</a>
 						</div>
 					</div>
 					<div className="integration-content">

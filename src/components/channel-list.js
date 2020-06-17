@@ -162,7 +162,7 @@ class ChannelList extends React.Component {
 								
 								name.push(
 									<div className="channel-item--identifier">
-											<img src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
+											<img alt="Channel icon" src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
 									</div>
 								)
 							});
@@ -231,8 +231,8 @@ class ChannelList extends React.Component {
 								}
 								
 								name.push(
-									<div className="channel-item--identifier">
-											<img src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
+									<div key={`${platform}-channel-identifier`} className="channel-item--identifier">
+											<img alt="Channel Icon" src={icon} /> <span className="name">{channel.platforms[platform].name}</span>
 									</div>
 								)
 							});
