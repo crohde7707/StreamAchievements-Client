@@ -263,6 +263,24 @@ class AchievementPage extends React.Component {
 		
 	}
 
+	handleIconConfirm = (removeIcon) => {
+		let stateUpdate = {
+			showImagePanel: false
+		};
+
+		if(removeIcon) {
+			let touched = this.state.touched || {};
+			touched['icon'] = true;	
+		
+			stateUpdate.icon = '';
+			stateUpdate.iconPreview = '';
+			stateUpdate.file = '';
+			stateUpdate.touched = touched;
+		}
+		
+		this.setState(stateUpdate)
+	}
+
 	handleIconChange = (event) => {
 
 		return new Promise((resolve, reject) => {
@@ -980,7 +998,7 @@ class AchievementPage extends React.Component {
 						currentImage={this.state.iconPreview}
 						icons={this.state.icons}
 						onChange={this.handleIconChange}
-						onConfirm={() => {this.setState({showImagePanel: false})}}
+						onConfirm={this.handleIconConfirm}
 						onCancel={() => {this.setState({showImagePanel: false})}}
 					/>
 				);

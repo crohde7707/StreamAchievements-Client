@@ -205,6 +205,21 @@
     cursor: pointer;
 }
 
+.chooseImage {
+	margin-top: 45px;
+}
+
+.chooseImage--wrapper .upload--subtext {
+	margin: 10px 0;
+}
+
+.remove-image-button {
+	color: white;
+	background: red;
+	border: 0;
+	min-width: 150px;
+}
+
 @media only screen and (max-width: 480px) {
 	.achievement-wrapper h4 {
 		padding-left: 10px;

@@ -1,0 +1,46 @@
+.platformLink {
+	border: 1px solid #555;
+	border-radius: 6px;
+}
+
+.platformLink img {
+	width: 60px;
+	height: 60px;
+}
+
+.platformLink.streamlabs {
+	background: #17242d;
+}
+
+.platformLink.streamelements {
+	background: #020923;
+}
+
+.platformLink.firebot {
+	background: #edf2f6;
+}
+
+.platformLink.platform--disabled {
+	-webkit-filter: grayscale(100%);
+       -moz-filter: grayscale(100%);
+         -o-filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
+            filter: grayscale(100%);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.integration--available-integrations {
+	padding: 15px 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+}
+
+.integration--available-integrations > h4 {
+	margin-top: 0;
+	padding-bottom: 10px;
+}
+
+.integration--available-integrations .platform-list--wrapper {
+	display: flex;
+}

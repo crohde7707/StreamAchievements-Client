@@ -17,6 +17,7 @@ import LoadingSpinner from '../components/loading-spinner';
 import ImagePanel from '../components/image-panel';
 import MembersPanel from '../components/members-panel';
 import InfoPanel from '../components/info-panel';
+import ChannelIntegrationsPanel from '../components/channel-integrations-panel';
 import StreamlabsPanel from '../components/streamlabs-panel';
 import TooltipWrapper from '../components/tooltip-wrapper';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
@@ -213,6 +214,23 @@ class DashboardPage extends React.Component {
 		    
 		    this.setState({filteredAchievements: updatedList});
 	    }	    
+  	}
+
+  	handleTestAchievement = (aid) => {
+  		this.setState({
+			loading: true
+		}, () => {
+			axios.get(`${process.env.REACT_APP_API_DOMAIN}api/channel/testOverlay?aid=${aid}`, {
+				withCredentials: true
+			}).then((res) => {
+				setTimeout(() => {
+					this.setState({
+						loading: false
+					});
+					this.setNotice("Test Alert Sent!");
+				}, 300)
+			});
+		})
   	}
 
   	showGiftModal = (aid) => {
@@ -1201,6 +1219,7 @@ class DashboardPage extends React.Component {
 													onGift={this.showGiftModal}
 													defaultIcons={this.state.channel.icons}
 													onClick={() => {this.props.history.push(achievementRoute + '/' + achievement.uid)}}
+													onTest={this.handleTestAchievement}
 													draggable={this.state.reordering}
 													index={index}
 												/>
@@ -1358,7 +1377,7 @@ class DashboardPage extends React.Component {
 					<Tab className="manage-tab">Achievements</Tab>
 					<Tab className="manage-tab">Members</Tab>
 					<Tab className="manage-tab">Moderators</Tab>
-					<Tab className="manage-tab">Images</Tab>
+					{this.state.channel.gold && <Tab className="manage-tab">Images</Tab>}
 				</React.Fragment>
 			);
 
@@ -1371,7 +1390,7 @@ class DashboardPage extends React.Component {
 						{eventContent}
 					</TabPanel>
 					<TabPanel>
-						<StreamlabsPanel />
+						<ChannelIntegrationsPanel channel={this.state.channel} updateChannel={this.updateChannel} />
 					</TabPanel>
 					<TabPanel>
 						{achievementTab}
@@ -1382,10 +1401,10 @@ class DashboardPage extends React.Component {
 					<TabPanel>
 						{moderatorContent}
 					</TabPanel>
-					<TabPanel>
+					{this.state.channel.gold && <TabPanel>
 						{imageContent}
 						{confirmPanel}
-					</TabPanel>
+					</TabPanel>}
 				</React.Fragment>
 			)
 		}

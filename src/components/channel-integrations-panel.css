@@ -1,0 +1,225 @@
+.integration--streamlabs {
+    background: #DDD;
+}
+
+.integration--streamlabs .integration-content {
+	display: flex;
+	padding: 10px 20px;
+}
+
+.integration--streamlabs .integration-header {
+    background: #31c3a2;
+}
+
+.integration--streamlabs .integration-unlink {
+    flex: 1 1;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.integration--streamlabs .integration-settings {
+    flex: 0;
+    margin-right: 0;
+}
+
+.my-integrations-header {
+    padding-bottom: 10px;
+}
+
+.streamlabs--left {
+	padding: 20px;
+    background: #BBB;
+    box-shadow: 0px 1px 2px #333;
+    z-index: 10;
+}
+
+.streamlabs--thumb img {
+	width: 100px;
+	height: 100px;
+}
+
+.streamlabs--right {
+	flex: 1;
+}
+
+.streamlabsLink {
+    display: flex;
+    text-decoration: none;
+    margin: 0 auto;
+    width: fit-content;
+    background: #050d12;
+    padding: 5px;
+}
+
+.streamlabsLink span {
+    background: #050d12;
+    padding: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.streamlabs--banner {
+	background: #e88446;
+    padding-left: 10px;
+    display: flex;
+    padding: 10px;
+    color: #222;
+    font-weight: 700;
+    font-size: 17px;
+    align-items: center;
+}
+
+.streamlabs--banner div {
+	flex: 1;
+}
+
+.streamlabs--banner .follow-button {
+	align-self: flex-end;
+	justify-content: flex-end;
+	background: white;
+    border: 0;
+    padding: 5px 10px;
+    font-weight: 700;
+}
+
+.integration--streamlabs .feedback {
+    padding: 10px;
+    background: #fffc8c;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.streamlabs--content {
+	padding: 10px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.column-layout {
+    flex-direction: column;
+}
+
+.streamlabs--content .support,
+.streamlabs--content .upgrade {
+	text-align: center;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px #333;
+    margin: 0 10px;
+}
+
+.streamlabs--content.streamlabs--active .upgrade {
+    background: none;
+    border-top: 1px solid;
+    border-radius: 0px;
+    box-shadow: none;
+    padding-top: 15px;
+    margin-top: 20px;
+}
+
+.streamlabs--content button {
+	background: rgb(232, 91, 70);
+    border: none;
+    padding: 10px 15px;
+    margin-top: 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.streamlabs--content h3 {
+	text-align: center;
+}
+
+.streamlabs--features {
+	display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.streamlabs--features div {
+	width: 48%;
+    margin-top: 1px;
+    background: white;
+    padding: 5px;
+    box-shadow: 1px 1px 3px;
+    text-align: center;
+}
+
+.support,
+.upgrade {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.support > img,
+.upgrade > img {
+	width: 100px;
+    margin-top: 10px;
+}
+
+.integration--streamlabs .integration-sync.active img,
+.integration--twitch .integration-sync.active img {
+    animation: rotation 1s infinite linear;
+}
+
+.streamlabs--unlink {
+    display: flex;
+    flex: 1;
+}
+
+.streamlabs--unlink a {
+        padding: 6px 12px;
+    background: rgb(232, 91, 70);
+    color: white;
+    text-decoration: none;
+    margin: 5px auto 0px;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@media only screen and (max-width: 480px) {
+
+    .streamlabs--thumb {
+        text-align: center;
+    }
+
+    .streamlabs--left {
+        padding: 10px;
+    }
+
+    .streamlabs--thumb img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .streamlabs--features div {
+        width: 45%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 36px;
+    }
+}

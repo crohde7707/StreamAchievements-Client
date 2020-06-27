@@ -6,7 +6,8 @@ export default class ImagePanel extends React.Component {
 		super(props);
 
 		this.state = {
-			originalImage: this.props.currentImage
+			originalImage: this.props.currentImage,
+			removeImage: false
 		}
 	}
 
@@ -19,8 +20,8 @@ export default class ImagePanel extends React.Component {
 	}
 
 	handleSave = () => {
-		if(this.props.currentImage !== this.state.originalImage) {
-			this.props.onConfirm();
+		if(this.props.currentImage !== this.state.originalImage || this.state.removeImage) {
+			this.props.onConfirm(this.state.removeImage);
 		} else {
 			this.props.onCancel();
 		}
@@ -34,9 +35,15 @@ export default class ImagePanel extends React.Component {
 		}
 	}
 
+	removeImage = () => {
+		this.setState({
+			removeImage: true
+		});
+	}
+
 	render() {
 
-		let iconGallery, previewImage;
+		let iconGallery, previewImage, removeImageButton;
 		let icons = this.props.icons;
 
 		if(icons.length > 0) {
@@ -58,10 +65,9 @@ export default class ImagePanel extends React.Component {
 			iconGallery = (<div className="noIcons">No icons have been uploaded!</div>);
 		}
             	
-
-
-		if(this.props.currentImage) {
-			previewImage = this.props.currentImage
+		if(this.props.currentImage && !this.state.removeImage) {
+			previewImage = this.props.currentImage;
+			removeImageButton = (<button className="remove-image-button" type="button" onClick={this.removeImage}>Remove Image</button>);
 		} else {
 			previewImage = 'https://res.cloudinary.com/phirehero/image/upload/v1552923648/unearned.png' //update with empty image
 		}
@@ -91,6 +97,7 @@ export default class ImagePanel extends React.Component {
 							        }
 							        onChange={this.onChange}
 							    />
+							    {removeImageButton}
 							</div>
 						</div>
 						<button className="chooseImage--confirm" type="button" onClick={this.handleSave}>Save</button>

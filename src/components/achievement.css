@@ -129,7 +129,7 @@
 }
 
 .achievement-menu.visible {
-    width:150px;
+    width:160px;
 }
 
 .achievement-menu--button {
@@ -137,6 +137,7 @@
     width: 32px;
     border: none;
     display: flex;
+    align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -171,7 +172,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 118px;
+    width: 128px;
     justify-content: space-evenly;
 }
 
@@ -201,6 +202,10 @@
     height: 32px;
 }
 
+.achievement--test {
+    height: 32px;
+}
+
 .achievement--edit {
     cursor: pointer;
 }
@@ -215,7 +220,8 @@
 }
 
 .achievement--limited img,
-.achievement--gift img {
+.achievement--gift img,
+.achievement--test img {
     width:32px;
 }
 

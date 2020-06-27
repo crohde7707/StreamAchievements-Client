@@ -74,6 +74,9 @@ class Achievement extends React.Component {
 						<div className="achievement--edit" onClick={() => {this.props.onClick(this.props.achievement)}}>
 							<img alt="Edit Achievement Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1552697627/edit-icon-png-24.png" />
 						</div>
+						<div className="achievement--test" onClick={() => {this.props.onTest && this.props.onTest(this.props.achievement.uid)}}>
+							<img alt="Test Achievement Icon" src="https://res.cloudinary.com/phirehero/image/upload/v1590407786/play-icon-png-24.png" />
+						</div>
 					</div>
 				</div>
 			);
