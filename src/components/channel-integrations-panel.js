@@ -30,7 +30,6 @@ class ChannelIntegrationsPanel extends React.Component {
 
 		return (
 			<div>
-				<p>Integrate your channel with popular bots and services to add capabilities for your members to earn achievements for!</p>
 				<div>
 					<AdditionalIntegrationsPanel channel={this.props.channel} />
 					{connectedContent}

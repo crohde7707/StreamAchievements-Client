@@ -36,7 +36,6 @@ class AdditionalIntegrationsPanel extends React.Component {
 		let integrations = this.props.channel.integration;
 
 		if(!integrations.streamlabs) {
-
 			additionalPlatforms.push(
 				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamlabs" href={process.env.REACT_APP_API_DOMAIN + "auth/streamlabs"}>
 					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589835373/streamlabs-icon.png" />
@@ -46,7 +45,7 @@ class AdditionalIntegrationsPanel extends React.Component {
 
 		if(!integrations.streamelements) {
 			additionalPlatforms.push(
-				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamelements platform--disabled" href={process.env.REACT_APP_API_DOMAIN + "auth/streamelements"}>
+				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamelements" href={process.env.REACT_APP_API_DOMAIN + "auth/streamelements"}>
 					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589839030/streamelements-logo.png" />
 			    </a>
 			)
@@ -54,12 +53,15 @@ class AdditionalIntegrationsPanel extends React.Component {
 
 		if(additionalPlatforms.length > 0) {
 			content = (
-				<div className="integration--available-integrations">
-					<h4>Available Integrations:</h4>
-					<div className="platform-list--wrapper">
-						{additionalPlatforms}
+				<React.Fragment>
+					<p>Integrate your channel with popular bots and services to add capabilities for your members to earn achievements for!</p>
+					<div className="integration--available-integrations">
+						<h4>Available Integrations:</h4>
+						<div className="platform-list--wrapper">
+							{additionalPlatforms}
+						</div>
 					</div>
-				</div>
+				</React.Fragment>
 			);
 		}
 
