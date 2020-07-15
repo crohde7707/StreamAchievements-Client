@@ -659,7 +659,34 @@ class AchievementPage extends React.Component {
 			if(!userFound) {
 				fieldSet[field] = false;
 			} else {
-				fieldSet[field] = true;
+
+				let varRegex = /(\{[a-zA-Z0-9]+\})/gi;
+
+				let variableArray = this.state[field].match(varRegex);
+
+				if(variableArray) {
+
+					let dupFound = false;
+					let varArr = [];
+
+					variableArray.forEach(variable => {
+						if(!varArr.includes(variable)) {
+							varArr.push(variable);
+						} else {
+							dupFound = [];
+							dupFound.push(variable);
+						}
+					})
+
+					if(dupFound) {
+						fieldSet[field] = false;	
+					} else {
+						fieldSet[field] = true;
+					}
+
+				} else {
+					fieldSet[field] = false;
+				}
 			}
 		}
 	}
