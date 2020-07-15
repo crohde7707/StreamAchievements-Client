@@ -19,7 +19,7 @@ export default class Footer extends React.Component {
 					</a>
 				</div>
 				<div className="footer-content copyright">
-					‎<span>© 2019 Stream Achievements. All Rights Reserved.</span>
+					‎<span>© 2020 Stream Achievements. All Rights Reserved.</span>
 				</div>
 				<div className="footer-content legal">
 					<a href="/legal/terms-of-use">Terms of Service</a>

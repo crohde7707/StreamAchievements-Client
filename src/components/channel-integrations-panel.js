@@ -6,6 +6,7 @@ import AdditionalIntegrationsPanel from './additional-integrations-panel';
 
 //integration panels
 import StreamLabsPanel from './streamlabs-panel';
+import StreamElementsPanel from './streamelements-panel';
 
 import './channel-integrations-panel.css';
 
@@ -34,6 +35,7 @@ class ChannelIntegrationsPanel extends React.Component {
 					<AdditionalIntegrationsPanel channel={this.props.channel} />
 					{connectedContent}
 					<StreamLabsPanel channel={this.props.channel} update={this.props.updateChannel} />
+					<StreamElementsPanel channel={this.props.channel} update={this.props.updateChannel} />
 				</div>
 			</div>
 		)

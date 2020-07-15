@@ -5,7 +5,7 @@
 }
 
 .integration {
-	border-radius: 6px;
+	border-radius: 8px;
     box-shadow: 1px 1px 2px black;
     margin-bottom: 20px;
     color: black;
@@ -51,7 +51,7 @@
 }
 
 .integration-header img {
-	width: 26px;
+	width: 28px;
 	height: 28px;
 }
 

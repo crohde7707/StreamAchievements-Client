@@ -112,6 +112,18 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	updateChannelIDs = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/cid', {}, {
+			withCredentials: true
+		});
+	}
+
+	ircChannels = () => {
+		axios.get(process.env.REACT_APP_API_DOMAIN + 'api/irc/channels', {}, {
+			withCredentials: true
+		})
+	}
+
 	render() {
 
 		return (
@@ -156,6 +168,12 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.rank} type="button">Rank</button>
+					</div>
+					<div>
+						<button onClick={this.updateChannelIDs} type="button">updateChannelIDs</button>
+					</div>
+					<div>
+						<button onClick={this.ircChannels} type="button">ircChannels</button>
 					</div>
 					<div>
 						<h2>Test Achievement Types</h2>

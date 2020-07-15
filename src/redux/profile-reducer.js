@@ -2,6 +2,7 @@ const SET_PROFILE = 'SET_PROFILE';
 const SYNC_TWITCH = 'SYNC_TWITCH';
 const SYNC_PATREON = 'SYNC_PATREON';
 const SYNC_STREAMLABS = 'SYNC_STREAMLABS';
+const SYNC_STREAMELEMENTS = 'SYNC_STREAMELEMENTS';
 const UNLINK_SERVICE = 'UNLINK_SERVICE';
 const UPDATE_STATUS = 'UPDATE_STATUS';
 const UPDATE_PREFERENCES = 'UPDATE_PREFERENCES';
@@ -38,7 +39,7 @@ export default function ProfileReducer(state = initialState, action) {
 					terms: action.data.terms
 				},
 				patreon: action.data.patreon,
-				streamlabs: action.data.streamlabs
+				integration: action.data.integration
 			}
 			break;
 		case SYNC_TWITCH:
@@ -60,7 +61,19 @@ export default function ProfileReducer(state = initialState, action) {
 		case SYNC_STREAMLABS:
 			return {
 				...state,
-				streamlabs: action.data
+				integration: {
+					...state.integration,
+					streamlabs: action.data
+				}
+			}
+			break;
+		case SYNC_STREAMELEMENTS:
+			return {
+				...state,
+				integration: {
+					...state.integration,
+					streamelements: action.data
+				}
 			}
 			break;
 		case UNLINK_SERVICE:
@@ -147,6 +160,13 @@ export function syncPatreon(data) {
 export function syncStreamlabs(data) {
 	return {
 		type: SYNC_STREAMLABS,
+		data
+	}
+}
+
+export function syncStreamElements(data) {
+	return {
+		type: SYNC_STREAMELEMENTS,
 		data
 	}
 }

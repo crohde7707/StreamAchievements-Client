@@ -1,26 +1,26 @@
 import React from 'react';
 import connector from '../redux/connector';
-import {syncStreamlabs, unlinkService} from '../redux/profile-reducer';
+import {syncStreamElements, unlinkService} from '../redux/profile-reducer';
 import axios from 'axios';
 import ConfirmPanel from '../components/confirm-panel';
 import TooltipWrapper from './tooltip-wrapper';
 
-import './streamlabs-panel.css';
+import './streamelements-panel.css';
 
-const STREAMLABS_URL = 'https://www.streamlabs.com/join/streamachievements';
+const STREAMELEMENTS_URL = 'https://www.streamlabs.com/join/streamachievements';
 
-class StreamlabsPanel extends React.Component {
+class StreamElementsPanel extends React.Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			loading: (this.props.streamlabs === undefined) ? true : false
+			loading: (this.props.streamelements === undefined) ? true : false
 		}
 	}
 
 	shouldDidUpdate(prevProps, prevState) {
-		if(prevProps.streamlabs === undefined && this.props.streamlabs !== undefined) {
+		if(prevProps.streamelements === undefined && this.props.streamelements !== undefined) {
 			this.setState({
 				loading: false
 			});
@@ -29,8 +29,8 @@ class StreamlabsPanel extends React.Component {
 		return true;
 	}
 
-	goTostreamlabs = () => {
-		var win = window.open(STREAMLABS_URL, '_blank');
+	goToStreamElements = () => {
+		var win = window.open(STREAMELEMENTS_URL, '_blank');
 		win.focus();
 	}
 
@@ -40,11 +40,11 @@ class StreamlabsPanel extends React.Component {
 
 	handleSync = () => {
 		this._sync.classList.add('active');
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/streamlabs/sync', {}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/streamelements/sync', {}, {
 			withCredentials: true
 		}).then(res => {
 			this._sync.classList.remove('active');
-			this.props.dispatch(syncStreamlabs(res.data));
+			this.props.dispatch(syncStreamElements(res.data));
 		});
 	}
 
@@ -59,7 +59,7 @@ class StreamlabsPanel extends React.Component {
 			showConfirm: false
 		});
 
-		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/streamlabs/unlink', {}, {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'auth/streamelements/unlink', {}, {
 			withCredentials: true
 		}).then(res => {
 			if(res.data.success) {
@@ -72,11 +72,11 @@ class StreamlabsPanel extends React.Component {
 	}
 
 	render() {
-		if(this.state.loading && this.props.streamlabs === undefined) {
+		if(this.state.loading && this.props.streamelements === undefined) {
 			return null;
 		}
 
-		let streamlabsContent = null;
+		let streamElementsContent = null;
 		let confirmPanel;
 
 		if(this.state.showConfirm) {
@@ -86,20 +86,20 @@ class StreamlabsPanel extends React.Component {
 					onConfirm={this.handleUnlink}
 					onCancel={() => {this.setState({showConfirm: false})}}
 				>
-					<div>Are you sure you want to unlink your Streamlabs account?</div>
-					<div className="strong">Note: All achievements reliant on Streamlabs will no longer be able to be rewarded!</div>
+					<div>Are you sure you want to unlink your StreamElements account?</div>
+					<div className="strong">Note: All achievements reliant on StreamElements will no longer be able to be rewarded!</div>
 				</ConfirmPanel>
 			);
 		}
 
 		if(this.props.profile && this.props.profile.status === 'verified') {
-			if(this.props.streamlabs === false) {
+			if(this.props.streamelements === false) {
 				//Data retrieved, not connected
-				streamlabsContent = (
-					<div className="integration integration--streamlabs not-linked">
-						<a className="streamlabsLink" href={process.env.REACT_APP_API_DOMAIN + "auth/streamlabs"}>
-							<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1572725216/streamlabs-badge.png" />
-						    <span>Link Your Streamlabs Account</span>
+				streamElementsContent = (
+					<div className="integration integration--streamelements not-linked">
+						<a className="streamElementsLink" href={process.env.REACT_APP_API_DOMAIN + "auth/streamelements"}>
+							<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589839030/streamelements-logo.png" />
+						    <span>Link Your StreamElements Account</span>
 					    </a>
 				    </div>
 				);
@@ -108,14 +108,14 @@ class StreamlabsPanel extends React.Component {
 				let logo = (this.props.profile && this.props.profile.logo) || '';
 				let name = (this.props.profile && this.props.profile.username) || '';
 
-				streamlabsContent = (
-					<div className="integration integration--streamlabs">
+				streamElementsContent = (
+					<div className="integration integration--streamelements">
 							<div className="integration-header">
-								<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1572725216/streamlabs-badge.png" />
-								<h3>Streamlabs</h3>
+								<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589839030/streamelements-logo.png" />
+								<h3>StreamElements</h3>
 									<div className="integration-unlink">
 										<TooltipWrapper
-											hoverText="Unlink Streamlabs"
+											hoverText="Unlink StreamElements"
 										>
 											<a href="javascript:;" onClick={this.showUnlink}>
 												<img alt="Unlink" src="https://res.cloudinary.com/phirehero/image/upload/v1572732837/unlink.png" />
@@ -124,9 +124,9 @@ class StreamlabsPanel extends React.Component {
 									</div>
 									<div className="integration-settings">
 										<TooltipWrapper
-											hoverText="Opens Streamlabs settings in new tab"
+											hoverText="Opens StreamElements settings in new tab"
 										>
-											<a href='https://streamlabs.com/dashboard#/settings/api-settings' target="blank">
+											<a href='https://streamelements.com/dashboard/account/integrations' target="blank">
 												<img alt="Settings" src="https://res.cloudinary.com/phirehero/image/upload/v1561746754/settings.png" />
 											</a>
 										</TooltipWrapper>
@@ -141,15 +141,15 @@ class StreamlabsPanel extends React.Component {
 			}
 		}
 
-		return streamlabsContent;
+		return streamElementsContent;
 	}
 }
 
 function headerMapStateToProps(state) {
 	return {
 		profile: state.profile,
-		streamlabs: state.integration.streamlabs
+		streamelements: state.integration.streamelements
 	};
 }
 
-export default connector(headerMapStateToProps)(StreamlabsPanel);
+export default connector(headerMapStateToProps)(StreamElementsPanel);

@@ -1,45 +1,45 @@
-.integration--streamlabs {
+.integration--streamelements {
     background: #DDD;
 }
 
-.integration--streamlabs .integration-content {
+.integration--streamelements .integration-content {
 	display: flex;
 	padding: 10px 20px;
 }
 
-.integration--streamlabs .integration-header {
-    background: #31c3a2;
+.integration--streamelements .integration-header {
+    background: #030a22;
     border-radius: 6px;
 }
 
-.integration--streamlabs .integration-unlink {
+.integration--streamelements .integration-unlink {
     flex: 1 1;
     text-align: right;
     margin-right: 10px;
 }
 
-.integration--streamlabs .integration-settings {
+.integration--streamelements .integration-settings {
     flex: 0;
     margin-right: 0;
 }
 
-.streamlabs--left {
+.streamelements--left {
 	padding: 20px;
     background: #BBB;
     box-shadow: 0px 1px 2px #333;
     z-index: 10;
 }
 
-.streamlabs--thumb img {
+.streamelements--thumb img {
 	width: 100px;
 	height: 100px;
 }
 
-.streamlabs--right {
+.streamelements--right {
 	flex: 1;
 }
 
-.streamlabsLink {
+.streamElementsLink {
     display: flex;
     text-decoration: none;
     margin: 0 auto;
@@ -48,7 +48,7 @@
     padding: 5px;
 }
 
-.streamlabsLink span {
+.streamElementsLink span {
     background: #050d12;
     padding: 10px;
     font-size: 14px;
@@ -60,7 +60,7 @@
     justify-content: center;
 }
 
-.streamlabs--banner {
+.streamelements--banner {
 	background: #e88446;
     padding-left: 10px;
     display: flex;
@@ -71,11 +71,11 @@
     align-items: center;
 }
 
-.streamlabs--banner div {
+.streamelements--banner div {
 	flex: 1;
 }
 
-.streamlabs--banner .follow-button {
+.streamelements--banner .follow-button {
 	align-self: flex-end;
 	justify-content: flex-end;
 	background: white;
@@ -84,14 +84,14 @@
     font-weight: 700;
 }
 
-.integration--streamlabs .feedback {
+.integration--streamelements .feedback {
     padding: 10px;
     background: #fffc8c;
     color: black;
     margin-bottom: 10px;
 }
 
-.streamlabs--content {
+.streamelements--content {
 	padding: 10px;
 	display: flex;
     align-items: center;
@@ -102,8 +102,8 @@
     flex-direction: column;
 }
 
-.streamlabs--content .support,
-.streamlabs--content .upgrade {
+.streamelements--content .support,
+.streamelements--content .upgrade {
 	text-align: center;
     background: white;
     padding: 10px;
@@ -112,7 +112,7 @@
     margin: 0 10px;
 }
 
-.streamlabs--content.streamlabs--active .upgrade {
+.streamelements--content.streamelements--active .upgrade {
     background: none;
     border-top: 1px solid;
     border-radius: 0px;
@@ -121,7 +121,7 @@
     margin-top: 20px;
 }
 
-.streamlabs--content button {
+.streamelements--content button {
 	background: rgb(232, 91, 70);
     border: none;
     padding: 10px 15px;
@@ -133,11 +133,11 @@
     cursor: pointer;
 }
 
-.streamlabs--content h3 {
+.streamelements--content h3 {
 	text-align: center;
 }
 
-.streamlabs--features {
+.streamelements--features {
 	display: -webkit-flex;
     display: flex;
     width: 100%;
@@ -147,7 +147,7 @@
     justify-content: center;
 }
 
-.streamlabs--features div {
+.streamelements--features div {
 	width: 48%;
     margin-top: 1px;
     background: white;
@@ -170,17 +170,17 @@
     margin-top: 10px;
 }
 
-.integration--streamlabs .integration-sync.active img,
+.integration--streamelements .integration-sync.active img,
 .integration--twitch .integration-sync.active img {
     animation: rotation 1s infinite linear;
 }
 
-.streamlabs--unlink {
+.streamelements--unlink {
     display: flex;
     flex: 1;
 }
 
-.streamlabs--unlink a {
+.streamelements--unlink a {
         padding: 6px 12px;
     background: rgb(232, 91, 70);
     color: white;
@@ -199,20 +199,20 @@
 
 @media only screen and (max-width: 480px) {
 
-    .streamlabs--thumb {
+    .streamelements--thumb {
         text-align: center;
     }
 
-    .streamlabs--left {
+    .streamelements--left {
         padding: 10px;
     }
 
-    .streamlabs--thumb img {
+    .streamelements--thumb img {
         width: 85px;
         height: 85px;
     }
 
-    .streamlabs--features div {
+    .streamelements--features div {
         width: 45%;
         display: flex;
         justify-content: center;

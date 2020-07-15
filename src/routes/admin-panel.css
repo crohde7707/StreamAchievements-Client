@@ -75,6 +75,27 @@
     transition: all 0.2s ease;
 }
 
+.ircTest--wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.ircTest--wrapper button {
+	margin: 5px 0;
+	padding: 10px;
+	width: 300px
+}
+
+.ircTest--wrapper .ircTest--custom {
+	display: flex;
+	flex-direction: column;
+}
+
+.ircTest--custom input {
+	padding: 5px;
+	margin: 5px 0px;
+}
+
 @media only screen and (max-width: 600px) {
 	.pendingMembers-wrapper {
 		flex-direction: column;

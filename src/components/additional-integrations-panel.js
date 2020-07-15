@@ -33,9 +33,9 @@ class AdditionalIntegrationsPanel extends React.Component {
 			return null;
 		}
 
-		let integrations = this.props.channel.integrations;
+		let integrations = this.props.channel.integration;
 
-		if(integrations.streamlabs) {
+		if(!integrations.streamlabs) {
 			additionalPlatforms.push(
 				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamlabs" href={process.env.REACT_APP_API_DOMAIN + "auth/streamlabs"}>
 					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589835373/streamlabs-icon.png" />
@@ -43,9 +43,9 @@ class AdditionalIntegrationsPanel extends React.Component {
 			)
 		}
 
-		if(!integrations.streamelements) {
+		if(integrations.streamelements) {
 			additionalPlatforms.push(
-				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamelements platform--disabled" href={process.env.REACT_APP_API_DOMAIN + "auth/streamelements"}>
+				<a key={`additional-platform--${additionalPlatforms.length + 1}`} className="platformLink streamelements" href={process.env.REACT_APP_API_DOMAIN + "auth/streamelements"}>
 					<img alt="" src="https://res.cloudinary.com/phirehero/image/upload/v1589839030/streamelements-logo.png" />
 			    </a>
 			)
