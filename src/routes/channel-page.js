@@ -277,7 +277,15 @@ class ChannelPage extends React.Component {
 								classes = "achievement-blurred";
 							}
 
-							return (<Achievement key={'achievement-' + index} unlocked={this.state.fullAccess} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
+							if(achievement.limited) {
+								if(achievement.earnable || achievement.earned) {
+									return (<Achievement key={'achievement-' + index} unlocked={this.state.fullAccess} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)									
+								} else {
+									return null;
+								}
+							} else {
+								return (<Achievement key={'achievement-' + index} unlocked={this.state.fullAccess} earned={earned} achievement={achievement} className={classes} defaultIcons={this.state.channel.icons} />)
+							}
 						})}
 						{bannedOverlay}
 					</div>
@@ -286,7 +294,17 @@ class ChannelPage extends React.Component {
 				if(this.state.joined) {
 					let {achievements} = this.state;
 
-					let percentage = Math.round((achievements.filter(achievement => achievement.earned).length / achievements.length) * 100);
+					let percentage = Math.round((achievements.filter(achievement => achievement.earned).length / achievements.filter(achievement => {
+						if(achievement.limited) {
+							if(achievement.earnable || achievement.earned) {
+								return true;
+							} else {
+								return false;
+							}
+						}
+
+						return true;
+					}).length) * 100);
 
 					let progressClasses = 'channel-progress';
 
