@@ -112,6 +112,12 @@ export default class TestListeners extends React.Component {
 		});
 	}
 
+	integration = () => {
+		axios.post(process.env.REACT_APP_API_DOMAIN + 'api/admin/integration', {}, {
+			withCredentials: true
+		});
+	}
+
 	render() {
 
 		return (
@@ -156,6 +162,9 @@ export default class TestListeners extends React.Component {
 					</div>
 					<div>
 						<button onClick={this.rank} type="button">Rank</button>
+					</div>
+					<div>
+						<button onClick={this.integration} type="button">Integration</button>
 					</div>
 					<div>
 						<h2>Test Achievement Types</h2>
