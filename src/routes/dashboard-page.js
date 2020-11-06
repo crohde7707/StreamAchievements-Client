@@ -1041,6 +1041,20 @@ class DashboardPage extends React.Component {
 				graphic = this.state.graphicPreview
 			}
 
+			let deleteChannelContent;
+
+			if(!this.state.isMod) {
+				deleteChannelContent = (
+					<React.Fragment>
+						<h4>Delete Channel</h4>
+						<div className="section-wrapper delete-channel">
+							{/* Make promptDelete take param to reuse for delete */}
+							<button className="delete-channel--button" onClick={this.showDeletePopup}>Delete Channel</button>
+						</div>
+					</React.Fragment>
+				)
+			}
+
 			generalContent = (
 				<div className={generalWrapperClasses}>
 						{priGenContent}
@@ -1054,11 +1068,8 @@ class DashboardPage extends React.Component {
 							isGold={isGold}
 							graphic={graphic}
 						/>
-						<h4>Delete Channel</h4>
-						<div className="section-wrapper delete-channel">
-							{/* Make promptDelete take param to reuse for delete */}
-							<button className="delete-channel--button" onClick={this.showDeletePopup}>Delete Channel</button>
-						</div>
+
+						{deleteChannelContent}
 						{imagePanel}
 						<div className="saveReorder--wrapper">
 							<button className="saveReorder--button" type="button" onClick={this.handleSave}>
@@ -1068,7 +1079,7 @@ class DashboardPage extends React.Component {
 				</div>
 			);
 
-			if(this.state.events.length > 0) {
+			if(this.state.events && this.state.events.length > 0) {
 				eventContent = (
 					<div className="events-wrapper">
 						{this.state.events.map((event, idx) => {
