@@ -22,7 +22,9 @@ class AchievementPage extends React.Component {
 			achType: "",
 			alert: true,
 			bot: "",
+			bots: {bot0: ""},
 			condition: "",
+			conditions: {condition0: ""},
 			customAllowed: true,
 			defaultIcons: {},
 			description: "",
@@ -36,8 +38,10 @@ class AchievementPage extends React.Component {
 			id: '',
 			limited: false,
 			query: "",
+			queries: {query0: ""},
 			secret: false,
 			showConfirm: false,
+			showDeleteConditionConfirm: false,
 			showImagePanel: false,
 			title: "",
 			unlocked: false,
@@ -240,7 +244,9 @@ class AchievementPage extends React.Component {
 				achType: "",
 				alert: true,
 				bot: "",
+				bots: {},
 				condition: "",
+				conditions: {},
 				description: "",
 				extensionPreview: false,
 				shortDescription: "",
@@ -251,8 +257,10 @@ class AchievementPage extends React.Component {
 				id: '',
 				limited: false,
 				query: "",
+				queries: {},
 				secret: false,
 				showConfirm: false,
+				showDeleteConditionConfirm: false,
 				showImagePanel: false,
 				title: "",
 				touched: undefined,
@@ -335,12 +343,43 @@ class AchievementPage extends React.Component {
 		const name = target.name;
 
 		let touched = this.state.touched || {};
-		touched[name] = true;
 
-		let stateUpdate = {
-			[name]: value,
-			touched
-		};
+		let stateUpdate = {};
+
+		if(this.state.achType === "4") {
+			if(name.indexOf('bot') === 0) {
+				touched['bots'] = true;
+
+				stateUpdate.bots = this.state.bots || {};
+				stateUpdate.bots[name] = value;
+				stateUpdate.touched = touched;
+			} else if(name.indexOf('condition') === 0) {
+				touched['conditions'] = true;
+
+				stateUpdate.conditions = this.state.conditions || {};
+				stateUpdate.conditions[name] = value;
+				stateUpdate.touched = touched;
+			} else if(name.indexOf('query') === 0) {
+				touched['queries'] = true;
+
+				stateUpdate.queries = this.state.queries || {};
+				stateUpdate.queries[name] = value;
+				stateUpdate.touched = touched;
+				
+			} else {
+				touched[name] = true;
+
+				stateUpdate = {
+					[name]: value,
+					touched
+				};
+			}
+		} else {
+			stateUpdate = {
+				[name]: value,
+				touched
+			};
+		}
 
 		if(name === "achType") {
 			stateUpdate.touched['query'] = true;
@@ -361,6 +400,92 @@ class AchievementPage extends React.Component {
 		}
 
 		this.setState(stateUpdate);
+	}
+
+	addCondition = () => {
+		let length = Object.keys(this.state.queries).length;
+
+		if(length < 3) {
+			let {bots, conditions, queries} = {...this.state};
+
+			bots['bot' + length] = "";
+			conditions['condition' + length] = "";
+			queries['query' + length] = "";
+
+			let touched = this.state.touched || {};
+			touched['bots'] = true;
+			touched['conditions'] = true;
+			touched['queries'] = true;
+
+			this.setState({
+				bots,
+				conditions,
+				queries,
+				touched
+			});
+		}
+	}
+
+	handleDeleteCondition = (idx) => {
+		//if condition is completely empty, just remove it
+		if(
+			this.state.bots["bot" + idx] === "" &&
+			this.state.conditions["condition" + idx] === "" &&
+			this.state.queries["query" + idx] === ""
+		) {
+			this.deleteCondition(idx);
+		} else {
+			//prompt with popup to verify removal
+			this.setState({
+				showDeleteConditionConfirm: idx
+			});
+		}
+	}
+
+	deleteCondition = (index) => {
+		let idx;
+		let {conditions, bots, queries} = {...this.state};
+
+		if(index === undefined) {
+			idx = this.state.showDeleteConditionConfirm;
+		} else {
+			idx = index;
+		}
+
+		let keys = Object.keys(conditions);
+
+		if(idx + 1 === keys.length) {
+			//last one being deleted, remove reference
+			delete conditions["condition" + idx];
+			delete bots["bot" + idx];
+			delete queries["query" + idx];
+		} else {
+			let i = idx;
+
+			for(i; i <= keys.length - 1; i++) {
+				//loop over each one and copy it to previous
+				conditions["condition" + i] = conditions["condition" + (i + 1)];
+				bots["bot" + i] = bots["bot" + (i + 1)];
+				queries["query" + i] = queries["query" + (i + 1)];
+			}
+
+			delete conditions["condition" + (i-1)];
+			delete bots["bot" + (i-1)];
+			delete queries["query" + (i-1)];
+		}
+
+		let touched = this.state.touched || {};
+			touched['bots'] = true;
+			touched['conditions'] = true;
+			touched['queries'] = true;
+
+		this.setState({
+			conditions,
+			bots,
+			queries,
+			touched,
+			showDeleteConditionConfirm: false
+		});
 	}
 
 	getConditionContent = () => {
@@ -441,46 +566,68 @@ class AchievementPage extends React.Component {
 					//Custom
 					if(this.state.customAllowed || (this.state.edit && this.state.originalAchievement.achType === "4")) {
 
+						let addConditions;
+
+						if(Object.keys(this.state.queries).length < 3) {
+							addConditions = (
+								<div className="addCondition">
+									<a href="javascript:;" onClick={this.addCondition}>
+										<img alt="plus icon" src={require('../img/plus.png')} />
+									</a>
+								</div>
+							);
+						}
+
+						let conditions = Object.keys(this.state.conditions);
+
 						conditionContent = (
-							<div>
-								<div className="formGroup">
-									<label htmlFor="achievement-bot">Bot Name *</label>
-									<input
-										id="achievement-bot"
-										name="bot"
-										className={"textInput" + ((this.isInvalid("bot")) ? " invalid" : "")}
-										type="text"
-										value={this.state.bot}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-								<div className="formGroup">
-									<label htmlFor="achievement-query">
-										<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
-									</label>
-									<input
-										id="achievement-query"
-										name="query"
-										className={"textInput" + ((this.isInvalid("query")) ? " invalid" : "")}
-										type="text"
-										value={this.state.query}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-								<div className="formGroup">
-									<label htmlFor="achievement-condition">
-										<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
-									</label>
-									<input
-										id="achievement-condition"
-										name="condition"
-										className={"textInput" + ((this.isInvalid("condition")) ? " invalid" : "")}
-										type="text"
-										value={this.state.condition}
-										onChange={this.handleDataChange}
-									/>
-								</div>
-							</div>
+							<React.Fragment>
+								{conditions.map((condition, idx) => {
+									return (
+										<div className="conditionGroup" key={"conditionGroup" + idx}>
+											{conditions.length > 1 && (<div className="deleteImg" onClick={() => {this.handleDeleteCondition(idx)}}><div className="icon"></div></div>)}
+											<div className="formGroup">
+												<label htmlFor={"achievement-bot" + idx}>Bot Name *</label>
+												<input
+													id={"achievement-bot" + idx}
+													name={"bot" + idx}
+													className={"textInput" + ((this.isInvalid("bot" + idx)) ? " invalid" : "")}
+													type="text"
+													value={this.state.bots['bot' + idx]}
+													onChange={this.handleDataChange}
+												/>
+											</div>
+											<div className="formGroup">
+												<label htmlFor={"achievement-query" + idx}>
+													<a href="javascript:;" onClick={() => {this.showPopup('customMessage')}} className="gold">Chat Message</a> *
+												</label>
+												<input
+													id={"achievement-query" + idx}
+													name={"query" + idx}
+													className={"textInput" + ((this.isInvalid("query" + idx)) ? " invalid" : "")}
+													type="text"
+													value={this.state.queries['query' + idx]}
+													onChange={this.handleDataChange}
+												/>
+											</div>
+											<div className="formGroup">
+												<label htmlFor={"achievement-condition" + idx}>
+													<a href="javascript:;" onClick={() => {this.showPopup('customCondition')}} className="gold">Condition</a>
+												</label>
+												<input
+													id={"achievement-condition" + idx}
+													name={"condition" + idx}
+													className={"textInput" + ((this.isInvalid("condition" + idx)) ? " invalid" : "")}
+													type="text"
+													value={this.state.conditions['condition' + idx]}
+													onChange={this.handleDataChange}
+												/>
+											</div>
+										</div>
+									)
+								})}
+								{addConditions}
+							</React.Fragment>
 						);
 					} else {
 						conditionContent = (
@@ -573,7 +720,13 @@ class AchievementPage extends React.Component {
 					}
 				}
 
-				if(this.state.achType === "4" || this.state.achType === "5") {
+				if(this.state.achType === "4") {
+					achievement.bots = this.state.bots;
+					achievement.conditions = this.state.conditions;
+					achievement.queries = this.state.queries;
+				}
+
+				if(this.state.achType === "5") {
 					achievement.bot = this.state.bot;
 					achievement.query = this.state.query;
 				}
@@ -615,9 +768,11 @@ class AchievementPage extends React.Component {
 				break;
 			case "4":
 				this.isCustomAllowed(validUpdate, 'achType');
-				this.isNullorEmpty(validUpdate, 'bot');
-				this.isValidQuery(validUpdate, 'query');
-				this.isValidCondition(validUpdate, 'condition');
+				Object.keys(this.state.conditions).forEach((condition, idx) => {
+					this.isValidBot(validUpdate, 'bot' + idx, idx);
+					this.isValidQuery(validUpdate, 'query' + idx, idx);
+					this.isValidCondition(validUpdate, 'condition' + idx, idx);
+				})
 				break;
 			case "5":
 				this.isNullorEmpty(validUpdate, 'bot');
@@ -650,11 +805,25 @@ class AchievementPage extends React.Component {
 		fieldSet[field] = false;
 	}
 
-	isValidQuery = (fieldSet, field) => {
-		if(!this.isNullorEmpty(fieldSet, field)) {
+	isValidBot = (fieldSet, field, idx) => {
+		if(!this.state.bots[field] || this.state.bots[field] === '') {
+			fieldSet[field] = false;
+		} else {
+			fieldSet[field] = true;
+		}
+
+		return fieldSet[field];
+	}
+
+	isValidQuery = (fieldSet, field, idx) => {
+
+		if(!this.state.queries[field] || this.state.queries[field] === '') {
+			fieldSet[field] = false;
 			return;
 		} else {
-			let userFound = this.state[field].indexOf('{user}') >= 0;
+			fieldSet[field] = true;
+		
+			let userFound = this.state.queries[field].indexOf('{user}') >= 0;
 
 			if(!userFound) {
 				fieldSet[field] = false;
@@ -662,7 +831,7 @@ class AchievementPage extends React.Component {
 
 				let varRegex = /(\{[a-zA-Z0-9]+\})/gi;
 
-				let variableArray = this.state[field].match(varRegex);
+				let variableArray = this.state.queries[field].match(varRegex);
 
 				if(variableArray) {
 
@@ -706,18 +875,18 @@ class AchievementPage extends React.Component {
 		}
 	}
 
-	isValidCondition = (fieldSet, field) => {
-		if(this.state[field].length > 0) {
-			let query = this.state['query'];
+	isValidCondition = (fieldSet, field, idx) => {
+		if(this.state.conditions && this.state.conditions[field] && this.state.conditions[field].length > 0) {
+			let query = this.state.queries['query' + idx];
 			let queryMatches = query.match(/({[a-zA-Z0-9_,\.]+})/g);
 
 			let pattern = /[a-zA-Z0-9_]+[<>=]+[a-zA-Z0-9_,\.]+;*/g;
-			let matches = this.state[field].match(pattern);
+			let matches = this.state.conditions[field].match(pattern);
 
 			if(matches) {
 				let combined = matches.join('');
 
-				if(combined.length === this.state[field].length) {
+				if(combined.length === this.state.conditions[field].length) {
 
 					let found = false;
 					//check if provided condition is in message
@@ -727,7 +896,7 @@ class AchievementPage extends React.Component {
 						if(key !== 'user' && !found) {
 							let test = new RegExp(key + '[<>=]+');
 
-							if(this.state[field].match(test)) {
+							if(this.state.conditions[field].match(test)) {
 								found = true;
 							}
 						}
@@ -972,6 +1141,15 @@ class AchievementPage extends React.Component {
 						<div>Are you sure you want to delete this achievement?</div>
 					</ConfirmPanel>
 				);
+			} else if(this.state.showDeleteConditionConfirm !== false) {
+				confirmPanel = (
+					<ConfirmPanel
+						onConfirm={() => this.deleteCondition()}
+						onCancel={() => {this.setState({showDeleteConditionConfirm: false})}}
+					>
+						<div>Are you sure you want to remove this condition?</div>
+					</ConfirmPanel>
+				)
 			}
 
 			if(this.state.showImagePanel) {

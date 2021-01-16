@@ -299,10 +299,12 @@ class DashboardPage extends React.Component {
 		}
 	}
 
-	handleActionBlur = () => {
-		this.setState({
-			showAction: false
-		})
+	handleActionBlur = (e) => {
+		setTimeout(() => {
+			this.setState({
+				showAction: false
+			})
+		}, 500)
 	}
 
 	promptDelete = (image) => {
@@ -694,9 +696,12 @@ class DashboardPage extends React.Component {
 	toggleReorder = () => {
 		if(!this.state.isMod) {
 			this.setState({
-				preorderedAchievements: this.state.achievements.slice(0),
 				reordering: true,
 				showAction: false
+			}, () => {
+				this.setState({
+					preorderedAchievements: this.state.achievements.slice(0)
+				});
 			});	
 		}
 	}

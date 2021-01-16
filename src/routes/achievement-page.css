@@ -149,6 +149,31 @@
 	pointer-events: none;
 }
 
+.formGroup:last-child {
+	margin-bottom: 0;
+}
+
+.conditionGroup {
+	padding: 10px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.4);
+    margin: 10px 0;
+    position: relative;
+}
+
+.addCondition {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.addCondition a {
+	margin: 0 auto;
+}
+
+.addCondition a img {
+	width: 40px
+}
+
 .formGroup.upgradeTier p {
 	text-align: center;
     width: 100%;
@@ -203,6 +228,17 @@
     color: white;
     font-weight: bold;
     cursor: pointer;
+}
+
+.conditionGroup .deleteImg {
+	right: -16px;
+    top: -8px;
+}
+
+.conditionGroup:hover .deleteImg {
+	opacity: 1;
+	transition: all 0.2s ease;
+	cursor: pointer;
 }
 
 @media only screen and (max-width: 480px) {
