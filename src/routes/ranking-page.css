@@ -1,0 +1,88 @@
+.rankingWrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    color: white;
+}
+
+.rankingProfile {
+	max-width: 600px;
+    width: 400px;
+    background: #00000066;
+    height: 250px;
+    margin: 0 auto;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px #333;
+    color: white;
+}
+
+.ranking--info {
+	flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    color: white;
+}
+
+.ranking--logo img {
+	width: 150px;
+}
+
+.ranking--rank {
+	font-size: 22px;
+}
+
+.ranking--earnings {
+	width: 25%;
+    margin: 2% 0;
+    border-left: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+}
+
+.ranking--type {
+	display: flex;
+	align-items: center;
+	flex: 1;
+}
+
+.ranking--icon img {
+	width: 40px;
+}
+
+.ranking-memberList {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.ranking--member {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background: #00000077;
+}
+
+.ranking--member.stripe {
+    background: #000000AA;
+}
+
+.ranking-member--rank,
+.ranking-member--total {
+    width: 10%;
+}
+
+.ranking-member--info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.ranking-member--info img {
+    width: 65px;
+    margin-right: 10px;
+}

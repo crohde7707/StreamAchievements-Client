@@ -7,6 +7,7 @@ import HomePage from './routes/home-page';
 import ProfilePage from './routes/profile-page';
 import LandingPage from './routes/landing-page';
 import ChannelPage from './routes/channel-page';
+import RankingPage from './routes/ranking-page';
 import VerifyPage from './routes/verify-page';
 import GoldPage from './routes/gold-page';
 import DashboardPage from './routes/dashboard-page';
@@ -47,6 +48,7 @@ let app = (
 	        		<Route path='/mod/' component={ModPage} />
 	        		<Route path='/channel/verify' component={VerifyPage} />
 	        		<Route path='/channel/create' component={CreateChannelPage} />
+	        		<Route path='/channel/:channelid/ranking' component={RankingPage} />
 	        		<Route path='/channel/:channelid' component={ChannelPage} />
 	        		<Route path="/gold/subscription" component={SubscriptionPage} />
 	        		<Route path="/gold" component={GoldPage} />
