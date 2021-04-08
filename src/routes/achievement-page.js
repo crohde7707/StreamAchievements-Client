@@ -375,10 +375,34 @@ class AchievementPage extends React.Component {
 				};
 			}
 		} else {
+			touched[name] = true;
+
+			if(name === 'achType' && value === "4") {
+				if(!this.state.bots) {
+					stateUpdate.bots = {
+						"bot0": ""
+					}
+				}
+				if(!this.state.queries) {
+					stateUpdate.queries = {
+						"query0": ""
+					}
+				}
+				if(!this.state.conditions) {
+					stateUpdate.conditions = {
+						"condition0": ""
+					}
+				}
+				touched['bots'] = true;
+				touched['queries'] = true;
+				touched['conditions'] = true;
+			}
+
 			stateUpdate = {
 				[name]: value,
 				touched
 			};
+			console.log(stateUpdate);
 		}
 
 		if(name === "achType") {
